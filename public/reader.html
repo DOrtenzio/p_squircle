@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUIRCLE. Reader</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Minimale -->
+    <header class="reader-nav container">
+        <a href="index.html" class="back-link">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Torna alla libreria
+        </a>
+        <div class="brand-footer">SQUIRCLE.</div>
+    </header>
+
+    <main class="container">
+        
+        <!-- Anti-Bot Gatekeeper Overlay -->
+        <div id="botGate" class="gatekeeper-overlay">
+            <div class="gatekeeper-card">
+                <div class="squircle-icon"></div>
+                <h2>Verifica di Sicurezza</h2>
+                <p class="section-note">Per proteggere i contenuti da accessi automatizzati, risolvi questa semplice operazione.</p>
+                
+                <div class="challenge-display" id="gateChallengeText">Caricamento verifica...</div>
+                
+                <div class="gate-input-group">
+                    <input type="number" id="gateAnswer" class="input-squircle" placeholder="Inserisci il risultato" autocomplete="off">
+                    <button id="gateSubmitBtn" class="btn btn-primary">Accedi al libro</button>
+                </div>
+                <div id="gateError" class="status-pill status-pill--danger hidden">Risposta errata. Riprova.</div>
+            </div>
+        </div>
+
+        <!-- Contenuto Principale (Nascosto fino a verifica avvenuta) -->
+        <div id="readerContent" class="hidden">
+            
+            <div class="reader-header-panel roll-in-element">
+                <div class="reader-meta-info">
+                    <span class="eyebrow">Lettura in corso</span>
+                    <h1 id="bookTitle">Titolo del libro</h1>
+                    <p id="bookAuthor" class="book-author">Autore</p>
+                </div>
+                <div class="reader-status-area">
+                    <div id="readerStatus" class="status-pill status-pill--neutral">In attesa...</div>
+                    <span id="readerUpdated" class="status-note"></span>
+                </div>
+            </div>
+
+            <div class="reader-grid">
+                <!-- Colonna Sinistra: Visualizzatore -->
+                <section class="reader-panel roll-in-element">
+                    <div class="reader-viewer">
+                        <iframe id="pdfViewer" class="book-frame" hidden></iframe>
+                        <div id="viewerFallback" class="viewer-fallback hidden">
+                            <div class="viewer-fallback-title">Anteprima non disponibile</div>
+                            <p>Questo formato richiede un download locale per la lettura.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reader-actions-bar">
+                        <p id="bookDescription" class="section-note">Descrizione in caricamento...</p>
+                        <a id="downloadLink" href="#" class="btn btn-outline" target="_blank">Scarica / Apri PDF</a>
+                    </div>
+                </section>
+
+                <!-- Colonna Destra: Interazione e Log -->
+                <aside class="sidebar-panel roll-in-element">
+                    <div class="panel-title-row">
+                        <h2>Discussione Anonima</h2>
+                        <span class="badge">Live</span>
+                    </div>
+
+                    <!-- Sezione Challenge per Commenti -->
+                    <div class="interaction-zone">
+                        <div id="challengeBox" class="challenge-box">Verifica anti-bot per commentare...</div>
+                        <input type="text" id="challengeAnswer" class="challenge-input input-squircle" placeholder="Risposta verifica..." disabled>
+                        
+                        <textarea id="commentInput" class="comment-input input-squircle" placeholder="Scrivi un commento anonimo..." disabled></textarea>
+                        
+                        <div class="action-row">
+                            <button id="refreshChallengeBtn" class="btn-text" type="button">Ricarica verifica</button>
+                            <button id="postCommentBtn" class="btn btn-primary" disabled>Invia</button>
+                        </div>
+                    </div>
+
+                    <div id="commentList" class="comment-list">
+                        <!-- Commenti caricati via JS -->
+                    </div>
+
+                    <div class="platform-log-panel">
+                        <div class="panel-title-row">
+                            <h3>Log Piattaforma</h3>
+                        </div>
+                        <div id="platformLog" class="platform-log">
+                            <!-- Log entries -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">SQUIRCLE.</div>
+            <p class="copyright">© <span id="current-year"></span> Industrial Library Design. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+    <script src="js/reader.js"></script>
+</body>
+</html>

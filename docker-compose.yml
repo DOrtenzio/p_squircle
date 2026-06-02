@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=secret_password
+      - DB_NAME=books_db
+      - ADMIN_PSK=${ADMIN_PSK}
+      - ADMIN_2FA_SECRET=${ADMIN_TOTP_SECRET}
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: secret_password
+      MYSQL_DATABASE: books_db
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:

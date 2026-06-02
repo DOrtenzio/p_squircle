@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUIRCLE.</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main>
+        <section class="hero roll-in-element">
+            <div class="hero-copy">
+                <h1 class="hero-title">SQUIRCLE.</h1>
+                <p class="hero-subtitle">Una libreria B&W ispirata al design industriale, con angoli morbidi, movimento e ricerca live.</p>
+            </div>
+            <div class="hero-action">
+                <button class="btn btn-primary" onclick="document.getElementById('searchInput').focus()">Cerca libri</button>
+            </div>
+        </section>
+
+        <div id="homeToolbar" class="page-toolbar">
+            <div class="toolbar-brand">SQUIRCLE.</div>
+            <nav class="toolbar-nav" aria-label="Navigazione rapida">
+                <a href="#featureSection">Valori</a>
+                <a href="#bookGrid">Catalogo</a>
+            </nav>
+        </div>
+
+        <section id="featureSection" class="feature-section roll-in-element">
+            <article class="feature-card" data-offset="16">
+                <div class="feature-image">
+                    <img src="https://picsum.photos/seed/brigold1/900/640?grayscale" alt="Copertina libro industriale 1">
+                </div>
+                <div class="feature-copy">
+                    <p class="eyebrow">Interazione</p>
+                    <h2>Libro che segue il tuo movimento</h2>
+                    <p>Gli angoli rispondono al cursore, creando un effetto di peso e profondità nello spazio.</p>
+                </div>
+            </article>
+
+            <article class="feature-card" data-offset="20">
+                <div class="feature-image">
+                    <img src="https://picsum.photos/seed/brigold2/900/640?grayscale" alt="Copertina libro industriale 2">
+                </div>
+                <div class="feature-copy">
+                    <p class="eyebrow">Design</p>
+                    <h2>Squircle industriale</h2>
+                    <p>Angoli morbidi e superfici matte per un’esperienza coerente su tutto il sito.</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="search-section roll-in-element">
+            <div class="search-panel">
+                <div>
+                    <h2>Ricerca filtrabile</h2>
+                    <p class="section-note">Cerca per titolo, autore o descrizione e scopri subito i risultati più rilevanti.</p>
+                </div>
+                <div class="search-control">
+                    <input id="searchInput" type="search" class="input-squircle search-input" placeholder="Cerca libri..." autocomplete="off">
+                </div>
+            </div>
+
+            <div id="bookGrid" class="book-grid">
+                <p class="loading-text">Caricamento in corso...</p>
+            </div>
+
+            <div class="nav-controls">
+                <button id="prevBtn" class="btn btn-nav" onclick="previousBooks()">← Precedente</button>
+                <span id="pageInfo" class="page-info">1 / 1</span>
+                <button id="nextBtn" class="btn btn-nav" onclick="nextBooks()">Successivo →</button>
+            </div>
+        </section>
+        <div id="bookModal" class="modal-overlay hidden">
+            <div class="modal">
+                <button class="modal-close" aria-label="Chiudi popup">×</button>
+                <div class="modal-body">
+                    <h2 id="modalTitle">Titolo libro</h2>
+                    <p id="modalAuthor" class="modal-author"></p>
+                    <p id="modalDescription" class="modal-description"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">SQUIRCLE.</div>
+            <p class="copyright">© <span id="current-year"></span> Industrial Library Design. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
