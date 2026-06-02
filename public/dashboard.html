@@ -79,7 +79,7 @@
             padding: 1.25rem;
             box-shadow: 0 8px 24px rgba(0,0,0,0.05);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
-            display: grid;
+            display: flex;
             grid-template-columns: 80px minmax(0, 1fr) auto;
             gap: 1rem;
             align-items: center;
@@ -226,11 +226,11 @@
 <body>
     <main class="container">
         <section id="loginSection" class="dashboard-login">
-            <h1 class="hero-title">Accesso Riservato</h1>
-            <p>Inserisci PSK e codice TOTP per accedere.</p>
+            <h1 class="hero-title">Reserved Access</h1>
+            <p>Enter your PSK and TOTP code to access.</p>
             <input type="password" id="pskInput" class="login-input" placeholder="Pre-Shared Key">
-            <input type="text" id="totpInput" class="login-input" placeholder="Codice a 6 cifre" maxlength="6">
-            <button id="loginBtn" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;">Accedi</button>
+            <input type="text" id="totpInput" class="login-input" placeholder="6-Digit Code" maxlength="6">
+            <button id="loginBtn" class="btn btn-primary" style="width: 100%; margin-top:0.5rem;">Login</button>
             <p id="loginMessage" class="section-note" style="margin-top:1rem; min-height:1.2rem;"></p>
         </section>
 
@@ -332,7 +332,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">SQUIRCLE.</div>
-            <p class="copyright">© <span id="current-year"></span> Industrial Library Design. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
         </div>
     </footer>
 

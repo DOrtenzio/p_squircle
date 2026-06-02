@@ -12,18 +12,18 @@
         <section class="hero roll-in-element">
             <div class="hero-copy">
                 <h1 class="hero-title">SQUIRCLE.</h1>
-                <p class="hero-subtitle">Una libreria B&W ispirata al design industriale, con angoli morbidi, movimento e ricerca live.</p>
+                <p class="hero-subtitle">A free bookshelf for mine books</p>
             </div>
             <div class="hero-action">
-                <button class="btn btn-primary" onclick="document.getElementById('searchInput').focus()">Cerca libri</button>
+                <button class="btn btn-primary" onclick="document.getElementById('searchInput').focus()">Search Books</button>
             </div>
         </section>
 
         <div id="homeToolbar" class="page-toolbar">
             <div class="toolbar-brand">SQUIRCLE.</div>
             <nav class="toolbar-nav" aria-label="Navigazione rapida">
-                <a href="#featureSection">Valori</a>
-                <a href="#bookGrid">Catalogo</a>
+                <a href="#featureSection">Values</a>
+                <a href="#bookGrid">Catalog</a>
             </nav>
         </div>
 
@@ -33,9 +33,9 @@
                     <img src="https://picsum.photos/seed/brigold1/900/640?grayscale" alt="Copertina libro industriale 1">
                 </div>
                 <div class="feature-copy">
-                    <p class="eyebrow">Interazione</p>
-                    <h2>Libro che segue il tuo movimento</h2>
-                    <p>Gli angoli rispondono al cursore, creando un effetto di peso e profondità nello spazio.</p>
+                    <p class="eyebrow">Psychological</p>
+                    <h2>Book that follows the psychological waves</h2>
+                    <p>All the books in the category "Folli, Follia, Follie" deal with the complicated pyramid structure built by people to justify their existence.</p>
                 </div>
             </article>
 
@@ -45,8 +45,8 @@
                 </div>
                 <div class="feature-copy">
                     <p class="eyebrow">Design</p>
-                    <h2>Squircle industriale</h2>
-                    <p>Angoli morbidi e superfici matte per un’esperienza coerente su tutto il sito.</p>
+                    <h2>Short and Confused by Nature</h2>
+                    <p>Vital complexity that forces short and long existences that indelibly mark our Psyche.</p>
                 </div>
             </article>
         </section>
@@ -54,29 +54,29 @@
         <section class="search-section roll-in-element">
             <div class="search-panel">
                 <div>
-                    <h2>Ricerca filtrabile</h2>
-                    <p class="section-note">Cerca per titolo, autore o descrizione e scopri subito i risultati più rilevanti.</p>
+                    <h2>Search</h2>
+                    <p class="section-note">Search by title, author or description and discover the most relevant results immediately.</p>
                 </div>
                 <div class="search-control">
-                    <input id="searchInput" type="search" class="input-squircle search-input" placeholder="Cerca libri..." autocomplete="off">
+                    <input id="searchInput" type="search" class="input-squircle search-input" placeholder="Search books..." autocomplete="off">
                 </div>
             </div>
 
             <div id="bookGrid" class="book-grid">
-                <p class="loading-text">Caricamento in corso...</p>
+                <p class="loading-text">Loading...</p>
             </div>
 
             <div class="nav-controls">
-                <button id="prevBtn" class="btn btn-nav" onclick="previousBooks()">← Precedente</button>
+                <button id="prevBtn" class="btn btn-nav" onclick="previousBooks()">← Previous</button>
                 <span id="pageInfo" class="page-info">1 / 1</span>
-                <button id="nextBtn" class="btn btn-nav" onclick="nextBooks()">Successivo →</button>
+                <button id="nextBtn" class="btn btn-nav" onclick="nextBooks()">Next →</button>
             </div>
         </section>
         <div id="bookModal" class="modal-overlay hidden">
             <div class="modal">
-                <button class="modal-close" aria-label="Chiudi popup">×</button>
+                <button class="modal-close" aria-label="Close">×</button>
                 <div class="modal-body">
-                    <h2 id="modalTitle">Titolo libro</h2>
+                    <h2 id="modalTitle">Book Title</h2>
                     <p id="modalAuthor" class="modal-author"></p>
                     <p id="modalDescription" class="modal-description"></p>
                 </div>
@@ -87,7 +87,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">SQUIRCLE.</div>
-            <p class="copyright">© <span id="current-year"></span> Industrial Library Design. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
         </div>
     </footer>
 

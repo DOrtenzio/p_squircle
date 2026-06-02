@@ -15,7 +15,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            Torna alla libreria
+            Home
         </a>
         <div class="brand-footer">SQUIRCLE.</div>
     </header>
@@ -26,16 +26,16 @@
         <div id="botGate" class="gatekeeper-overlay">
             <div class="gatekeeper-card">
                 <div class="squircle-icon"></div>
-                <h2>Verifica di Sicurezza</h2>
-                <p class="section-note">Per proteggere i contenuti da accessi automatizzati, risolvi questa semplice operazione.</p>
-                
-                <div class="challenge-display" id="gateChallengeText">Caricamento verifica...</div>
-                
+                <h2>Security Check</h2>
+                <p class="section-note">To protect the content from automated access, please solve this simple operation.</p>
+
+                <div class="challenge-display" id="gateChallengeText">Loading verification...</div>
+
                 <div class="gate-input-group">
-                    <input type="number" id="gateAnswer" class="input-squircle" placeholder="Inserisci il risultato" autocomplete="off">
-                    <button id="gateSubmitBtn" class="btn btn-primary">Accedi al libro</button>
+                    <input type="number" id="gateAnswer" class="input-squircle" placeholder="Enter the result" autocomplete="off">
+                    <button id="gateSubmitBtn" class="btn btn-primary">Access</button>
                 </div>
-                <div id="gateError" class="status-pill status-pill--danger hidden">Risposta errata. Riprova.</div>
+                <div id="gateError" class="status-pill status-pill--danger hidden">Incorrect answer. Please try again.</div>
             </div>
         </div>
 
@@ -44,12 +44,12 @@
             
             <div class="reader-header-panel roll-in-element">
                 <div class="reader-meta-info">
-                    <span class="eyebrow">Lettura in corso</span>
-                    <h1 id="bookTitle">Titolo del libro</h1>
-                    <p id="bookAuthor" class="book-author">Autore</p>
+                    <span class="eyebrow">Reading in progress</span>
+                    <h1 id="bookTitle">Book Title</h1>
+                    <p id="bookAuthor" class="book-author">Author</p>
                 </div>
                 <div class="reader-status-area">
-                    <div id="readerStatus" class="status-pill status-pill--neutral">In attesa...</div>
+                    <div id="readerStatus" class="status-pill status-pill--neutral">Waiting...</div>
                     <span id="readerUpdated" class="status-note"></span>
                 </div>
             </div>
@@ -60,34 +60,34 @@
                     <div class="reader-viewer">
                         <iframe id="pdfViewer" class="book-frame" hidden></iframe>
                         <div id="viewerFallback" class="viewer-fallback hidden">
-                            <div class="viewer-fallback-title">Anteprima non disponibile</div>
-                            <p>Questo formato richiede un download locale per la lettura.</p>
+                            <div class="viewer-fallback-title">Preview not available</div>
+                            <p>This format requires a local download for reading.</p>
                         </div>
                     </div>
                     
                     <div class="reader-actions-bar">
-                        <p id="bookDescription" class="section-note">Descrizione in caricamento...</p>
-                        <a id="downloadLink" href="#" class="btn btn-outline" target="_blank">Scarica / Apri PDF</a>
+                        <p id="bookDescription" class="section-note">Description loading...</p>
+                        <a id="downloadLink" href="#" class="btn btn-outline" target="_blank">Download / Open PDF</a>
                     </div>
                 </section>
 
                 <!-- Colonna Destra: Interazione e Log -->
                 <aside class="sidebar-panel roll-in-element">
                     <div class="panel-title-row">
-                        <h2>Discussione Anonima</h2>
+                        <h2>Anonymous Discussion</h2>
                         <span class="badge">Live</span>
                     </div>
 
                     <!-- Sezione Challenge per Commenti -->
                     <div class="interaction-zone">
-                        <div id="challengeBox" class="challenge-box">Verifica anti-bot per commentare...</div>
-                        <input type="text" id="challengeAnswer" class="challenge-input input-squircle" placeholder="Risposta verifica..." disabled>
+                        <div id="challengeBox" class="challenge-box">Anti-bot verification for commenting...</div>
+                        <input type="text" id="challengeAnswer" class="challenge-input input-squircle" placeholder="Answer verification..." disabled>
                         
-                        <textarea id="commentInput" class="comment-input input-squircle" placeholder="Scrivi un commento anonimo..." disabled></textarea>
+                        <textarea id="commentInput" class="comment-input input-squircle" placeholder="Write an anonymous comment..." disabled></textarea>
                         
                         <div class="action-row">
-                            <button id="refreshChallengeBtn" class="btn-text" type="button">Ricarica verifica</button>
-                            <button id="postCommentBtn" class="btn btn-primary" disabled>Invia</button>
+                            <button id="refreshChallengeBtn" class="btn-text" type="button">Refresh Verification</button>
+                            <button id="postCommentBtn" class="btn btn-primary" disabled>Submit</button>
                         </div>
                     </div>
 
@@ -97,7 +97,7 @@
 
                     <div class="platform-log-panel">
                         <div class="panel-title-row">
-                            <h3>Log Piattaforma</h3>
+                            <h3>Platform Log</h3>
                         </div>
                         <div id="platformLog" class="platform-log">
                             <!-- Log entries -->
@@ -112,7 +112,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">SQUIRCLE.</div>
-            <p class="copyright">© <span id="current-year"></span> Industrial Library Design. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
         </div>
     </footer>
 
