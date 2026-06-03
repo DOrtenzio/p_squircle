@@ -138,22 +138,22 @@ async function fetchBook() {
 
     try {
         const res = await fetch(`/api/books/${bookId}`);
-        if (!res.ok) throw new Error('Libro non trovato');
+        if (!res.ok) throw new Error('Book not found');
         const book = await res.json();
         const fileUrl = getFileUrl(book.file_path || '');
 
-        elements.title.textContent = book.title || 'Titolo non disponibile';
-        elements.author.textContent = book.author ? `di ${book.author}` : '';
-        elements.description.textContent = book.description || 'Nessuna descrizione disponibile.';
+        elements.title.textContent = book.title || 'Title not available';
+        elements.author.textContent = book.author ? `by ${book.author}` : '';
+        elements.description.textContent = book.description || 'No description available.';
 
         const isPdf = book.file_path?.toLowerCase().endsWith('.pdf');
         const isEpub = book.file_path?.toLowerCase().endsWith('.epub');
         elements.downloadOriginalLink.href = fileUrl;
-        elements.downloadOriginalLink.textContent = 'Scarica file originale';
+        elements.downloadOriginalLink.textContent = 'Download original file';
         elements.downloadPdfBtn.href = `/api/books/${book.id}/download?format=pdf`;
         elements.downloadEpubBtn.href = `/api/books/${book.id}/download?format=epub`;
-        elements.downloadPdfBtn.textContent = isPdf ? 'Scarica PDF originale' : 'Scarica PDF';
-        elements.downloadEpubBtn.textContent = isEpub ? 'Scarica EPUB originale' : 'Scarica EPUB';
+        elements.downloadPdfBtn.textContent = isPdf ? 'Download original PDF' : 'Download PDF';
+        elements.downloadEpubBtn.textContent = isEpub ? 'Download original EPUB' : 'Download EPUB';
 
         if (isPdf) {
             elements.pdfViewer.src = `${fileUrl}#toolbar=0&navpanes=0`;
@@ -168,11 +168,11 @@ async function fetchBook() {
         if (contentEl) contentEl.classList.remove('hidden');
 
         setStatus('Pronto a Leggere', 'success');
-        elements.statusNote.textContent = 'Contenuto caricato con successo.';
+        elements.statusNote.textContent = 'Content loaded successfully.';
     } catch (error) {
         if (loadingEl) loadingEl.classList.add('hidden');
-        setStatus('Errore caricamento', 'danger');
-        elements.description.textContent = 'Impossibile caricare il libro al momento.';
+        setStatus('Error loading content', 'danger');
+        elements.description.textContent = 'Unable to load book at this time.';
         console.error(error);
     }
 }
@@ -180,14 +180,14 @@ async function fetchBook() {
 async function loadComments() {
     try {
         const res = await fetch(`/api/comments/${bookId}`);
-        if (!res.ok) throw new Error('Impossibile caricare i commenti');
+        if (!res.ok) throw new Error('Unable to load comments');
         
         const comments = await res.json();
         elements.commentList.innerHTML = comments.length === 0
-            ? '<div class="empty-state">Nessun commento ancora. Sii il primo a parlare.</div>'
+            ? '<div class="empty-state">No comments yet. Be the first to speak.</div>'
             : comments.map(comment => `
                 <article class="comment-card">
-                    <div class="comment-card__meta">Anonimo • ${formatDate(comment.created_at)}</div>
+                    <div class="comment-card__meta">Anonymous • ${formatDate(comment.created_at)}</div>
                     <p>${comment.content}</p>
                 </article>
             `).join('');
@@ -199,18 +199,18 @@ async function loadComments() {
 async function loadCommentChallenge() {
     try {
         setCommentControls(false);
-        elements.challengeBox.textContent = 'Richiesta controllo di sicurezza...';
+        elements.challengeBox.textContent = 'Requesting security verification...';
         
         const res = await fetch('/api/challenge');
-        if (!res.ok) throw new Error('Errore challenge');
+        if (!res.ok) throw new Error('Challenge error');
 
         // Aggiorniamo la challenge corrente per i commenti
         // Potremmo usare una variabile diversa se la challenge di accesso è diversa
         currentChallenge = await res.json(); 
-        elements.challengeBox.textContent = `Verifica: ${currentChallenge.question}`;
+        elements.challengeBox.textContent = `Verification: ${currentChallenge.question}`;
         setCommentControls(true);
     } catch (error) {
-        elements.challengeBox.textContent = 'Impossibile ottenere il controllo anti-bot.';
+        elements.challengeBox.textContent = 'Unable to obtain anti-bot verification.';
         console.error(error);
     }
 }
@@ -220,21 +220,21 @@ async function submitComment() {
     const answer = elements.challengeAnswer.value.trim();
     
     if (!content) {
-        alert('Inserisci un commento prima di inviare.');
+        alert('Please enter a comment before submitting.');
         return;
     }
     if (!answer) {
-        alert('Rispondi al controllo di sicurezza.');
+        alert('Please answer the security check.');
         return;
     }
     if (!currentChallenge?.id) {
-        alert('Verifica non valida. Ricarica la pagina o il controllo.');
+        alert('Invalid verification. Please reload the page or the check.');
         return;
     }
 
     try {
         setCommentControls(false);
-        setStatus('Invio commento...', 'neutral');
+        setStatus('Submitting comment...', 'neutral');
 
         const res = await fetch('/api/comments', {
             method: 'POST',
@@ -249,16 +249,16 @@ async function submitComment() {
 
         if (!res.ok) {
             const payload = await res.json().catch(() => null);
-            throw new Error(payload?.message || 'Invio fallito');
+            throw new Error(payload?.message || 'Submission failed');
         }
 
         elements.commentInput.value = '';
         elements.challengeAnswer.value = '';
-        setStatus('Commento inviato', 'success');
+        setStatus('Comment submitted', 'success');
         await loadComments();
         await loadCommentChallenge();
     } catch (error) {
-        setStatus('Errore invio', 'danger');
+        setStatus('Error submitting comment', 'danger');
         await loadCommentChallenge();
     }
 }
