@@ -68,7 +68,7 @@ async function initGatekeeper() {
         if (!res.ok) throw new Error('Errore challenge');
         
         currentChallenge = await res.json();
-        elements.gateChallengeText.textContent = `Quanto fa ${currentChallenge.question}?`;
+        elements.gateChallengeText.textContent = `${currentChallenge.question}`;
         elements.gateSubmitBtn.addEventListener('click', verifyGateEntry);
         
         // Permetti invio con tasto Enter
