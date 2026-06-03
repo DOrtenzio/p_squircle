@@ -113,7 +113,7 @@ function bindModalEvents() {
             card.classList.remove('dragover');
             const file = event.dataTransfer.files[0];
             if (!file) return;
-            if (card === elements.epubCard && (file.type === 'application/epub+zip' || file.name.toLowerCase().endsWith('.epub'))) {
+            if (card === elements.epubCard && ((file.type === 'application/epub+zip' || file.name.toLowerCase().endsWith('.epub')) || file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
                 const data = new DataTransfer();
                 data.items.add(file);
                 elements.modalEpubFile.files = data.files;
@@ -305,7 +305,7 @@ async function saveBook() {
         return;
     }
     if (!bookId && !epubFile) {
-        elements.modalMessage.textContent = 'Seleziona un file EPUB per caricare il libro.';
+        elements.modalMessage.textContent = 'Seleziona un file EPUB o PDF per caricare il libro.';
         return;
     }
 

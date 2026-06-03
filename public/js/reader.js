@@ -20,7 +20,9 @@ const elements = {
     description: document.getElementById('bookDescription'),
     pdfViewer: document.getElementById('pdfViewer'),
     viewerFallback: document.getElementById('viewerFallback'),
-    downloadLink: document.getElementById('downloadLink'),
+    downloadOriginalLink: document.getElementById('downloadOriginalLink'),
+    downloadPdfBtn: document.getElementById('downloadPdfBtn'),
+    downloadEpubBtn: document.getElementById('downloadEpubBtn'),
     
     // Comments
     challengeBox: document.getElementById('challengeBox'),
@@ -142,10 +144,16 @@ async function fetchBook() {
         elements.author.textContent = book.author ? `di ${book.author}` : '';
         elements.description.textContent = book.description || 'Nessuna descrizione disponibile.';
 
-        elements.downloadLink.href = fileUrl;
-        elements.downloadLink.textContent = book.file_path?.toLowerCase().endsWith('.pdf') ? 'Apri PDF in una nuova scheda' : 'Scarica libro';
+        const isPdf = book.file_path?.toLowerCase().endsWith('.pdf');
+        const isEpub = book.file_path?.toLowerCase().endsWith('.epub');
+        elements.downloadOriginalLink.href = fileUrl;
+        elements.downloadOriginalLink.textContent = 'Scarica file originale';
+        elements.downloadPdfBtn.href = `/api/books/${book.id}/download?format=pdf`;
+        elements.downloadEpubBtn.href = `/api/books/${book.id}/download?format=epub`;
+        elements.downloadPdfBtn.textContent = isPdf ? 'Scarica PDF originale' : 'Converti EPUB in PDF';
+        elements.downloadEpubBtn.textContent = isEpub ? 'Scarica EPUB originale' : 'Converti PDF in EPUB';
 
-        if (book.file_path?.toLowerCase().endsWith('.pdf')) {
+        if (isPdf) {
             elements.pdfViewer.src = `${fileUrl}#toolbar=0&navpanes=0`;
             elements.pdfViewer.hidden = false;
             elements.viewerFallback.classList.add('hidden');

@@ -5,6 +5,11 @@ const fs = require('fs');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const speakeasy = require('speakeasy');
+const PDFParser = require('pdf-parse');
+const PDFDocument = require('pdfkit');
+const JSZip = require('jszip');
+const xml2js = require('xml2js');
+const { htmlToText } = require('html-to-text');
 const db = require('./db');
 require('dotenv').config();
 
@@ -30,6 +35,97 @@ const uploadFields = upload.fields([
     { name: 'coverFile', maxCount: 1 }
 ]);
 
+function sanitizeFileName(name) {
+    return name ? name.replace(/[^a-zA-Z0-9-_\. ]/g, '_').trim() : 'download';
+}
+
+async function sendFileDownload(res, filePath, filename) {
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: 'File non trovato.' });
+    }
+    res.download(filePath, filename);
+}
+
+async function parseEpubContents(filePath) {
+    const raw = await fs.promises.readFile(filePath);
+    const zip = await JSZip.loadAsync(raw);
+    const containerXml = await zip.file('META-INF/container.xml').async('string');
+    const containerJson = await xml2js.parseStringPromise(containerXml);
+    const rootfilePath = containerJson.container.rootfiles[0].rootfile[0].$['full-path'];
+    const opfXml = await zip.file(rootfilePath).async('string');
+    const opfJson = await xml2js.parseStringPromise(opfXml);
+    const manifest = opfJson.package.manifest[0].item || [];
+    const manifestMap = manifest.reduce((acc, item) => {
+        acc[item.$.id] = item.$;
+        return acc;
+    }, {});
+    const spine = (opfJson.package.spine[0].itemref || []).map(itemref => itemref.$.idref);
+    const baseDir = path.posix.dirname(rootfilePath);
+    const chapters = [];
+
+    for (const idref of spine) {
+        const item = manifestMap[idref];
+        if (!item) continue;
+        const href = item.href;
+        const fullPath = path.posix.join(baseDir, href);
+        const file = zip.file(fullPath) || zip.file(href);
+        if (!file) continue;
+        const html = await file.async('string');
+        const text = htmlToText(html, {
+            wordwrap: 130,
+            selectors: [
+                { selector: 'img', format: 'skip' },
+                { selector: 'a', options: { ignoreHref: true } }
+            ]
+        }).trim();
+        if (text) {
+            chapters.push({ title: path.basename(href, path.extname(href)), text });
+        }
+    }
+
+    return chapters.length ? chapters : [{ title: 'Contenuto EPUB', text: 'Il contenuto non è stato analizzato correttamente.' }];
+}
+
+async function convertEpubToPdf(epubPath) {
+    const chapters = await parseEpubContents(epubPath);
+    const doc = new PDFDocument({ autoFirstPage: false, margin: 50 });
+    const buffers = [];
+
+    return new Promise((resolve, reject) => {
+        doc.on('data', chunk => buffers.push(chunk));
+        doc.on('end', () => resolve(Buffer.concat(buffers)));
+        doc.on('error', reject);
+
+        chapters.forEach((chapter) => {
+            doc.addPage();
+            doc.fontSize(18).fillColor('#111').text(chapter.title, { underline: true, paragraphGap: 10 });
+            doc.moveDown(0.5);
+            doc.fontSize(12).fillColor('#222').text(chapter.text, { lineGap: 4 });
+        });
+
+        doc.end();
+    });
+}
+
+function createEpubFile(pdfText, title) {
+    const safeTitle = sanitizeFileName(title);
+    const contentXhtml = `<?xml version="1.0" encoding="utf-8"?>\n<html xmlns="http://www.w3.org/1999/xhtml">\n  <head><title>${safeTitle}</title></head>\n  <body>\n    <h1>${safeTitle}</h1>\n    ${pdfText.split(/\r?\n/).filter(Boolean).map(line => `<p>${line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('\n    ')}\n  </body>\n</html>`;
+    const zip = new JSZip();
+    zip.file('mimetype', 'application/epub+zip', { compression: 'STORE' });
+    zip.folder('META-INF').file('container.xml', `<?xml version="1.0"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n  <rootfiles>\n    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>\n  </rootfiles>\n</container>`);
+    zip.folder('OEBPS').file('content.opf', `<?xml version="1.0" encoding="UTF-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0">\n  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n    <dc:title>${safeTitle}</dc:title>\n    <dc:language>it</dc:language>\n    <dc:identifier id="bookid">urn:uuid:${Date.now()}</dc:identifier>\n  </metadata>\n  <manifest>\n    <item id="chapter1" href="text/chapter1.xhtml" media-type="application/xhtml+xml"/>\n  </manifest>\n  <spine toc="ncx">\n    <itemref idref="chapter1"/>\n  </spine>\n</package>`);
+    zip.folder('OEBPS').file('toc.ncx', `<?xml version="1.0" encoding="UTF-8"?>\n<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">\n  <head>\n    <meta name="dtb:uid" content="urn:uuid:${Date.now()}"/>\n    <meta name="dtb:depth" content="1"/>\n  </head>\n  <docTitle><text>${safeTitle}</text></docTitle>\n  <navMap>\n    <navPoint id="navPoint-1" playOrder="1">\n      <navLabel><text>${safeTitle}</text></navLabel>\n      <content src="text/chapter1.xhtml"/>\n    </navPoint>\n  </navMap>\n</ncx>`);
+    zip.folder('OEBPS').folder('text').file('chapter1.xhtml', contentXhtml);
+    return zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+}
+
+async function convertPdfToEpub(pdfPath, title) {
+    const fileData = await fs.promises.readFile(pdfPath);
+    const data = await PDFParser(fileData);
+    const rawText = data.text || '';
+    return await createEpubFile(rawText, title || 'Libro convertito');
+}
+
 // --- PUBLIC ROUTES ---
 
 // Get All Books
@@ -48,6 +144,50 @@ app.get('/api/books/:id', async (req, res) => {
         const [rows] = await db.query('SELECT * FROM books WHERE id = ?', [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ message: 'Book not found' });
         res.json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/books/:id/download', async (req, res) => {
+    const format = (req.query.format || 'original').toLowerCase();
+    try {
+        const [rows] = await db.query('SELECT * FROM books WHERE id = ?', [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ message: 'Book not found' });
+        const book = rows[0];
+        const sourcePath = book.file_path;
+        if (!sourcePath) return res.status(404).json({ message: 'File non trovato.' });
+        const extension = path.extname(sourcePath).toLowerCase();
+        const resolvedPath = path.resolve(sourcePath);
+        const downloadName = sanitizeFileName(book.title || path.basename(sourcePath, extension));
+
+        if (format === 'original') {
+            return sendFileDownload(res, resolvedPath, `${downloadName}${extension}`);
+        }
+
+        if (format === 'pdf' && extension === '.pdf') {
+            return sendFileDownload(res, resolvedPath, `${downloadName}.pdf`);
+        }
+
+        if (format === 'epub' && extension === '.epub') {
+            return sendFileDownload(res, resolvedPath, `${downloadName}.epub`);
+        }
+
+        if (format === 'pdf' && extension === '.epub') {
+            const pdfBuffer = await convertEpubToPdf(resolvedPath);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${downloadName}.pdf"`);
+            return res.send(pdfBuffer);
+        }
+
+        if (format === 'epub' && extension === '.pdf') {
+            const epubBuffer = await convertPdfToEpub(resolvedPath, book.title || path.basename(sourcePath, extension));
+            res.setHeader('Content-Type', 'application/epub+zip');
+            res.setHeader('Content-Disposition', `attachment; filename="${downloadName}.epub"`);
+            return res.send(epubBuffer);
+        }
+
+        return res.status(400).json({ message: 'Formato di download non supportato per questo libro.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -164,7 +304,7 @@ app.post('/api/admin/upload', verifyAdmin, uploadFields, async (req, res) => {
     const filePath = bookFile ? bookFile.path : null;
     const coverUrl = coverFile ? coverFile.path : null;
 
-    if (!filePath) return res.status(400).json({ message: 'Nessun file EPUB caricato' });
+    if (!filePath) return res.status(400).json({ message: 'Nessun file EPUB o PDF caricato' });
 
     try {
         const [result] = await db.query(
