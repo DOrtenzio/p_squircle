@@ -440,7 +440,7 @@ main, .container {
     padding: 2rem;
     box-shadow: 0 40px 120px rgba(0,0,0,0.18);
     position: relative;
-    max-height: min(88vh, 760px);
+    max-height: min(88vh, 900px);
     overflow: hidden;
 }
 

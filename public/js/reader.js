@@ -2,6 +2,11 @@ const urlParams = new URLSearchParams(window.location.search);
 const bookId = urlParams.get('id');
 let currentChallenge = null;
 
+// Redirect immediately if no book ID provided
+if (!bookId) {
+    window.location.href = 'index.html';
+}
+
 // Elementi UI Generali
 const elements = {
     // Gatekeeper
@@ -30,7 +35,6 @@ const elements = {
     commentInput: document.getElementById('commentInput'),
     postCommentBtn: document.getElementById('postCommentBtn'),
     commentList: document.getElementById('commentList'),
-    platformLog: document.getElementById('platformLog'),
     refreshChallengeBtn: document.getElementById('refreshChallengeBtn')
 };
 
@@ -45,14 +49,6 @@ function setStatus(text, type = 'neutral') {
         elements.status.textContent = text;
         elements.status.className = `status-pill status-pill--${type}`;
     }
-}
-
-function appendLog(message, type = 'info') {
-    if(!elements.platformLog) return;
-    const entry = document.createElement('div');
-    entry.className = `log-entry log-entry--${type}`;
-    entry.innerHTML = `<span>${message}</span>`;
-    elements.platformLog.prepend(entry);
 }
 
 function setCommentControls(enabled) {
@@ -108,9 +104,7 @@ async function verifyGateEntry() {
     }
 
     if (isCorrect) {
-        elements.botGate.classList.add('hidden');
-        elements.readerContent.classList.remove('hidden');
-        initializeReader(); 
+        showReader();
     } else {
         showGateError(true);
         setTimeout(() => {
@@ -119,6 +113,13 @@ async function verifyGateEntry() {
         }, 1500);
     }
 }
+
+function showReader() {
+    elements.botGate.classList.add('hidden');
+    elements.readerContent.classList.remove('hidden');
+    initializeReader();
+}
+
 
 function showGateError(show) {
     if (show) {
@@ -130,13 +131,14 @@ function showGateError(show) {
     }
 }
 
-// --- LOGICA READER STANDARD ---
 
 async function fetchBook() {
+    const loadingEl = document.getElementById('readerLoading');
+    const contentEl = document.getElementById('readerLoadedContent');
+
     try {
         const res = await fetch(`/api/books/${bookId}`);
         if (!res.ok) throw new Error('Libro non trovato');
-        
         const book = await res.json();
         const fileUrl = getFileUrl(book.file_path || '');
 
@@ -150,8 +152,8 @@ async function fetchBook() {
         elements.downloadOriginalLink.textContent = 'Scarica file originale';
         elements.downloadPdfBtn.href = `/api/books/${book.id}/download?format=pdf`;
         elements.downloadEpubBtn.href = `/api/books/${book.id}/download?format=epub`;
-        elements.downloadPdfBtn.textContent = isPdf ? 'Scarica PDF originale' : 'Converti EPUB in PDF';
-        elements.downloadEpubBtn.textContent = isEpub ? 'Scarica EPUB originale' : 'Converti PDF in EPUB';
+        elements.downloadPdfBtn.textContent = isPdf ? 'Scarica PDF originale' : 'Scarica PDF';
+        elements.downloadEpubBtn.textContent = isEpub ? 'Scarica EPUB originale' : 'Scarica EPUB';
 
         if (isPdf) {
             elements.pdfViewer.src = `${fileUrl}#toolbar=0&navpanes=0`;
@@ -162,13 +164,15 @@ async function fetchBook() {
             elements.viewerFallback.classList.remove('hidden');
         }
 
-        setStatus('Libro pronto', 'success');
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (contentEl) contentEl.classList.remove('hidden');
+
+        setStatus('Pronto a Leggere', 'success');
         elements.statusNote.textContent = 'Contenuto caricato con successo.';
-        appendLog('Libro caricato correttamente.', 'success');
     } catch (error) {
+        if (loadingEl) loadingEl.classList.add('hidden');
         setStatus('Errore caricamento', 'danger');
         elements.description.textContent = 'Impossibile caricare il libro al momento.';
-        appendLog(`Errore caricamento libro: ${error.message}`, 'danger');
         console.error(error);
     }
 }
@@ -187,10 +191,7 @@ async function loadComments() {
                     <p>${comment.content}</p>
                 </article>
             `).join('');
-
-        appendLog('Commenti aggiornati.', 'info');
     } catch (error) {
-        appendLog(`Impossibile caricare i commenti: ${error.message}`, 'danger');
         console.error(error);
     }
 }
@@ -208,10 +209,8 @@ async function loadCommentChallenge() {
         currentChallenge = await res.json(); 
         elements.challengeBox.textContent = `Verifica: ${currentChallenge.question}`;
         setCommentControls(true);
-        appendLog('Nuova verifica anti-bot generata.', 'success');
     } catch (error) {
         elements.challengeBox.textContent = 'Impossibile ottenere il controllo anti-bot.';
-        appendLog(`Errore generazione verifica: ${error.message}`, 'danger');
         console.error(error);
     }
 }
@@ -255,27 +254,35 @@ async function submitComment() {
 
         elements.commentInput.value = '';
         elements.challengeAnswer.value = '';
-        appendLog('Commento inviato con successo.', 'success');
         setStatus('Commento inviato', 'success');
         await loadComments();
         await loadCommentChallenge();
     } catch (error) {
-        appendLog(`Errore invio commento: ${error.message}`, 'danger');
-        alert(error.message);
         setStatus('Errore invio', 'danger');
         await loadCommentChallenge();
     }
 }
 
+function setupScrollEffects() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.roll-in-element').forEach(el => observer.observe(el));
+}
+
 function initializeReader() {
-    if (!bookId) {
-        window.location.href = 'index.html';
-        return;
-    }
+    // bookId was already validated at the top of the script
     
     elements.postCommentBtn.addEventListener('click', submitComment);
     elements.refreshChallengeBtn.addEventListener('click', loadCommentChallenge);
 
+    setupScrollEffects();
     fetchBook();
     loadComments();
     loadCommentChallenge();

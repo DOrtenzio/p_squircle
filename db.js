@@ -48,6 +48,7 @@ async function initDB() {
             )
         `);
 
+        /*
         // Add test books if table is empty
         const [books] = await connection.query('SELECT COUNT(*) as count FROM books');
         if(books[0].count === 0) {
@@ -72,6 +73,8 @@ async function initDB() {
             }
             console.log("Test books added to database");
         }
+
+        */
 
         console.log("Database initialized");
     } catch (err) {

@@ -38,8 +38,13 @@
 
         <!-- Contenuto Principale (Nascosto fino a verifica avvenuta) -->
         <div id="readerContent" class="hidden">
+            <div id="readerLoading" class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <span class="ml-3 text-sm text-gray-600">Caricamento del libro...</span>
+            </div>
             
-            <div class="reader-header-panel roll-in-element">
+            <div id="readerLoadedContent" class="hidden">
+                <div class="reader-header-panel roll-in-element">
                 <div class="reader-meta-info">
                     <span class="eyebrow">Reading in progress</span>
                     <h1 id="bookTitle">Book Title</h1>
@@ -52,7 +57,6 @@
             </div>
 
             <div class="reader-grid">
-                <!-- Colonna Sinistra: Visualizzatore -->
                 <section class="reader-panel roll-in-element">
                     <div class="reader-viewer">
                         <iframe id="pdfViewer" class="book-frame" hidden></iframe>
@@ -76,7 +80,7 @@
                 <aside class="sidebar-panel roll-in-element">
                     <div class="panel-title-row">
                         <h2>Anonymous Discussion</h2>
-                        <span class="badge">Live</span>
+                        <span class="status-pill status-pill--success">Online</span>
                     </div>
 
                     <!-- Sezione Challenge per Commenti -->
@@ -95,19 +99,10 @@
                     <div id="commentList" class="comment-list">
                         <!-- Commenti caricati via JS -->
                     </div>
-
-                    <div class="platform-log-panel">
-                        <div class="panel-title-row">
-                            <h3>Platform Log</h3>
-                        </div>
-                        <div id="platformLog" class="platform-log">
-                            <!-- Log entries -->
-                        </div>
-                    </div>
                 </aside>
             </div>
+            </div>
         </div>
-
     </main>
 
     <footer class="site-footer">
