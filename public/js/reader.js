@@ -24,10 +24,14 @@ const elements = {
     author: document.getElementById('bookAuthor'),
     description: document.getElementById('bookDescription'),
     pdfViewer: document.getElementById('pdfViewer'),
+    epubViewer: document.getElementById('epubViewer'),
     viewerFallback: document.getElementById('viewerFallback'),
     downloadOriginalLink: document.getElementById('downloadOriginalLink'),
     downloadPdfBtn: document.getElementById('downloadPdfBtn'),
     downloadEpubBtn: document.getElementById('downloadEpubBtn'),
+    toggleCommentsBtn: document.getElementById('toggleCommentsBtn'),
+    sidebarPanel: document.getElementById('sidebarPanel'),
+    sidebarOverlay: document.getElementById('sidebarOverlay'),
     
     // Comments
     challengeBox: document.getElementById('challengeBox'),
@@ -120,6 +124,48 @@ function showReader() {
     initializeReader();
 }
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function setReaderView({ usePdf = false, pdfUrl = '', useEpub = false, epubHtml = '', fallbackText = '' } = {}) {
+    elements.pdfViewer.hidden = !usePdf;
+    elements.epubViewer.hidden = !useEpub;
+    elements.viewerFallback.classList.toggle('hidden', fallbackText === '');
+
+    if (usePdf && pdfUrl) {
+        elements.pdfViewer.src = pdfUrl;
+        elements.epubViewer.innerHTML = '';
+    }
+
+    if (useEpub) {
+        elements.epubViewer.innerHTML = epubHtml;
+    }
+
+    if (fallbackText) {
+        elements.viewerFallback.classList.remove('hidden');
+        const fallbackParagraph = elements.viewerFallback.querySelector('p');
+        if (fallbackParagraph) fallbackParagraph.textContent = fallbackText;
+    }
+}
+
+function setSidebarOpen(open) {
+    if (!elements.sidebarPanel || !elements.sidebarOverlay) return;
+    elements.sidebarPanel.classList.toggle('collapsed', !open);
+    elements.sidebarPanel.classList.toggle('open', open);
+    elements.sidebarOverlay.classList.toggle('visible', open);
+}
+
+function toggleCommentsPanel() {
+    if (!elements.sidebarPanel) return;
+    const isOpen = !elements.sidebarPanel.classList.contains('collapsed');
+    setSidebarOpen(!isOpen);
+}
 
 function showGateError(show) {
     if (show) {
@@ -156,12 +202,11 @@ async function fetchBook() {
         elements.downloadEpubBtn.textContent = isEpub ? 'Download original EPUB' : 'Download EPUB';
 
         if (isPdf) {
-            elements.pdfViewer.src = `${fileUrl}#toolbar=0&navpanes=0`;
-            elements.pdfViewer.hidden = false;
-            elements.viewerFallback.classList.add('hidden');
+            setReaderView({ usePdf: true, pdfUrl: `${fileUrl}#toolbar=0&navpanes=0` });
+        } else if (isEpub) {
+            await loadEpubPreview(book.id);
         } else {
-            elements.pdfViewer.hidden = true;
-            elements.viewerFallback.classList.remove('hidden');
+            setReaderView({ fallbackText: 'This format requires a local download for reading.' });
         }
 
         if (loadingEl) loadingEl.classList.add('hidden');
@@ -188,7 +233,7 @@ async function loadComments() {
             : comments.map(comment => `
                 <article class="comment-card">
                     <div class="comment-card__meta">Anonymous • ${formatDate(comment.created_at)}</div>
-                    <p>${comment.content}</p>
+                    <p>${escapeHtml(comment.content)}</p>
                 </article>
             `).join('');
     } catch (error) {
@@ -212,6 +257,32 @@ async function loadCommentChallenge() {
     } catch (error) {
         elements.challengeBox.textContent = 'Unable to obtain anti-bot verification.';
         console.error(error);
+    }
+}
+
+async function loadEpubPreview(bookId) {
+    try {
+        setStatus('Loading EPUB preview...', 'neutral');
+        const res = await fetch(`/api/books/${bookId}/preview`);
+        if (!res.ok) throw new Error('Preview unavailable');
+
+        const data = await res.json();
+        if (!data || data.format !== 'epub' || !Array.isArray(data.chapters)) {
+            throw new Error('Invalid EPUB preview data');
+        }
+
+        const epubHtml = data.chapters.map(chapter => {
+            const title = escapeHtml(chapter.title || 'Chapter');
+            const text = escapeHtml(chapter.text || '').replace(/\n{2,}/g, '</p><p>').replace(/\n/g, ' ');
+            return `<section class="epub-chapter"><h3>${title}</h3><p>${text}</p></section>`;
+        }).join('');
+
+        setReaderView({ useEpub: true, epubHtml });
+        setStatus('EPUB ready to read', 'success');
+    } catch (error) {
+        console.error(error);
+        setReaderView({ fallbackText: 'Anteprima EPUB non disponibile. Scarica l’EPUB per leggerlo offline.' });
+        setStatus('Unable to preview EPUB', 'danger');
     }
 }
 
@@ -281,8 +352,11 @@ function initializeReader() {
     
     elements.postCommentBtn.addEventListener('click', submitComment);
     elements.refreshChallengeBtn.addEventListener('click', loadCommentChallenge);
+    elements.toggleCommentsBtn.addEventListener('click', toggleCommentsPanel);
+    elements.sidebarOverlay.addEventListener('click', () => setSidebarOpen(false));
 
     setupScrollEffects();
+    setSidebarOpen(false);
     fetchBook();
     loadComments();
     loadCommentChallenge();

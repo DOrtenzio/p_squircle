@@ -149,6 +149,35 @@ app.get('/api/books/:id', async (req, res) => {
     }
 });
 
+app.get('/api/books/:id/preview', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM books WHERE id = ?', [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ message: 'Book not found' });
+
+        const book = rows[0];
+        const sourcePath = book.file_path;
+        if (!sourcePath) return res.status(404).json({ message: 'File non trovato.' });
+
+        const extension = path.extname(sourcePath).toLowerCase();
+        const resolvedPath = path.resolve(sourcePath);
+
+        if (extension === '.epub') {
+            const chapters = await parseEpubContents(resolvedPath);
+            return res.json({ format: 'epub', chapters });
+        }
+
+        if (extension === '.pdf') {
+            const data = await PDFParser(await fs.promises.readFile(resolvedPath));
+            const text = (data.text || '').trim().slice(0, 24000);
+            return res.json({ format: 'pdf', text });
+        }
+
+        return res.status(400).json({ message: 'Preview non disponibile per questo formato.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get('/api/books/:id/download', async (req, res) => {
     const format = (req.query.format || 'original').toLowerCase();
     try {
