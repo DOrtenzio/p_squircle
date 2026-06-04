@@ -138,6 +138,11 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK');
+});
+
+
 // Get Single Book
 app.get('/api/books/:id', async (req, res) => {
     try {
