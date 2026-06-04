@@ -4,125 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRCLE. Reader</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reader.css">
 </head>
 <body>
 
-    <div class="page-toolbar visible">
-        <div>
-            <a href="index.html" class="back-link open" aria-label="Back to Home">Back to Home</a>
-            <button id="toggleCommentsBtn" class="btn btn-outline" type="button">Comments</button>
-        </div>
-        <div class="toolbar-brand">SQUIRCLE.</div>
-    </div>
-
-    <main class="container">
-        
-        <!-- Anti-Bot Gatekeeper -->
-        <div id="botGate" class="gatekeeper-overlay">
-            <div class="gatekeeper-card">
-                <div class="squircle-icon"></div>
-                <h2>Security Check</h2>
-                <p class="section-note">To protect the content from automated access, please solve this simple operation.</p>
-
-                <div class="challenge-display" id="gateChallengeText">Loading verification...</div>
-
-                <div class="gate-input-group">
-                    <input type="number" id="gateAnswer" class="input-squircle" placeholder="Your answer" autocomplete="off">
-                    <button id="gateSubmitBtn" class="btn btn-primary">Access →</button>
-                </div>
-                <div id="gateError" class="status-pill status-pill--danger hidden">Incorrect answer. Try again.</div>
-            </div>
-        </div>
-
-        <!-- Reader Content -->
-        <div id="readerContent" class="hidden">
-
-            <!-- Loading State -->
-            <div id="readerLoading" style="display:flex; align-items:center; justify-content:center; padding: 80px 0; gap: 8px;">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
+    <!-- Gatekeeper Overlay -->
+    <div id="botGate" class="gatekeeper-overlay">
+        <div class="gatekeeper-card">
+            <div class="squircle-icon"></div>
+            <h2>Security Check</h2>
+            <p class="section-note">To protect the content from automated access, please solve this simple operation.</p>
+            
+            <div id="gateChallengeText" class="challenge-display">Loading verification...</div>
+            
+            <div class="gate-input-group">
+                <input type="number" id="gateAnswer" class="input-squircle" placeholder="Your answer" autocomplete="off">
+                <button id="gateSubmitBtn" class="btn btn-primary">Access →</button>
             </div>
             
-            <div id="readerLoadedContent" class="hidden">
+            <div id="gateError" class="status-pill status-pill--danger hidden">Incorrect answer. Try again.</div>
+        </div>
+    </div>
 
-                <!-- Book Header -->
-                <div class="reader-header-panel roll-in-element">
-                    <div class="reader-meta-info">
-                        <span class="eyebrow">Reading in progress</span>
-                        <h1 id="bookTitle">Book Title</h1>
-                        <p id="bookAuthor" class="book-author">Author</p>
+    <!-- Main Reader Content -->
+    <div id="readerContent" class="hidden">
+        <!-- Navigation -->
+        <nav class="reader-nav">
+            <a href="index.html" class="back-link">← Back to Home</a>
+            <div class="toolbar-brand">SQUIRCLE.</div>
+        </nav>
+
+        <main class="container">
+            <!-- Book Header -->
+            <header class="reader-header-panel roll-in-element">
+                <div class="reader-meta-info">
+                    <span class="eyebrow">Reading in progress</span>
+                    <h1 id="bookTitle">Book Title</h1>
+                    <p id="bookAuthor" class="book-author">Author</p>
+                    <p id="bookDescription" class="section-note" style="margin-top: 12px;">Description loading...</p>
+                </div>
+                <div class="reader-status-area">
+                    <span id="readerStatus" class="status-pill status-pill--neutral">Waiting...</span>
+                    <span id="readerUpdated" class="section-note" style="font-size: 11px; text-align: right;">Preparing the reader…</span>
+                    <button id="toggleCommentsBtn" class="btn btn-outline" style="margin-top: 12px;">Comments</button>
+                </div>
+            </header>
+
+            <!-- Main Grid -->
+            <div class="reader-grid">
+                <!-- Left Panel: Viewer -->
+                <div class="reader-panel roll-in-element">
+                    <div id="readerLoading" class="hidden" style="display: flex; align-items: center; justify-content: center; padding: 80px 0; gap: 12px;">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
                     </div>
-                    <div class="reader-status-area">
-                        <div id="readerStatus" class="status-pill status-pill--neutral">Waiting...</div>
-                        <div id="readerUpdated" class="section-note">Preparing the reader…</div>
+                    
+                    <div id="readerLoadedContent">
+                        <iframe id="pdfViewer" class="book-frame hidden" src=""></iframe>
+                        <div id="epubViewer" class="epub-viewer hidden"></div>
+                        <div id="viewerFallback" class="viewer-fallback hidden">
+                            <div class="viewer-fallback-title">Preview not available</div>
+                            <p>This format requires a local download for reading.</p>
+                        </div>
+                    </div>
+
+                    <div class="reader-actions-bar">
+                        <p class="section-note">Download options:</p>
+                        <div class="reader-download-buttons">
+                            <a id="downloadOriginalLink" href="#" class="btn btn-outline">↓ Original file</a>
+                            <a id="downloadPdfBtn" href="#" class="btn btn-outline">↓ PDF</a>
+                            <a id="downloadEpubBtn" href="#" class="btn btn-outline">↓ EPUB</a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Two-column grid -->
-                <div class="reader-grid">
+                <!-- Right Panel: Sidebar (Comments) -->
+                <aside id="sidebarPanel" class="sidebar-panel collapsed">
+                    <div class="panel-title-row">
+                        <h2>Anonymous Discussion</h2>
+                        <button id="toggleCommentsBtnClose" class="btn-text" style="font-size: 1.5rem; padding: 0; line-height: 1; border: none; background: none; cursor: pointer;">&times;</button>
+                    </div>
+                    
+                    <div class="interaction-zone">
+                        <div id="challengeBox" class="challenge-box">Anti-bot verification for commenting...</div>
+                        <input type="number" id="challengeAnswer" class="input-squircle challenge-input" placeholder="Security answer" disabled>
+                        <textarea id="commentInput" class="input-squircle comment-input" placeholder="Write your comment here..." disabled></textarea>
+                        <div class="action-row">
+                            <button id="refreshChallengeBtn" class="btn-text">↻ Refresh</button>
+                            <button id="postCommentBtn" class="btn btn-primary" disabled>Submit</button>
+                        </div>
+                    </div>
 
-                    <!-- Left: Viewer + Downloads -->
-                    <section class="reader-panel roll-in-element">
-                        <div class="reader-viewer">
-                            <iframe id="pdfViewer" class="book-frame" hidden></iframe>
-                            <div id="epubViewer" class="book-frame epub-viewer hidden"></div>
-                            <div id="viewerFallback" class="viewer-fallback hidden">
-                                <div class="viewer-fallback-title">Preview not available</div>
-                                <p>This format requires a local download for reading.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="reader-actions-bar">
-                            <p id="bookDescription" class="section-note">Description loading...</p>
-                            <div class="reader-download-buttons">
-                                <a id="downloadOriginalLink" href="#" class="btn btn-outline" target="_blank">↓ Original file</a>
-                                <a id="downloadPdfBtn"      href="#" class="btn btn-outline" target="_blank">↓ PDF</a>
-                                <a id="downloadEpubBtn"     href="#" class="btn btn-outline" target="_blank">↓ EPUB</a>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Right: Comments -->
-                    <aside id="sidebarPanel" class="sidebar-panel collapsed roll-in-element">
-                        <div class="panel-title-row">
-                            <h2>Anonymous Discussion</h2>
-                            <span class="status-pill status-pill--success">Online</span>
-                        </div>
-
-                        <div class="interaction-zone">
-                            <div id="challengeBox" class="challenge-box">Anti-bot verification for commenting...</div>
-                            <input type="text" id="challengeAnswer" class="challenge-input input-squircle" placeholder="Answer verification..." disabled>
-                            <textarea id="commentInput" class="comment-input input-squircle" placeholder="Write an anonymous comment..." disabled></textarea>
-                            <div class="action-row">
-                                <button id="refreshChallengeBtn" class="btn-text" type="button">↻ Refresh</button>
-                                <button id="postCommentBtn" class="btn btn-primary" disabled>Submit</button>
-                            </div>
-                        </div>
-
-                        <div id="commentList" class="comment-list">
-                            <!-- Comments loaded via JS -->
-                        </div>
-                    </aside>
-                    <div id="sidebarOverlay" class="sidebar-overlay"></div>
-                </div>
+                    <div id="commentList" class="comment-list">
+                        <!-- Comments will be injected here -->
+                    </div>
+                </aside>
             </div>
-        </div>
-    </main>
+        </main>
 
-     <footer class="site-footer">
-        <div class="container">
-            <div class="brand-footer">SQUIRCLE.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
-        </div>
-    </footer>
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
+         <footer class="site-footer">
+            <div class="container">
+                <div class="brand-footer">SQUIRCLE.</div>
+                <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <script>
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        </script>
+    </div>
 
     <script src="js/reader.js"></script>
 </body>

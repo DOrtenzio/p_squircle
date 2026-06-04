@@ -542,7 +542,7 @@ main, .container {
     transform: translateY(-16px) scale(0.98);
     transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
     pointer-events: none;
-}}
+}
 
 .page-toolbar.visible {
     opacity: 1;

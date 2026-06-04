@@ -545,6 +545,131 @@ main.container {
 .loading-dot:nth-child(2) { animation-delay: 0.15s; }
 .loading-dot:nth-child(3) { animation-delay: 0.3s; }
 
+/* ─── SIDEBAR & OVERLAY (Aggiornato per fluidità e allineamento) ─── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 180;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 300ms ease, visibility 300ms ease;
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.sidebar-panel {
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: min(92vw, 400px);
+    z-index: 190;
+    transform: translateX(100%);
+    box-shadow: -12px 0 40px rgba(0,0,0,0.1);
+    background: var(--panel-bg);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+}
+
+.sidebar-panel.collapsed {
+    transform: translateX(100%);
+}
+
+.sidebar-panel.open {
+    transform: translateX(0);
+}
+
+/* Assicura che la lista commenti occupi tutto lo spazio disponibile */
+.comment-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 12px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+}
+
+/* Miglioramento visivo dei card commento */
+.comment-card {
+    background: var(--gate-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    transition: var(--transition);
+}
+
+.comment-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm);
+}
+
+.comment-card__meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.comment-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0;
+    word-wrap: break-word;
+}
+
+/* Input area allineata */
+.interaction-zone {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.challenge-input, .comment-input {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--panel-bg);
+    outline: none;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.challenge-input:focus, .comment-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+
+.comment-input {
+    min-height: 80px;
+    max-height: 140px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.challenge-input:disabled, .comment-input:disabled, .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @keyframes dotBounce {
     0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
     40%            { transform: translateY(-8px); opacity: 1; }
