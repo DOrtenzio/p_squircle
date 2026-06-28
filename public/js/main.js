@@ -430,8 +430,8 @@ function setupLanguageSelector() {
             e.stopPropagation();
             const lang = option.dataset.lang;
             if (lang && langMap[lang]) {
-                // Cambia la lingua
-                window.location.href = `/docs/${lang}/index.html`;
+                window.location.href = `${window.location.origin}/public/docs/${lang}/index.html`;
+
             }
         });
     });
