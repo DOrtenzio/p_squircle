@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 3 – MONEOO.</title>
+    <title>Chapitre 3 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#featureSection">Pourquoi</a>
+            <a href="index.html#learningPath">Parcours</a>
             <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+               <button class="lang-toggle" id="langToggle" aria-label="Choisir la langue">
+                    <span class="lang-current" id="langCurrent">🇫🇷 Français</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -370,45 +370,45 @@
         <aside class="chapter-sidebar">
             <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prérequis</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symétrique</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymétrique</a></li>
                 <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Treillis</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sécurité</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implémentations</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
-        <h1>03 – Shor's Algorithm</h1>
-        <p class="subtitle">Why RSA and ECC are vulnerable to quantum computers</p>
+        <h1>03 – L'Algorithme de Shor</h1>
+        <p class="subtitle">Pourquoi RSA et ECC sont vulnérables aux ordinateurs quantiques</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-31">3.1 Quantum computers: the essential basics</a></li>
-                <li><a href="#id-32">3.2 Shor's algorithm</a></li>
-                <li><a href="#id-33">3.3 Impact on RSA, DH, ECC</a></li>
-                <li><a href="#id-34">3.4 Grover: the threat to symmetric cryptography</a></li>
-                <li><a href="#id-35">3.5 State of the art of quantum computers (2024–2025)</a></li>
+                <li><a href="#id-31">3.1 Ordinateurs quantiques: les bases essentielles</a></li>
+                <li><a href="#id-32">3.2 L'algorithme de Shor</a></li>
+                <li><a href="#id-33">3.3 Impact sur RSA, DH, ECC</a></li>
+                <li><a href="#id-34">3.4 Grover: la menace pour la cryptographie symétrique</a></li>
+                <li><a href="#id-35">3.5 État de l'art des ordinateurs quantiques (2024–2025)</a></li>
                 <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
             </ul>
         </div>
 
         <!-- Section 3.1 -->
         <section id="id-31">
-            <h2>3.1 Quantum computers: the essential basics</h2>
+            <h2>3.1 Ordinateurs quantiques: les bases essentielles</h2>
 
-            <h3>Qubit vs. classical bits</h3>
+            <h3>Qubit vs. bits classiques</h3>
 
-            <p>A classical bit is either 0 or 1. A <strong>qubit</strong> can be in <strong>superposition</strong>: a linear combination of <span class="math">\(|0\rangle\)</span> and <span class="math">\(|1\rangle\)</span>.</p>
+            <p>Un bit classique est 0 ou 1. Un <strong>qubit</strong> peut être en <strong>superposition</strong>: une combinaison linéaire de <span class="math">\(|0\rangle\)</span> et <span class="math">\(|1\rangle\)</span>.</p>
 
             <div class="math-block">
                 \[
@@ -416,163 +416,163 @@
                 \]
             </div>
 
-            <p>Before measurement, the qubit is "both 0 and 1". After measurement, it collapses to 0 (with probability <span class="math">\(|\alpha|^2\)</span>) or 1 (with probability <span class="math">\(|\beta|^2\)</span>).</p>
+            <p>Avant la mesure, le qubit est "à la fois 0 et 1". Après la mesure, il s'effondre en 0 (avec probabilité <span class="math">\(|\alpha|^2\)</span>) ou 1 (avec probabilité <span class="math">\(|\beta|^2\)</span>).</p>
 
             <blockquote>
-                <p><strong>Analogy:</strong> imagine flipping a coin that, while in the air, represents both heads and tails simultaneously. Only when you look at it does it become one of the two.</p>
+                <p><strong>Analogie:</strong> imaginez lancer une pièce qui, en l'air, représente simultanément pile et face. Ce n'est que lorsque vous la regardez qu'elle devient l'un des deux.</p>
             </blockquote>
 
-            <h3>Entanglement and interference</h3>
+            <h3>Intrication et interférence</h3>
 
             <ul>
-                <li><strong>Entanglement:</strong> two qubits can be correlated such that measuring one instantly determines the other.</li>
-                <li><strong>Quantum interference:</strong> the "wrong" computation paths cancel constructively (like waves that cancel out), while the "right" paths are amplified.</li>
+                <li><strong>Intrication:</strong> deux qubits peuvent être corrélés de telle sorte que la mesure de l'un détermine instantanément l'autre.</li>
+                <li><strong>Interférence quantique:</strong> les chemins de calcul "erronés" s'annulent (comme des ondes qui s'annulent), tandis que les chemins "corrects" sont amplifiés.</li>
             </ul>
 
-            <p>Quantum algorithms leverage interference to amplify correct answers and suppress wrong ones.</p>
+            <p>Les algorithmes quantiques exploitent l'interférence pour amplifier les bonnes réponses et supprimer les mauvaises.</p>
 
-            <h3>Quantum parallelism</h3>
+            <h3>Parallélisme quantique</h3>
 
-            <p>With <span class="math">\(n\)</span> qubits, one can represent a superposition of <span class="math">\(2^n\)</span> states simultaneously. But measurement returns only one state → the trick is to build algorithms where interference leaves only the right answer to survive.</p>
+            <p>Avec <span class="math">\(n\)</span> qubits, on peut représenter une superposition de <span class="math">\(2^n\)</span> états simultanément. Mais la mesure ne renvoie qu'un seul état → l'astuce est de construire des algorithmes où les interférences ne laissent survivre que la bonne réponse.</p>
         </section>
 
-        <!-- Section Algorithm Scheme -->
+        <!-- Section Schéma Algorithme -->
         <section id="id-32">
-            <h2>3.2 Shor's algorithm</h2>
+            <h2>3.2 L'algorithme de Shor</h2>
             
-            <h3>Algorithm scheme for factoring \(n\)</h3>
+            <h3>Schéma de l'algorithme pour factoriser \(n\)</h3>
             
             <div class="algorithm-steps">
                 <ol>
-                    <li><strong>Input:</strong> composite integer <span class="math">\(n\)</span></li>
-                    <li><strong>Initialization:</strong> Choose random <span class="math">\(a\)</span> such that <span class="math">\(1 < a < n\)</span> and <span class="math">\(\gcd(a,n)=1\)</span></li>
-                    <li><strong>Quantum Preparation:</strong> Prepare a register in uniform superposition from <span class="math">\(0\)</span> to <span class="math">\(2^k-1\)</span></li>
-                    <li><strong>Oracle:</strong> Compute <span class="math">\(f(x) = a^x \bmod n\)</span> in parallel (superposition)</li>
-                    <li><strong>QFT:</strong> Apply the Quantum Fourier Transform to the first register</li>
-                    <li><strong>Measurement:</strong> Measure the register to obtain a value correlated with the period <span class="math">\(r\)</span></li>
-                    <li><strong>Classical:</strong> Use the continued fractions algorithm to estimate <span class="math">\(r\)</span></li>
-                    <li><strong>Verification:</strong> If <span class="math">\(r\)</span> is even and <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                    <li><strong>Entrée:</strong> entier composé <span class="math">\(n\)</span></li>
+                    <li><strong>Initialisation:</strong> Choisir <span class="math">\(a\)</span> aléatoire tel que <span class="math">\(1 < a < n\)</span> et <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>Préparation Quantique:</strong> Préparer un registre en superposition uniforme de <span class="math">\(0\)</span> à <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>Oracle:</strong> Calculer <span class="math">\(f(x) = a^x \bmod n\)</span> en parallèle (superposition)</li>
+                    <li><strong>QFT:</strong> Appliquer la Quantum Fourier Transform au premier registre</li>
+                    <li><strong>Mesure:</strong> Mesurer le registre pour obtenir une valeur corrélée à la période <span class="math">\(r\)</span></li>
+                    <li><strong>Classique:</strong> Utiliser l'algorithme des fractions continues pour estimer <span class="math">\(r\)</span></li>
+                    <li><strong>Vérification:</strong> Si <span class="math">\(r\)</span> est pair et <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
                         <ul>
-                            <li>Compute <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> and <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
-                            <li>These are non-trivial factors of <span class="math">\(n\)</span></li>
+                            <li>Calculer <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> et <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>Ce sont des facteurs non triviaux de <span class="math">\(n\)</span></li>
                         </ul>
                     </li>
-                    <li><strong>Loop:</strong> If it fails, go back to step 2 with a new <span class="math">\(a\)</span></li>
+                    <li><strong>Boucle:</strong> En cas d'échec, retourner à l'étape 2 avec un nouveau <span class="math">\(a\)</span></li>
                 </ol>
             </div>
 
             <div class="note">
-                <p><strong>Note:</strong> The quantum core (steps 3-5) finds the period <span class="math">\(r\)</span> of the function <span class="math">\(f(x)\)</span> in polynomial time, leveraging the constructive/destructive interference of the QFT.</p>
+                <p><strong>Note:</strong> Le cœur quantique (étapes 3-5) trouve la période <span class="math">\(r\)</span> de la fonction <span class="math">\(f(x)\)</span> en temps polynomial, en exploitant l'interférence constructive/destructive de la QFT.</p>
             </div>
         </section>
 
         <!-- Section 3.3 -->
         <section id="id-33">
-            <h2>3.3 Impact on RSA, DH, ECC</h2>
+            <h2>3.3 Impact sur RSA, DH, ECC</h2>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Security based on</th>
-                        <th>Vulnerable to Shor?</th>
+                        <th>Schéma</th>
+                        <th>Base la sécurité sur</th>
+                        <th>Vulnérable à Shor?</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>RSA</td>
-                        <td>Factorization</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>Factorisation</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Oui</span></td>
                     </tr>
                     <tr>
                         <td>DH (mod <span class="math">\(p\)</span>)</td>
-                        <td>Discrete logarithm in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>Logarithme discret dans <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Oui</span></td>
                     </tr>
                     <tr>
                         <td>ECDH / ECDSA</td>
-                        <td>ECDLP (discrete logarithm on EC)</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>ECDLP (logarithme discret sur EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Oui</span></td>
                     </tr>
                     <tr>
                         <td><strong>ML-KEM (MLWE)</strong></td>
-                        <td>Lattice problems</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">No known efficient algorithm</span></td>
+                        <td>Problèmes sur treillis</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">Aucun algorithme efficace connu</span></td>
                     </tr>
                     <tr>
                         <td><strong>AES-256</strong></td>
-                        <td>Pseudorandom permutations</td>
-                        <td>Only Grover (see below)</td>
+                        <td>Permutations pseudo-aléatoires</td>
+                        <td>Seulement Grover (voir ci-dessous)</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>Shor solves any structured problem like finding periodicity in an abelian group. Factorization and discrete logarithm (including on EC) have exactly this structure. Lattice problems do not.</p>
+            <p>Shor résout tout problème structuré comme la recherche de périodicité dans un groupe abélien. La factorisation et le logarithme discret (y compris sur EC) ont exactement cette structure. Les problèmes sur treillis non.</p>
         </section>
 
         <!-- Section 3.4 -->
         <section id="id-34">
-            <h2>3.4 Grover: the threat to symmetric cryptography</h2>
+            <h2>3.4 Grover: la menace pour la cryptographie symétrique</h2>
 
-            <p>Grover's algorithm (1996) offers a <strong>quadratic</strong> speedup in unstructured search:</p>
+            <p>L'algorithme de Grover (1996) offre une accélération <strong>quadratique</strong> dans la recherche non structurée:</p>
             <ul>
-                <li>Finding a key among <span class="math">\(2^k\)</span> possibilities classically: <span class="math">\(O(2^k)\)</span> attempts</li>
-                <li>With Grover: <span class="math">\(O(2^{k/2})\)</span> attempts</li>
+                <li>Trouver une clé parmi <span class="math">\(2^k\)</span> possibilités classiquement: <span class="math">\(O(2^k)\)</span> tentatives</li>
+                <li>Avec Grover: <span class="math">\(O(2^{k/2})\)</span> tentatives</li>
             </ul>
 
-            <p><strong>Practical consequences:</strong></p>
+            <p><strong>Conséquences pratiques:</strong></p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Key</th>
-                        <th>Classical security</th>
-                        <th>Post-quantum security (Grover)</th>
+                        <th>Clé</th>
+                        <th>Sécurité classique</th>
+                        <th>Sécurité post-quantique (Grover)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>AES-128</td>
                         <td>128 bits</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insufficient</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insuffisant</span></td>
                     </tr>
                     <tr>
                         <td>AES-256</td>
                         <td>256 bits</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → still secure</span></td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → encore sécurisé</span></td>
                     </tr>
                     <tr>
                         <td>SHA-256</td>
                         <td>256 bits</td>
-                        <td>128 bits → secure</td>
+                        <td>128 bits → sécurisé</td>
                     </tr>
                     <tr>
                         <td>SHA3-256</td>
                         <td>256 bits</td>
-                        <td>128 bits → secure</td>
+                        <td>128 bits → sécurisé</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>This is why NIST recommends AES-256 (not AES-128) in the post-quantum context.</p>
+            <p>C'est pourquoi le NIST recommande AES-256 (et non AES-128) dans le contexte post-quantique.</p>
         </section>
 
         <!-- Section 3.5 -->
         <section id="id-35">
-            <h2>3.5 State of the art of quantum computers (2024–2025)</h2>
+            <h2>3.5 État de l'art des ordinateurs quantiques (2024–2025)</h2>
 
-            <p>Current quantum computers are <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: they have tens to hundreds of physical qubits but with a high error rate.</p>
+            <p>Les ordinateurs quantiques actuels sont <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: ils ont des dizaines à des centaines de qubits physiques mais avec un taux d'erreur élevé.</p>
 
-            <p>To break RSA-2048 with Shor you need:</p>
+            <p>Pour casser RSA-2048 avec Shor, il faut:</p>
             <ul>
-                <li>~4000 perfect logical qubits</li>
-                <li>or ~4 million physical qubits with quantum error correction</li>
+                <li>~4000 qubits logiques parfaits</li>
+                <li>ou ~4 millions de qubits physiques avec correction d'erreurs quantiques</li>
             </ul>
 
-            <p>The best current systems (Google Willow, IBM Heron, etc.) have ~100-1000 high-fidelity physical qubits, but we are still far from the required scale.</p>
+            <p>Les meilleurs systèmes actuels (Google Willow, IBM Heron, etc.) ont ~100-1000 qubits physiques de haute fidélité, mais nous sommes encore loin de l'échelle nécessaire.</p>
 
             <blockquote>
-                <p><strong>NIST estimate:</strong> cryptographically relevant quantum computers could exist within 10–15 years, with significant uncertainty in both directions.</p>
+                <p><strong>Estimation du NIST:</strong> des ordinateurs quantiques cryptographiquement pertinents pourraient exister d'ici 10–15 ans, avec une incertitude significative dans les deux directions.</p>
             </blockquote>
         </section>
 
@@ -580,26 +580,26 @@
         <section id="id-36">
             <h2>3.6 Harvest Now, Decrypt Later</h2>
 
-            <p>Even if quantum computers do not <em>yet</em> exist in cryptographically relevant form, there is a concrete threat <strong>today</strong>:</p>
+            <p>Même si les ordinateurs quantiques n'existent pas <em>encore</em> sous une forme cryptographiquement pertinente, il existe une menace concrète <strong>aujourd'hui</strong>:</p>
 
             <blockquote>
-                <p>An adversary can <strong>harvest now</strong> encrypted communications (even if they cannot decrypt them), and <strong>decrypt them in the future</strong> when they have a sufficiently powerful quantum computer.</p>
+                <p>Un adversaire peut <strong>collecter maintenant</strong> des communications chiffrées (même s'il ne peut pas les déchiffrer), et les <strong>déchiffrer plus tard</strong> lorsqu'il disposera d'un ordinateur quantique suffisamment puissant.</p>
             </blockquote>
 
-            <p>This attack is known as <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> or <em>store-now-decrypt-later</em>.</p>
+            <p>Cette attaque est connue sous le nom de <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> ou <em>store-now-decrypt-later</em>.</p>
 
-            <h4>Who is at risk:</h4>
+            <h4>Qui est à risque:</h4>
             <ul>
-                <li>Diplomatic and military communications with long secrecy requirements</li>
-                <li>Medical, financial, legal data with decades-long confidentiality requirements</li>
-                <li>Industrial secrets and IP</li>
+                <li>Communications diplomatiques et militaires avec une longue durée de secret</li>
+                <li>Données médicales, financières, légales avec des exigences de confidentialité décennales</li>
+                <li>Secrets industriels et PI</li>
             </ul>
 
-            <h4>When to migrate?</h4>
+            <h4>Quand migrer?</h4>
 
-            <p>If your data must remain secret for more years than it will take for sufficiently powerful quantum computers to exist, you need to migrate <em>now</em>.</p>
+            <p>Si vos données doivent rester secrètes pour plus d'années qu'il n'en faut pour que des ordinateurs quantiques suffisamment puissants existent, vous devez migrer <em>maintenant</em>.</p>
 
-            <p>This is the main reason why NIST standardized ML-KEM (FIPS 203) in 2024, and why organizations like NSA, ENISA, and ANSSI recommend immediate migration for high-criticality systems.</p>
+            <p>C'est la raison principale pour laquelle le NIST a standardisé ML-KEM (FIPS 203) en 2024, et pour laquelle des organisations comme la NSA, l'ENISA et l'ANSSI recommandent une migration immédiate pour les systèmes à haute criticité.</p>
         </section>
 
         <!-- Sources -->
@@ -614,11 +614,11 @@
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Navigation des chapitres -->
         <div class="chapter-nav">
-            <a href="2.html" class="nav-btn">← Previous chapter</a>
+            <a href="2.html" class="nav-btn">← Chapitre précédent</a>
             <span class="nav-label">03 / 10</span>
-            <a href="4.html" class="nav-btn">Next chapter →</a>
+            <a href="4.html" class="nav-btn">Chapitre suivant →</a>
         </div>
     </article>
 </main>
@@ -628,7 +628,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span>Bibliothèque libre pour tous. Tous droits réservés.</p>
         </div>
     </footer>
 

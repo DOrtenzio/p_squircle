@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 10 – MONEOO.</title>
+    <title>Chapitre 10 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#featureSection">Pourquoi</a>
+            <a href="index.html#learningPath">Parcours</a>
             <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+               <button class="lang-toggle" id="langToggle" aria-label="Choisir la langue">
+                    <span class="lang-current" id="langCurrent">🇫🇷 Français</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -370,58 +370,58 @@
         <aside class="chapter-sidebar">
             <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prérequis</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symétrique</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymétrique</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Treillis</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sécurité</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Implémentations</a></li>
             </ul>
         </aside>
 
-        <main class="chapter-content">
+       <main class="chapter-content">
     <article>
-        <h1>10 – Practical Implementations</h1>
-        <p class="subtitle">From theory to practice: libraries, TLS integration and migration</p>
+        <h1>10 – Implémentations Pratiques</h1>
+        <p class="subtitle">De la théorie à la pratique: bibliothèques, intégration TLS et migration</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-101">10.1 liboqs: the reference C library</a></li>
-                <li><a href="#id-102">10.2 Complete example: KEM with ML-KEM-768 in C</a></li>
-                <li><a href="#id-103">10.3 Using the derived key with AES-256-GCM</a></li>
-                <li><a href="#id-104">10.4 Python: liboqs bindings</a></li>
-                <li><a href="#id-105">10.5 Python: kyber-py (educational only)</a></li>
-                <li><a href="#id-106">10.6 Performance benchmarks</a></li>
-                <li><a href="#id-107">10.7 OpenSSL: installing the OQS provider</a></li>
-                <li><a href="#id-108">10.8 ML-KEM key generation with OpenSSL CLI</a></li>
-                <li><a href="#id-109">10.9 TLS 1.3 with ML-KEM-768</a></li>
-                <li><a href="#id-1010">10.10 Hybrid strategy: X25519 + ML-KEM-768</a></li>
-                <li><a href="#id-1011">10.11 Hybrid cipher suites in TLS 1.3</a></li>
-                <li><a href="#id-1012">10.12 Integration in C applications with OpenSSL</a></li>
-                <li><a href="#id-1013">10.13 Migration checklist</a></li>
-                <li><a href="#id-1014">10.14 Scenario: migrating a REST API</a></li>
+                <li><a href="#id-101">10.1 liboqs: la bibliothèque C de référence</a></li>
+                <li><a href="#id-102">10.2 Exemple complet: KEM avec ML-KEM-768 en C</a></li>
+                <li><a href="#id-103">10.3 Utiliser la clé dérivée avec AES-256-GCM</a></li>
+                <li><a href="#id-104">10.4 Python: bindings liboqs</a></li>
+                <li><a href="#id-105">10.5 Python: kyber-py (pédagogique uniquement)</a></li>
+                <li><a href="#id-106">10.6 Benchmarks de performance</a></li>
+                <li><a href="#id-107">10.7 OpenSSL: installation du provider OQS</a></li>
+                <li><a href="#id-108">10.8 Génération de clés ML-KEM avec OpenSSL CLI</a></li>
+                <li><a href="#id-109">10.9 TLS 1.3 avec ML-KEM-768</a></li>
+                <li><a href="#id-1010">10.10 Stratégie hybride: X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 Suites de chiffrement hybrides dans TLS 1.3</a></li>
+                <li><a href="#id-1012">10.12 Intégration dans des applications C avec OpenSSL</a></li>
+                <li><a href="#id-1013">10.13 Checklist de migration</a></li>
+                <li><a href="#id-1014">10.14 Scénario: migration d'une API REST</a></li>
             </ul>
         </div>
 
         <!-- Section 10.1 -->
         <section id="id-101">
-            <h2>10.1 liboqs: the reference C library</h2>
+            <h2>10.1 liboqs: la bibliothèque C de référence</h2>
             
-            <p><strong>liboqs</strong> is the reference C library for post-quantum cryptography, developed by the Open Quantum Safe (OQS) project. It provides optimized and constant-time implementations of ML-KEM and other NIST-standardized PQC algorithms.</p>
+            <p><strong>liboqs</strong> est la bibliothèque C de référence pour la cryptographie post-quantique, développée par le projet Open Quantum Safe (OQS). Elle fournit des implémentations optimisées et en temps constant de ML-KEM et d'autres algorithmes PQC standardisés par le NIST.</p>
 
-            <h3>Installation from source</h3>
+            <h3>Installation depuis les sources</h3>
             <div class="code-block">
-                <pre><code># Dependencies (Ubuntu/Debian)
+                <pre><code># Dépendances (Ubuntu/Debian)
 sudo apt-get install cmake gcc libssl-dev
 
-# Clone and build
+# Clone et build
 git clone https://github.com/open-quantum-safe/liboqs.git
 cd liboqs
 mkdir build && cd build
@@ -433,7 +433,7 @@ sudo make install</code></pre>
 
         <!-- Section 10.2 -->
         <section id="id-102">
-            <h2>10.2 Complete example: KEM with ML-KEM-768 in C</h2>
+            <h2>10.2 Exemple complet: KEM avec ML-KEM-768 en C</h2>
 
             <div class="code-block">
                 <pre><code class="language-c">#include &lt;stdio.h&gt;
@@ -444,20 +444,20 @@ int main() {
     OQS_STATUS rc;
     const char *kem_alg = OQS_KEM_alg_ml_kem_768;
 
-    // Initialize the algorithm
+    // Initialise l'algorithme
     OQS_KEM *kem = OQS_KEM_new(kem_alg);
     if (kem == NULL) {
-        fprintf(stderr, "KEM not supported\n");
+        fprintf(stderr, "KEM non supporté\n");
         return 1;
     }
 
-    printf("Algorithm: %s\n", kem-&gt;method_name);
-    printf("Public key: %zu bytes\n", kem-&gt;length_public_key);
-    printf("Private key: %zu bytes\n", kem-&gt;length_secret_key);
-    printf("Ciphertext: %zu bytes\n", kem-&gt;length_ciphertext);
-    printf("Shared secret: %zu bytes\n\n", kem-&gt;length_shared_secret);
+    printf("Algorithme: %s\n", kem-&gt;method_name);
+    printf("Clé publique: %zu octets\n", kem-&gt;length_public_key);
+    printf("Clé privée: %zu octets\n", kem-&gt;length_secret_key);
+    printf("Chiffré: %zu octets\n", kem-&gt;length_ciphertext);
+    printf("Secret partagé: %zu octets\n\n", kem-&gt;length_shared_secret);
 
-    // Memory allocation
+    // Allocation mémoire
     uint8_t *pk = malloc(kem-&gt;length_public_key);
     uint8_t *sk = malloc(kem-&gt;length_secret_key);
     uint8_t *ct = malloc(kem-&gt;length_ciphertext);
@@ -466,30 +466,30 @@ int main() {
 
     // 1. KeyGen (Alice)
     rc = OQS_KEM_keypair(kem, pk, sk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen failed\n"); return 1; }
-    printf("✓ KeyGen completed\n");
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen échouée\n"); return 1; }
+    printf("✓ KeyGen terminée\n");
 
-    // 2. Encaps (Bob: only knows pk)
+    // 2. Encaps (Bob: ne connaît que pk)
     rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps failed\n"); return 1; }
-    printf("✓ Encaps completed\n");
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps échouée\n"); return 1; }
+    printf("✓ Encaps terminée\n");
 
-    // 3. Decaps (Alice: uses sk to open ct)
+    // 3. Decaps (Alice: utilise sk pour ouvrir ct)
     rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps failed\n"); return 1; }
-    printf("✓ Decaps completed\n\n");
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps échouée\n"); return 1; }
+    printf("✓ Decaps terminée\n\n");
 
-    // 4. Verification
+    // 4. Vérification
     if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
-        printf("✅ Shared secrets match!\n");
-        printf("   First bytes: ");
+        printf("✅ Les secrets partagés correspondent!\n");
+        printf("   Premiers octets: ");
         for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
         printf("...\n");
     } else {
-        printf("❌ ERROR: shared secrets differ!\n");
+        printf("❌ ERREUR: secrets partagés différents!\n");
     }
 
-    // Secure memory cleanup
+    // Nettoyage sécurisé de la mémoire
     OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
     OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
     OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
@@ -509,33 +509,33 @@ int main() {
 
         <!-- Section 10.3 -->
         <section id="id-103">
-            <h2>10.3 Using the derived key with AES-256-GCM</h2>
+            <h2>10.3 Utiliser la clé dérivée avec AES-256-GCM</h2>
             
-            <p>After obtaining the shared secret from ML-KEM, it can be used as a key for a symmetric cipher. In production, it is recommended to use HKDF to derive separate keys.</p>
+            <p>Après avoir obtenu le secret partagé de ML-KEM, il est possible de l'utiliser comme clé pour un chiffrement symétrique. En production, il est recommandé d'utiliser HKDF pour dériver des clés séparées.</p>
 
             <div class="code-block">
                 <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
 #include &lt;oqs/oqs.h&gt;
 
-// After obtaining ss (32 bytes) from ML-KEM:
+// Après avoir obtenu ss (32 octets) de ML-KEM:
 void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
                            size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
                            const uint8_t *nonce) {
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     int len;
 
-    // Initialize AES-256-GCM
+    // Initialise AES-256-GCM
     EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
     
-    // Use the shared secret as the key
+    // Utilise le secret partagé comme clé
     EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
     
-    // Encryption
+    // Chiffrement
     EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
     EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
     
-    // Retrieve the authentication tag
+    // Récupère le tag d'authentification
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
     
     EVP_CIPHER_CTX_free(ctx);
@@ -545,9 +545,9 @@ void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
 
         <!-- Section 10.4 -->
         <section id="id-104">
-            <h2>10.4 Python: liboqs bindings</h2>
+            <h2>10.4 Python: bindings liboqs</h2>
             
-            <p>Liboqs provides official Python bindings for rapid testing and prototyping.</p>
+            <p>Liboqs fournit des bindings Python officiels pour des tests rapides et du prototypage.</p>
 
             <div class="code-block">
                 <pre><code>pip install liboqs-python</code></pre>
@@ -556,21 +556,21 @@ void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
             <div class="code-block">
                 <pre><code class="language-python">import oqs
 
-# Available algorithm
+# Algorithme disponible
 kem = oqs.KeyEncapsulation("ML-KEM-768")
 
 # KeyGen
 public_key = kem.generate_keypair()
 
-# Encaps (Bob side)
+# Encaps (côté Bob)
 kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
 ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
 
-# Decaps (Alice side)
+# Decaps (côté Alice)
 shared_secret_dec = kem.decap_secret(ciphertext)
 
 assert shared_secret_enc == shared_secret_dec
-print(f"✓ Shared secret: {shared_secret_enc.hex()[:16]}...")
+print(f"✓ Secret partagé: {shared_secret_enc.hex()[:16]}...")
 
 kem.free()
 kem_bob.free()</code></pre>
@@ -579,12 +579,12 @@ kem_bob.free()</code></pre>
 
         <!-- Section 10.5 -->
         <section id="id-105">
-            <h2>10.5 Python: kyber-py (educational only)</h2>
+            <h2>10.5 Python: kyber-py (pédagogique uniquement)</h2>
             
-            <p>For purely educational purposes, there is a pure Python implementation that does not require external C libraries.</p>
+            <p>À des fins purement éducatives, il existe une implémentation Python pure qui ne nécessite pas de bibliothèques C externes.</p>
 
             <div class="note warning">
-                <p><strong>Warning:</strong> <code>kyber-py</code> is not constant-time and must not be used in production.</p>
+                <p><strong>Attention:</strong> <code>kyber-py</code> n'est pas en temps constant et ne doit pas être utilisé en production.</p>
             </div>
 
             <div class="code-block">
@@ -603,14 +603,14 @@ kem_bob.free()</code></pre>
 
         <!-- Section 10.6 -->
         <section id="id-106">
-            <h2>10.6 Performance benchmarks</h2>
+            <h2>10.6 Benchmarks de performance</h2>
             
-            <p>Benchmarks on Intel Core i7-12700K (single core, no SIMD instructions):</p>
+            <p>Benchmarks sur Intel Core i7-12700K (un cœur, sans instructions SIMD):</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Operation</th>
+                        <th>Opération</th>
                         <th>ML-KEM-512</th>
                         <th>ML-KEM-768</th>
                         <th>ML-KEM-1024</th>
@@ -638,14 +638,14 @@ kem_bob.free()</code></pre>
                 </tbody>
             </table>
 
-            <h3>With AVX2 optimizations</h3>
+            <h3>Avec optimisations AVX2</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Operation</th>
-                        <th>ML-KEM-768 (no SIMD)</th>
+                        <th>Opération</th>
+                        <th>ML-KEM-768 (sans SIMD)</th>
                         <th>ML-KEM-768 (AVX2)</th>
-                        <th>Speedup</th>
+                        <th>Accélération</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -670,7 +670,7 @@ kem_bob.free()</code></pre>
                 </tbody>
             </table>
 
-            <h3>Comparison with ECDH X25519</h3>
+            <h3>Comparaison avec ECDH X25519</h3>
             <table>
                 <thead>
                     <tr>
@@ -686,25 +686,25 @@ kem_bob.free()</code></pre>
                         <td>~37 µs</td>
                     </tr>
                     <tr>
-                        <td>Exchange</td>
+                        <td>Échange</td>
                         <td>~30 µs</td>
                         <td>~48 µs</td>
                     </tr>
                     <tr>
-                        <td>Public key</td>
+                        <td>Clé publique</td>
                         <td>32 B</td>
                         <td>1184 B</td>
                     </tr>
                 </tbody>
             </table>
-            <p>ML-KEM is about 2× slower than X25519, but the overhead on TLS handshake latency is negligible (&lt; 1 ms) on most real connections.</p>
+            <p>ML-KEM est environ 2× plus lent que X25519, mais le surcoût sur la latence du handshake TLS est négligeable (&lt; 1 ms) sur la plupart des connexions réelles.</p>
         </section>
 
         <!-- Section 10.7 -->
         <section id="id-107">
-            <h2>10.7 OpenSSL: installing the OQS provider</h2>
+            <h2>10.7 OpenSSL: installation du provider OQS</h2>
             
-            <p>OpenSSL 3.x supports ML-KEM through the <code>oqsprovider</code> provider. Starting from version 3.4, support is native or easily integrable.</p>
+            <p>OpenSSL 3.x supporte ML-KEM via le provider <code>oqsprovider</code>. À partir de la version 3.4, le support est natif ou facilement intégrable.</p>
 
             <div class="code-block">
                 <pre><code># Build oqs-provider
@@ -714,41 +714,41 @@ cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
 make
 sudo make install
 
-# Verify
+# Vérification
 openssl list -providers
-# should list: oqsprovider</code></pre>
+# devrait lister: oqsprovider</code></pre>
             </div>
         </section>
 
         <!-- Section 10.8 -->
         <section id="id-108">
-            <h2>10.8 ML-KEM key generation with OpenSSL CLI</h2>
+            <h2>10.8 Génération de clés ML-KEM avec OpenSSL CLI</h2>
 
             <div class="code-block">
-                <pre><code># Generate ML-KEM-768 key pair
+                <pre><code># Génère une paire de clés ML-KEM-768
 openssl genpkey -algorithm mlkem768 -out private.pem
 openssl pkey -in private.pem -pubout -out public.pem
 
-# Display key details
+# Affiche les détails de la clé
 openssl pkey -in private.pem -text -noout</code></pre>
             </div>
         </section>
 
         <!-- Section 10.9 -->
         <section id="id-109">
-            <h2>10.9 TLS 1.3 with ML-KEM-768</h2>
+            <h2>10.9 TLS 1.3 avec ML-KEM-768</h2>
             
-            <h3>Local test (server + client)</h3>
+            <h3>Test local (serveur + client)</h3>
             <div class="code-block">
-                <pre><code># Server
+                <pre><code># Serveur
 openssl s_server -accept 4433 -cert server.crt -key server.key \
     -groups mlkem768
 
-# Client (in another terminal)
+# Client (dans un autre terminal)
 openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
             </div>
 
-            <h3>Verify supported groups</h3>
+            <h3>Vérifier les groupes supportés</h3>
             <div class="code-block">
                 <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
             </div>
@@ -756,9 +756,9 @@ openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
 
         <!-- Section 10.10 -->
         <section id="id-1010">
-            <h2>10.10 Hybrid strategy: X25519 + ML-KEM-768</h2>
+            <h2>10.10 Stratégie hybride: X25519 + ML-KEM-768</h2>
             
-            <p>The recommended approach for migration is <strong>hybridization</strong>: combining ECDH (X25519) with ML-KEM-768. The final key is derived from both:</p>
+            <p>L'approche recommandée pour la migration est l'<strong>hybridisation</strong>: combiner ECDH (X25519) avec ML-KEM-768. La clé finale est dérivée des deux:</p>
 
             <div class="math-block">
                 \[
@@ -766,17 +766,17 @@ openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
                 \]
             </div>
 
-            <p><strong>Advantage:</strong> secure if at least one of the two schemes holds. If a quantum computer breaks X25519, ML-KEM protects. If ML-KEM had an unknown flaw, X25519 protects.</p>
+            <p><strong>Avantage:</strong> sécurisé si au moins l'un des deux schémas tient. Si un ordinateur quantique casse X25519, ML-KEM protège. Si ML-KEM avait un défaut inconnu, X25519 protège.</p>
         </section>
 
         <!-- Section 10.11 -->
         <section id="id-1011">
-            <h2>10.11 Hybrid cipher suites in TLS 1.3</h2>
+            <h2>10.11 Suites de chiffrement hybrides dans TLS 1.3</h2>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Group Name</th>
+                        <th>Nom du Groupe</th>
                         <th>Composition</th>
                     </tr>
                 </thead>
@@ -792,15 +792,15 @@ openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
                 </tbody>
             </table>
 
-            <p>Starting from Chrome 131 (late 2024), <code>X25519MLKEM768</code> is the default group. Firefox 128+ supports the same group.</p>
+            <p>À partir de Chrome 131 (fin 2024), <code>X25519MLKEM768</code> est le groupe par défaut. Firefox 128+ supporte le même groupe.</p>
 
-            <h3>OpenSSL configuration</h3>
+            <h3>Configuration OpenSSL</h3>
             <div class="code-block">
-                <pre><code># Server that accepts both classic X25519 and the hybrid group
+                <pre><code># Serveur qui accepte à la fois X25519 classique et le groupe hybride
 openssl s_server -accept 4433 -cert server.crt -key server.key \
     -groups X25519MLKEM768:x25519:P-256
 
-# Client that prefers the hybrid group
+# Client qui préfère le groupe hybride
 openssl s_client -connect localhost:4433 \
     -groups X25519MLKEM768:x25519</code></pre>
             </div>
@@ -808,7 +808,7 @@ openssl s_client -connect localhost:4433 \
 
         <!-- Section 10.12 -->
         <section id="id-1012">
-            <h2>10.12 Integration in C applications with OpenSSL</h2>
+            <h2>10.12 Intégration dans des applications C avec OpenSSL</h2>
 
             <div class="code-block">
                 <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
@@ -821,9 +821,9 @@ SSL_CTX *create_pqc_context(void) {
         return NULL;
     }
 
-    // Set preferred groups: hybrid first, then classics as fallback
+    // Définit les groupes préférés: hybride d'abord, puis classiques en repli
     if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
-        fprintf(stderr, "Error configuring groups\n");
+        fprintf(stderr, "Erreur de configuration des groupes\n");
         SSL_CTX_free(ctx);
         return NULL;
     }
@@ -835,33 +835,33 @@ SSL_CTX *create_pqc_context(void) {
 
         <!-- Section 10.13 -->
         <section id="id-1013">
-            <h2>10.13 Migration checklist</h2>
+            <h2>10.13 Checklist de migration</h2>
 
-            <h3>For application developers</h3>
+            <h3>Pour les développeurs d'applications</h3>
             <ul>
-                <li>Inventory where asymmetric cryptography is used (key exchange, signatures, KEM).</li>
-                <li>Identify which data must remain secret for more than 5 years.</li>
-                <li>Update dependencies: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
-                <li>Adopt hybrid approach: <code>X25519 + ML-KEM-768</code> for TLS.</li>
-                <li>For digital signatures: migrate to ML-DSA (FIPS 204) or SLH-DSA (FIPS 205).</li>
-                <li>Test the increased size of keys and ciphertexts in protocols.</li>
-                <li>Verify that timeouts and buffer sizes do not assume small key sizes.</li>
+                <li>Inventorier où la cryptographie asymétrique est utilisée (échange de clés, signature, KEM).</li>
+                <li>Identifier quelles données doivent rester secrètes pendant plus de 5 ans.</li>
+                <li>Mettre à jour les dépendances: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
+                <li>Adopter une approche hybride: <code>X25519 + ML-KEM-768</code> pour TLS.</li>
+                <li>Pour les signatures numériques: migrer vers ML-DSA (FIPS 204) ou SLH-DSA (FIPS 205).</li>
+                <li>Tester la taille augmentée des clés et des chiffrés dans les protocoles.</li>
+                <li>Vérifier que les timeouts et les tailles de tampon ne supposent pas de petites clés.</li>
             </ul>
 
-            <h3>For infrastructure managers</h3>
+            <h3>Pour les gestionnaires d'infrastructure</h3>
             <ul>
-                <li>Update TLS stack to versions with ML-KEM support.</li>
-                <li>Enable <code>X25519MLKEM768</code> on TLS servers.</li>
-                <li>Monitor client compatibility (Chrome 131+, Firefox 128+ support hybrid PQC).</li>
-                <li>Plan long-term key rotation.</li>
+                <li>Mettre à jour la pile TLS vers des versions avec support ML-KEM.</li>
+                <li>Activer <code>X25519MLKEM768</code> sur les serveurs TLS.</li>
+                <li>Surveiller la compatibilité client (Chrome 131+, Firefox 128+ supportent PQC hybride).</li>
+                <li>Planifier la rotation des clés à long terme.</li>
             </ul>
 
-            <h3>Reference standards</h3>
+            <h3>Normes de référence</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Standard</th>
-                        <th>Content</th>
+                        <th>Norme</th>
+                        <th>Contenu</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -871,11 +871,11 @@ SSL_CTX *create_pqc_context(void) {
                     </tr>
                     <tr>
                         <td>FIPS 204</td>
-                        <td>ML-DSA (lattice-based digital signature)</td>
+                        <td>ML-DSA (signature numérique sur treillis)</td>
                     </tr>
                     <tr>
                         <td>FIPS 205</td>
-                        <td>SLH-DSA (hash-based signature, conservative)</td>
+                        <td>SLH-DSA (signature basée sur hachage, conservative)</td>
                     </tr>
                 </tbody>
             </table>
@@ -883,25 +883,25 @@ SSL_CTX *create_pqc_context(void) {
 
         <!-- Section 10.14 -->
         <section id="id-1014">
-            <h2>10.14 Scenario: migrating a REST API</h2>
+            <h2>10.14 Scénario: migration d'une API REST</h2>
 
-            <h3>Current situation (pre-migration)</h3>
-            <p>Client → TLS 1.3 with X25519 → API Server</p>
+            <h3>Situation actuelle (pré-migration)</h3>
+            <p>Client → TLS 1.3 avec X25519 → Serveur API</p>
 
-            <h3>Phase 1: hybrid (today, recommended)</h3>
-            <p>Client → TLS 1.3 with X25519MLKEM768 → API Server</p>
+            <h3>Phase 1: hybride (aujourd'hui, recommandé)</h3>
+            <p>Client → TLS 1.3 avec X25519MLKEM768 → Serveur API</p>
 
             <div class="code-block">
-                <pre><code># nginx configuration
+                <pre><code># Configuration nginx
 ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
 
-# Apache configuration
+# Configuration Apache
 SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
             </div>
 
-            <h3>Phase 2: pure post-quantum (future)</h3>
-            <p>Client → TLS 1.3 with ML-KEM-768 + ML-DSA → API Server</p>
-            <p>To be adopted when the majority of clients support native ML-KEM and server certificates use ML-DSA for signing.</p>
+            <h3>Phase 2: pur post-quantique (futur)</h3>
+            <p>Client → TLS 1.3 avec ML-KEM-768 + ML-DSA → Serveur API</p>
+            <p>À adopter lorsque la majorité des clients supportent ML-KEM natif et que les certificats serveur utilisent ML-DSA pour la signature.</p>
         </section>
 
         <!-- Sources -->
@@ -917,11 +917,11 @@ SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Navigation des chapitres -->
         <div class="chapter-nav">
-            <a href="9.html" class="nav-btn">← Previous chapter</a>
+            <a href="9.html" class="nav-btn">← Chapitre précédent</a>
             <span class="nav-label">10 / 10</span>
-            <a href="#" class="nav-btn disabled">End of Guide →</a>
+            <a href="#" class="nav-btn disabled">Fin du Guide →</a>
         </div>
     </article>
 </main>
@@ -931,7 +931,7 @@ SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span>Bibliothèque libre pour tous. Tous droits réservés.</p>
         </div>
     </footer>
 

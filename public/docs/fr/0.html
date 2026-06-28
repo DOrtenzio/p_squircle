@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 0 – MONEOO.</title>
+    <title>Chapitre 0 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
     <link rel="manifest" href="../../site.webmanifest">
     <link rel="stylesheet" href="../../css/style.css" />
-    <!-- MathJax per le formule -->
+    <!-- MathJax pour les formules -->
     <script>
         MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -18,7 +18,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
     <style>
-        /* ===== LAYOUT GENERALE ===== */
+        /* ===== LAYOUT GÉNÉRAL ===== */
         .chapter-wrapper {
             display: flex;
             gap: 2.5rem;
@@ -30,7 +30,7 @@
         .chapter-sidebar {
             flex: 0 0 220px;
             position: sticky;
-            top: 100px; /* sotto il toolbar */
+            top: 100px; /* sous la barre d'outils */
             max-height: calc(100vh - 140px);
             overflow-y: auto;
             background: rgba(255, 255, 255, 0.95);
@@ -90,13 +90,13 @@
             font-weight: 600;
         }
 
-        /* ===== CONTENUTO ===== */
+        /* ===== CONTENU ===== */
         .chapter-content {
             flex: 1;
-            min-width: 0; /* evita overflow */
+            min-width: 0; /* évite le débordement */
         }
 
-        /* ===== MIGLIORIE TESTO ===== */
+        /* ===== AMÉLIORATIONS DU TEXTE ===== */
         .chapter-content p {
             line-height: 1.8;
             margin-bottom: 1.2rem;
@@ -240,7 +240,7 @@
             border-bottom-color: var(--text-main);
         }
 
-        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        /* ===== NAVIGATION DES CHAPITRES ===== */
         .chapter-nav {
             display: flex;
             justify-content: space-between;
@@ -325,24 +325,24 @@
     </style>
 </head>
 <body>
-    <!-- Toolbar (identico all'index) -->
+    <!-- Barre d'outils (identique à l'index) -->
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
-        <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
+        <nav class="toolbar-nav" aria-label="Navigation rapide">
+            <a href="index.html#featureSection">Pourquoi</a>
+            <a href="index.html#learningPath">Parcours</a>
             <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Select language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                <button class="lang-toggle" id="langToggle" aria-label="Choisir la langue">
+                    <span class="lang-current" id="langCurrent">🇫🇷 Français</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
                 <div class="lang-dropdown" id="langDropdown">
-                    <!-- 16 lingue -->
+                    <!-- 16 langues -->
                     <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
                     <button class="lang-option" data-lang="en">🇬🇧 English</button>
                     <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
@@ -364,128 +364,128 @@
         </div>
     </div>
 
-    <!-- Contenitore principale con sidebar -->
+    <!-- Conteneur principal avec sidebar -->
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>Chapitres</h3>
             <ul>
-                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Prérequis</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symétrique</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymétrique</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Treillis</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sécurité</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implémentations</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
-        <h1>00 – Mathematical Prerequisites</h1>
-        <p class="subtitle">The essential tools for understanding post‑quantum cryptography</p>
+        <h1>00 – Prérequis mathématiques</h1>
+        <p class="subtitle">Les outils essentiels pour comprendre la cryptographie post‑quantique</p>
 
-        <!-- Table of Contents -->
+        <!-- Table des matières -->
         <div class="toc">
-            <h2>Table of Contents</h2>
+            <h2>Table des matières</h2>
             <ul>
-                <li><a href="#id-01">0.1 Modular arithmetic</a></li>
-                <li><a href="#id-02">0.2 Linear algebra: vectors and matrices</a></li>
-                <li><a href="#id-03">0.3 Polynomials</a></li>
-                <li><a href="#id-04">0.4 Algebraic structures: groups, rings, fields</a></li>
-                <li><a href="#id-05">0.5 Cryptographic hash functions</a></li>
-                <li><a href="#id-06">0.6 Probability and noise distribution</a></li>
-                <li><a href="#id-07">0.7 Computational complexity</a></li>
+                <li><a href="#id-01">0.1 Arithmétique modulaire</a></li>
+                <li><a href="#id-02">0.2 Algèbre linéaire : vecteurs et matrices</a></li>
+                <li><a href="#id-03">0.3 Polynômes</a></li>
+                <li><a href="#id-04">0.4 Structures algébriques : groupes, anneaux, corps</a></li>
+                <li><a href="#id-05">0.5 Fonctions de hachage cryptographiques</a></li>
+                <li><a href="#id-06">0.6 Probabilités et distribution du bruit</a></li>
+                <li><a href="#id-07">0.7 Complexité computationnelle</a></li>
             </ul>
         </div>
 
         <!-- Section 0.1 -->
         <section id="id-01">
-            <h2>0.1 Modular arithmetic</h2>
+            <h2>0.1 Arithmétique modulaire</h2>
 
-            <h3>What is modulus</h3>
-            <p>The operation <span class="math">\(a \bmod m\)</span> returns the <strong>remainder</strong> of the integer division of <span class="math">\(a\)</span> by <span class="math">\(m\)</span>.</p>
+            <h3>Qu'est-ce que le modulo</h3>
+            <p>L'opération <span class="math">\(a \bmod m\)</span> renvoie le <strong>reste</strong> de la division entière de <span class="math">\(a\)</span> par <span class="math">\(m\)</span>.</p>
             <div class="example">
-                <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{because } 17 = 3 \cdot 5 + 2\)</span></p>
-                <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{because } -3 + 13 = 10\)</span></p>
+                <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{car } 17 = 3 \cdot 5 + 2\)</span></p>
+                <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{car } -3 + 13 = 10\)</span></p>
             </div>
             <blockquote>
-                <p><strong>Convention:</strong> in cryptography, results modulo <span class="math">\(q\)</span> are always in the range <span class="math">\([0, q-1]\)</span>.</p>
+                <p><strong>Convention :</strong> en cryptographie, les résultats modulo <span class="math">\(q\)</span> sont toujours dans l'intervalle <span class="math">\([0, q-1]\)</span>.</p>
             </blockquote>
 
-            <h3>Arithmetic in <span class="math">\(\mathbb{Z}_q\)</span></h3>
-            <p>We denote by <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> the set of integers modulo <span class="math">\(q\)</span>. In this set, addition, subtraction, and multiplication are always reduced modulo <span class="math">\(q\)</span>:</p>
+            <h3>Arithmétique dans <span class="math">\(\mathbb{Z}_q\)</span></h3>
+            <p>On note <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> l'ensemble des entiers modulo <span class="math">\(q\)</span>. Dans cet ensemble, l'addition, la soustraction et la multiplication sont toujours réduites modulo <span class="math">\(q\)</span> :</p>
             <div class="example">
                 <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
                 <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
             </div>
 
-            <h3>Multiplicative inverse</h3>
-            <p>In ordinary arithmetic, the inverse of a number serves to obtain <span class="math">\(1\)</span> through multiplication (e.g., the inverse of <span class="math">\(5\)</span> is <span class="math">\(\frac{1}{5}\)</span>, because <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). In modular arithmetic, fractions do not exist. The inverse of a number <span class="math">\(a\)</span> must therefore be another integer <span class="math">\(b\)</span> that, when multiplied by <span class="math">\(a\)</span>, gives a remainder of 1 modulo <span class="math">\(q\)</span>:</p>
+            <h3>Inverse multiplicatif</h3>
+            <p>En arithmétique ordinaire, l'inverse d'un nombre sert à obtenir <span class="math">\(1\)</span> par multiplication (par exemple, l'inverse de <span class="math">\(5\)</span> est <span class="math">\(\frac{1}{5}\)</span>, car <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). En arithmétique modulaire, les fractions n'existent pas. L'inverse d'un nombre <span class="math">\(a\)</span> doit donc être un autre entier <span class="math">\(b\)</span> qui, multiplié par <span class="math">\(a\)</span>, donne un reste de 1 modulo <span class="math">\(q\)</span> :</p>
             <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
 
-            <h4>The existence rule</h4>
-            <p>The inverse of <span class="math">\(a\)</span> does not always exist. It can be found if and only if <span class="math">\(a\)</span> and <span class="math">\(q\)</span> have no common divisors (i.e., if their Greatest Common Divisor is 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+            <h4>Règle d'existence</h4>
+            <p>L'inverse de <span class="math">\(a\)</span> n'existe pas toujours. Il peut être trouvé si et seulement si <span class="math">\(a\)</span> et <span class="math">\(q\)</span> n'ont pas de diviseurs communs (c'est-à-dire si leur Plus Grand Commun Diviseur est 1 : <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
             <ul>
-                <li><strong>Key property:</strong> If the modulus <span class="math">\(q\)</span> is a prime number, every number in the set (except zero) is guaranteed to have an inverse.</li>
+                <li><strong>Propriété clé :</strong> Si le module <span class="math">\(q\)</span> est un nombre premier, chaque nombre de l'ensemble (sauf zéro) a garanti un inverse.</li>
             </ul>
 
-            <h4>Practical example: Computing <span class="math">\(5^{-1} \bmod 13\)</span></h4>
-            <p>The notation <span class="math">\(5^{-1}\)</span> means: "Find the inverse of 5 modulo 13." We seek a number <span class="math">\(b\)</span> such that <span class="math">\(5 \cdot b\)</span> gives a remainder of <span class="math">\(1\)</span> when divided by <span class="math">\(13\)</span>:</p>
+            <h4>Exemple pratique : Calcul de <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+            <p>La notation <span class="math">\(5^{-1}\)</span> signifie : "Trouver l'inverse de 5 modulo 13." On cherche un nombre <span class="math">\(b\)</span> tel que <span class="math">\(5 \cdot b\)</span> donne un reste de <span class="math">\(1\)</span> lorsqu'il est divisé par <span class="math">\(13\)</span> :</p>
             <ol>
-                <li>Try multiplying <span class="math">\(5\)</span> by various integers.</li>
-                <li>Choosing <span class="math">\(b = 8\)</span>, we get: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
-                <li>Divide <span class="math">\(40\)</span> by <span class="math">\(13\)</span>: 13 goes into 40 three times (<span class="math">\(13 \cdot 3 = 39\)</span>) with a remainder of 1.</li>
+                <li>Essayez de multiplier <span class="math">\(5\)</span> par divers entiers.</li>
+                <li>En choisissant <span class="math">\(b = 8\)</span>, on obtient : <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                <li>Divisez <span class="math">\(40\)</span> par <span class="math">\(13\)</span> : 13 va dans 40 trois fois (<span class="math">\(13 \cdot 3 = 39\)</span>) avec un reste de 1.</li>
             </ol>
-            <p><strong>The answer is 8</strong>, because <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+            <p><strong>La réponse est 8</strong>, car <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
 
-            <h3>Modular exponentiation</h3>
-            <p>Modular exponentiation consists of computing the remainder of a power: <span class="math">\(a^k \pmod m\)</span>. This operation is the backbone of modern cryptography (like the RSA algorithm). It is used because it is a "one-way clock": it is very easy to compute the result, but it is almost impossible to reverse the process (to discover the exponent <span class="math">\(k\)</span> from the result).</p>
+            <h3>Exponentiation modulaire</h3>
+            <p>L'exponentiation modulaire consiste à calculer le reste d'une puissance : <span class="math">\(a^k \pmod m\)</span>. Cette opération est le pilier de la cryptographie moderne (comme l'algorithme RSA). Elle est utilisée car c'est une "horloge à sens unique" : il est très facile de calculer le résultat, mais il est presque impossible d'inverser le processus (de découvrir l'exposant <span class="math">\(k\)</span> à partir du résultat).</p>
 
-            <h4>The problem of large numbers</h4>
-            <p>If we need to compute <span class="math">\(5^{11} \pmod{13}\)</span>, direct computation is impossible for a computer if the exponent has hundreds of digits. The number <span class="math">\(5^{11}\)</span> would become too large for memory.</p>
+            <h4>Le problème des grands nombres</h4>
+            <p>Si nous devons calculer <span class="math">\(5^{11} \pmod{13}\)</span>, le calcul direct est impossible pour un ordinateur si l'exposant a des centaines de chiffres. Le nombre <span class="math">\(5^{11}\)</span> deviendrait trop grand pour la mémoire.</p>
 
-            <h4>The solution: The Square-and-Multiply algorithm</h4>
-            <p>This algorithm allows computing the result in very few steps (<span class="math">\(O(\log k)\)</span> multiplications), always working with small numbers and preventing the power from growing indefinitely.</p>
+            <h4>La solution : L'algorithme Square-and-Multiply</h4>
+            <p>Cet algorithme permet de calculer le résultat en très peu d'étapes (<span class="math">\(O(\log k)\)</span> multiplications), en travaillant toujours avec de petits nombres et en empêchant la puissance de croître indéfiniment.</p>
 
             <details>
-                <summary><strong>How it works in practice (Example: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
-                <p>Convert the exponent to binary: <span class="math">\(11 = 8 + 2 + 1\)</span>. Instead of multiplying <span class="math">\(5\)</span> by itself <span class="math">\(11\)</span> times, we compute the squared powers step by step, immediately reducing the result modulo <span class="math">\(13\)</span>:</p>
+                <summary><strong>Comment ça fonctionne en pratique (Exemple : <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                <p>Convertissez l'exposant en binaire : <span class="math">\(11 = 8 + 2 + 1\)</span>. Au lieu de multiplier <span class="math">\(5\)</span> par lui-même <span class="math">\(11\)</span> fois, on calcule les puissances carrées étape par étape, en réduisant immédiatement le résultat modulo <span class="math">\(13\)</span> :</p>
                 <div class="math-block">
                     \[
                     \begin{aligned}
-                    \text{Base: } & 5^1 \equiv 5 \pmod{13} \\
-                    \text{Square: } & 5^2 = 25 \equiv 12 \pmod{13} \\
-                    \text{Square of square: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
-                    \text{Next square: } & 5^8 = 1^2 = 1 \pmod{13}
+                    \text{Base : } & 5^1 \equiv 5 \pmod{13} \\
+                    \text{Carré : } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                    \text{Carré du carré : } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                    \text{Carré suivant : } & 5^8 = 1^2 = 1 \pmod{13}
                     \end{aligned}
                     \]
                 </div>
-                <p>Now we combine only the pieces that make up our exponent <span class="math">\(11\)</span> (that is, <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                <p>On combine maintenant uniquement les morceaux qui composent notre exposant <span class="math">\(11\)</span> (c'est-à-dire <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>) :</p>
                 <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
-                <p>Divide <span class="math">\(60\)</span> by <span class="math">\(13\)</span>: <span class="math">\(13\)</span> goes into <span class="math">\(60\)</span> <span class="math">\(4\)</span> times (<span class="math">\(52\)</span>) with a remainder of <span class="math">\(8\)</span>.</p>
-                <p><strong>Final result:</strong> <span class="math">\(8\)</span> (we did only 4 steps instead of 11).</p>
+                <p>Divisez <span class="math">\(60\)</span> par <span class="math">\(13\)</span> : <span class="math">\(13\)</span> va dans <span class="math">\(60\)</span> <span class="math">\(4\)</span> fois (<span class="math">\(52\)</span>) avec un reste de <span class="math">\(8\)</span>.</p>
+                <p><strong>Résultat final :</strong> <span class="math">\(8\)</span> (nous avons fait seulement 4 étapes au lieu de 11).</p>
             </details>
         </section>
 
         <!-- Section 0.2 -->
         <section id="id-02">
-            <h2>0.2 Linear algebra: vectors and matrices</h2>
+            <h2>0.2 Algèbre linéaire : vecteurs et matrices</h2>
 
-            <h3>Vectors</h3>
-            <p>A vector <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> is an ordered list of <span class="math">\(n\)</span> integers computed modulo <span class="math">\(q\)</span>:</p>
+            <h3>Vecteurs</h3>
+            <p>Un vecteur <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> est une liste ordonnée de <span class="math">\(n\)</span> entiers calculés modulo <span class="math">\(q\)</span> :</p>
             <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
-            <p>In vector operations, every result is reduced modulo <span class="math">\(q\)</span>.</p>
+            <p>Dans les opérations vectorielles, chaque résultat est réduit modulo <span class="math">\(q\)</span>.</p>
 
-            <h4>Practical example</h4>
-            <p>With <span class="math">\(q = 13\)</span>:</p>
+            <h4>Exemple pratique</h4>
+            <p>Avec <span class="math">\(q = 13\)</span> :</p>
             <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
 
-            <h4>Vector addition</h4>
+            <h4>Addition de vecteurs</h4>
             <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
             <ul>
                 <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
@@ -493,68 +493,68 @@
                 <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
             </ul>
 
-            <h4>Dot product</h4>
+            <h4>Produit scalaire</h4>
             <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
-            <p>Calculation:</p>
+            <p>Calcul :</p>
             <ul>
                 <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
                 <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
                 <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
             </ul>
-            <p>Sum: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
-            <p>Reduction modulo 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+            <p>Somme : <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+            <p>Réduction modulo 13 : <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
 
             <h3>Matrices</h3>
-            <p>A matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> is an array of rows and columns.</p>
-            <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Matrix example" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
-            <p><em>(In practice, the matrix <span class="math">\(A\)</span> in ML-KEM has dimensions <span class="math">\(k \times k\)</span> with <span class="math">\(k = 3, 4\)</span> or <span class="math">\(5\)</span> and is generated from a random seed via SHAKE.)</em></p>
+            <p>Une matrice <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> est un tableau de lignes et de colonnes.</p>
+            <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Exemple de matrice" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+            <p><em>(En pratique, la matrice <span class="math">\(A\)</span> dans ML-KEM a des dimensions <span class="math">\(k \times k\)</span> avec <span class="math">\(k = 3, 4\)</span> ou <span class="math">\(5\)</span> et est générée à partir d'une graine aléatoire via SHAKE.)</em></p>
 
-            <h4>Matrix-vector product</h4>
+            <h4>Produit matrice-vecteur</h4>
             <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
 
-            <h4>Example</h4>
+            <h4>Exemple</h4>
             <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
             <details>
-                <summary>Detailed steps</summary>
-                <p>First row: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
-                <p>Second row: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
-                <p>Reduction modulo 13: <span class="math">\(-7 + 13 = 6\)</span></p>
-                <p>Therefore: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                <summary>Étapes détaillées</summary>
+                <p>Première ligne : <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                <p>Deuxième ligne : <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                <p>Réduction modulo 13 : <span class="math">\(-7 + 13 = 6\)</span></p>
+                <p>Donc : <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
             </details>
 
-            <h3>Infinity norm</h3>
+            <h3>Norme infinie</h3>
             <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
-            <p>This norm measures the component with the maximum absolute value. In the context of MLWE, error vectors must have a very small norm.</p>
+            <p>Cette norme mesure la composante ayant la valeur absolue maximale. Dans le contexte de MLWE, les vecteurs d'erreur doivent avoir une norme très petite.</p>
             <details>
-                <summary>Practical examples</summary>
-                <p><strong>Valid case:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                <summary>Exemples pratiques</summary>
+                <p><strong>Cas valide :</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
                 <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
-                <p><strong>Invalid case:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                <p><strong>Cas invalide :</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
                 <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
             </details>
         </section>
 
         <!-- Section 0.3 -->
         <section id="id-03">
-            <h2>0.3 Polynomials</h2>
+            <h2>0.3 Polynômes</h2>
 
-            <h3>Polynomials with coefficients in <span class="math">\(\mathbb{Z}_q\)</span></h3>
-            <p>A polynomial in <span class="math">\(\mathbb{Z}_q[X]\)</span> has the form:</p>
+            <h3>Polynômes à coefficients dans <span class="math">\(\mathbb{Z}_q\)</span></h3>
+            <p>Un polynôme dans <span class="math">\(\mathbb{Z}_q[X]\)</span> a la forme :</p>
             <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
-            <p>where each <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+            <p>où chaque <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
 
-            <h4>Polynomial addition</h4>
-            <p>Add the corresponding coefficients modulo <span class="math">\(q\)</span>:</p>
+            <h4>Addition de polynômes</h4>
+            <p>Additionnez les coefficients correspondants modulo <span class="math">\(q\)</span> :</p>
             <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
 
-            <h4>Polynomial multiplication and reduction</h4>
-            <p>The product of two polynomials of degree <span class="math">\(\leq n-1\)</span> can have degree up to <span class="math">\(2n-2\)</span>. To keep them compact, the result is reduced modulo a special polynomial.</p>
-            <p>In ML-KEM, <span class="math">\(X^n + 1\)</span> is used with <span class="math">\(n = 256\)</span>. The reduction rule is:</p>
+            <h4>Multiplication de polynômes et réduction</h4>
+            <p>Le produit de deux polynômes de degré <span class="math">\(\leq n-1\)</span> peut avoir un degré allant jusqu'à <span class="math">\(2n-2\)</span>. Pour les garder compacts, le résultat est réduit modulo un polynôme spécial.</p>
+            <p>Dans ML-KEM, on utilise <span class="math">\(X^n + 1\)</span> avec <span class="math">\(n = 256\)</span>. La règle de réduction est :</p>
             <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
-            <p>So whenever <span class="math">\(X^{256}\)</span> appears in the product, it is replaced with <span class="math">\(-1\)</span>.</p>
+            <p>Ainsi, chaque fois que <span class="math">\(X^{256}\)</span> apparaît dans le produit, il est remplacé par <span class="math">\(-1\)</span>.</p>
 
-            <h4>Simple example</h4>
-            <p>With <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, modulo <span class="math">\(X^4+1\)</span>:</p>
+            <h4>Exemple simple</h4>
+            <p>Avec <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, modulo <span class="math">\(X^4+1\)</span> :</p>
             <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
             <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
             <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
@@ -563,235 +563,235 @@
 
         <!-- Section 0.4 -->
         <section id="id-04">
-            <h2>0.4 Algebraic structures: groups, rings, fields</h2>
+            <h2>0.4 Structures algébriques : groupes, anneaux, corps</h2>
 
             <table>
                 <thead>
                     <tr>
                         <th>Structure</th>
-                        <th>Operations</th>
-                        <th>Key properties</th>
+                        <th>Opérations</th>
+                        <th>Propriétés clés</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Group</strong></td>
-                        <td>one (+)</td>
-                        <td>closure, associativity, identity, inverse</td>
+                        <td><strong>Groupe</strong></td>
+                        <td>une (+)</td>
+                        <td>fermeture, associativité, identité, inverse</td>
                     </tr>
                     <tr>
-                        <td><strong>Ring</strong></td>
-                        <td>two (+, ×)</td>
-                        <td>abelian group for +, semigroup for ×</td>
+                        <td><strong>Anneau</strong></td>
+                        <td>deux (+, ×)</td>
+                        <td>groupe abélien pour +, semi-groupe pour ×</td>
                     </tr>
                     <tr>
-                        <td><strong>Field</strong></td>
-                        <td>two (+, ×)</td>
-                        <td>ring with multiplicative inverse for all ≠ 0</td>
+                        <td><strong>Corps</strong></td>
+                        <td>deux (+, ×)</td>
+                        <td>anneau avec inverse multiplicatif pour tout ≠ 0</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3><span class="math">\(\mathbb{Z}_q\)</span> as a field</h3>
-            <p>If <span class="math">\(q\)</span> is prime, <span class="math">\(\mathbb{Z}_q\)</span> <strong>is a field</strong>: every nonzero element has a multiplicative inverse. In ML-KEM, <span class="math">\(q = 3329\)</span> is prime → <span class="math">\(\mathbb{Z}_{3329}\)</span> is a field.</p>
+            <h3><span class="math">\(\mathbb{Z}_q\)</span> comme corps</h3>
+            <p>Si <span class="math">\(q\)</span> est premier, <span class="math">\(\mathbb{Z}_q\)</span> <strong>est un corps</strong> : tout élément non nul a un inverse multiplicatif. Dans ML-KEM, <span class="math">\(q = 3329\)</span> est premier → <span class="math">\(\mathbb{Z}_{3329}\)</span> est un corps.</p>
 
-            <h3>The ring <span class="math">\(R_q\)</span></h3>
+            <h3>L'anneau <span class="math">\(R_q\)</span></h3>
             <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
-            <p>It is a ring (not a field, because not all polynomials have an inverse), but it has useful properties for cryptography:</p>
+            <p>C'est un anneau (pas un corps, car tous les polynômes n'ont pas d'inverse), mais il possède des propriétés utiles pour la cryptographie :</p>
             <ul>
-                <li>every polynomial has exactly 256 coefficients;</li>
-                <li>multiplication is efficient via NTT (see file 07);</li>
-                <li>the polynomial <span class="math">\(X^{256}+1\)</span> is <em>cyclotomic</em>, which guarantees good security properties.</li>
+                <li>chaque polynôme a exactement 256 coefficients ;</li>
+                <li>la multiplication est efficace via NTT (voir fichier 07) ;</li>
+                <li>le polynôme <span class="math">\(X^{256}+1\)</span> est <em>cyclotomique</em>, ce qui garantit de bonnes propriétés de sécurité.</li>
             </ul>
             <details>
-                <summary>What does it mean that <span class="math">\(X^{256}+1\)</span> is cyclotomic?</summary>
-                <p>In algebra, a cyclotomic polynomial is a special polynomial whose roots are the <strong>primitive roots of unity</strong> (i.e., complex numbers that, when raised to a certain power, give <span class="math">\(1\)</span>).</p>
-                <p>In the specific case of <span class="math">\(X^{256}+1\)</span>, this property guarantees three enormous advantages in cryptography (as in ML-KEM):</p>
+                <summary>Que signifie que <span class="math">\(X^{256}+1\)</span> est cyclotomique ?</summary>
+                <p>En algèbre, un polynôme cyclotomique est un polynôme spécial dont les racines sont les <strong>racines primitives de l'unité</strong> (c'est-à-dire des nombres complexes qui, élevés à une certaine puissance, donnent <span class="math">\(1\)</span>).</p>
+                <p>Dans le cas spécifique de <span class="math">\(X^{256}+1\)</span>, cette propriété garantit trois énormes avantages en cryptographie (comme dans ML-KEM) :</p>
                 <ul>
-                    <li><strong>Irreducibility</strong>: The polynomial cannot be factored into smaller polynomials with integer coefficients. This prevents an attacker from "breaking" the mathematical problem into easier-to-solve parts.</li>
-                    <li><strong>Ultra-fast multiplication (NTT)</strong>: It allows the use of the <em>Number Theoretic Transform</em> (NTT). Thanks to this algorithm, polynomial multiplication goes from a complexity of <span class="math">\(O(n^2)\)</span> to just <span class="math">\(O(n \log n)\)</span>, making post-quantum cryptography incredibly fast.</li>
-                    <li><strong>Uniform security</strong>: It distributes the error (noise) in a perfectly symmetric way across all 256 coefficients during operations, eliminating structural weak points that hackers could exploit.</li>
+                    <li><strong>Irréductibilité</strong> : Le polynôme ne peut pas être factorisé en polynômes plus petits à coefficients entiers. Cela empêche un attaquant de "casser" le problème mathématique en parties plus faciles à résoudre.</li>
+                    <li><strong>Multiplication ultra-rapide (NTT)</strong> : Il permet d'utiliser la <em>Transformée Numérique Théorique</em> (NTT). Grâce à cet algorithme, la multiplication polynomiale passe d'une complexité de <span class="math">\(O(n^2)\)</span> à seulement <span class="math">\(O(n \log n)\)</span>, rendant la cryptographie post-quantique incroyablement rapide.</li>
+                    <li><strong>Sécurité uniforme</strong> : Elle répartit l'erreur (le bruit) de manière parfaitement symétrique sur les 256 coefficients lors des opérations, éliminant les points faibles structurels que les pirates pourraient exploiter.</li>
                 </ul>
             </details>
         </section>
 
         <!-- Section 0.5 -->
         <section id="id-05">
-            <h2>0.5 Cryptographic hash functions</h2>
-            <p>A hash function <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> maps arbitrary-length inputs to fixed-length outputs.</p>
-            <p><strong>Required properties in cryptography:</strong></p>
+            <h2>0.5 Fonctions de hachage cryptographiques</h2>
+            <p>Une fonction de hachage <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> transforme des entrées de longueur arbitraire en sorties de longueur fixe.</p>
+            <p><strong>Propriétés requises en cryptographie :</strong></p>
             <ul>
-                <li><em>Preimage resistance:</em> given <span class="math">\(H(x)\)</span>, it is impossible to recover <span class="math">\(x\)</span></li>
-                <li><em>Collision resistance:</em> finding <span class="math">\(x \neq y\)</span> with <span class="math">\(H(x) = H(y)\)</span> is computationally infeasible</li>
-                <li><em>Avalanche effect:</em> changing one bit of input changes ~50% of the output</li>
+                <li><em>Résistance à la préimage :</em> étant donné <span class="math">\(H(x)\)</span>, il est impossible de retrouver <span class="math">\(x\)</span></li>
+                <li><em>Résistance aux collisions :</em> trouver <span class="math">\(x \neq y\)</span> avec <span class="math">\(H(x) = H(y)\)</span> est impossible en pratique</li>
+                <li><em>Effet avalanche :</em> changer un bit de l'entrée modifie environ 50 % de la sortie</li>
             </ul>
 
-            <h3>SHA-3 and SHAKE</h3>
-            <p>ML-KEM exclusively uses primitives from the <strong>SHA-3</strong> family (NIST standardized 2015):</p>
+            <h3>SHA-3 et SHAKE</h3>
+            <p>ML-KEM utilise exclusivement les primitives de la famille <strong>SHA-3</strong> (normalisées par le NIST en 2015) :</p>
             <table>
                 <thead>
                     <tr>
-                        <th>Function</th>
-                        <th>Output</th>
-                        <th>Use in ML-KEM</th>
+                        <th>Fonction</th>
+                        <th>Sortie</th>
+                        <th>Utilisation dans ML-KEM</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><code>SHA3-256</code></td>
-                        <td>fixed 256 bits</td>
-                        <td>general hashing</td>
+                        <td>256 bits fixes</td>
+                        <td>hachage général</td>
                     </tr>
                     <tr>
                         <td><code>SHA3-512</code></td>
-                        <td>fixed 512 bits</td>
-                        <td>key hashing</td>
+                        <td>512 bits fixes</td>
+                        <td>hachage de clés</td>
                     </tr>
                     <tr>
                         <td><code>SHAKE128</code></td>
-                        <td>variable length</td>
-                        <td>generation of <span class="math">\(A\)</span> (XOF)</td>
+                        <td>longueur variable</td>
+                        <td>génération de <span class="math">\(A\)</span> (XOF)</td>
                     </tr>
                     <tr>
                         <td><code>SHAKE256</code></td>
-                        <td>variable length</td>
-                        <td>key derivation</td>
+                        <td>longueur variable</td>
+                        <td>dérivation de clés</td>
                     </tr>
                 </tbody>
             </table>
-            <p>SHAKE is an <strong>XOF (eXtendable Output Function)</strong>: it produces as many bytes as desired from a given input. In ML-KEM, <code>SHAKE128(seed)</code> generates the entire public matrix <span class="math">\(A\)</span> from a 32-byte seed.</p>
+            <p>SHAKE est une <strong>XOF (eXtendable Output Function)</strong> : elle produit autant d'octets que souhaité à partir d'une entrée donnée. Dans ML-KEM, <code>SHAKE128(seed)</code> génère toute la matrice publique <span class="math">\(A\)</span> à partir d'une graine de 32 octets.</p>
         </section>
 
         <!-- Section 0.6 -->
         <section id="id-06">
-            <h2>0.6 Probability and noise distribution</h2>
+            <h2>0.6 Probabilités et distribution du bruit</h2>
 
-            <h3>Centered binomial distribution <span class="math">\(B_\eta\)</span></h3>
-            <p>In ML-KEM, the noise is not Gaussian but <strong>centered binomial</strong>. The sampling works as follows:</p>
+            <h3>Distribution binomiale centrée <span class="math">\(B_\eta\)</span></h3>
+            <p>Dans ML-KEM, le bruit n'est pas gaussien mais <strong>binomial centré</strong>. L'échantillonnage fonctionne comme suit :</p>
             <ol>
-                <li>Sample <span class="math">\(2\eta\)</span> uniform bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
-                <li>Return <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                <li>Échantillonner <span class="math">\(2\eta\)</span> bits uniformes : <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li>Retourner <span class="math">\(\sum a_i - \sum b_i\)</span></li>
             </ol>
-            <p>The result is an integer in <span class="math">\([-\eta, +\eta]\)</span> with an approximately Gaussian distribution centered at 0.</p>
-            <p><strong>Why not true Gaussian?</strong> The binomial distribution is simpler to sample in a <em>constant-time</em> manner (resistant to side-channel attacks), and the security is similar.</p>
-            <p>For ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Noise values will be in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+            <p>Le résultat est un entier dans <span class="math">\([-\eta, +\eta]\)</span> avec une distribution approximativement gaussienne centrée en 0.</p>
+            <p><strong>Pourquoi pas une vraie gaussienne ?</strong> La distribution binomiale est plus simple à échantillonner de manière <em>constant-time</em> (résistante aux attaques par canaux auxiliaires), et la sécurité est similaire.</p>
+            <p>Pour ML-KEM-768 : <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Les valeurs de bruit seront dans <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
 
-            <h3>Negligibility</h3>
-            <p>A function <span class="math">\(f(\lambda)\)</span> is <strong>negligible</strong> if for every polynomial <span class="math">\(p(\cdot)\)</span> there exists <span class="math">\(\lambda_0\)</span> such that for every <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+            <h3>Négligeabilité</h3>
+            <p>Une fonction <span class="math">\(f(\lambda)\)</span> est <strong>négligeable</strong> si pour tout polynôme <span class="math">\(p(\cdot)\)</span> il existe <span class="math">\(\lambda_0\)</span> tel que pour tout <span class="math">\(\lambda > \lambda_0\)</span> :</p>
             <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
-            <p>In practice: it decreases faster than any polynomial inverse. Error probabilities in ML-KEM are negligible in the security parameter <span class="math">\(\lambda\)</span>.</p>
+            <p>En pratique : elle diminue plus vite que l'inverse de tout polynôme. Les probabilités d'erreur dans ML-KEM sont négligeables en fonction du paramètre de sécurité <span class="math">\(\lambda\)</span>.</p>
         </section>
 
         <!-- Section 0.7 -->
         <section id="id-07">
-            <h2>0.7 Computational complexity</h2>
+            <h2>0.7 Complexité computationnelle</h2>
 
             <h3>Notations</h3>
             <ul>
-                <li><span class="math">\(O(f(n))\)</span>: asymptotic upper bound (order of magnitude)</li>
-                <li><span class="math">\(\Omega(f(n))\)</span>: lower bound</li>
-                <li><span class="math">\(\Theta(f(n))\)</span>: tight bound</li>
+                <li><span class="math">\(O(f(n))\)</span> : borne supérieure asymptotique (ordre de grandeur)</li>
+                <li><span class="math">\(\Omega(f(n))\)</span> : borne inférieure</li>
+                <li><span class="math">\(\Theta(f(n))\)</span> : borne serrée</li>
             </ul>
 
-            <h3>Relevant complexity classes</h3>
+            <h3>Classes de complexité pertinentes</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Class</th>
-                        <th>Meaning</th>
-                        <th>Examples</th>
+                        <th>Classe</th>
+                        <th>Signification</th>
+                        <th>Exemples</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>P</strong></td>
-                        <td>Solvable in polynomial time</td>
-                        <td>multiplication, sorting</td>
+                        <td>Résoluble en temps polynomial</td>
+                        <td>multiplication, tri</td>
                     </tr>
                     <tr>
                         <td><strong>NP</strong></td>
-                        <td>Verifiable in polynomial time</td>
+                        <td>Vérifiable en temps polynomial</td>
                         <td>SAT, TSP</td>
                     </tr>
                     <tr>
-                        <td><strong>NP-hard</strong></td>
-                        <td>At least as hard as NP</td>
-                        <td>factoring (presumably)</td>
+                        <td><strong>NP-difficile</strong></td>
+                        <td>Au moins aussi difficile que NP</td>
+                        <td>factorisation (supposément)</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Cryptographic problems and their difficulty</h3>
+            <h3>Problèmes cryptographiques et leur difficulté</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Problem</th>
-                        <th>Classical difficulty</th>
-                        <th>Quantum difficulty</th>
+                        <th>Problème</th>
+                        <th>Difficulté classique</th>
+                        <th>Difficulté quantique</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Factoring</td>
-                        <td>subexponential</td>
-                        <td><strong>polynomial</strong> (Shor)</td>
+                        <td>Factorisation</td>
+                        <td>subexponentielle</td>
+                        <td><strong>polynomiale</strong> (Shor)</td>
                     </tr>
                     <tr>
-                        <td>Discrete logarithm</td>
-                        <td>subexponential</td>
-                        <td><strong>polynomial</strong> (Shor)</td>
+                        <td>Logarithme discret</td>
+                        <td>subexponentielle</td>
+                        <td><strong>polynomiale</strong> (Shor)</td>
                     </tr>
                     <tr>
-                        <td>SVP (lattice)</td>
-                        <td>exponential</td>
-                        <td>exponential (no known speedup)</td>
+                        <td>SVP (treillis)</td>
+                        <td>exponentielle</td>
+                        <td>exponentielle (aucun accélération connue)</td>
                     </tr>
                     <tr>
                         <td>LWE / MLWE</td>
-                        <td>exponential</td>
-                        <td>exponential (no known speedup)</td>
+                        <td>exponentielle</td>
+                        <td>exponentielle (aucun accélération connue)</td>
                     </tr>
                 </tbody>
             </table>
             <blockquote>
-                <p>This table motivates the entire existence of post-quantum cryptography.</p>
+                <p>Ce tableau motive toute l'existence de la cryptographie post-quantique.</p>
             </blockquote>
         </section>
 
         <!-- Sources -->
         <div class="sources">
-            <h2>Sources and further reading</h2>
+            <h2>Sources et lectures complémentaires</h2>
             <ul>
-                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Chapters 1–5)</li>
-                <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (freely available online)</li>
-                <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Video: Algebraic Rings</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Chapitres 1–5)</li>
+                <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (disponible gratuitement en ligne)</li>
+                <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Vidéo : Anneaux algébriques</a></li>
                 <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – sections 2–3</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Navigation des chapitres -->
         <div class="chapter-nav">
-            <a href="#" class="nav-btn disabled">← Previous chapter</a>
+            <a href="#" class="nav-btn disabled">← Chapitre précédent</a>
             <span class="nav-label">00 / 10</span>
-            <a href="1.html" class="nav-btn">Next chapter →</a>
+            <a href="1.html" class="nav-btn">Chapitre suivant →</a>
         </div>
     </article>
         </main>
     </div>
 
-    <!-- Footer del sito -->
+    <!-- Pied de page du site -->
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> Bibliothèque libre pour tous. Tous droits réservés.</p>
         </div>
     </footer>
 
     <script>
-        // Anno corrente nel footer
+        // Année courante dans le pied de page
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Gestione del selettore lingua custom (stessa logica dell'index)
+        // Gestion du sélecteur de langue personnalisé (même logique que l'index)
         (function() {
             const toggle = document.getElementById('langToggle');
             const dropdown = document.getElementById('langDropdown');

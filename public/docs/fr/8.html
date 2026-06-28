@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 8 – MONEOO.</title>
+    <title>Chapitre 8 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#featureSection">Pourquoi</a>
+            <a href="index.html#learningPath">Parcours</a>
             <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+               <button class="lang-toggle" id="langToggle" aria-label="Choisir la langue">
+                    <span class="lang-current" id="langCurrent">🇫🇷 Français</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -370,78 +370,78 @@
         <aside class="chapter-sidebar">
             <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prérequis</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symétrique</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymétrique</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Treillis</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li class="active"><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sécurité</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implémentations</a></li>
             </ul>
         </aside>
 
-        <main class="chapter-content">
+       <main class="chapter-content">
     <article>
         <h1>08 – FIPS 203 / ML-KEM</h1>
-        <p class="subtitle">The heart of the standard: KeyGen, Encaps and Decaps</p>
+        <p class="subtitle">Le cœur de la norme: KeyGen, Encaps et Decaps</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-81">8.1 Standard overview</a></li>
-                <li><a href="#id-82">8.2 The K‑PKE primitives</a></li>
-                <li><a href="#id-83">8.3 ML‑KEM (the complete scheme)</a></li>
-                <li><a href="#id-84">8.4 Auxiliary primitive functions</a></li>
-                <li><a href="#id-85">8.5 Compression and decompression</a></li>
-                <li><a href="#id-86">8.6 Correctness and security</a></li>
+                <li><a href="#id-81">8.1 Aperçu de la norme</a></li>
+                <li><a href="#id-82">8.2 Les primitives K‑PKE</a></li>
+                <li><a href="#id-83">8.3 ML‑KEM (le schéma complet)</a></li>
+                <li><a href="#id-84">8.4 Fonctions primitives auxiliaires</a></li>
+                <li><a href="#id-85">8.5 Compression et décompression</a></li>
+                <li><a href="#id-86">8.6 Correction et sécurité</a></li>
             </ul>
         </div>
 
         <!-- Section 8.1 -->
         <section id="id-81">
-            <h2>8.1 Standard overview</h2>
+            <h2>8.1 Aperçu de la norme</h2>
 
-            <p>FIPS 203 was published by NIST in August 2024 as the first post-quantum standard for protecting communications. It is based on the CRYSTALS-Kyber submission from the NIST PQC Competition.</p>
+            <p>FIPS 203 a été publié par le NIST en août 2024 comme première norme post-quantique pour la protection des communications. Il est basé sur la soumission CRYSTALS-Kyber du NIST PQC Competition.</p>
 
-            <p><strong>What FIPS 203 standardizes:</strong></p>
+            <p><strong>Ce que FIPS 203 normalise:</strong></p>
             <ul>
-                <li>An IND-CCA2-secure KEM (Key Encapsulation Mechanism)</li>
-                <li>Three security levels: ML-KEM-512, ML-KEM-768, ML-KEM-1024</li>
-                <li>All auxiliary functions: hashing, sampling, encoding, compression</li>
+                <li>Un KEM (Key Encapsulation Mechanism) sécurisé IND-CCA2</li>
+                <li>Trois niveaux de sécurité: ML-KEM-512, ML-KEM-768, ML-KEM-1024</li>
+                <li>Toutes les fonctions auxiliaires: hachage, échantillonnage, encodage, compression</li>
             </ul>
 
-            <p><strong>What it does NOT standardize:</strong></p>
+            <p><strong>Ce qu'il ne normalise PAS:</strong></p>
             <ul>
-                <li>How to manage keys</li>
-                <li>Which symmetric cipher to use with the derived key</li>
-                <li>Handshake protocols (see TLS 1.3, SSH)</li>
+                <li>Comment gérer les clés</li>
+                <li>Quel chiffrement symétrique utiliser avec la clé dérivée</li>
+                <li>Les protocoles de handshake (voir TLS 1.3, SSH)</li>
             </ul>
         </section>
 
         <!-- Section 8.2 – K‑PKE -->
         <section id="id-82">
-            <h2>8.2 The K‑PKE primitives</h2>
-            <p>ML-KEM is built on two levels. The inner level is <strong>K‑PKE</strong>, a CPA-secure PKE (but not CCA-secure). ML-KEM adds the FO transformation to achieve CCA2.</p>
+            <h2>8.2 Les primitives K‑PKE</h2>
+            <p>ML-KEM est construit sur deux niveaux. Le niveau interne est <strong>K‑PKE</strong>, un PKE (Public Key Encryption) CPA-sécurisé (mais pas CCA-sécurisé). ML-KEM ajoute la transformation FO pour obtenir CCA2.</p>
 
             <h3>K‑PKE.KeyGen</h3>
             <div class="algorithm-steps">
                 <ol>
-                    <li>Input: 32-byte seed <span class="math">\(d\)</span></li>
-                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> where <span class="math">\(G = \text{SHA3-512}\)</span></li>
-                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (public matrix, already in NTT domain)</li>
-                    <li>For <span class="math">\(i = 0 \dots k-1\)</span>:
+                    <li>Entrée: graine <span class="math">\(d\)</span> de 32 octets</li>
+                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> où <span class="math">\(G = \text{SHA3-512}\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (matrice publique, déjà dans le domaine NTT)</li>
+                    <li>Pour <span class="math">\(i = 0 \dots k-1\)</span>:
                         <ul>
                             <li><span class="math">\(\mathbf{s}[i], \mathbf{e}[i] = \text{SamplePolyCBD}(\sigma, i)\)</span></li>
                         </ul>
                     </li>
                     <li><span class="math">\(\hat{\mathbf{s}} = \text{NTT}(\mathbf{s})\)</span>, <span class="math">\(\hat{\mathbf{e}} = \text{NTT}(\mathbf{e})\)</span></li>
                     <li><span class="math">\(\hat{\mathbf{t}} = \mathbf{A} \circ \hat{\mathbf{s}} + \hat{\mathbf{e}}\)</span></li>
-                    <li>Output:
+                    <li>Sortie:
                         <ul>
                             <li><span class="math">\(ek_{\text{PKE}} = \text{Encode}(\hat{\mathbf{t}}) \| \rho\)</span></li>
                             <li><span class="math">\(dk_{\text{PKE}} = \text{Encode}(\hat{\mathbf{s}})\)</span></li>
@@ -453,34 +453,34 @@
             <h3>K‑PKE.Encrypt</h3>
             <div class="algorithm-steps">
                 <ol>
-                    <li>Input: <span class="math">\(ek_{\text{PKE}}\)</span>, message <span class="math">\(m\)</span>, randomness <span class="math">\(r\)</span></li>
-                    <li>Parse <span class="math">\(\hat{\mathbf{t}}\)</span> and <span class="math">\(\rho\)</span> from <span class="math">\(ek\)</span></li>
+                    <li>Entrée: <span class="math">\(ek_{\text{PKE}}\)</span>, message <span class="math">\(m\)</span>, aléa <span class="math">\(r\)</span></li>
+                    <li>Parse <span class="math">\(\hat{\mathbf{t}}\)</span> et <span class="math">\(\rho\)</span> depuis <span class="math">\(ek\)</span></li>
                     <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span></li>
-                    <li>Sample small vectors <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> using <span class="math">\(r\)</span> as seed (CBD)</li>
+                    <li>Échantillonne des petits vecteurs <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> en utilisant <span class="math">\(r\)</span> comme graine (CBD)</li>
                     <li><span class="math">\(\hat{\mathbf{u}} = \text{NTT}^{-1}(\mathbf{A}^T \circ \text{NTT}(\mathbf{r})) + \mathbf{e}_1\)</span></li>
                     <li><span class="math">\(v = \text{NTT}^{-1}(\hat{\mathbf{t}}^T \circ \text{NTT}(\mathbf{r})) + e_2 + \text{Decode}(m)\)</span></li>
-                    <li>Compress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span></li>
-                    <li>Output: ciphertext <span class="math">\(c\)</span></li>
+                    <li>Comprime <span class="math">\(\mathbf{u}\)</span> et <span class="math">\(v\)</span></li>
+                    <li>Sortie: chiffré <span class="math">\(c\)</span></li>
                 </ol>
             </div>
 
             <h3>K‑PKE.Decrypt</h3>
             <div class="algorithm-steps">
                 <ol>
-                    <li>Input: <span class="math">\(dk_{\text{PKE}}\)</span>, ciphertext <span class="math">\(c\)</span></li>
-                    <li>Decompress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span> from <span class="math">\(c\)</span></li>
+                    <li>Entrée: <span class="math">\(dk_{\text{PKE}}\)</span>, chiffré <span class="math">\(c\)</span></li>
+                    <li>Décomprime <span class="math">\(\mathbf{u}\)</span> et <span class="math">\(v\)</span> depuis <span class="math">\(c\)</span></li>
                     <li><span class="math">\(\hat{\mathbf{s}} = \text{Decode}(dk_{\text{PKE}})\)</span></li>
                     <li><span class="math">\(w = v - \text{NTT}^{-1}(\hat{\mathbf{s}}^T \circ \text{NTT}(\mathbf{u}))\)</span></li>
-                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (decode the message from residual noise)</li>
-                    <li>Output: <span class="math">\(m\)</span></li>
+                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (décode le message à partir du bruit résiduel)</li>
+                    <li>Sortie: <span class="math">\(m\)</span></li>
                 </ol>
             </div>
         </section>
 
-        <!-- Section 8.3 – Complete ML‑KEM -->
+        <!-- Section 8.3 – ML‑KEM complet -->
         <section id="id-83">
-            <h2>8.3 ML‑KEM (the complete scheme)</h2>
-            <p>K‑PKE is only CPA‑secure. ML‑KEM uses the <strong>Fujisaki‑Okamoto (FO) transformation</strong> to elevate K‑PKE to <strong>IND‑CCA2</strong>. Decryption verifies that the received ciphertext matches what one would obtain by re-encrypting the decrypted message; if not, it returns a pseudorandom key (implicit reject).</p>
+            <h2>8.3 ML‑KEM (le schéma complet)</h2>
+            <p>K‑PKE est seulement CPA‑sécurisé. ML‑KEM utilise la <strong>transformation Fujisaki‑Okamoto (FO)</strong> pour élever K‑PKE à <strong>IND‑CCA2</strong>. Le déchiffrement vérifie que le chiffré reçu correspond à celui qu'on obtiendrait en rechiffrant le message déchiffré; dans le cas contraire, il retourne une clé pseudo-aléatoire (rejet implicite).</p>
 
             <h3 id="id-831">8.3.1 ML‑KEM.KeyGen</h3>
             <div class="math-block">
@@ -494,7 +494,7 @@
                 \end{aligned}
                 \]
             </div>
-            <p>The private key includes <span class="math">\(ek\)</span> and precomputed hashes to optimize Decaps.</p>
+            <p>La clé privée inclut <span class="math">\(ek\)</span> et des hachés précalculés pour optimiser Decaps.</p>
 
             <h3 id="id-832">8.3.2 ML‑KEM.Encaps</h3>
             <div class="math-block">
@@ -525,80 +525,80 @@
                 \end{aligned}
                 \]
             </div>
-            <p><strong>Note:</strong> the comparison <span class="math">\(c' == c\)</span> must be performed in constant time to avoid side‑channel attacks.</p>
+            <p><strong>Note:</strong> la comparaison <span class="math">\(c' == c\)</span> doit être effectuée en temps constant pour éviter les canaux auxiliaires.</p>
         </section>
 
-        <!-- Section 8.4 – Auxiliary functions -->
+        <!-- Section 8.4 – Fonctions auxiliaires -->
         <section id="id-84">
-            <h2>8.4 Auxiliary primitive functions</h2>
+            <h2>8.4 Fonctions primitives auxiliaires</h2>
 
-            <h3>Hashes used</h3>
+            <h3>Hachages utilisés</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Function</th>
-                        <th>Input</th>
-                        <th>Output</th>
-                        <th>Use</th>
+                        <th>Fonction</th>
+                        <th>Entrée</th>
+                        <th>Sortie</th>
+                        <th>Utilisation</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><span class="math">\(H = \text{SHA3-256}\)</span></td>
-                        <td>any</td>
-                        <td>32 bytes</td>
-                        <td>generic hashing</td>
+                        <td>quelconque</td>
+                        <td>32 octets</td>
+                        <td>hachage générique</td>
                     </tr>
                     <tr>
                         <td><span class="math">\(G = \text{SHA3-512}\)</span></td>
-                        <td>any</td>
-                        <td>64 bytes</td>
-                        <td>key derivation</td>
+                        <td>quelconque</td>
+                        <td>64 octets</td>
+                        <td>dérivation de clés</td>
                     </tr>
                     <tr>
                         <td><span class="math">\(\text{XOF} = \text{SHAKE128}\)</span></td>
-                        <td>any</td>
-                        <td>variable length</td>
-                        <td>generate <span class="math">\(A\)</span></td>
+                        <td>quelconque</td>
+                        <td>longueur variable</td>
+                        <td>générer <span class="math">\(A\)</span></td>
                     </tr>
                     <tr>
                         <td><span class="math">\(\text{PRF}_\eta = \text{SHAKE256}\)</span></td>
-                        <td>seed+nonce</td>
-                        <td>variable length</td>
-                        <td>sample <span class="math">\(s\)</span>, <span class="math">\(e\)</span></td>
+                        <td>graine+nonce</td>
+                        <td>longueur variable</td>
+                        <td>échantillonner <span class="math">\(s\)</span>, <span class="math">\(e\)</span></td>
                     </tr>
                     <tr>
                         <td><span class="math">\(\text{KDF} = \text{SHAKE256}\)</span></td>
-                        <td>any</td>
-                        <td>variable length</td>
-                        <td>derive final <span class="math">\(K\)</span></td>
+                        <td>quelconque</td>
+                        <td>longueur variable</td>
+                        <td>dérivation de <span class="math">\(K\)</span> final</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Sampling of <span class="math">\(A\)</span> (the <code>SampleNTT</code> algorithm)</h3>
-            <p>The matrix <span class="math">\(A \in R_q^{k \times k}\)</span> is generated deterministically from a public seed <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
+            <h3>Échantillonnage de <span class="math">\(A\)</span> (algorithme <code>SampleNTT</code>)</h3>
+            <p>La matrice <span class="math">\(A \in R_q^{k \times k}\)</span> est générée de manière déterministe à partir d'une graine publique <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
             <div class="sequence-diagram">
-                for i = 0..k-1, j = 0..k-1:<br />
+                pour i = 0..k-1, j = 0..k-1:<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
             </div>
-            <p><code>SampleNTT</code> reads bytes from the XOF and builds uniform coefficients in <span class="math">\(\{0, \ldots, q-1\}\)</span> (discarding values <span class="math">\(\geq q\)</span>).</p>
+            <p><code>SampleNTT</code> lit des octets depuis l'XOF et construit des coefficients uniformes dans <span class="math">\(\{0, \ldots, q-1\}\)</span> (en rejetant les valeurs <span class="math">\(\geq q\)</span>).</p>
 
-            <h3>Noise sampling (the <code>SamplePolyCBD</code> algorithm)</h3>
-            <p>Noise is sampled from the centered binomial distribution <span class="math">\(B_\eta\)</span>:</p>
+            <h3>Échantillonnage du bruit (algorithme <code>SamplePolyCBD</code>)</h3>
+            <p>Le bruit est échantillonné avec la distribution binomiale centrée <span class="math">\(B_\eta\)</span>:</p>
             <div class="sequence-diagram">
-                given a 32-byte seed σ and a nonce b:<br />
-                bytes = PRF<sub>η</sub>(σ, b) &nbsp; // 64η bytes<br />
-                for each pair of bits (a_i, b_i):<br />
+                étant donné une graine σ de 32 octets et un nonce b:<br />
+                bytes = PRF<sub>η</sub>(σ, b) &nbsp; // 64η octets<br />
+                pour chaque paire de bits (a_i, b_i):<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;coefficient = Σa_i - Σb_i
             </div>
-            <p>The result is a polynomial with coefficients in <span class="math">\([-\eta, \eta]\)</span>.</p>
+            <p>Le résultat est un polynôme avec des coefficients dans <span class="math">\([-\eta, \eta]\)</span>.</p>
         </section>
 
         <!-- Section 8.5 – Compression -->
         <section id="id-85">
-            <h2>8.5 Compression and decompression</h2>
-            <p>ML-KEM uses compression to reduce ciphertext size. Polynomial coefficients are in <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 bits), but are compressed to <span class="math">\(d_u\)</span> or <span class="math">\(d_v\)</span> bits.</p>
+            <h2>8.5 Compression et décompression</h2>
+            <p>ML-KEM utilise la compression pour réduire la taille du chiffré. Les coefficients des polynômes sont dans <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 bits), mais sont compressés à <span class="math">\(d_u\)</span> ou <span class="math">\(d_v\)</span> bits.</p>
             <div class="math-block">
                 \[
                 \text{Compress}_d(x) = \left\lfloor \frac{2^d}{q} \cdot x \right\rceil \bmod 2^d
@@ -609,33 +609,33 @@
                 \text{Decompress}_d(y) = \left\lfloor \frac{q}{2^d} \cdot y \right\rceil
                 \]
             </div>
-            <p><strong>Error introduced by compression:</strong> compression introduces an error <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. For <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. This error must be small enough not to cause decryption failure, which imposes a constraint on the parameters <span class="math">\(\eta_1\)</span>, <span class="math">\(\eta_2\)</span>, <span class="math">\(d_u\)</span>, <span class="math">\(d_v\)</span>.</p>
+            <p><strong>Erreur introduite par la compression:</strong> la compression introduit une erreur <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. Pour <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. Cette erreur doit être suffisamment petite pour ne pas faire échouer le déchiffrement, ce qui impose une contrainte sur les paramètres <span class="math">\(\eta_1\)</span>, <span class="math">\(\eta_2\)</span>, <span class="math">\(d_u\)</span>, <span class="math">\(d_v\)</span>.</p>
 
-            <h3>Noise budget</h3>
-            <p>The total noise reaching decryption is:</p>
+            <h3>Budget de bruit</h3>
+            <p>Le bruit total qui arrive au déchiffrement est:</p>
             <div class="math-block">
                 \[
                 \epsilon_{\text{total}} = \hat{\mathbf{e}}^T\hat{\mathbf{r}} + e_2 - \hat{\mathbf{s}}^T e_1 + \epsilon_u + \epsilon_v
                 \]
             </div>
-            <p>For correct decryption, we need <span class="math">\(|\epsilon_{\text{total}}| < \lfloor q/4 \rfloor = 832\)</span>. The parameters are chosen to ensure this holds with probability <span class="math">\(1 - 2^{-139}\)</span> for ML-KEM-768.</p>
+            <p>Pour déchiffrer correctement, il faut <span class="math">\(|\epsilon_{\text{total}}| < \lfloor q/4 \rfloor = 832\)</span>. Les paramètres sont choisis pour garantir que cela soit vrai avec une probabilité <span class="math">\(1 - 2^{-139}\)</span> pour ML-KEM-768.</p>
         </section>
 
-        <!-- Section 8.6 – Correctness and security -->
+        <!-- Section 8.6 – Correction et sécurité -->
         <section id="id-86">
-            <h2>8.6 Correctness and security</h2>
+            <h2>8.6 Correction et sécurité</h2>
 
-            <h3>Correctness of K‑PKE</h3>
-            <p>The error probability of K‑PKE is analyzed by sampling <span class="math">\(s\)</span>, <span class="math">\(e\)</span>, <span class="math">\(r\)</span>, <span class="math">\(e_1\)</span>, <span class="math">\(e_2\)</span> from the <span class="math">\(B_\eta\)</span> distribution. For ML-KEM-768 (<span class="math">\(k=3\)</span>, <span class="math">\(\eta_1=\eta_2=2\)</span>), the error probability for a single coefficient is <span class="math">\(< 2^{-150}\)</span>, and with 256 coefficients and the union bound the total probability is <span class="math">\(< 2^{-139}\)</span>.</p>
+            <h3>Correction de K‑PKE</h3>
+            <p>La probabilité d'erreur de K‑PKE est analysée en échantillonnant <span class="math">\(s\)</span>, <span class="math">\(e\)</span>, <span class="math">\(r\)</span>, <span class="math">\(e_1\)</span>, <span class="math">\(e_2\)</span> depuis la distribution <span class="math">\(B_\eta\)</span>. Pour ML-KEM-768 (<span class="math">\(k=3\)</span>, <span class="math">\(\eta_1=\eta_2=2\)</span>), la probabilité d'erreur pour un seul coefficient est <span class="math">\(< 2^{-150}\)</span>, et avec 256 coefficients et l'union bound la probabilité totale est <span class="math">\(< 2^{-139}\)</span>.</p>
 
-            <h3>IND‑CCA2 security of ML‑KEM</h3>
+            <h3>Sécurité IND‑CCA2 de ML‑KEM</h3>
             <details>
-                <summary><strong>Step 1: From MLWE to K‑PKE IND‑CPA</strong></summary>
-                <p>If an adversary distinguishes K‑PKE ciphertexts, it can be used to solve MLWE (polynomial reduction).</p>
+                <summary><strong>Étape 1: De MLWE à K‑PKE IND‑CPA</strong></summary>
+                <p>Si un adversaire distingue les chiffrés de K‑PKE, il peut être utilisé pour résoudre MLWE (réduction polynomiale).</p>
             </details>
             <details>
-                <summary><strong>Step 2: From K‑PKE IND‑CPA to ML‑KEM IND‑CCA2</strong></summary>
-                <p>Via the FO transformation in the random oracle model. The re-encryption in decryption is the key: it prevents the adversary from using decryption as an oracle.</p>
+                <summary><strong>Étape 2: De K‑PKE IND‑CPA à ML‑KEM IND‑CCA2</strong></summary>
+                <p>Via la transformation FO dans le modèle de l'oracle aléatoire. Le rechiffrement lors du déchiffrement est la clé: il empêche l'adversaire d'utiliser le déchiffrement comme oracle.</p>
             </details>
         </section>
 
@@ -651,11 +651,11 @@
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Navigation des chapitres -->
         <div class="chapter-nav">
-            <a href="7.html" class="nav-btn">← Previous chapter</a>
+            <a href="7.html" class="nav-btn">← Chapitre précédent</a>
             <span class="nav-label">08 / 10</span>
-            <a href="9.html" class="nav-btn">Next chapter →</a>
+            <a href="9.html" class="nav-btn">Chapitre suivant →</a>
         </div>
     </article>
 </main>
@@ -666,7 +666,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span>Bibliothèque libre pour tous. Tous droits réservés.</p>
         </div>
     </footer>
 

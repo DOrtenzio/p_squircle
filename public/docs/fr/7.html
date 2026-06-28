@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 7 – MONEOO.</title>
+    <title>Chapitre 7 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#featureSection">Pourquoi</a>
+            <a href="index.html#learningPath">Parcours</a>
             <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+               <button class="lang-toggle" id="langToggle" aria-label="Choisir la langue">
+                    <span class="lang-current" id="langCurrent">🇫🇷 Français</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -370,68 +370,68 @@
         <aside class="chapter-sidebar">
             <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prérequis</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symétrique</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymétrique</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Treillis</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sécurité</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implémentations</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
         <h1>07 – NTT (Number Theoretic Transform)</h1>
-        <p class="subtitle">The engine that makes ML-KEM practically usable</p>
+        <p class="subtitle">Le moteur qui rend ML-KEM pratiquement utilisable</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-71">7.1 The problem: multiplying polynomials</a></li>
-                <li><a href="#id-72">7.2 Fourier transforms and DFT</a></li>
-                <li><a href="#id-73">7.3 NTT: DFT in the modular world</a></li>
-                <li><a href="#id-74">7.4 NTT in ML-KEM</a></li>
-                <li><a href="#id-75">7.5 Simplified numerical example</a></li>
-                <li><a href="#id-76">7.6 Implementation</a></li>
+                <li><a href="#id-71">7.1 Le problème: multiplier des polynômes</a></li>
+                <li><a href="#id-72">7.2 Transformées de Fourier et DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT dans le monde modulaire</a></li>
+                <li><a href="#id-74">7.4 NTT dans ML-KEM</a></li>
+                <li><a href="#id-75">7.5 Exemple numérique simplifié</a></li>
+                <li><a href="#id-76">7.6 Implémentation</a></li>
             </ul>
         </div>
 
         <!-- Section 7.1 -->
         <section id="id-71">
-            <h2>7.1 The problem: multiplying polynomials</h2>
+            <h2>7.1 Le problème: multiplier des polynômes</h2>
 
-            <p>In ML-KEM, the fundamental operations involve polynomial multiplications in the ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+            <p>Dans ML-KEM, les opérations fondamentales impliquent des multiplications de polynômes dans l'anneau <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
 
-            <h3>Naïve multiplication</h3>
-            <p>Two polynomials of degree <span class="math">\(n-1\)</span> are multiplied using the schoolbook algorithm with complexity <span class="math">\(O(n^2)\)</span>.</p>
+            <h3>Multiplication naïve</h3>
+            <p>Deux polynômes de degré <span class="math">\(n-1\)</span> se multiplient avec l'algorithme scolaire en complexité <span class="math">\(O(n^2)\)</span>.</p>
             
             <ul>
-                <li>For <span class="math">\(n = 256\)</span>: about <span class="math">\(256^2 = 65536\)</span> multiplications per single product.</li>
-                <li>In ML-KEM-768 (<span class="math">\(k=3\)</span>), a single <code>Encaps</code> operation requires dozens of polynomial products → millions of multiplications with the naïve method.</li>
+                <li>Pour <span class="math">\(n = 256\)</span>: environ <span class="math">\(256^2 = 65536\)</span> multiplications par produit.</li>
+                <li>Dans ML-KEM-768 (<span class="math">\(k=3\)</span>), une seule opération <code>Encaps</code> nécessite des dizaines de produits polynomiaux → des millions de multiplications avec la méthode naïve.</li>
             </ul>
 
-            <h3>With NTT</h3>
-            <p>Complexity drops to <span class="math">\(O(n \log n)\)</span>:</p>
+            <h3>Avec NTT</h3>
+            <p>La complexité descend à <span class="math">\(O(n \log n)\)</span>:</p>
             <div class="math-block">
                 \[
-                256 \cdot 8 = 2048 \text{ operations per product}
+                256 \cdot 8 = 2048 \text{ opérations par produit}
                 \]
             </div>
-            <p><strong>Speedup:</strong> ~32×. On optimized hardware, ML-KEM-768 takes less than 1 ms.</p>
+            <p><strong>Accélération:</strong> ~32×. Sur du matériel optimisé, ML-KEM-768 prend moins de 1 ms.</p>
         </section>
 
         <!-- Section 7.2 -->
         <section id="id-72">
-            <h2>7.2 Fourier transforms and DFT</h2>
+            <h2>7.2 Transformées de Fourier et DFT</h2>
 
-            <h3>The convolution theorem</h3>
-            <p>The Fourier transform turns a convolution (like polynomial multiplication) into a pointwise product:</p>
+            <h3>Le théorème de convolution</h3>
+            <p>La transformée de Fourier transforme une convolution (comme la multiplication de polynômes) en un produit ponctuel:</p>
 
             <div class="math-block">
                 \[
@@ -439,121 +439,121 @@
                 \]
             </div>
 
-            <p><strong>Procedure:</strong></p>
+            <p><strong>Procédure:</strong></p>
             <ol>
-                <li>Compute <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> and <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
-                <li>Multiply pointwise: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
-                <li>Inverse transform: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+                <li>Calculer <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> et <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>Multiplier ponctuellement: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Transformer inverse: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
             </ol>
 
-            <p>If DFT and DFT<sup>-1</sup> cost <span class="math">\(O(n \log n)\)</span> (via FFT), the entire multiplication costs <span class="math">\(O(n \log n)\)</span>.</p>
+            <p>Si DFT et DFT<sup>-1</sup> coûtent <span class="math">\(O(n \log n)\)</span> (via FFT), toute la multiplication coûte <span class="math">\(O(n \log n)\)</span>.</p>
 
             <h3>Fast Fourier Transform (FFT)</h3>
-            <p>The Cooley-Tukey algorithm (1965) computes the DFT using a recursive structure:</p>
+            <p>L'algorithme de Cooley-Tukey (1965) calcule la DFT en exploitant la structure récursive:</p>
             <div class="math-block">
                 \[
-                \text{DFT}[f] = \left(\text{DFT}[f_{\text{even}}], \; \text{DFT}[f_{\text{odd}}]\right) \text{ combined with twiddle factors}
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{pairs}}], \; \text{DFT}[f_{\text{impairs}}]\right) \text{ combinés avec des twiddle factors}
                 \]
             </div>
-            <p><strong>The problem:</strong> Standard FFT uses complex numbers (floating point), which introduce rounding errors and non-constant timing, making them unsuitable for cryptography.</p>
+            <p><strong>Le problème:</strong> La FFT standard utilise des nombres complexes (virgule flottante), qui introduisent des erreurs d'arrondi et un temps non constant, les rendant inadaptés à la cryptographie.</p>
         </section>
 
         <!-- Section 7.3 -->
         <section id="id-73">
-            <h2>7.3 NTT: DFT in the modular world</h2>
+            <h2>7.3 NTT: DFT dans le monde modulaire</h2>
 
-            <h3>The idea</h3>
-            <p>The NTT (Number Theoretic Transform) is the DFT applied over <span class="math">\(\mathbb{Z}_q\)</span> instead of <span class="math">\(\mathbb{C}\)</span>. Instead of using complex roots of unity <span class="math">\(e^{2\pi i k/n}\)</span>, it uses primitive roots of unity in <span class="math">\(\mathbb{Z}_q\)</span>.</p>
+            <h3>L'idée</h3>
+            <p>La NTT (Number Theoretic Transform) est la DFT appliquée à <span class="math">\(\mathbb{Z}_q\)</span> au lieu de <span class="math">\(\mathbb{C}\)</span>. Au lieu d'utiliser les racines complexes de l'unité <span class="math">\(e^{2\pi i k/n}\)</span>, on utilise les racines primitives de l'unité dans <span class="math">\(\mathbb{Z}_q\)</span>.</p>
 
-            <h3>Primitive roots of unity modulo q</h3>
-            <p>An element <span class="math">\(\omega \in \mathbb{Z}_q\)</span> is a primitive <span class="math">\(n\)</span>-th root of unity if:</p>
+            <h3>Racines primitives de l'unité modulo q</h3>
+            <p>Un élément <span class="math">\(\omega \in \mathbb{Z}_q\)</span> est une racine <span class="math">\(n\)</span>-ième primitive de l'unité si:</p>
             <div class="math-block">
                 \[
-                \omega^n \equiv 1 \pmod{q} \quad \text{and} \quad \omega^k \not\equiv 1 \pmod{q} \text{ for } 0 < k < n
+                \omega^n \equiv 1 \pmod{q} \quad \text{et} \quad \omega^k \not\equiv 1 \pmod{q} \text{ pour } 0 < k < n
                 \]
             </div>
-            <p>Necessary condition: <span class="math">\(n \mid (q-1)\)</span> (i.e., <span class="math">\(n\)</span> must divide <span class="math">\(q-1\)</span>).</p>
+            <p>Condition nécessaire: <span class="math">\(n \mid (q-1)\)</span> (c'est-à-dire <span class="math">\(n\)</span> doit diviser <span class="math">\(q-1\)</span>).</p>
 
-            <p><strong>In ML-KEM:</strong></p>
+            <p><strong>Dans ML-KEM:</strong></p>
             <ul>
                 <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
-                <li>Verification: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
-                <li>Therefore, 256-th roots of unity modulo 3329 exist.</li>
-                <li>The primitive root used in FIPS 203: <span class="math">\(\omega = 17\)</span> (since <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, the root used for negacyclic NTT is <span class="math">\(\zeta = 17\)</span>).</li>
+                <li>Vérification: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Il existe donc des racines 256-ièmes de l'unité modulo 3329.</li>
+                <li>La racine primitive utilisée dans FIPS 203: <span class="math">\(\omega = 17\)</span> (puisque <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, la racine utilisée pour la NTT négacyclique est <span class="math">\(\zeta = 17\)</span>).</li>
             </ul>
 
-            <h3>NTT definition</h3>
+            <h3>Définition NTT</h3>
             <div class="math-block">
                 \[
                 \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
                 \]
             </div>
-            <p><strong>Inverse NTT:</strong></p>
+            <p><strong>NTT inverse:</strong></p>
             <div class="math-block">
                 \[
                 f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
                 \]
             </div>
-            <p>where <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
+            <p>où <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
 
-            <h3>Key properties</h3>
+            <h3>Propriétés clés</h3>
             <ul>
-                <li><strong>Exact:</strong> no rounding errors, everything in <span class="math">\(\mathbb{Z}_q\)</span></li>
-                <li><strong>Efficient:</strong> <span class="math">\(O(n \log n)\)</span> like FFT</li>
-                <li><strong>Constant-time:</strong> implementable without branching on secret data (side-channel safe)</li>
+                <li><strong>Exacte:</strong> pas d'erreur d'arrondi, tout est dans <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>Efficace:</strong> <span class="math">\(O(n \log n)\)</span> comme la FFT</li>
+                <li><strong>En temps constant:</strong> implémentable sans branchement sur des données secrètes (sécurité par canaux auxiliaires)</li>
             </ul>
         </section>
 
         <!-- Section 7.4 -->
         <section id="id-74">
-            <h2>7.4 NTT in ML-KEM</h2>
+            <h2>7.4 NTT dans ML-KEM</h2>
 
-            <h3>Negacyclic NTT</h3>
-            <p>In ML-KEM, the reduction is not modulo <span class="math">\(X^n - 1\)</span> (cyclic), but modulo <span class="math">\(X^n + 1\)</span> (negacyclic). In negacyclic convolution, the "wrapped" terms change sign. This requires a variant of the classical NTT with adjusted twiddle factors.</p>
+            <h3>NTT négacyclique</h3>
+            <p>Dans ML-KEM, la réduction n'est pas modulo <span class="math">\(X^n - 1\)</span> (cyclique), mais modulo <span class="math">\(X^n + 1\)</span> (négacyclique). Dans la convolution négacyclique, les termes "enroulés" changent de signe. Cela nécessite une variante de la NTT classique avec des facteurs de torsion (<em>twiddle factors</em>) ajustés.</p>
 
-            <p>The NTT in FIPS 203 applies a pre-twisting with powers of <span class="math">\(\zeta = 17\)</span>:</p>
+            <p>La NTT dans FIPS 203 applique une pré-torsion avec des puissances de <span class="math">\(\zeta = 17\)</span>:</p>
             <div class="math-block">
                 \[
-                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{before classical NTT}
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{avant la NTT classique}
                 \]
             </div>
 
-            <h3>ML-KEM operations in the NTT domain</h3>
-            <p>Once transformed, polynomials live in the NTT domain. Operations become elementary:</p>
+            <h3>Opérations ML-KEM dans le domaine NTT</h3>
+            <p>Une fois transformés, les polynômes vivent dans le domaine NTT. Les opérations deviennent élémentaires:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Operation</th>
-                        <th>In the NTT domain</th>
+                        <th>Opération</th>
+                        <th>Dans le domaine NTT</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Multiplication <span class="math">\(f \cdot g\)</span></td>
-                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
+                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> pour chaque <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>Sum <span class="math">\(f + g\)</span></td>
-                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
+                        <td>Somme <span class="math">\(f + g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> pour chaque <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>Matrix-vector product <span class="math">\(A \cdot s\)</span></td>
-                        <td><span class="math">\(k^2\)</span> products and <span class="math">\(k^2\)</span> pointwise sums</td>
+                        <td>Produit matrice-vecteur <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> produits et <span class="math">\(k^2\)</span> sommes ponctuelles</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>The public key <span class="math">\(A\)</span> is generated and stored already in the NTT domain, avoiding recomputing the NTT each time.</p>
+            <p>La clé publique <span class="math">\(A\)</span> est générée et stockée déjà dans le domaine NTT, évitant de recalculer la NTT à chaque fois.</p>
 
-            <h3>Complete KeyGen flow</h3>
+            <h3>Flux complet de KeyGen</h3>
             <div class="flowchart-container">
                 <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
-seed 
+graine 
   │
-  ├──► SHAKE128 ──► A_hat (already in NTT)
+  ├──► SHAKE128 ──► A_hat (déjà en NTT)
   │
-  └──► Binomial sampling ──► s, e
+  └──► Échantillonnage binomial ──► s, e
          │              │
          ▼              ▼
      s_hat = NTT(s)   e_hat = NTT(e)
@@ -563,19 +563,19 @@ seed
      t_hat = A_hat * s_hat + e_hat
                 │
                 ▼
-          Public Key (t_hat)
+          Clé Publique (t_hat)
                 </pre>
             </div>
-            <p>The output <code>t_hat</code> is the public key (already in NTT). The NTT<sup>-1</sup> for <span class="math">\(t\)</span> is avoided.</p>
+            <p>La sortie <code>t_hat</code> est la clé publique (déjà en NTT). On évite la NTT<sup>-1</sup> pour <span class="math">\(t\)</span>.</p>
         </section>
 
         <!-- Section 7.5 -->
         <section id="id-75">
-            <h2>7.5 Simplified numerical example</h2>
+            <h2>7.5 Exemple numérique simplifié</h2>
 
-            <p>Use <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (4-th root of 1 modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+            <p>Utilisons <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (racine 4-ième de 1 modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
 
-            <p><strong>Polynomials:</strong></p>
+            <p><strong>Polynômes:</strong></p>
             <div class="math-block">
                 \[
                 f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
@@ -587,7 +587,7 @@ seed
                 \]
             </div>
 
-            <p><strong>NTT of f:</strong></p>
+            <p><strong>NTT de f:</strong></p>
             <ul>
                 <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
                 <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
@@ -595,30 +595,30 @@ seed
                 <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
             </ul>
 
-            <p><strong>NTT of g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. For <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; for <span class="math">\(i \neq 0\)</span>: sum of roots <span class="math">\(= 0\)</span>.</p>
+            <p><strong>NTT de g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. Pour <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; pour <span class="math">\(i \neq 0\)</span>: somme des racines <span class="math">\(= 0\)</span>.</p>
 
-            <p><strong>Pointwise product:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
-            <p><strong>INTT of <span class="math">\(\hat{h}\)</span>:</strong> gives the product <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
+            <p><strong>Produit ponctuel:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>INTT de <span class="math">\(\hat{h}\)</span>:</strong> donne le produit <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
 
             <blockquote>
-                <p><strong>Note:</strong> this example uses reduction modulo <span class="math">\(X^4-1\)</span> (cyclic). ML-KEM uses <span class="math">\(X^n+1\)</span> (negacyclic) with the variant described in section 7.4.</p>
+                <p><strong>Note:</strong> cet exemple utilise une réduction modulo <span class="math">\(X^4-1\)</span> (cyclique). ML-KEM utilise <span class="math">\(X^n+1\)</span> (négacyclique) avec la variante décrite dans la section 7.4.</p>
             </blockquote>
         </section>
 
         <!-- Section 7.6 -->
         <section id="id-76">
-            <h2>7.6 Implementation</h2>
+            <h2>7.6 Implémentation</h2>
 
-            <h3>Cooley-Tukey pseudocode for NTT</h3>
+            <h3>Pseudocode Cooley-Tukey pour NTT</h3>
             <pre><code class="language-python">def ntt(f, q, omega):
     """
-    Iterative in-place NTT (Cooley-Tukey).
-    f: list of n coefficients in Z_q
-    q: prime modulus
-    omega: primitive n-th root of unity mod q
+    NTT itérative in-place (Cooley-Tukey).
+    f: liste de n coefficients dans Z_q
+    q: module premier
+    omega: racine n-ième primitive de l'unité mod q
     """
     n = len(f)
-    # bit-reversal permutation
+    # permutation bit-reversal
     j = 0
     for i in range(1, n):
         bit = n >> 1
@@ -629,7 +629,7 @@ seed
         if i < j:
             f[i], f[j] = f[j], f[i]
 
-    # butterfly operations
+    # opérations butterfly
     length = 2
     while length <= n:
         w = pow(omega, n // length, q)
@@ -644,14 +644,14 @@ seed
         length <<= 1
     return f</code></pre>
 
-            <h3>Reference implementation</h3>
-            <p>FIPS 203 specifies the exact NTT implementation and the table of precomputed roots <span class="math">\(\zeta^{br(i)}\)</span> (where <span class="math">\(br\)</span> is the bit-reversal permutation).</p>
+            <h3>Implémentation de référence</h3>
+            <p>FIPS 203 spécifie l'implémentation exacte de la NTT et la table des racines précalculées <span class="math">\(\zeta^{br(i)}\)</span> (où <span class="math">\(br\)</span> est la permutation bit-reversal).</p>
             
-            <p>Optimized implementations in assembly/SIMD are available in:</p>
+            <p>Des implémentations optimisées en assembly/SIMD sont disponibles dans:</p>
             <ul>
-                <li><code>liboqs</code> (C with AVX2)</li>
-                <li><code>pqclean</code> (portable C)</li>
-                <li><code>kyber</code> reference implementation (C)</li>
+                <li><code>liboqs</code> (C avec AVX2)</li>
+                <li><code>pqclean</code> (C portable)</li>
+                <li><code>kyber</code> implémentation de référence (C)</li>
             </ul>
         </section>
 
@@ -659,18 +659,18 @@ seed
         <div class="sources">
             <h2>Sources</h2>
             <ul>
-                <li>NIST FIPS 203 (2024), Sections 4.3 and 5 – NTT definition and operations in <span class="math">\(R_q\)</span></li>
+                <li>NIST FIPS 203 (2024), Sections 4.3 et 5 – définition NTT et opérations dans <span class="math">\(R_q\)</span></li>
                 <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
                 <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Section 6 (NTT implementation)</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Section 6 (implémentation NTT)</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Navigation des chapitres -->
         <div class="chapter-nav">
-            <a href="6.html" class="nav-btn">← Previous chapter</a>
+            <a href="6.html" class="nav-btn">← Chapitre précédent</a>
             <span class="nav-label">07 / 10</span>
-            <a href="8.html" class="nav-btn">Next chapter →</a>
+            <a href="8.html" class="nav-btn">Chapitre suivant →</a>
         </div>
     </article>
 </main>
@@ -680,7 +680,7 @@ seed
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span>Bibliothèque libre pour tous. Tous droits réservés.</p>
         </div>
     </footer>
 
