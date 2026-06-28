@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capitolo 9 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="../../index.html#featureSection">Perché</a>
+            <a href="../../index.html#learningPath">Percorso</a>
+            <a href="../../index.html#searchSection">La Guida</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
+                    <span class="lang-current" id="langCurrent">🇮🇹 Italiano</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Capitoli</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisiti</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simmetrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimmetrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Reticoli</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> Sicurezza</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementazioni</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>09 – Sicurezza e Parametri</h1>
+        <p class="subtitle">Perché ML-KEM è sicuro e come sono stati scelti i numeri</p>
+
+        <!-- Indice -->
+        <div class="toc">
+            <h2>Indice</h2>
+            <ul>
+                <li><a href="#id-91">9.1 Modelli di sicurezza</a></li>
+                <li><a href="#id-92">9.2 Misurare la difficoltà di MLWE</a></li>
+                <li><a href="#id-93">9.3 Attacchi principali ai reticoli</a></li>
+                <li><a href="#id-94">9.4 Livelli di sicurezza NIST</a></li>
+                <li><a href="#id-95">9.5 Confronto con altri schemi PQC</a></li>
+                <li><a href="#id-96">9.6 Side-channel e implementazioni sicure</a></li>
+            </ul>
+        </div>
+
+        <!-- Sezione 9.1 -->
+        <section id="id-91">
+            <h2>9.1 Modelli di sicurezza</h2>
+
+            <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
+            <p>In questo modello, un avversario:</p>
+            <ol>
+                <li>Riceve la chiave pubblica <span class="math">\(ek\)</span></li>
+                <li>Sceglie due messaggi <span class="math">\(m_0, m_1\)</span></li>
+                <li>Riceve il cifrario di uno dei due (scelto casualmente)</li>
+                <li>Deve indovinare quale messaggio è stato cifrato</li>
+            </ol>
+            <p>Lo schema è sicuro se: <span class="math">\(\Pr[\text{indovina}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (la componente di cifratura di base) è IND-CPA sotto l'assunzione MLWE.</p>
+
+            <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
+            <p>Come CPA, ma l'avversario può anche interrogare un oracolo di decifratura su qualsiasi ciphertext (eccetto quello sfida). Questo modello cattura attacchi reali (come Bleichenbacher), dove un avversario attivo manda messaggi costruiti ad hoc e osserva le risposte.</p>
+            <p><strong>ML-KEM è IND-CCA2.</strong> Questo è il livello richiesto per un KEM sicuro in protocolli reali come TLS o SSH.</p>
+
+            <h3>ROM vs. QROM</h3>
+            <p>Le prove di sicurezza usano modelli idealizzati per le funzioni hash:</p>
+            <ul>
+                <li><strong>ROM (Random Oracle Model):</strong> le hash sono oracoli random perfetti.</li>
+                <li><strong>QROM (Quantum Random Oracle Model):</strong> l'avversario quantistico può interrogare l'oracolo in sovrapposizione.</li>
+            </ul>
+            <p>Le prove moderne per la trasformazione FO (Fujisaki-Okamoto) usata in ML-KEM garantiscono sicurezza nel QROM, essenziale contro avversari quantistici.</p>
+        </section>
+
+        <!-- Sezione 9.2 -->
+        <section id="id-92">
+            <h2>9.2 Come si misura la difficoltà di MLWE</h2>
+
+            <h3>Sicurezza come costo dell'attacco</h3>
+            <p>Non esiste una prova assoluta che MLWE sia difficile. La sicurezza si stima calcolando il costo del miglior algoritmo di attacco noto. Una sicurezza di <span class="math">\(\lambda\)</span> bit significa che l'attacco richiede circa <span class="math">\(2^\lambda\)</span> operazioni.</p>
+
+            <h3>I parametri</h3>
+            <p>La difficoltà dipende da:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span> (dimensione polinomio, fissa)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (dimensione modulo)</li>
+                <li><span class="math">\(q = 3329\)</span> (modulo primo)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (ampiezza rumore)</li>
+            </ul>
+
+            <h3>Lattice Estimator</h3>
+            <p>Lo strumento standard è il <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> di Albrecht et al. Per ML-KEM-768:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Attacco</th>
+                        <th>Costo stimato (bit)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primal attack (BKZ)</td>
+                        <td>~178 bit</td>
+                    </tr>
+                    <tr>
+                        <td>Dual attack</td>
+                        <td>~175 bit</td>
+                    </tr>
+                    <tr>
+                        <td>Combinatorial</td>
+                        <td>&gt; 200 bit</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Il margine di sicurezza è ampio rispetto al target di 128 bit classico/quantistico.</p>
+        </section>
+
+        <!-- Sezione 9.3 -->
+        <section id="id-93">
+            <h2>9.3 Attacchi principali ai reticoli</h2>
+
+            <h3>BKZ (Block Korkine-Zolotarev)</h3>
+            <p>È il miglior algoritmo generale per trovare vettori corti. Divide il reticolo in blocchi di dimensione <span class="math">\(\beta\)</span> e risolve SVP localmente. Complessità: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. Per ML-KEM-768, <span class="math">\(\beta \approx 430\)</span>.</p>
+
+            <h3>Attacco primale (uSVP)</h3>
+            <p>Riduce MLWE a un problema di vettore corto in un reticolo aumentato contenente la chiave pubblica e il ciphertext. Il vettore segreto <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> diventa un vettore corto che BKZ cerca di trovare.</p>
+
+            <h3>Attacco duale</h3>
+            <p>Sfrutta il reticolo duale per distinguere campioni MLWE da quelli uniformi tramite statistiche. Costruisce molti vettori corti nel duale per effettuare il distinguisher.</p>
+
+            <h3>Scelta di q = 3329</h3>
+            <p>Essendo primo e privo di struttura algebrica speciale, previene attacchi algebrici specifici. Non esistono fattori piccoli o relazioni semplici che possano essere sfruttate.</p>
+        </section>
+
+        <!-- Sezione 9.4 -->
+        <section id="id-94">
+            <h2>9.4 Livelli di sicurezza NIST</h2>
+
+            <p>NIST ha definito 5 livelli. ML-KEM copre i livelli 1, 3 e 5:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Livello NIST</th>
+                        <th>Sicurezza Classica</th>
+                        <th>Sicurezza Quantistica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1 (AES-128)</td>
+                        <td>~118 bit</td>
+                        <td>~100 bit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3 (AES-192)</td>
+                        <td><strong>~178 bit</strong></td>
+                        <td><strong>~164 bit</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM-1024</td>
+                        <td>5 (AES-256)</td>
+                        <td>~230 bit</td>
+                        <td>~218 bit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p><strong>Raccomandazione:</strong> ML-KEM-768 offre il bilanciamento ottimale sicurezza/performance per la maggior parte degli usi. ML-KEM-1024 è riservato a sistemi ad altissima criticidad.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sezione 9.5 -->
+        <section id="id-95">
+            <h2>9.5 Confronto con altri schemi PQC</h2>
+
+            <h3>KEM Post-Quantum Standardizzati (NIST 2024)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Base Matematica</th>
+                        <th>Chiave Pubblica</th>
+                        <th>Ciphertext</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE (Reticoli)</td>
+                        <td>1184 B</td>
+                        <td>1088 B</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>Codici correttori</td>
+                        <td>~1541 B</td>
+                        <td>~1573 B</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>Codici correttori</td>
+                        <td>~2249 B</td>
+                        <td>~4522 B</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>Codici Goppa</td>
+                        <td>~261 KB</td>
+                        <td>128 B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Confronto con Crittografia Classica</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Chiave Pubblica</th>
+                        <th>Sicurezza Quantistica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 B</td>
+                        <td>❌ Vulnerabile</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 B</td>
+                        <td>❌ Vulnerabile</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 B</td>
+                        <td>✅ 164+ bit</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Il costo principale è la dimensione maggiore (~37× rispetto a ECDH), ma rimane accettabile per handshake TLS moderni.</p>
+        </section>
+
+        <!-- Sezione 9.6 -->
+        <section id="id-96">
+            <h2>9.6 Side-channel e implementazioni sicure</h2>
+
+            <p>Un'implementazione corretta può essere vulnerabile se trapela informazioni tramite tempo di esecuzione (timing attacks) o consumo energetico.</p>
+
+            <h3>Constant-Time (CT)</h3>
+            <p>Tutte le operazioni devono avere tempo costante indipendentemente dai dati segreti. Esempio critico in Decaps:</p>
+
+            <pre><code class="language-c">// NON sicuro (timing variabile):
+if (memcmp(c, c_prime, len) == 0) { 
+    K = K_good; 
+} else { 
+    K = K_reject; 
+}
+
+// Sicuro (constant-time):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF se uguale, 0x00 se diverso
+K = ct_select(mask, K_good, K_reject);     // selezione CT senza branch</code></pre>
+
+            <h3>Aree critiche per CT in ML-KEM</h3>
+            <ul>
+                <li><strong>Campionamento <span class="math">\(B_\eta\)</span>:</strong> addizioni di bit senza branch condizionali.</li>
+                <li><strong>NTT:</strong> butterfly operations devono essere eseguite sempre, anche se il risultato non cambia.</li>
+                <li><strong>Verifica Ciphertext:</strong> uso di <code>ct_memcmp</code>.</li>
+            </ul>
+
+            <h3>Implementazioni di riferimento</h3>
+            <ul>
+                <li><code>pqclean</code>: implementazioni portabili CT.</li>
+                <li><code>liboqs</code>: ottimizzazioni AVX2 con proprietà CT verificate.</li>
+            </ul>
+        </section>
+
+        <!-- Fonti -->
+        <div class="sources">
+            <h2>Fonti</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+            </ul>
+        </div>
+
+        <!-- Navigazione capitoli -->
+        <div class="chapter-nav">
+            <a href="8.html" class="nav-btn">← Capitolo precedente</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">Capitolo successivo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Anno corrente nel footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Gestione del selettore lingua custom (stessa logica dell'index)
+        (function() {
+            const toggle = document.getElementById('langToggle');
+            const dropdown = document.getElementById('langDropdown');
+            const selector = document.getElementById('langSelector');
+            const currentDisplay = document.getElementById('langCurrent');
+
+            if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+            const langMap = {
+                'it': '🇮🇹 Italiano',
+                'en': '🇬🇧 English',
+                'fr': '🇫🇷 Français',
+                'de': '🇩🇪 Deutsch',
+                'es': '🇪🇸 Español',
+                'pt': '🇵🇹 Português',
+                'nl': '🇳🇱 Nederlands',
+                'ru': '🇷🇺 Русский',
+                'zh': '🇨🇳 中文',
+                'ja': '🇯🇵 日本語',
+                'ko': '🇰🇷 한국어',
+                'ar': '🇸🇦 العربية',
+                'hi': '🇮🇳 हिन्दी',
+                'tr': '🇹🇷 Türkçe',
+                'pl': '🇵🇱 Polski',
+                'uk': '🇺🇦 Українська'
+            };
+
+            const pathLang = window.location.pathname.split('/')[1] || 'it';
+            if (langMap[pathLang]) {
+                currentDisplay.textContent = langMap[pathLang];
+            }
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selector.classList.toggle('open');
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const lang = option.dataset.lang;
+                    if (lang && langMap[lang]) {
+                        window.location.href = `/${lang}/index.html`;
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!selector.contains(e.target)) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && selector.classList.contains('open')) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                if (option.dataset.lang === pathLang) {
+                    option.classList.add('active');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

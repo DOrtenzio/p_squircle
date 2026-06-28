@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capitolo 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="index.html#featureSection">Why</a>
+            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#searchSection">Guide</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
+                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Chapters</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+            </ul>
+        </aside>
+
+        <!-- Contenuto del capitolo -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – Prerequisiti Matematici</h1>
+                <p class="subtitle">Gli strumenti essenziali per comprendere la crittografia post‑quantum</p>
+
+                <!-- Indice -->
+                <div class="toc">
+                    <h2>Indice</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 Aritmetica modulare</a></li>
+                        <li><a href="#id-02">0.2 Algebra lineare: vettori e matrici</a></li>
+                        <li><a href="#id-03">0.3 Polinomi</a></li>
+                        <li><a href="#id-04">0.4 Strutture algebriche: gruppi, anelli, campi</a></li>
+                        <li><a href="#id-05">0.5 Funzioni di hash crittografiche</a></li>
+                        <li><a href="#id-06">0.6 Probabilità e distribuzione del rumore</a></li>
+                        <li><a href="#id-07">0.7 Complessità computazionale</a></li>
+                    </ul>
+                </div>
+
+                <!-- Sezione 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 Aritmetica modulare</h2>
+
+                    <h3>Cos'è il modulo</h3>
+                    <p>L'operazione <span class="math">\(a \bmod m\)</span> restituisce il <strong>resto</strong> della divisione intera di <span class="math">\(a\)</span> per <span class="math">\(m\)</span>.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{perché } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{perché } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>Convenzione:</strong> in crittografia i risultati modulo <span class="math">\(q\)</span> sono sempre nell'intervallo <span class="math">\([0, q-1]\)</span>.</p>
+                    </blockquote>
+
+                    <h3>Aritmetica in <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Indichiamo con <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> l'insieme degli interi modulo <span class="math">\(q\)</span>. In questo insieme somma, sottrazione e moltiplicazione si riducono sempre modulo <span class="math">\(q\)</span>:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>Inverso moltiplicativo</h3>
+                    <p>Nella matematica comune, l'inverso di un numero serve a ottenere <span class="math">\(1\)</span> tramite una moltiplicazione (es. l'inverso di <span class="math">\(5\)</span> è <span class="math">\(\frac{1}{5}\)</span>, perché <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). Nell'aritmetica modulare le frazioni non esistono. L'inverso di un numero <span class="math">\(a\)</span> deve quindi essere un altro numero intero <span class="math">\(b\)</span> che, moltiplicato per <span class="math">\(a\)</span>, dà come resto 1 modulo <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>La regola di esistenza</h4>
+                    <p>L'inverso di <span class="math">\(a\)</span> non esiste sempre. Si può trovare se e solo se <span class="math">\(a\)</span> e <span class="math">\(q\)</span> non hanno divisori in comune (cioè se il loro Massimo Comun Divisore è 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+                    <ul>
+                        <li><strong>Proprietà chiave:</strong> Se il modulo <span class="math">\(q\)</span> è un numero primo, tutti i numeri dell'insieme (tranne lo zero) hanno sempre un inverso garantito.</li>
+                    </ul>
+
+                    <h4>Esempio pratico: Calcolare <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>La scrittura <span class="math">\(5^{-1}\)</span> significa: "Trova l'inverso di 5 modulo 13". Cerchiamo un numero <span class="math">\(b\)</span> tale che <span class="math">\(5 \cdot b\)</span> dia resto <span class="math">\(1\)</span> quando diviso per <span class="math">\(13\)</span>:</p>
+                    <ol>
+                        <li>Proviamo a moltiplicare <span class="math">\(5\)</span> per vari numeri interi.</li>
+                        <li>Scegliendo <span class="math">\(b = 8\)</span>, otteniamo: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                        <li>Dividiamo <span class="math">\(40\)</span> per <span class="math">\(13\)</span>: il 13 ci sta 3 volte (<span class="math">\(13 \cdot 3 = 39\)</span>) con il resto di 1.</li>
+                    </ol>
+                    <p><strong>La risposta è 8</strong>, perché <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>Esponenziazione modulare</h3>
+                    <p>L'esponenziazione modulare consiste nel calcolare il resto della divisione di una potenza: <span class="math">\(a^k \pmod m\)</span>. Questa operazione è la colonna vertebrale della crittografia moderna (come l'algoritmo RSA). Viene usata perché è un "orologio a senso unico": è facilissimo calcolare il risultato, ma è quasi impossibile fare il percorso inverso (scoprire l'esponente <span class="math">\(k\)</span> partendo dal risultato).</p>
+
+                    <h4>Il problema dei grandi numeri</h4>
+                    <p>Se dobbiamo calcolare <span class="math">\(5^{11} \pmod{13}\)</span>, il calcolo diretto è impossibile per un computer se l'esponente ha centinaia di cifre. Il numero <span class="math">\(5^{11}\)</span> diventerebbe troppo grande per la memoria.</p>
+
+                    <h4>La soluzione: L'algoritmo Square-and-Multiply</h4>
+                    <p>Questo algoritmo permette di calcolare il risultato in pochissimi passaggi (<span class="math">\(O(\log k)\)</span> moltiplicazioni), lavorando sempre con numeri piccoli ed evitando che la potenza cresca all'infinito.</p>
+
+                    <details>
+                        <summary><strong>Come funziona in pratica (Esempio: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>Convertiamo l'esponente in binario: <span class="math">\(11 = 8 + 2 + 1\)</span>. Invece di moltiplicare <span class="math">\(5\)</span> per se stesso <span class="math">\(11\)</span> volte, calcoliamo le potenze al quadrato passo dopo passo riducendo subito il risultato modulo <span class="math">\(13\)</span>:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{Base: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{Quadrato: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{Quadrato del quadrato: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{Quadrato successivo: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>Ora uniamo solo i pezzi che compongono il nostro esponente <span class="math">\(11\)</span> (ovvero <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>Dividiamo <span class="math">\(60\)</span> per <span class="math">\(13\)</span>: il <span class="math">\(13\)</span> ci sta <span class="math">\(4\)</span> volte (<span class="math">\(52\)</span>) con il resto di <span class="math">\(8\)</span>.</p>
+                        <p><strong>Risultato finale:</strong> <span class="math">\(8\)</span> (abbiamo fatto solo 4 passaggi invece di 11).</p>
+                    </details>
+                </section>
+
+                <!-- Sezione 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 Algebra lineare: vettori e matrici</h2>
+
+                    <h3>Vettori</h3>
+                    <p>Un vettore <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> è una lista ordinata di <span class="math">\(n\)</span> numeri interi calcolati modulo <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>Nelle operazioni tra vettori, ogni risultato viene ridotto modulo <span class="math">\(q\)</span>.</p>
+
+                    <h4>Esempio pratico</h4>
+                    <p>Con <span class="math">\(q = 13\)</span>:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>Somma di vettori</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>Prodotto scalare</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>Calcolo:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>Somma: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>Riduzione modulo 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>Matrici</h3>
+                    <p>Una matrice <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> è un array di righe e colonne.</p>
+                    <p><img src="https://picsum.photos/seed/matrix/600/200?grayscale" alt="Esempio di matrice" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(Nella pratica, la matrice <span class="math">\(A\)</span> in ML-KEM ha dimensioni <span class="math">\(k \times k\)</span> con <span class="math">\(k = 3, 4\)</span> o <span class="math">\(5\)</span> ed è generata da un seme casuale tramite SHAKE.)</em></p>
+
+                    <h4>Prodotto matrice-vettore</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>Esempio</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>Passaggi dettagliati</summary>
+                        <p>Prima riga: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>Seconda riga: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>Riduzione modulo 13: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>Quindi: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>Norma infinito</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>Questa norma misura la componente con valore assoluto massimo. Nel contesto MLWE, i vettori di errore devono avere norma molto piccola.</p>
+                    <details>
+                        <summary>Esempi pratici</summary>
+                        <p><strong>Caso valido:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>Caso non valido:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Sezione 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 Polinomi</h2>
+
+                    <h3>Polinomi a coefficienti in <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Un polinomio in <span class="math">\(\mathbb{Z}_q[X]\)</span> ha la forma:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>dove ogni <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+
+                    <h4>Somma di polinomi</h4>
+                    <p>Si sommano i coefficienti omologhi modulo <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>Prodotto di polinomi e riduzione</h4>
+                    <p>Il prodotto di due polinomi di grado <span class="math">\(\leq n-1\)</span> può avere grado fino a <span class="math">\(2n-2\)</span>. Per tenerli compatti, si riduce modulo un polinomio speciale.</p>
+                    <p>In ML-KEM si usa <span class="math">\(X^n + 1\)</span> con <span class="math">\(n = 256\)</span>. La regola di riduzione è:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>Quindi ogni volta che compare <span class="math">\(X^{256}\)</span> nel prodotto, lo si sostituisce con <span class="math">\(-1\)</span>.</p>
+
+                    <h4>Esempio semplice</h4>
+                    <p>Con <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, modulo <span class="math">\(X^4+1\)</span>:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Sezione 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 Strutture algebriche: gruppi, anelli, campi</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Struttura</th>
+                                <th>Operazioni</th>
+                                <th>Proprietà chiave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Gruppo</strong></td>
+                                <td>una (+)</td>
+                                <td>chiusura, associatività, neutro, inverso</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anello</strong></td>
+                                <td>due (+, ×)</td>
+                                <td>gruppo abeliano per +, semigruppo per ×</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Campo</strong></td>
+                                <td>due (+, ×)</td>
+                                <td>anello con inverso moltiplicativo per tutti i ≠ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> come campo</h3>
+                    <p>Se <span class="math">\(q\)</span> è primo, <span class="math">\(\mathbb{Z}_q\)</span> <strong>è un campo</strong>: ogni elemento non nullo ha inverso moltiplicativo. In ML-KEM, <span class="math">\(q = 3329\)</span> è primo → <span class="math">\(\mathbb{Z}_{3329}\)</span> è un campo.</p>
+
+                    <h3>L'anello <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>È un anello (non un campo, perché non tutti i polinomi hanno inverso), ma ha proprietà utili per la crittografia:</p>
+                    <ul>
+                        <li>ogni polinomio ha esattamente 256 coefficienti;</li>
+                        <li>la moltiplicazione è efficiente via NTT (vedi file 07);</li>
+                        <li>il polinomio <span class="math">\(X^{256}+1\)</span> è <em>ciclotomico</em>, il che garantisce buone proprietà di sicurezza.</li>
+                    </ul>
+                    <details>
+                        <summary>Cosa significa che <span class="math">\(X^{256}+1\)</span> è ciclotomico?</summary>
+                        <p>In algebra, un polinomio ciclotomico è un polinomio speciale le cui radici sono le <strong>radici primitive dell'unità</strong> (ovvero i numeri complessi che elevati a una certa potenza danno <span class="math">\(1\)</span>).</p>
+                        <p>Nel caso specifico di <span class="math">\(X^{256}+1\)</span>, questa proprietà garantisce tre enormi vantaggi in crittografia (come in ML-KEM):</p>
+                        <ul>
+                            <li><strong>Irriducibilità</strong>: Il polinomio non può essere scomposto in polinomi più piccoli a coefficienti interi. Questo evita che un utente malintenzionato possa "spezzare" il problema matematico in parti più facili da risolvere.</li>
+                            <li><strong>Moltiplicazione ultra-rapida (NTT)</strong>: Permette di usare la <em>Number Theoretic Transform</em> (NTT). Grazie a questo algoritmo, la moltiplicazione tra polinomi passa da una complessità di <span class="math">\(O(n^2)\)</span> a una di soli <span class="math">\(O(n \log n)\)</span>, rendendo la crittografia post-quantum incredibilmente veloce.</li>
+                            <li><strong>Sicurezza uniforme</strong>: Distribuisce l'errore (il rumore) in modo perfettamente simmetrico su tutti i 256 coefficienti durante le operazioni, eliminando punti deboli strutturali che gli hacker potrebbero sfruttare.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Sezione 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 Funzioni di hash crittografiche</h2>
+                    <p>Una funzione hash <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> mappa input di lunghezza arbitraria in output di lunghezza fissa.</p>
+                    <p><strong>Proprietà richieste in crittografia:</strong></p>
+                    <ul>
+                        <li><em>Resistenza alle preimmagini:</em> da <span class="math">\(H(x)\)</span> non si risale a <span class="math">\(x\)</span></li>
+                        <li><em>Resistenza alle collisioni:</em> trovare <span class="math">\(x \neq y\)</span> con <span class="math">\(H(x) = H(y)\)</span> è computazionalmente impossibile</li>
+                        <li><em>Effetto valanga:</em> cambiare un bit di input cambia ~50% dell'output</li>
+                    </ul>
+
+                    <h3>SHA-3 e SHAKE</h3>
+                    <p>ML-KEM usa esclusivamente primitive della famiglia <strong>SHA-3</strong> (standardizzata NIST 2015):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Funzione</th>
+                                <th>Output</th>
+                                <th>Uso in ML-KEM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 bit fissi</td>
+                                <td>hashing generale</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 bit fissi</td>
+                                <td>hashing di chiavi</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>lunghezza variabile</td>
+                                <td>generazione di <span class="math">\(A\)</span> (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>lunghezza variabile</td>
+                                <td>derivazione di chiavi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE è una <strong>XOF (eXtendable Output Function)</strong>: produce quanti byte si vuole da un input dato. In ML-KEM, <code>SHAKE128(seed)</code> genera l'intera matrice pubblica <span class="math">\(A\)</span> da un seme di 32 byte.</p>
+                </section>
+
+                <!-- Sezione 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 Probabilità e distribuzione del rumore</h2>
+
+                    <h3>Distribuzione binomiale centrata <span class="math">\(B_\eta\)</span></h3>
+                    <p>In ML-KEM, il rumore non è gaussiano ma <strong>binomiale centrata</strong>. Il campionamento funziona così:</p>
+                    <ol>
+                        <li>Campiona <span class="math">\(2\eta\)</span> bit uniformi: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>Restituisci <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                    </ol>
+                    <p>Il risultato è un intero in <span class="math">\([-\eta, +\eta]\)</span> con distribuzione approssimativamente gaussiana attorno a 0.</p>
+                    <p><strong>Perché non gaussiana vera?</strong> La distribuzione binomiale è più semplice da campionare in modo <em>costante nel tempo</em> (resistente a side-channel), e la sicurezza è simile.</p>
+                    <p>Per ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. I valori di rumore saranno in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+
+                    <h3>Negligibilità</h3>
+                    <p>Una funzione <span class="math">\(f(\lambda)\)</span> è <strong>negligibile</strong> se per ogni polinomio <span class="math">\(p(\cdot)\)</span> esiste <span class="math">\(\lambda_0\)</span> tale che per ogni <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>In pratica: decresce più velocemente di qualsiasi inverso polinomiale. Le probabilità di errore in ML-KEM sono negligibili nel parametro di sicurezza <span class="math">\(\lambda\)</span>.</p>
+                </section>
+
+                <!-- Sezione 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 Complessità computazionale</h2>
+
+                    <h3>Notazioni</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: ordine di grandezza asintotico (limite superiore)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: limite inferiore</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: limite stretto</li>
+                    </ul>
+
+                    <h3>Classi rilevanti</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe</th>
+                                <th>Significato</th>
+                                <th>Esempi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>Risolvibile in tempo polinomiale</td>
+                                <td>moltiplicazione, ordinamento</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>Verificabile in tempo polinomiale</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-hard</strong></td>
+                                <td>Almeno difficile quanto NP</td>
+                                <td>fattorizzazione (presumibilmente)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Problemi crittografici e la loro difficoltà</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Problema</th>
+                                <th>Difficoltà classica</th>
+                                <th>Difficoltà quantistica</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Fattorizzazione</td>
+                                <td>subesponenziale</td>
+                                <td><strong>polinomiale</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>Logaritmo discreto</td>
+                                <td>subesponenziale</td>
+                                <td><strong>polinomiale</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (lattice)</td>
+                                <td>esponenziale</td>
+                                <td>esponenziale (nessun speedup noto)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>esponenziale</td>
+                                <td>esponenziale (nessun speedup noto)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>Questa tabella motiva l'intera esistenza della crittografia post-quantum.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Fonti -->
+                <div class="sources">
+                    <h2>Fonti e approfondimenti</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Capitoli 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (libero online)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Video: Anelli Algebrici</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – sezioni 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Navigazione capitoli -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← Capitolo precedente</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">Capitolo successivo →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Anno corrente nel footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Gestione del selettore lingua custom (stessa logica dell'index)
+        (function() {
+            const toggle = document.getElementById('langToggle');
+            const dropdown = document.getElementById('langDropdown');
+            const selector = document.getElementById('langSelector');
+            const currentDisplay = document.getElementById('langCurrent');
+
+            if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+            const langMap = {
+                'it': '🇮🇹 Italiano',
+                'en': '🇬🇧 English',
+                'fr': '🇫🇷 Français',
+                'de': '🇩🇪 Deutsch',
+                'es': '🇪🇸 Español',
+                'pt': '🇵🇹 Português',
+                'nl': '🇳🇱 Nederlands',
+                'ru': '🇷🇺 Русский',
+                'zh': '🇨🇳 中文',
+                'ja': '🇯🇵 日本語',
+                'ko': '🇰🇷 한국어',
+                'ar': '🇸🇦 العربية',
+                'hi': '🇮🇳 हिन्दी',
+                'tr': '🇹🇷 Türkçe',
+                'pl': '🇵🇱 Polski',
+                'uk': '🇺🇦 Українська'
+            };
+
+            const pathLang = window.location.pathname.split('/')[1] || 'it';
+            if (langMap[pathLang]) {
+                currentDisplay.textContent = langMap[pathLang];
+            }
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selector.classList.toggle('open');
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const lang = option.dataset.lang;
+                    if (lang && langMap[lang]) {
+                        window.location.href = `/${lang}/index.html`;
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!selector.contains(e.target)) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && selector.classList.contains('open')) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                if (option.dataset.lang === pathLang) {
+                    option.classList.add('active');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

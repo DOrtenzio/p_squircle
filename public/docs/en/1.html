@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capitolo 1 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="../../index.html#featureSection">Perché</a>
+            <a href="../../index.html#learningPath">Percorso</a>
+            <a href="../../index.html#searchSection">La Guida</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
+                    <span class="lang-current" id="langCurrent">🇮🇹 Italiano</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Capitoli</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisiti</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Simmetrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimmetrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Reticoli</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sicurezza</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementazioni</a></li>
+            </ul>
+        </aside>
+
+        <!-- Contenuto del capitolo -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – Crittografia Simmetrica</h1>
+        <p class="subtitle">Il punto di arrivo pratico di tutto il percorso PQC</p>
+
+        <!-- Indice -->
+        <div class="toc">
+            <h2>Indice</h2>
+            <ul>
+                <li><a href="#id-11">1.1 Cos'è la crittografia simmetrica</a></li>
+                <li><a href="#id-12">1.2 AES: Advanced Encryption Standard</a></li>
+                <li><a href="#id-13">1.3 Modalità operative</a></li>
+                <li><a href="#id-14">1.4 Autenticazione e AEAD</a></li>
+                <li><a href="#id-15">1.5 Ruolo nel contesto PQC</a></li>
+            </ul>
+        </div>
+
+        <!-- Sezione 1.1 -->
+        <section id="id-11">
+            <h2>1.1 Cos'è la crittografia simmetrica</h2>
+
+            <p>In un sistema a crittografia <strong>simmetrica</strong>, mittente e destinatario usano la <strong>stessa chiave</strong> <span class="math">\(K\)</span> per cifrare e decifrare.</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Mittente: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{Destinatario: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>Vantaggio principale:</strong> efficienza. AES-256 su hardware moderno raggiunge decine di GB/s.</p>
+
+            <p><strong>Svantaggio:</strong> serve un canale sicuro per scambiarsi <span class="math">\(K\)</span> <em>prima</em> di comunicare. Questo è esattamente il problema che i KEM risolvono.</p>
+
+            <h3>Sicurezza della crittografia simmetrica vs. quantistica</h3>
+
+            <p>I computer quantistici non rompono AES. L'algoritmo di Grover offre un <em>quadratico</em> speedup nella ricerca della chiave, ma:</p>
+            <ul>
+                <li><strong>AES-128:</strong> sicurezza effettiva da 128 bit scende a ~64 bit → insufficiente</li>
+                <li><strong>AES-256:</strong> sicurezza effettiva da 256 bit scende a ~128 bit → ancora sicuro</li>
+            </ul>
+
+            <p>Per questo FIPS 203 (ML-KEM) produce chiavi da 256 bit, destinate ad essere usate con AES-256.</p>
+        </section>
+
+        <!-- Sezione 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES: Advanced Encryption Standard</h2>
+
+            <p>AES è un <strong>cifrario a blocchi</strong>: prende un blocco di 128 bit e una chiave (<span class="math">\(K\)</span>), e produce 128 bit cifrati.</p>
+
+            <h3>Struttura interna</h3>
+
+            <p>AES organizza i 128 bit di input come una matrice <span class="math">\(4 \times 4\)</span> di byte. Applica poi <span class="math">\(r\)</span> <em>round</em> (10, 12 o 14 in base alla dimensione della chiave), ciascuno composto da quattro trasformazioni:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trasformazione</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>Sostituzione non lineare via S-Box (resistenza alla crittanalisi differenziale)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>Rotazione ciclica delle righe (diffusione)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>Combinazione lineare delle colonne (diffusione)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>XOR con la sottochiave del round corrente</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key schedule</h3>
+
+            <p>La chiave originale (<span class="math">\(K\)</span> di 128, 192 o 256 bit) viene espansa in <span class="math">\(r+1\)</span> sottochiavi, una per ogni round.</p>
+
+            <div class="example">
+                <p>AES-128: chiave 128 bit, 10 round</p>
+                <p>AES-192: chiave 192 bit, 12 round</p>
+                <p>AES-256: chiave 256 bit, 14 round</p>
+            </div>
+
+            <h3>Sicurezza</h3>
+
+            <p>Il migliore attacco noto ad AES-128 richiede <span class="math">\(2^{126.1}\)</span> operazioni (Biryukov &amp; Khovratovich, 2009) – sostanzialmente forza bruta.</p>
+        </section>
+
+        <!-- Sezione 1.3 -->
+        <section id="id-13">
+            <h2>1.3 Modalità operative</h2>
+
+            <p>AES cifra un blocco da 128 bit. Ma i messaggi reali sono più lunghi. Le <strong>modalità operative</strong> definiscono come applicare AES ripetutamente.</p>
+
+            <h3>ECB (Electronic Codebook) – da non usare</h3>
+
+            <p>Ogni blocco è cifrato indipendentemente. Blocchi identici producono ciphertext identici → perde la struttura del plaintext.</p>
+
+            <h3>CBC (Cipher Block Chaining)</h3>
+
+            <p>Ogni blocco plaintext viene XORato con il ciphertext del blocco precedente prima di essere cifrato. Richiede un IV (Initialization Vector) casuale.</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>Più sicuro di ECB, ma non parallelizzabile in cifratura.</p>
+
+            <h3>CTR (Counter Mode) – consigliato</h3>
+
+            <p>Genera un keystream cifrando un contatore incrementale. Il plaintext viene XORato con il keystream.</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>Parallelizzabile sia in cifratura che decifratura. Trasforma AES in cifrario a flusso.</p>
+
+            <h3>GCM (Galois/Counter Mode) – usato in TLS 1.3</h3>
+
+            <p>Combina CTR con un MAC basato su campi di Galois. Offre confidenzialità <strong>e</strong> autenticità.</p>
+        </section>
+
+        <!-- Sezione 1.4 -->
+        <section id="id-14">
+            <h2>1.4 Autenticazione e AEAD</h2>
+
+            <p>La confidenzialità non basta: un attaccante potrebbe modificare il ciphertext senza che il destinatario se ne accorga. Serve <strong>autenticità</strong>.</p>
+
+            <h3>MAC (Message Authentication Code)</h3>
+
+            <p>Un MAC è una funzione <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> dove <span class="math">\(\tau\)</span> è il <em>tag di autenticità</em>. Solo chi conosce <span class="math">\(K\)</span> può generare e verificare <span class="math">\(\tau\)</span>.</p>
+
+            <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
+
+            <p>Combina cifratura e autenticazione in una sola primitiva:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> oppure <span class="math">\(\perp\)</span> (se tag non valido)</p>
+            </div>
+
+            <p><code>AAD</code> (Additional Authenticated Data) è dati autenticati ma non cifrati (es. header di pacchetti).</p>
+
+            <p><strong>AES-256-GCM</strong> è lo schema AEAD standard usato in TLS 1.3 e come cifrario simmetrico dopo un KEM.</p>
+        </section>
+
+        <!-- Sezione 1.5 -->
+        <section id="id-15">
+            <h2>1.5 Ruolo nel contesto PQC</h2>
+
+            <p>Un ML-KEM completo in uso reale funziona così:</p>
+
+            <div class="sequence-diagram">
+Alice                                Bob
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, Messaggio) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  Messaggio = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ Comunicazione sicura           |
+            </div>
+
+            <p>La chiave <span class="math">\(K\)</span> prodotta da ML-KEM (32 byte) non viene usata direttamente come chiave AES, ma derivata con una <strong>KDF (Key Derivation Function)</strong> come HKDF per separare contesti diversi.</p>
+
+            <h3>Dimensioni pratiche (ML-KEM-768 + AES-256-GCM)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Componente</th>
+                        <th>Dimensione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chiave pubblica ML-KEM</td>
+                        <td>1184 byte</td>
+                    </tr>
+                    <tr>
+                        <td>Ciphertext ML-KEM</td>
+                        <td>1088 byte</td>
+                    </tr>
+                    <tr>
+                        <td>Shared secret → chiave AES</td>
+                        <td>32 byte</td>
+                    </tr>
+                    <tr>
+                        <td>Overhead AEAD (tag GCM)</td>
+                        <td>16 byte</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Fonti -->
+        <div class="sources">
+            <h2>Fonti</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Capitoli 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Navigazione capitoli -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← Capitolo precedente</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">Capitolo successivo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Anno corrente nel footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Gestione del selettore lingua custom (stessa logica dell'index)
+        (function() {
+            const toggle = document.getElementById('langToggle');
+            const dropdown = document.getElementById('langDropdown');
+            const selector = document.getElementById('langSelector');
+            const currentDisplay = document.getElementById('langCurrent');
+
+            if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+            const langMap = {
+                'it': '🇮🇹 Italiano',
+                'en': '🇬🇧 English',
+                'fr': '🇫🇷 Français',
+                'de': '🇩🇪 Deutsch',
+                'es': '🇪🇸 Español',
+                'pt': '🇵🇹 Português',
+                'nl': '🇳🇱 Nederlands',
+                'ru': '🇷🇺 Русский',
+                'zh': '🇨🇳 中文',
+                'ja': '🇯🇵 日本語',
+                'ko': '🇰🇷 한국어',
+                'ar': '🇸🇦 العربية',
+                'hi': '🇮🇳 हिन्दी',
+                'tr': '🇹🇷 Türkçe',
+                'pl': '🇵🇱 Polski',
+                'uk': '🇺🇦 Українська'
+            };
+
+            const pathLang = window.location.pathname.split('/')[1] || 'it';
+            if (langMap[pathLang]) {
+                currentDisplay.textContent = langMap[pathLang];
+            }
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selector.classList.toggle('open');
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const lang = option.dataset.lang;
+                    if (lang && langMap[lang]) {
+                        window.location.href = `/${lang}/index.html`;
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!selector.contains(e.target)) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && selector.classList.contains('open')) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                if (option.dataset.lang === pathLang) {
+                    option.classList.add('active');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

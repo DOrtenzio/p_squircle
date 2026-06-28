@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capitolo 3 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="../../index.html#featureSection">Perché</a>
+            <a href="../../index.html#learningPath">Percorso</a>
+            <a href="../../index.html#searchSection">La Guida</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
+                    <span class="lang-current" id="langCurrent">🇮🇹 Italiano</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Capitoli</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisiti</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simmetrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimmetrica</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Reticoli</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Sicurezza</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementazioni</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – L'Algoritmo di Shor</h1>
+        <p class="subtitle">Perché RSA ed ECC sono vulnerabili ai computer quantistici</p>
+
+        <!-- Indice -->
+        <div class="toc">
+            <h2>Indice</h2>
+            <ul>
+                <li><a href="#id-31">3.1 Computer quantistici: le basi essenziali</a></li>
+                <li><a href="#id-32">3.2 L'algoritmo di Shor</a></li>
+                <li><a href="#id-33">3.3 Impatto su RSA, DH, ECC</a></li>
+                <li><a href="#id-34">3.4 Grover: la minaccia alla crittografia simmetrica</a></li>
+                <li><a href="#id-35">3.5 Stato dell'arte dei computer quantistici (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+            </ul>
+        </div>
+
+        <!-- Sezione 3.1 -->
+        <section id="id-31">
+            <h2>3.1 Computer quantistici: le basi essenziali</h2>
+
+            <h3>Qubit vs. bit classici</h3>
+
+            <p>Un bit classico è 0 oppure 1. Un <strong>qubit</strong> può essere in <strong>sovrapposizione</strong>: una combinazione lineare di <span class="math">\(|0\rangle\)</span> e <span class="math">\(|1\rangle\)</span>.</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>Prima della misurazione, il qubit è "sia 0 che 1". Dopo la misurazione, collassa in 0 (con probabilità <span class="math">\(|\alpha|^2\)</span>) o 1 (con probabilità <span class="math">\(|\beta|^2\)</span>).</p>
+
+            <blockquote>
+                <p><strong>Analogia:</strong> immagina di lanciare una moneta che mentre è in aria rappresenta simultaneamente testa e croce. Solo quando la guardi, diventa uno dei due.</p>
+            </blockquote>
+
+            <h3>Entanglement e interferenza</h3>
+
+            <ul>
+                <li><strong>Entanglement:</strong> due qubit possono essere correlati in modo tale che misurare uno determina istantaneamente l'altro.</li>
+                <li><strong>Interferenza quantistica:</strong> i percorsi di calcolo "sbagliati" si cancellano costruttivamente (come onde che si annullano), mentre i percorsi "giusti" si amplificano.</li>
+            </ul>
+
+            <p>Gli algoritmi quantistici sfruttano l'interferenza per amplificare le risposte corrette e sopprimere quelle errate.</p>
+
+            <h3>Parallelismo quantistico</h3>
+
+            <p>Con <span class="math">\(n\)</span> qubit, si può rappresentare una sovrapposizione di <span class="math">\(2^n\)</span> stati contemporaneamente. Ma la misurazione restituisce un solo stato → il trucco è costruire algoritmi dove le interferenze lasciano sopravvivere solo la risposta giusta.</p>
+        </section>
+
+                <!-- Sezione Schema Algoritmo -->
+        <section id="id-32">
+            <h2>3.2 L'algoritmo di Shor</h2>
+            
+            <h3>Schema dell'algoritmo per fattorizzare \(n\)</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>Input:</strong> intero composto <span class="math">\(n\)</span></li>
+                    <li><strong>Inizializzazione:</strong> Scegli <span class="math">\(a\)</span> casuale tale che <span class="math">\(1 < a < n\)</span> e <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>Preparazione Quantistica:</strong> Prepara un registro in sovrapposizione uniforme da <span class="math">\(0\)</span> a <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>Oracle:</strong> Calcola <span class="math">\(f(x) = a^x \bmod n\)</span> in parallelo (sovrapposizione)</li>
+                    <li><strong>QFT:</strong> Applica la Quantum Fourier Transform al primo registro</li>
+                    <li><strong>Misura:</strong> Misura il registro per ottenere un valore correlato al periodo <span class="math">\(r\)</span></li>
+                    <li><strong>Classico:</strong> Usa l'algoritmo delle frazioni continue per stimare <span class="math">\(r\)</span></li>
+                    <li><strong>Verifica:</strong> Se <span class="math">\(r\)</span> è pari e <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li>Calcola <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> e <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>Questi sono fattori non banali di <span class="math">\(n\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Loop:</strong> Se fallisce, torna al passo 2 con un nuovo <span class="math">\(a\)</span></li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Nota:</strong> Il cuore quantistico (passi 3-5) trova il periodo <span class="math">\(r\)</span> della funzione <span class="math">\(f(x)\)</span> in tempo polinomiale, sfruttando l'interferenza costruttiva/distruttiva della QFT.</p>
+            </div>
+        </section>
+
+        <!-- Sezione 3.3 -->
+        <section id="id-33">
+            <h2>3.3 Impatto su RSA, DH, ECC</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Basa la sicurezza su</th>
+                        <th>Vulnerabile a Shor?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>Fattorizzazione</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sì</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (mod <span class="math">\(p\)</span>)</td>
+                        <td>Logaritmo discreto in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sì</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (logaritmo discreto su EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sì</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>Problemi su reticoli</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">Nessun algoritmo efficiente noto</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>Permutazioni pseudocasuali</td>
+                        <td>Solo Grover (vedi sotto)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Shor risolve qualsiasi problema strutturato come la ricerca di periodicità in un gruppo abeliano. Fattorizzazione e logaritmo discreto (incluso su EC) hanno esattamente questa struttura. I problemi su reticoli no.</p>
+        </section>
+
+        <!-- Sezione 3.4 -->
+        <section id="id-34">
+            <h2>3.4 Grover: la minaccia alla crittografia simmetrica</h2>
+
+            <p>L'algoritmo di Grover (1996) offre uno speedup <strong>quadratico</strong> nella ricerca non strutturata:</p>
+            <ul>
+                <li>Trovare una chiave tra <span class="math">\(2^k\)</span> possibilità classicamente: <span class="math">\(O(2^k)\)</span> tentativi</li>
+                <li>Con Grover: <span class="math">\(O(2^{k/2})\)</span> tentativi</li>
+            </ul>
+
+            <p><strong>Conseguenze pratiche:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Chiave</th>
+                        <th>Sicurezza classica</th>
+                        <th>Sicurezza post-quantum (Grover)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 bit</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 bit → insufficiente</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 bit</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 bit → ancora sicuro</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 bit</td>
+                        <td>128 bit → sicuro</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 bit</td>
+                        <td>128 bit → sicuro</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Per questo NIST raccomanda AES-256 (non AES-128) nel contesto post-quantum.</p>
+        </section>
+
+        <!-- Sezione 3.5 -->
+        <section id="id-35">
+            <h2>3.5 Stato dell'arte dei computer quantistici (2024–2025)</h2>
+
+            <p>I computer quantistici attuali sono <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: hanno decine-centinaia di qubit fisici ma con alto tasso di errore.</p>
+
+            <p>Per rompere RSA-2048 con Shor servono:</p>
+            <ul>
+                <li>~4000 qubit logici perfetti</li>
+                <li>oppure ~4 milioni di qubit fisici con correzione degli errori quantistici</li>
+            </ul>
+
+            <p>I migliori sistemi attuali (Google Willow, IBM Heron, ecc.) hanno ~100-1000 qubit fisici ad alta fedeltà, ma siamo ancora lontani dalla scala necessaria.</p>
+
+            <blockquote>
+                <p><strong>Stima del NIST:</strong> computer quantistici crittograficamente rilevanti potrebbero esistere entro 10–15 anni, con significativa incertezza in entrambe le direzioni.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sezione 3.6 -->
+        <section id="id-36">
+            <h2>3.6 Harvest Now, Decrypt Later</h2>
+
+            <p>Anche se i computer quantistici non esistono <em>ancora</em> in forma crittograficamente rilevante, esiste una minaccia concreta <strong>oggi</strong>:</p>
+
+            <blockquote>
+                <p>Un avversario può <strong>raccogliere adesso</strong> comunicazioni cifrate (anche se non può decifrarle), e <strong>decifrarle in futuro</strong> quando avrà un computer quantistico sufficientemente potente.</p>
+            </blockquote>
+
+            <p>Questo attacco è noto come <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> o <em>store-now-decrypt-later</em>.</p>
+
+            <h4>Chi è a rischio:</h4>
+            <ul>
+                <li>Comunicazioni diplomatiche e militari con lunga vita segreta</li>
+                <li>Dati medici, finanziari, legali con requisiti di confidenzialità decennale</li>
+                <li>Segreti industriali e IP</li>
+            </ul>
+
+            <h4>Quando migrare?</h4>
+
+            <p>Se i tuoi dati devono rimanere segreti per più anni di quanto manchino computer quantistici sufficientemente potenti, devi migrare <em>ora</em>.</p>
+
+            <p>Questa è la ragione principale per cui NIST ha standardizzato ML-KEM (FIPS 203) nel 2024, e per cui organizzazioni come NSA, ENISA e ANSSI raccomandano la migrazione immediata per sistemi ad alta criticità.</p>
+        </section>
+
+        <!-- Fonti -->
+        <div class="sources">
+            <h2>Fonti</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Navigazione capitoli -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← Capitolo precedente</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">Capitolo successivo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Anno corrente nel footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Gestione del selettore lingua custom (stessa logica dell'index)
+        (function() {
+            const toggle = document.getElementById('langToggle');
+            const dropdown = document.getElementById('langDropdown');
+            const selector = document.getElementById('langSelector');
+            const currentDisplay = document.getElementById('langCurrent');
+
+            if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+            const langMap = {
+                'it': '🇮🇹 Italiano',
+                'en': '🇬🇧 English',
+                'fr': '🇫🇷 Français',
+                'de': '🇩🇪 Deutsch',
+                'es': '🇪🇸 Español',
+                'pt': '🇵🇹 Português',
+                'nl': '🇳🇱 Nederlands',
+                'ru': '🇷🇺 Русский',
+                'zh': '🇨🇳 中文',
+                'ja': '🇯🇵 日本語',
+                'ko': '🇰🇷 한국어',
+                'ar': '🇸🇦 العربية',
+                'hi': '🇮🇳 हिन्दी',
+                'tr': '🇹🇷 Türkçe',
+                'pl': '🇵🇱 Polski',
+                'uk': '🇺🇦 Українська'
+            };
+
+            const pathLang = window.location.pathname.split('/')[1] || 'it';
+            if (langMap[pathLang]) {
+                currentDisplay.textContent = langMap[pathLang];
+            }
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selector.classList.toggle('open');
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const lang = option.dataset.lang;
+                    if (lang && langMap[lang]) {
+                        window.location.href = `/${lang}/index.html`;
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!selector.contains(e.target)) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && selector.classList.contains('open')) {
+                    selector.classList.remove('open');
+                }
+            });
+
+            dropdown.querySelectorAll('.lang-option').forEach(option => {
+                if (option.dataset.lang === pathLang) {
+                    option.classList.add('active');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
