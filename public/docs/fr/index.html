@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <main>
+        <section class="hero roll-in-element">
+            <div class="hero-copy">
+                <h1 class="hero-title">MONEOO.</h1>
+                <p class="hero-subtitle">A detailed guide, starting from mathematical foundations, to fully understand FIPS 203 and, consequently, ML-KEM</p>
+            </div>
+            <div class="hero-action">
+                <button class="btn btn-primary" onclick="document.getElementById('searchInput').focus()">View the Guide</button>
+            </div>
+        </section>
+
+        <div id="homeToolbar" class="page-toolbar">
+            <div class="toolbar-brand">MONEOO.</div>
+            <nav class="toolbar-nav" aria-label="Quick navigation">
+                <a href="#featureSection">Why</a>
+                <a href="#learningPath">Path</a>
+                <a href="#searchSection">The Guide</a>
+            </nav>
+            <div class="toolbar-lang">
+                <div class="lang-selector" id="langSelector">
+                    <button class="lang-toggle" id="langToggle" aria-label="Select language" title="Change language">
+                        <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                        <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="lang-dropdown" id="langDropdown">
+                        <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                        <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                        <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                        <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                        <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                        <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                        <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                        <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                        <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                        <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                        <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                        <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                        <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                        <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                        <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="featureSection" class="feature-section roll-in-element">
+            <article class="feature-card" data-offset="16">
+                <div class="feature-image">
+                    <img src="https://picsum.photos/seed/brigold1/900/640?grayscale" alt="Industrial book cover 1">
+                </div>
+                <div class="feature-copy">
+                    <p class="eyebrow">The first post‑quantum standard</p>
+                    <h2>FIPS 203: ML‑KEM</h2>
+                    <p>FIPS 203 standardizes ML‑KEM (based on CRYSTALS‑Kyber), a key encapsulation mechanism based on modular lattices. It is the first NIST standard for post‑quantum key exchange, designed to resist both classical and quantum attacks.</p>
+                </div>
+            </article>
+
+            <article class="feature-card" data-offset="20">
+                <div class="feature-image">
+                    <img src="https://picsum.photos/seed/brigold2/900/640?grayscale" alt="Industrial book cover 2">
+                </div>
+                <div class="feature-copy">
+                    <p class="eyebrow">Why it matters</p>
+                    <h2>NIST process and real-world impact</h2>
+                    <p>ML‑KEM won the 8‑year NIST competition, beating 82 candidates. It is already integrated in Chrome, Firefox, and Cloudflare. US federal agencies are required to adopt it by 2030 (CNSA 2.0), making it a global standard for future security.</p>
+                </div>
+            </article>
+        </section>
+
+        <section id="learningPath" class="learning-path-section roll-in-element">
+            <div class="learning-path-header">
+                <h2>Learning path</h2>
+                <p class="section-note">Follow the sequence from bottom to top: each chapter builds upon the previous one. Use search to quickly find a topic.</p>
+            </div>
+
+            <div class="path-diagram">
+                <div class="path-step">
+                    <span class="step-number">00</span>
+                    <span class="step-label">Basic mathematics</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">01</span>
+                    <span class="step-label">Symmetric cryptography</span>
+                </div>
+                <div class="path-arrow">=</div>
+                <div class="path-step">
+                    <span class="step-number">02</span>
+                    <span class="step-label">Asymmetric cryptography</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">03</span>
+                    <span class="step-label">Shor's algorithm</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">04</span>
+                    <span class="step-label">Lattices</span>
+                </div>
+                <div class="path-arrow">=</div>
+                <div class="path-step">
+                    <span class="step-number">05</span>
+                    <span class="step-label">MLWE</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">06</span>
+                    <span class="step-label">KEM</span>
+                </div>
+                <div class="path-arrow">=</div>
+                <div class="path-step">
+                    <span class="step-number">07</span>
+                    <span class="step-label">NTT</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">08</span>
+                    <span class="step-label">FIPS 203 / ML‑KEM</span>
+                </div>
+                <div class="path-arrow">↓</div>
+                <div class="path-step">
+                    <span class="step-number">09</span>
+                    <span class="step-label">Security and parameters</span>
+                </div>
+                <div class="path-arrow">=</div>
+                <div class="path-step">
+                    <span class="step-number">10</span>
+                    <span class="step-label">Implementations</span>
+                </div>
+            </div>
+
+            <div class="path-chapters-grid">
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">00</span>
+                    <h4>Mathematical Prerequisites</h4>
+                    <p>Modular arithmetic, vectors, polynomials, and essential algebraic structures.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">01</span>
+                    <h4>Symmetric Cryptography</h4>
+                    <p>AES, operation modes, and message authentication.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">02</span>
+                    <h4>Asymmetric Cryptography</h4>
+                    <p>RSA, ECC, Diffie‑Hellman and why they are vulnerable.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">03</span>
+                    <h4>Shor's Algorithm</h4>
+                    <p>The heart of the quantum threat to classical cryptography.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">04</span>
+                    <h4>Lattices</h4>
+                    <p>SVP, CVP, and LWE problems: the foundations of PQC.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">05</span>
+                    <h4>Module‑LWE</h4>
+                    <p>The modular variant used in ML‑KEM, with security analysis.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">06</span>
+                    <h4>Key Encapsulation Mechanism</h4>
+                    <p>Formal definition of KEM and the Fujisaki‑Okamoto transformation.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">07</span>
+                    <h4>Number Theoretic Transform</h4>
+                    <p>Fast polynomial multiplication for ML‑KEM.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">08</span>
+                    <h4>FIPS 203 / ML‑KEM</h4>
+                    <p>The complete algorithm: KeyGen, Encaps, Decaps.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">09</span>
+                    <h4>Security and Parameters</h4>
+                    <p>Security levels, attacks, and choosing the variant.</p>
+                </div>
+                <div class="path-chapter-card">
+                    <span class="path-chapter-num">10</span>
+                    <h4>Practical Implementations</h4>
+                    <p>Libraries, benchmarks, and TLS integration.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-section roll-in-element">
+            <div class="search-panel">
+                <div>
+                    <h2>Search chapters</h2>
+                    <p class="section-note">Type a keyword to filter chapters by title or description.</p>
+                </div>
+                <div class="search-control">
+                    <input id="searchInput" type="search" class="input-squircle search-input" placeholder="Search chapters..." autocomplete="off">
+                </div>
+            </div>
+
+            <div id="chapterGrid" class="book-grid">
+                <p class="loading-text">Loading...</p>
+            </div>
+
+            <div class="nav-controls">
+                <button id="prevBtn" class="btn btn-nav" onclick="previousChapters()">← Previous</button>
+                <span id="pageInfo" class="page-info">1 / 1</span>
+                <button id="nextBtn" class="btn btn-nav" onclick="nextChapters()">Next →</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+    <script src="../../js/main.js"></script>
+</body>
+</html>

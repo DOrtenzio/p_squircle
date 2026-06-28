@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 3 – MONEOO.</title>
+    <title>Capitolo 7 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -373,11 +373,11 @@
                 <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
                 <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
                 <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
-                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
                 <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
-                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
                 <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
                 <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
@@ -386,239 +386,291 @@
 
         <main class="chapter-content">
     <article>
-        <h1>03 – Shor's Algorithm</h1>
-        <p class="subtitle">Why RSA and ECC are vulnerable to quantum computers</p>
+        <h1>07 – NTT (Number Theoretic Transform)</h1>
+        <p class="subtitle">The engine that makes ML-KEM practically usable</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-31">3.1 Quantum computers: the essential basics</a></li>
-                <li><a href="#id-32">3.2 Shor's algorithm</a></li>
-                <li><a href="#id-33">3.3 Impact on RSA, DH, ECC</a></li>
-                <li><a href="#id-34">3.4 Grover: the threat to symmetric cryptography</a></li>
-                <li><a href="#id-35">3.5 State of the art of quantum computers (2024–2025)</a></li>
-                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+                <li><a href="#id-71">7.1 The problem: multiplying polynomials</a></li>
+                <li><a href="#id-72">7.2 Fourier transforms and DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT in the modular world</a></li>
+                <li><a href="#id-74">7.4 NTT in ML-KEM</a></li>
+                <li><a href="#id-75">7.5 Simplified numerical example</a></li>
+                <li><a href="#id-76">7.6 Implementation</a></li>
             </ul>
         </div>
 
-        <!-- Section 3.1 -->
-        <section id="id-31">
-            <h2>3.1 Quantum computers: the essential basics</h2>
+        <!-- Section 7.1 -->
+        <section id="id-71">
+            <h2>7.1 The problem: multiplying polynomials</h2>
 
-            <h3>Qubit vs. classical bits</h3>
+            <p>In ML-KEM, the fundamental operations involve polynomial multiplications in the ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
 
-            <p>A classical bit is either 0 or 1. A <strong>qubit</strong> can be in <strong>superposition</strong>: a linear combination of <span class="math">\(|0\rangle\)</span> and <span class="math">\(|1\rangle\)</span>.</p>
+            <h3>Naïve multiplication</h3>
+            <p>Two polynomials of degree <span class="math">\(n-1\)</span> are multiplied using the schoolbook algorithm with complexity <span class="math">\(O(n^2)\)</span>.</p>
+            
+            <ul>
+                <li>For <span class="math">\(n = 256\)</span>: about <span class="math">\(256^2 = 65536\)</span> multiplications per single product.</li>
+                <li>In ML-KEM-768 (<span class="math">\(k=3\)</span>), a single <code>Encaps</code> operation requires dozens of polynomial products → millions of multiplications with the naïve method.</li>
+            </ul>
+
+            <h3>With NTT</h3>
+            <p>Complexity drops to <span class="math">\(O(n \log n)\)</span>:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ operations per product}
+                \]
+            </div>
+            <p><strong>Speedup:</strong> ~32×. On optimized hardware, ML-KEM-768 takes less than 1 ms.</p>
+        </section>
+
+        <!-- Section 7.2 -->
+        <section id="id-72">
+            <h2>7.2 Fourier transforms and DFT</h2>
+
+            <h3>The convolution theorem</h3>
+            <p>The Fourier transform turns a convolution (like polynomial multiplication) into a pointwise product:</p>
 
             <div class="math-block">
                 \[
-                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
                 \]
             </div>
 
-            <p>Before measurement, the qubit is "both 0 and 1". After measurement, it collapses to 0 (with probability <span class="math">\(|\alpha|^2\)</span>) or 1 (with probability <span class="math">\(|\beta|^2\)</span>).</p>
+            <p><strong>Procedure:</strong></p>
+            <ol>
+                <li>Compute <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> and <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>Multiply pointwise: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Inverse transform: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
 
-            <blockquote>
-                <p><strong>Analogy:</strong> imagine flipping a coin that, while in the air, represents both heads and tails simultaneously. Only when you look at it does it become one of the two.</p>
-            </blockquote>
+            <p>If DFT and DFT<sup>-1</sup> cost <span class="math">\(O(n \log n)\)</span> (via FFT), the entire multiplication costs <span class="math">\(O(n \log n)\)</span>.</p>
 
-            <h3>Entanglement and interference</h3>
+            <h3>Fast Fourier Transform (FFT)</h3>
+            <p>The Cooley-Tukey algorithm (1965) computes the DFT using a recursive structure:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{even}}], \; \text{DFT}[f_{\text{odd}}]\right) \text{ combined with twiddle factors}
+                \]
+            </div>
+            <p><strong>The problem:</strong> Standard FFT uses complex numbers (floating point), which introduce rounding errors and non-constant timing, making them unsuitable for cryptography.</p>
+        </section>
 
+        <!-- Section 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: DFT in the modular world</h2>
+
+            <h3>The idea</h3>
+            <p>The NTT (Number Theoretic Transform) is the DFT applied over <span class="math">\(\mathbb{Z}_q\)</span> instead of <span class="math">\(\mathbb{C}\)</span>. Instead of using complex roots of unity <span class="math">\(e^{2\pi i k/n}\)</span>, it uses primitive roots of unity in <span class="math">\(\mathbb{Z}_q\)</span>.</p>
+
+            <h3>Primitive roots of unity modulo q</h3>
+            <p>An element <span class="math">\(\omega \in \mathbb{Z}_q\)</span> is a primitive <span class="math">\(n\)</span>-th root of unity if:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{and} \quad \omega^k \not\equiv 1 \pmod{q} \text{ for } 0 < k < n
+                \]
+            </div>
+            <p>Necessary condition: <span class="math">\(n \mid (q-1)\)</span> (i.e., <span class="math">\(n\)</span> must divide <span class="math">\(q-1\)</span>).</p>
+
+            <p><strong>In ML-KEM:</strong></p>
             <ul>
-                <li><strong>Entanglement:</strong> two qubits can be correlated such that measuring one instantly determines the other.</li>
-                <li><strong>Quantum interference:</strong> the "wrong" computation paths cancel constructively (like waves that cancel out), while the "right" paths are amplified.</li>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>Verification: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Therefore, 256-th roots of unity modulo 3329 exist.</li>
+                <li>The primitive root used in FIPS 203: <span class="math">\(\omega = 17\)</span> (since <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, the root used for negacyclic NTT is <span class="math">\(\zeta = 17\)</span>).</li>
             </ul>
 
-            <p>Quantum algorithms leverage interference to amplify correct answers and suppress wrong ones.</p>
+            <h3>NTT definition</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>Inverse NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>where <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
 
-            <h3>Quantum parallelism</h3>
-
-            <p>With <span class="math">\(n\)</span> qubits, one can represent a superposition of <span class="math">\(2^n\)</span> states simultaneously. But measurement returns only one state → the trick is to build algorithms where interference leaves only the right answer to survive.</p>
+            <h3>Key properties</h3>
+            <ul>
+                <li><strong>Exact:</strong> no rounding errors, everything in <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>Efficient:</strong> <span class="math">\(O(n \log n)\)</span> like FFT</li>
+                <li><strong>Constant-time:</strong> implementable without branching on secret data (side-channel safe)</li>
+            </ul>
         </section>
 
-        <!-- Section Algorithm Scheme -->
-        <section id="id-32">
-            <h2>3.2 Shor's algorithm</h2>
-            
-            <h3>Algorithm scheme for factoring \(n\)</h3>
-            
-            <div class="algorithm-steps">
-                <ol>
-                    <li><strong>Input:</strong> composite integer <span class="math">\(n\)</span></li>
-                    <li><strong>Initialization:</strong> Choose random <span class="math">\(a\)</span> such that <span class="math">\(1 < a < n\)</span> and <span class="math">\(\gcd(a,n)=1\)</span></li>
-                    <li><strong>Quantum Preparation:</strong> Prepare a register in uniform superposition from <span class="math">\(0\)</span> to <span class="math">\(2^k-1\)</span></li>
-                    <li><strong>Oracle:</strong> Compute <span class="math">\(f(x) = a^x \bmod n\)</span> in parallel (superposition)</li>
-                    <li><strong>QFT:</strong> Apply the Quantum Fourier Transform to the first register</li>
-                    <li><strong>Measurement:</strong> Measure the register to obtain a value correlated with the period <span class="math">\(r\)</span></li>
-                    <li><strong>Classical:</strong> Use the continued fractions algorithm to estimate <span class="math">\(r\)</span></li>
-                    <li><strong>Verification:</strong> If <span class="math">\(r\)</span> is even and <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
-                        <ul>
-                            <li>Compute <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> and <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
-                            <li>These are non-trivial factors of <span class="math">\(n\)</span></li>
-                        </ul>
-                    </li>
-                    <li><strong>Loop:</strong> If it fails, go back to step 2 with a new <span class="math">\(a\)</span></li>
-                </ol>
+        <!-- Section 7.4 -->
+        <section id="id-74">
+            <h2>7.4 NTT in ML-KEM</h2>
+
+            <h3>Negacyclic NTT</h3>
+            <p>In ML-KEM, the reduction is not modulo <span class="math">\(X^n - 1\)</span> (cyclic), but modulo <span class="math">\(X^n + 1\)</span> (negacyclic). In negacyclic convolution, the "wrapped" terms change sign. This requires a variant of the classical NTT with adjusted twiddle factors.</p>
+
+            <p>The NTT in FIPS 203 applies a pre-twisting with powers of <span class="math">\(\zeta = 17\)</span>:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{before classical NTT}
+                \]
             </div>
 
-            <div class="note">
-                <p><strong>Note:</strong> The quantum core (steps 3-5) finds the period <span class="math">\(r\)</span> of the function <span class="math">\(f(x)\)</span> in polynomial time, leveraging the constructive/destructive interference of the QFT.</p>
-            </div>
-        </section>
-
-        <!-- Section 3.3 -->
-        <section id="id-33">
-            <h2>3.3 Impact on RSA, DH, ECC</h2>
+            <h3>ML-KEM operations in the NTT domain</h3>
+            <p>Once transformed, polynomials live in the NTT domain. Operations become elementary:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Security based on</th>
-                        <th>Vulnerable to Shor?</th>
+                        <th>Operation</th>
+                        <th>In the NTT domain</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>RSA</td>
-                        <td>Factorization</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>Multiplication <span class="math">\(f \cdot g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>DH (mod <span class="math">\(p\)</span>)</td>
-                        <td>Discrete logarithm in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>Sum <span class="math">\(f + g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>ECDH / ECDSA</td>
-                        <td>ECDLP (discrete logarithm on EC)</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>ML-KEM (MLWE)</strong></td>
-                        <td>Lattice problems</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">No known efficient algorithm</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>AES-256</strong></td>
-                        <td>Pseudorandom permutations</td>
-                        <td>Only Grover (see below)</td>
+                        <td>Matrix-vector product <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> products and <span class="math">\(k^2\)</span> pointwise sums</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>Shor solves any structured problem like finding periodicity in an abelian group. Factorization and discrete logarithm (including on EC) have exactly this structure. Lattice problems do not.</p>
+            <p>The public key <span class="math">\(A\)</span> is generated and stored already in the NTT domain, avoiding recomputing the NTT each time.</p>
+
+            <h3>Complete KeyGen flow</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+seed 
+  │
+  ├──► SHAKE128 ──► A_hat (already in NTT)
+  │
+  └──► Binomial sampling ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          Public Key (t_hat)
+                </pre>
+            </div>
+            <p>The output <code>t_hat</code> is the public key (already in NTT). The NTT<sup>-1</sup> for <span class="math">\(t\)</span> is avoided.</p>
         </section>
 
-        <!-- Section 3.4 -->
-        <section id="id-34">
-            <h2>3.4 Grover: the threat to symmetric cryptography</h2>
+        <!-- Section 7.5 -->
+        <section id="id-75">
+            <h2>7.5 Simplified numerical example</h2>
 
-            <p>Grover's algorithm (1996) offers a <strong>quadratic</strong> speedup in unstructured search:</p>
+            <p>Use <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (4-th root of 1 modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+
+            <p><strong>Polynomials:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>NTT of f:</strong></p>
             <ul>
-                <li>Finding a key among <span class="math">\(2^k\)</span> possibilities classically: <span class="math">\(O(2^k)\)</span> attempts</li>
-                <li>With Grover: <span class="math">\(O(2^{k/2})\)</span> attempts</li>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
             </ul>
 
-            <p><strong>Practical consequences:</strong></p>
+            <p><strong>NTT of g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. For <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; for <span class="math">\(i \neq 0\)</span>: sum of roots <span class="math">\(= 0\)</span>.</p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Classical security</th>
-                        <th>Post-quantum security (Grover)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AES-128</td>
-                        <td>128 bits</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insufficient</span></td>
-                    </tr>
-                    <tr>
-                        <td>AES-256</td>
-                        <td>256 bits</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → still secure</span></td>
-                    </tr>
-                    <tr>
-                        <td>SHA-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                    <tr>
-                        <td>SHA3-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>This is why NIST recommends AES-256 (not AES-128) in the post-quantum context.</p>
-        </section>
-
-        <!-- Section 3.5 -->
-        <section id="id-35">
-            <h2>3.5 State of the art of quantum computers (2024–2025)</h2>
-
-            <p>Current quantum computers are <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: they have tens to hundreds of physical qubits but with a high error rate.</p>
-
-            <p>To break RSA-2048 with Shor you need:</p>
-            <ul>
-                <li>~4000 perfect logical qubits</li>
-                <li>or ~4 million physical qubits with quantum error correction</li>
-            </ul>
-
-            <p>The best current systems (Google Willow, IBM Heron, etc.) have ~100-1000 high-fidelity physical qubits, but we are still far from the required scale.</p>
+            <p><strong>Pointwise product:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>INTT of <span class="math">\(\hat{h}\)</span>:</strong> gives the product <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
 
             <blockquote>
-                <p><strong>NIST estimate:</strong> cryptographically relevant quantum computers could exist within 10–15 years, with significant uncertainty in both directions.</p>
+                <p><strong>Note:</strong> this example uses reduction modulo <span class="math">\(X^4-1\)</span> (cyclic). ML-KEM uses <span class="math">\(X^n+1\)</span> (negacyclic) with the variant described in section 7.4.</p>
             </blockquote>
         </section>
 
-        <!-- Section 3.6 -->
-        <section id="id-36">
-            <h2>3.6 Harvest Now, Decrypt Later</h2>
+        <!-- Section 7.6 -->
+        <section id="id-76">
+            <h2>7.6 Implementation</h2>
 
-            <p>Even if quantum computers do not <em>yet</em> exist in cryptographically relevant form, there is a concrete threat <strong>today</strong>:</p>
+            <h3>Cooley-Tukey pseudocode for NTT</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    Iterative in-place NTT (Cooley-Tukey).
+    f: list of n coefficients in Z_q
+    q: prime modulus
+    omega: primitive n-th root of unity mod q
+    """
+    n = len(f)
+    # bit-reversal permutation
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
 
-            <blockquote>
-                <p>An adversary can <strong>harvest now</strong> encrypted communications (even if they cannot decrypt them), and <strong>decrypt them in the future</strong> when they have a sufficiently powerful quantum computer.</p>
-            </blockquote>
+    # butterfly operations
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
 
-            <p>This attack is known as <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> or <em>store-now-decrypt-later</em>.</p>
-
-            <h4>Who is at risk:</h4>
+            <h3>Reference implementation</h3>
+            <p>FIPS 203 specifies the exact NTT implementation and the table of precomputed roots <span class="math">\(\zeta^{br(i)}\)</span> (where <span class="math">\(br\)</span> is the bit-reversal permutation).</p>
+            
+            <p>Optimized implementations in assembly/SIMD are available in:</p>
             <ul>
-                <li>Diplomatic and military communications with long secrecy requirements</li>
-                <li>Medical, financial, legal data with decades-long confidentiality requirements</li>
-                <li>Industrial secrets and IP</li>
+                <li><code>liboqs</code> (C with AVX2)</li>
+                <li><code>pqclean</code> (portable C)</li>
+                <li><code>kyber</code> reference implementation (C)</li>
             </ul>
-
-            <h4>When to migrate?</h4>
-
-            <p>If your data must remain secret for more years than it will take for sufficiently powerful quantum computers to exist, you need to migrate <em>now</em>.</p>
-
-            <p>This is the main reason why NIST standardized ML-KEM (FIPS 203) in 2024, and why organizations like NSA, ENISA, and ANSSI recommend immediate migration for high-criticality systems.</p>
         </section>
 
         <!-- Sources -->
         <div class="sources">
             <h2>Sources</h2>
             <ul>
-                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
-                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
-                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
-                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
-                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+                <li>NIST FIPS 203 (2024), Sections 4.3 and 5 – NTT definition and operations in <span class="math">\(R_q\)</span></li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Section 6 (NTT implementation)</li>
             </ul>
         </div>
 
         <!-- Chapter navigation -->
         <div class="chapter-nav">
-            <a href="2.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">03 / 10</span>
-            <a href="4.html" class="nav-btn">Next chapter →</a>
+            <a href="6.html" class="nav-btn">← Previous chapter</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>

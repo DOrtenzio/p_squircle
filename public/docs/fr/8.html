@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 3 – MONEOO.</title>
+    <title>Capitolo 8 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -373,12 +373,12 @@
                 <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
                 <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
                 <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
-                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
                 <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
-                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
                 <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
                 <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
             </ul>
@@ -386,242 +386,280 @@
 
         <main class="chapter-content">
     <article>
-        <h1>03 – Shor's Algorithm</h1>
-        <p class="subtitle">Why RSA and ECC are vulnerable to quantum computers</p>
+        <h1>08 – FIPS 203 / ML-KEM</h1>
+        <p class="subtitle">The heart of the standard: KeyGen, Encaps and Decaps</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-31">3.1 Quantum computers: the essential basics</a></li>
-                <li><a href="#id-32">3.2 Shor's algorithm</a></li>
-                <li><a href="#id-33">3.3 Impact on RSA, DH, ECC</a></li>
-                <li><a href="#id-34">3.4 Grover: the threat to symmetric cryptography</a></li>
-                <li><a href="#id-35">3.5 State of the art of quantum computers (2024–2025)</a></li>
-                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+                <li><a href="#id-81">8.1 Standard overview</a></li>
+                <li><a href="#id-82">8.2 The K‑PKE primitives</a></li>
+                <li><a href="#id-83">8.3 ML‑KEM (the complete scheme)</a></li>
+                <li><a href="#id-84">8.4 Auxiliary primitive functions</a></li>
+                <li><a href="#id-85">8.5 Compression and decompression</a></li>
+                <li><a href="#id-86">8.6 Correctness and security</a></li>
             </ul>
         </div>
 
-        <!-- Section 3.1 -->
-        <section id="id-31">
-            <h2>3.1 Quantum computers: the essential basics</h2>
+        <!-- Section 8.1 -->
+        <section id="id-81">
+            <h2>8.1 Standard overview</h2>
 
-            <h3>Qubit vs. classical bits</h3>
+            <p>FIPS 203 was published by NIST in August 2024 as the first post-quantum standard for protecting communications. It is based on the CRYSTALS-Kyber submission from the NIST PQC Competition.</p>
 
-            <p>A classical bit is either 0 or 1. A <strong>qubit</strong> can be in <strong>superposition</strong>: a linear combination of <span class="math">\(|0\rangle\)</span> and <span class="math">\(|1\rangle\)</span>.</p>
-
-            <div class="math-block">
-                \[
-                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
-                \]
-            </div>
-
-            <p>Before measurement, the qubit is "both 0 and 1". After measurement, it collapses to 0 (with probability <span class="math">\(|\alpha|^2\)</span>) or 1 (with probability <span class="math">\(|\beta|^2\)</span>).</p>
-
-            <blockquote>
-                <p><strong>Analogy:</strong> imagine flipping a coin that, while in the air, represents both heads and tails simultaneously. Only when you look at it does it become one of the two.</p>
-            </blockquote>
-
-            <h3>Entanglement and interference</h3>
-
+            <p><strong>What FIPS 203 standardizes:</strong></p>
             <ul>
-                <li><strong>Entanglement:</strong> two qubits can be correlated such that measuring one instantly determines the other.</li>
-                <li><strong>Quantum interference:</strong> the "wrong" computation paths cancel constructively (like waves that cancel out), while the "right" paths are amplified.</li>
+                <li>An IND-CCA2-secure KEM (Key Encapsulation Mechanism)</li>
+                <li>Three security levels: ML-KEM-512, ML-KEM-768, ML-KEM-1024</li>
+                <li>All auxiliary functions: hashing, sampling, encoding, compression</li>
             </ul>
 
-            <p>Quantum algorithms leverage interference to amplify correct answers and suppress wrong ones.</p>
-
-            <h3>Quantum parallelism</h3>
-
-            <p>With <span class="math">\(n\)</span> qubits, one can represent a superposition of <span class="math">\(2^n\)</span> states simultaneously. But measurement returns only one state → the trick is to build algorithms where interference leaves only the right answer to survive.</p>
+            <p><strong>What it does NOT standardize:</strong></p>
+            <ul>
+                <li>How to manage keys</li>
+                <li>Which symmetric cipher to use with the derived key</li>
+                <li>Handshake protocols (see TLS 1.3, SSH)</li>
+            </ul>
         </section>
 
-        <!-- Section Algorithm Scheme -->
-        <section id="id-32">
-            <h2>3.2 Shor's algorithm</h2>
-            
-            <h3>Algorithm scheme for factoring \(n\)</h3>
-            
+        <!-- Section 8.2 – K‑PKE -->
+        <section id="id-82">
+            <h2>8.2 The K‑PKE primitives</h2>
+            <p>ML-KEM is built on two levels. The inner level is <strong>K‑PKE</strong>, a CPA-secure PKE (but not CCA-secure). ML-KEM adds the FO transformation to achieve CCA2.</p>
+
+            <h3>K‑PKE.KeyGen</h3>
             <div class="algorithm-steps">
                 <ol>
-                    <li><strong>Input:</strong> composite integer <span class="math">\(n\)</span></li>
-                    <li><strong>Initialization:</strong> Choose random <span class="math">\(a\)</span> such that <span class="math">\(1 < a < n\)</span> and <span class="math">\(\gcd(a,n)=1\)</span></li>
-                    <li><strong>Quantum Preparation:</strong> Prepare a register in uniform superposition from <span class="math">\(0\)</span> to <span class="math">\(2^k-1\)</span></li>
-                    <li><strong>Oracle:</strong> Compute <span class="math">\(f(x) = a^x \bmod n\)</span> in parallel (superposition)</li>
-                    <li><strong>QFT:</strong> Apply the Quantum Fourier Transform to the first register</li>
-                    <li><strong>Measurement:</strong> Measure the register to obtain a value correlated with the period <span class="math">\(r\)</span></li>
-                    <li><strong>Classical:</strong> Use the continued fractions algorithm to estimate <span class="math">\(r\)</span></li>
-                    <li><strong>Verification:</strong> If <span class="math">\(r\)</span> is even and <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                    <li>Input: 32-byte seed <span class="math">\(d\)</span></li>
+                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> where <span class="math">\(G = \text{SHA3-512}\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (public matrix, already in NTT domain)</li>
+                    <li>For <span class="math">\(i = 0 \dots k-1\)</span>:
                         <ul>
-                            <li>Compute <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> and <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
-                            <li>These are non-trivial factors of <span class="math">\(n\)</span></li>
+                            <li><span class="math">\(\mathbf{s}[i], \mathbf{e}[i] = \text{SamplePolyCBD}(\sigma, i)\)</span></li>
                         </ul>
                     </li>
-                    <li><strong>Loop:</strong> If it fails, go back to step 2 with a new <span class="math">\(a\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{NTT}(\mathbf{s})\)</span>, <span class="math">\(\hat{\mathbf{e}} = \text{NTT}(\mathbf{e})\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{t}} = \mathbf{A} \circ \hat{\mathbf{s}} + \hat{\mathbf{e}}\)</span></li>
+                    <li>Output:
+                        <ul>
+                            <li><span class="math">\(ek_{\text{PKE}} = \text{Encode}(\hat{\mathbf{t}}) \| \rho\)</span></li>
+                            <li><span class="math">\(dk_{\text{PKE}} = \text{Encode}(\hat{\mathbf{s}})\)</span></li>
+                        </ul>
+                    </li>
                 </ol>
             </div>
 
-            <div class="note">
-                <p><strong>Note:</strong> The quantum core (steps 3-5) finds the period <span class="math">\(r\)</span> of the function <span class="math">\(f(x)\)</span> in polynomial time, leveraging the constructive/destructive interference of the QFT.</p>
+            <h3>K‑PKE.Encrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>Input: <span class="math">\(ek_{\text{PKE}}\)</span>, message <span class="math">\(m\)</span>, randomness <span class="math">\(r\)</span></li>
+                    <li>Parse <span class="math">\(\hat{\mathbf{t}}\)</span> and <span class="math">\(\rho\)</span> from <span class="math">\(ek\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span></li>
+                    <li>Sample small vectors <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> using <span class="math">\(r\)</span> as seed (CBD)</li>
+                    <li><span class="math">\(\hat{\mathbf{u}} = \text{NTT}^{-1}(\mathbf{A}^T \circ \text{NTT}(\mathbf{r})) + \mathbf{e}_1\)</span></li>
+                    <li><span class="math">\(v = \text{NTT}^{-1}(\hat{\mathbf{t}}^T \circ \text{NTT}(\mathbf{r})) + e_2 + \text{Decode}(m)\)</span></li>
+                    <li>Compress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span></li>
+                    <li>Output: ciphertext <span class="math">\(c\)</span></li>
+                </ol>
+            </div>
+
+            <h3>K‑PKE.Decrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>Input: <span class="math">\(dk_{\text{PKE}}\)</span>, ciphertext <span class="math">\(c\)</span></li>
+                    <li>Decompress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span> from <span class="math">\(c\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{Decode}(dk_{\text{PKE}})\)</span></li>
+                    <li><span class="math">\(w = v - \text{NTT}^{-1}(\hat{\mathbf{s}}^T \circ \text{NTT}(\mathbf{u}))\)</span></li>
+                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (decode the message from residual noise)</li>
+                    <li>Output: <span class="math">\(m\)</span></li>
+                </ol>
             </div>
         </section>
 
-        <!-- Section 3.3 -->
-        <section id="id-33">
-            <h2>3.3 Impact on RSA, DH, ECC</h2>
+        <!-- Section 8.3 – Complete ML‑KEM -->
+        <section id="id-83">
+            <h2>8.3 ML‑KEM (the complete scheme)</h2>
+            <p>K‑PKE is only CPA‑secure. ML‑KEM uses the <strong>Fujisaki‑Okamoto (FO) transformation</strong> to elevate K‑PKE to <strong>IND‑CCA2</strong>. Decryption verifies that the received ciphertext matches what one would obtain by re-encrypting the decrypted message; if not, it returns a pseudorandom key (implicit reject).</p>
 
+            <h3 id="id-831">8.3.1 ML‑KEM.KeyGen</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & z \leftarrow \{0,1\}^{256}, \quad d \leftarrow \{0,1\}^{256} \\
+                & (ek_{\text{PKE}}, dk_{\text{PKE}}) = \text{K-PKE.KeyGen}(d) \\
+                & ek = ek_{\text{PKE}} \\
+                & dk = dk_{\text{PKE}} \| ek \| H(ek) \| z \\
+                & \text{return } (ek, dk)
+                \end{aligned}
+                \]
+            </div>
+            <p>The private key includes <span class="math">\(ek\)</span> and precomputed hashes to optimize Decaps.</p>
+
+            <h3 id="id-832">8.3.2 ML‑KEM.Encaps</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & m \leftarrow \{0,1\}^{256} \\
+                & (\bar{K}, r) = G(m \| H(ek)) \\
+                & c = \text{K-PKE.Encrypt}(ek, m, r) \\
+                & K = \text{KDF}(\bar{K} \| H(c)) \\
+                & \text{return } (K, c)
+                \end{aligned}
+                \]
+            </div>
+
+            <h3 id="id-833">8.3.3 ML‑KEM.Decaps</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & (dk_{\text{PKE}}, ek, h, z) = \text{ParseDK}(dk) \\
+                & m' = \text{K-PKE.Decrypt}(dk_{\text{PKE}}, c) \\
+                & (\bar{K}', r') = G(m' \| h) \\
+                & c' = \text{K-PKE.Encrypt}(ek, m', r') \\
+                & \text{if } c' == c: \\
+                & \quad K = \text{KDF}(\bar{K}' \| H(c)) \\
+                & \text{else:} \\
+                & \quad K = \text{KDF}(z \| H(c)) \\
+                & \text{return } K
+                \end{aligned}
+                \]
+            </div>
+            <p><strong>Note:</strong> the comparison <span class="math">\(c' == c\)</span> must be performed in constant time to avoid side‑channel attacks.</p>
+        </section>
+
+        <!-- Section 8.4 – Auxiliary functions -->
+        <section id="id-84">
+            <h2>8.4 Auxiliary primitive functions</h2>
+
+            <h3>Hashes used</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Security based on</th>
-                        <th>Vulnerable to Shor?</th>
+                        <th>Function</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                        <th>Use</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>RSA</td>
-                        <td>Factorization</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td><span class="math">\(H = \text{SHA3-256}\)</span></td>
+                        <td>any</td>
+                        <td>32 bytes</td>
+                        <td>generic hashing</td>
                     </tr>
                     <tr>
-                        <td>DH (mod <span class="math">\(p\)</span>)</td>
-                        <td>Discrete logarithm in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td><span class="math">\(G = \text{SHA3-512}\)</span></td>
+                        <td>any</td>
+                        <td>64 bytes</td>
+                        <td>key derivation</td>
                     </tr>
                     <tr>
-                        <td>ECDH / ECDSA</td>
-                        <td>ECDLP (discrete logarithm on EC)</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td><span class="math">\(\text{XOF} = \text{SHAKE128}\)</span></td>
+                        <td>any</td>
+                        <td>variable length</td>
+                        <td>generate <span class="math">\(A\)</span></td>
                     </tr>
                     <tr>
-                        <td><strong>ML-KEM (MLWE)</strong></td>
-                        <td>Lattice problems</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">No known efficient algorithm</span></td>
+                        <td><span class="math">\(\text{PRF}_\eta = \text{SHAKE256}\)</span></td>
+                        <td>seed+nonce</td>
+                        <td>variable length</td>
+                        <td>sample <span class="math">\(s\)</span>, <span class="math">\(e\)</span></td>
                     </tr>
                     <tr>
-                        <td><strong>AES-256</strong></td>
-                        <td>Pseudorandom permutations</td>
-                        <td>Only Grover (see below)</td>
+                        <td><span class="math">\(\text{KDF} = \text{SHAKE256}\)</span></td>
+                        <td>any</td>
+                        <td>variable length</td>
+                        <td>derive final <span class="math">\(K\)</span></td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>Shor solves any structured problem like finding periodicity in an abelian group. Factorization and discrete logarithm (including on EC) have exactly this structure. Lattice problems do not.</p>
+            <h3>Sampling of <span class="math">\(A\)</span> (the <code>SampleNTT</code> algorithm)</h3>
+            <p>The matrix <span class="math">\(A \in R_q^{k \times k}\)</span> is generated deterministically from a public seed <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
+            <div class="sequence-diagram">
+                for i = 0..k-1, j = 0..k-1:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
+            </div>
+            <p><code>SampleNTT</code> reads bytes from the XOF and builds uniform coefficients in <span class="math">\(\{0, \ldots, q-1\}\)</span> (discarding values <span class="math">\(\geq q\)</span>).</p>
+
+            <h3>Noise sampling (the <code>SamplePolyCBD</code> algorithm)</h3>
+            <p>Noise is sampled from the centered binomial distribution <span class="math">\(B_\eta\)</span>:</p>
+            <div class="sequence-diagram">
+                given a 32-byte seed σ and a nonce b:<br />
+                bytes = PRF<sub>η</sub>(σ, b) &nbsp; // 64η bytes<br />
+                for each pair of bits (a_i, b_i):<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;coefficient = Σa_i - Σb_i
+            </div>
+            <p>The result is a polynomial with coefficients in <span class="math">\([-\eta, \eta]\)</span>.</p>
         </section>
 
-        <!-- Section 3.4 -->
-        <section id="id-34">
-            <h2>3.4 Grover: the threat to symmetric cryptography</h2>
+        <!-- Section 8.5 – Compression -->
+        <section id="id-85">
+            <h2>8.5 Compression and decompression</h2>
+            <p>ML-KEM uses compression to reduce ciphertext size. Polynomial coefficients are in <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 bits), but are compressed to <span class="math">\(d_u\)</span> or <span class="math">\(d_v\)</span> bits.</p>
+            <div class="math-block">
+                \[
+                \text{Compress}_d(x) = \left\lfloor \frac{2^d}{q} \cdot x \right\rceil \bmod 2^d
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                \text{Decompress}_d(y) = \left\lfloor \frac{q}{2^d} \cdot y \right\rceil
+                \]
+            </div>
+            <p><strong>Error introduced by compression:</strong> compression introduces an error <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. For <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. This error must be small enough not to cause decryption failure, which imposes a constraint on the parameters <span class="math">\(\eta_1\)</span>, <span class="math">\(\eta_2\)</span>, <span class="math">\(d_u\)</span>, <span class="math">\(d_v\)</span>.</p>
 
-            <p>Grover's algorithm (1996) offers a <strong>quadratic</strong> speedup in unstructured search:</p>
-            <ul>
-                <li>Finding a key among <span class="math">\(2^k\)</span> possibilities classically: <span class="math">\(O(2^k)\)</span> attempts</li>
-                <li>With Grover: <span class="math">\(O(2^{k/2})\)</span> attempts</li>
-            </ul>
-
-            <p><strong>Practical consequences:</strong></p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Classical security</th>
-                        <th>Post-quantum security (Grover)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AES-128</td>
-                        <td>128 bits</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insufficient</span></td>
-                    </tr>
-                    <tr>
-                        <td>AES-256</td>
-                        <td>256 bits</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → still secure</span></td>
-                    </tr>
-                    <tr>
-                        <td>SHA-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                    <tr>
-                        <td>SHA3-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>This is why NIST recommends AES-256 (not AES-128) in the post-quantum context.</p>
+            <h3>Noise budget</h3>
+            <p>The total noise reaching decryption is:</p>
+            <div class="math-block">
+                \[
+                \epsilon_{\text{total}} = \hat{\mathbf{e}}^T\hat{\mathbf{r}} + e_2 - \hat{\mathbf{s}}^T e_1 + \epsilon_u + \epsilon_v
+                \]
+            </div>
+            <p>For correct decryption, we need <span class="math">\(|\epsilon_{\text{total}}| < \lfloor q/4 \rfloor = 832\)</span>. The parameters are chosen to ensure this holds with probability <span class="math">\(1 - 2^{-139}\)</span> for ML-KEM-768.</p>
         </section>
 
-        <!-- Section 3.5 -->
-        <section id="id-35">
-            <h2>3.5 State of the art of quantum computers (2024–2025)</h2>
+        <!-- Section 8.6 – Correctness and security -->
+        <section id="id-86">
+            <h2>8.6 Correctness and security</h2>
 
-            <p>Current quantum computers are <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: they have tens to hundreds of physical qubits but with a high error rate.</p>
+            <h3>Correctness of K‑PKE</h3>
+            <p>The error probability of K‑PKE is analyzed by sampling <span class="math">\(s\)</span>, <span class="math">\(e\)</span>, <span class="math">\(r\)</span>, <span class="math">\(e_1\)</span>, <span class="math">\(e_2\)</span> from the <span class="math">\(B_\eta\)</span> distribution. For ML-KEM-768 (<span class="math">\(k=3\)</span>, <span class="math">\(\eta_1=\eta_2=2\)</span>), the error probability for a single coefficient is <span class="math">\(< 2^{-150}\)</span>, and with 256 coefficients and the union bound the total probability is <span class="math">\(< 2^{-139}\)</span>.</p>
 
-            <p>To break RSA-2048 with Shor you need:</p>
-            <ul>
-                <li>~4000 perfect logical qubits</li>
-                <li>or ~4 million physical qubits with quantum error correction</li>
-            </ul>
-
-            <p>The best current systems (Google Willow, IBM Heron, etc.) have ~100-1000 high-fidelity physical qubits, but we are still far from the required scale.</p>
-
-            <blockquote>
-                <p><strong>NIST estimate:</strong> cryptographically relevant quantum computers could exist within 10–15 years, with significant uncertainty in both directions.</p>
-            </blockquote>
-        </section>
-
-        <!-- Section 3.6 -->
-        <section id="id-36">
-            <h2>3.6 Harvest Now, Decrypt Later</h2>
-
-            <p>Even if quantum computers do not <em>yet</em> exist in cryptographically relevant form, there is a concrete threat <strong>today</strong>:</p>
-
-            <blockquote>
-                <p>An adversary can <strong>harvest now</strong> encrypted communications (even if they cannot decrypt them), and <strong>decrypt them in the future</strong> when they have a sufficiently powerful quantum computer.</p>
-            </blockquote>
-
-            <p>This attack is known as <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> or <em>store-now-decrypt-later</em>.</p>
-
-            <h4>Who is at risk:</h4>
-            <ul>
-                <li>Diplomatic and military communications with long secrecy requirements</li>
-                <li>Medical, financial, legal data with decades-long confidentiality requirements</li>
-                <li>Industrial secrets and IP</li>
-            </ul>
-
-            <h4>When to migrate?</h4>
-
-            <p>If your data must remain secret for more years than it will take for sufficiently powerful quantum computers to exist, you need to migrate <em>now</em>.</p>
-
-            <p>This is the main reason why NIST standardized ML-KEM (FIPS 203) in 2024, and why organizations like NSA, ENISA, and ANSSI recommend immediate migration for high-criticality systems.</p>
+            <h3>IND‑CCA2 security of ML‑KEM</h3>
+            <details>
+                <summary><strong>Step 1: From MLWE to K‑PKE IND‑CPA</strong></summary>
+                <p>If an adversary distinguishes K‑PKE ciphertexts, it can be used to solve MLWE (polynomial reduction).</p>
+            </details>
+            <details>
+                <summary><strong>Step 2: From K‑PKE IND‑CPA to ML‑KEM IND‑CCA2</strong></summary>
+                <p>Via the FO transformation in the random oracle model. The re-encryption in decryption is the key: it prevents the adversary from using decryption as an oracle.</p>
+            </details>
         </section>
 
         <!-- Sources -->
         <div class="sources">
             <h2>Sources</h2>
             <ul>
-                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
-                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
-                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
-                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
-                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em><br />
+                    <a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank">https://csrc.nist.gov/pubs/fips/203/final</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber: A CCA-Secure Module-Lattice-Based KEM</em></li>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em></li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em></li>
             </ul>
         </div>
 
         <!-- Chapter navigation -->
         <div class="chapter-nav">
-            <a href="2.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">03 / 10</span>
-            <a href="4.html" class="nav-btn">Next chapter →</a>
+            <a href="7.html" class="nav-btn">← Previous chapter</a>
+            <span class="nav-label">08 / 10</span>
+            <a href="9.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>
+
     </div>
 
     <!-- Footer del sito -->

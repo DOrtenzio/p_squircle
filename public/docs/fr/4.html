@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 10 – MONEOO.</title>
+    <title>Capitolo 4 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -374,554 +374,356 @@
                 <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
                 <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
                 <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
             </ul>
         </aside>
 
+        <!-- Contenuto del capitolo -->
         <main class="chapter-content">
     <article>
-        <h1>10 – Practical Implementations</h1>
-        <p class="subtitle">From theory to practice: libraries, TLS integration and migration</p>
+        <h1>04 – Lattices</h1>
+        <p class="subtitle">The mathematical structure underlying post‑quantum cryptography</p>
 
         <!-- Index -->
         <div class="toc">
             <h2>Index</h2>
             <ul>
-                <li><a href="#id-101">10.1 liboqs: the reference C library</a></li>
-                <li><a href="#id-102">10.2 Complete example: KEM with ML-KEM-768 in C</a></li>
-                <li><a href="#id-103">10.3 Using the derived key with AES-256-GCM</a></li>
-                <li><a href="#id-104">10.4 Python: liboqs bindings</a></li>
-                <li><a href="#id-105">10.5 Python: kyber-py (educational only)</a></li>
-                <li><a href="#id-106">10.6 Performance benchmarks</a></li>
-                <li><a href="#id-107">10.7 OpenSSL: installing the OQS provider</a></li>
-                <li><a href="#id-108">10.8 ML-KEM key generation with OpenSSL CLI</a></li>
-                <li><a href="#id-109">10.9 TLS 1.3 with ML-KEM-768</a></li>
-                <li><a href="#id-1010">10.10 Hybrid strategy: X25519 + ML-KEM-768</a></li>
-                <li><a href="#id-1011">10.11 Hybrid cipher suites in TLS 1.3</a></li>
-                <li><a href="#id-1012">10.12 Integration in C applications with OpenSSL</a></li>
-                <li><a href="#id-1013">10.13 Migration checklist</a></li>
-                <li><a href="#id-1014">10.14 Scenario: migrating a REST API</a></li>
+                <li><a href="#id-41">4.1 Definition of a lattice</a></li>
+                <li><a href="#id-42">4.2 Hard problems on lattices</a></li>
+                <li><a href="#id-43">4.3 From SVP to LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: ring-based variant</a></li>
+                <li><a href="#id-46">4.6 MLWE: the basis of ML‑KEM</a></li>
+                <li><a href="#id-47">4.7 Post‑quantum security of lattices</a></li>
             </ul>
         </div>
 
-        <!-- Section 10.1 -->
-        <section id="id-101">
-            <h2>10.1 liboqs: the reference C library</h2>
-            
-            <p><strong>liboqs</strong> is the reference C library for post-quantum cryptography, developed by the Open Quantum Safe (OQS) project. It provides optimized and constant-time implementations of ML-KEM and other NIST-standardized PQC algorithms.</p>
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Definition of a lattice</h2>
 
-            <h3>Installation from source</h3>
-            <div class="code-block">
-                <pre><code># Dependencies (Ubuntu/Debian)
-sudo apt-get install cmake gcc libssl-dev
+            <h3>Formal definition</h3>
 
-# Clone and build
-git clone https://github.com/open-quantum-safe/liboqs.git
-cd liboqs
-mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
-make -j$(nproc)
-sudo make install</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.2 -->
-        <section id="id-102">
-            <h2>10.2 Complete example: KEM with ML-KEM-768 in C</h2>
-
-            <div class="code-block">
-                <pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-#include &lt;oqs/oqs.h&gt;
-
-int main() {
-    OQS_STATUS rc;
-    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
-
-    // Initialize the algorithm
-    OQS_KEM *kem = OQS_KEM_new(kem_alg);
-    if (kem == NULL) {
-        fprintf(stderr, "KEM not supported\n");
-        return 1;
-    }
-
-    printf("Algorithm: %s\n", kem-&gt;method_name);
-    printf("Public key: %zu bytes\n", kem-&gt;length_public_key);
-    printf("Private key: %zu bytes\n", kem-&gt;length_secret_key);
-    printf("Ciphertext: %zu bytes\n", kem-&gt;length_ciphertext);
-    printf("Shared secret: %zu bytes\n\n", kem-&gt;length_shared_secret);
-
-    // Memory allocation
-    uint8_t *pk = malloc(kem-&gt;length_public_key);
-    uint8_t *sk = malloc(kem-&gt;length_secret_key);
-    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
-    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
-    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
-
-    // 1. KeyGen (Alice)
-    rc = OQS_KEM_keypair(kem, pk, sk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen failed\n"); return 1; }
-    printf("✓ KeyGen completed\n");
-
-    // 2. Encaps (Bob: only knows pk)
-    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps failed\n"); return 1; }
-    printf("✓ Encaps completed\n");
-
-    // 3. Decaps (Alice: uses sk to open ct)
-    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
-    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps failed\n"); return 1; }
-    printf("✓ Decaps completed\n\n");
-
-    // 4. Verification
-    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
-        printf("✅ Shared secrets match!\n");
-        printf("   First bytes: ");
-        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
-        printf("...\n");
-    } else {
-        printf("❌ ERROR: shared secrets differ!\n");
-    }
-
-    // Secure memory cleanup
-    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
-    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
-    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
-    free(pk); free(ct);
-    OQS_KEM_free(kem);
-    
-    return 0;
-}</code></pre>
-            </div>
-
-            <p><strong>Compilation:</strong></p>
-            <div class="code-block">
-                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
-./kem_example</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.3 -->
-        <section id="id-103">
-            <h2>10.3 Using the derived key with AES-256-GCM</h2>
-            
-            <p>After obtaining the shared secret from ML-KEM, it can be used as a key for a symmetric cipher. In production, it is recommended to use HKDF to derive separate keys.</p>
-
-            <div class="code-block">
-                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
-#include &lt;oqs/oqs.h&gt;
-
-// After obtaining ss (32 bytes) from ML-KEM:
-void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
-                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
-                           const uint8_t *nonce) {
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-    int len;
-
-    // Initialize AES-256-GCM
-    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
-    
-    // Use the shared secret as the key
-    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
-    
-    // Encryption
-    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
-    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
-    
-    // Retrieve the authentication tag
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
-    
-    EVP_CIPHER_CTX_free(ctx);
-}</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.4 -->
-        <section id="id-104">
-            <h2>10.4 Python: liboqs bindings</h2>
-            
-            <p>Liboqs provides official Python bindings for rapid testing and prototyping.</p>
-
-            <div class="code-block">
-                <pre><code>pip install liboqs-python</code></pre>
-            </div>
-
-            <div class="code-block">
-                <pre><code class="language-python">import oqs
-
-# Available algorithm
-kem = oqs.KeyEncapsulation("ML-KEM-768")
-
-# KeyGen
-public_key = kem.generate_keypair()
-
-# Encaps (Bob side)
-kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
-ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
-
-# Decaps (Alice side)
-shared_secret_dec = kem.decap_secret(ciphertext)
-
-assert shared_secret_enc == shared_secret_dec
-print(f"✓ Shared secret: {shared_secret_enc.hex()[:16]}...")
-
-kem.free()
-kem_bob.free()</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.5 -->
-        <section id="id-105">
-            <h2>10.5 Python: kyber-py (educational only)</h2>
-            
-            <p>For purely educational purposes, there is a pure Python implementation that does not require external C libraries.</p>
-
-            <div class="note warning">
-                <p><strong>Warning:</strong> <code>kyber-py</code> is not constant-time and must not be used in production.</p>
-            </div>
-
-            <div class="code-block">
-                <pre>
-                    <code class="language-python">
-                        from kyber import Kyber768
-                        kem = Kyber768()
-                        pk, sk = kem.keygen()
-                        key, ciphertext = kem.enc(pk)
-                        _key = kem.dec(sk, ciphertext)
-                        assert key == _key
-                    </code>
-                </pre>
-            </div>
-        </section>
-
-        <!-- Section 10.6 -->
-        <section id="id-106">
-            <h2>10.6 Performance benchmarks</h2>
-            
-            <p>Benchmarks on Intel Core i7-12700K (single core, no SIMD instructions):</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Operation</th>
-                        <th>ML-KEM-512</th>
-                        <th>ML-KEM-768</th>
-                        <th>ML-KEM-1024</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>KeyGen</td>
-                        <td>24 µs</td>
-                        <td>37 µs</td>
-                        <td>54 µs</td>
-                    </tr>
-                    <tr>
-                        <td>Encaps</td>
-                        <td>28 µs</td>
-                        <td>43 µs</td>
-                        <td>62 µs</td>
-                    </tr>
-                    <tr>
-                        <td>Decaps</td>
-                        <td>32 µs</td>
-                        <td>48 µs</td>
-                        <td>70 µs</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>With AVX2 optimizations</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Operation</th>
-                        <th>ML-KEM-768 (no SIMD)</th>
-                        <th>ML-KEM-768 (AVX2)</th>
-                        <th>Speedup</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>KeyGen</td>
-                        <td>37 µs</td>
-                        <td>~10 µs</td>
-                        <td>~3.7×</td>
-                    </tr>
-                    <tr>
-                        <td>Encaps</td>
-                        <td>43 µs</td>
-                        <td>~12 µs</td>
-                        <td>~3.6×</td>
-                    </tr>
-                    <tr>
-                        <td>Decaps</td>
-                        <td>48 µs</td>
-                        <td>~13 µs</td>
-                        <td>~3.7×</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>Comparison with ECDH X25519</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>X25519</th>
-                        <th>ML-KEM-768</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>KeyGen</td>
-                        <td>~14 µs</td>
-                        <td>~37 µs</td>
-                    </tr>
-                    <tr>
-                        <td>Exchange</td>
-                        <td>~30 µs</td>
-                        <td>~48 µs</td>
-                    </tr>
-                    <tr>
-                        <td>Public key</td>
-                        <td>32 B</td>
-                        <td>1184 B</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>ML-KEM is about 2× slower than X25519, but the overhead on TLS handshake latency is negligible (&lt; 1 ms) on most real connections.</p>
-        </section>
-
-        <!-- Section 10.7 -->
-        <section id="id-107">
-            <h2>10.7 OpenSSL: installing the OQS provider</h2>
-            
-            <p>OpenSSL 3.x supports ML-KEM through the <code>oqsprovider</code> provider. Starting from version 3.4, support is native or easily integrable.</p>
-
-            <div class="code-block">
-                <pre><code># Build oqs-provider
-git clone https://github.com/open-quantum-safe/oqs-provider.git
-cd oqs-provider
-cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
-make
-sudo make install
-
-# Verify
-openssl list -providers
-# should list: oqsprovider</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.8 -->
-        <section id="id-108">
-            <h2>10.8 ML-KEM key generation with OpenSSL CLI</h2>
-
-            <div class="code-block">
-                <pre><code># Generate ML-KEM-768 key pair
-openssl genpkey -algorithm mlkem768 -out private.pem
-openssl pkey -in private.pem -pubout -out public.pem
-
-# Display key details
-openssl pkey -in private.pem -text -noout</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.9 -->
-        <section id="id-109">
-            <h2>10.9 TLS 1.3 with ML-KEM-768</h2>
-            
-            <h3>Local test (server + client)</h3>
-            <div class="code-block">
-                <pre><code># Server
-openssl s_server -accept 4433 -cert server.crt -key server.key \
-    -groups mlkem768
-
-# Client (in another terminal)
-openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
-            </div>
-
-            <h3>Verify supported groups</h3>
-            <div class="code-block">
-                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.10 -->
-        <section id="id-1010">
-            <h2>10.10 Hybrid strategy: X25519 + ML-KEM-768</h2>
-            
-            <p>The recommended approach for migration is <strong>hybridization</strong>: combining ECDH (X25519) with ML-KEM-768. The final key is derived from both:</p>
+            <p>A <strong>lattice</strong> <span class="math">\(\mathcal{L}\)</span> in <span class="math">\(\mathbb{R}^m\)</span> is the set of all integer linear combinations of <span class="math">\(n\)</span> linearly independent vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
 
             <div class="math-block">
                 \[
-                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
                 \]
             </div>
 
-            <p><strong>Advantage:</strong> secure if at least one of the two schemes holds. If a quantum computer breaks X25519, ML-KEM protects. If ML-KEM had an unknown flaw, X25519 protects.</p>
+            <p>The vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> form a <strong>basis</strong> of the lattice.</p>
+
+            <h3>Geometric intuition</h3>
+
+            <p>In 2D, imagine an infinite grid of points. Each point is reachable by the integer (not real) combination of two basis vectors:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>This is the standard integer grid <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>But the same grid has infinitely many different bases:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>generates the same lattice. Some bases are "good" (short and nearly orthogonal vectors), others are "bad" (long and nearly parallel vectors).</p>
+
+            <h3>Dimension and rank</h3>
+
+            <ul>
+                <li><strong>Ambient dimension</strong> <span class="math">\(m\)</span>: number of coordinates of each vector</li>
+                <li><strong>Rank</strong> <span class="math">\(n\)</span>: number of vectors in the basis</li>
+            </ul>
+
+            <p>If <span class="math">\(n = m\)</span>: full-rank lattice</p>
+
+            <p>In cryptography we typically use very large <span class="math">\(n = m\)</span> lattices (256–4096).</p>
         </section>
 
-        <!-- Section 10.11 -->
-        <section id="id-1011">
-            <h2>10.11 Hybrid cipher suites in TLS 1.3</h2>
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Hard problems on lattices</h2>
+
+            <h3>SVP – Shortest Vector Problem</h3>
+
+            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of a lattice <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Find:</strong> the shortest non-zero vector in <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ such that } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>In 2D it's easy (Gauss's algorithm). In high dimension (hundreds), it is <strong>NP-hard</strong> under certain assumptions, and the best known algorithm requires exponential time.</p>
+
+            <h3>CVP – Closest Vector Problem</h3>
+
+            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of <span class="math">\(\mathcal{L}\)</span> and a target point <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (not in the lattice)<br />
+            <strong>Find:</strong> the lattice point closest to <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \text{ such that } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP is at least as hard as SVP. It is at the heart of decapsulation in ML-KEM: those who know the secret <span class="math">\(\mathbf{s}\)</span> can solve the corresponding "easy" CVP, those who don't know it cannot.</p>
+
+            <h3>GapSVP and SIS</h3>
+
+            <p>There are approximate variants (GapSVP) and related problems (SIS – Short Integer Solution) that form the basis of security proofs for lattice-based cryptography. For our purposes, it is sufficient to know that they all reduce to one another, forming a family of hard problems.</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 From SVP to LWE</h2>
+
+            <p>How do you build a cryptographic system from SVP?</p>
+
+            <p>Regev's idea (2005): instead of working directly with SVP (geometrically intuitive but awkward to use), define an equivalent statistical problem: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>The security reduction demonstrates that:</p>
+
+            <blockquote>
+                <p>If you break LWE ⇒ You solve GapSVP</p>
+            </blockquote>
+
+            <p>Therefore LWE is <strong>at least as hard</strong> as GapSVP in high dimension.</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Definition</h3>
+
+            <p>Fix parameters <span class="math">\(n\)</span> (dimension), <span class="math">\(q\)</span> (modulus), <span class="math">\(\chi\)</span> (error distribution):</p>
+
+            <p><strong>LWE distribution:</strong> choose secret <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Generate samples:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>where <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniform, <span class="math">\(e \leftarrow \chi\)</span> small.</p>
+
+            <p><strong>Decision LWE problem:</strong> distinguish samples <span class="math">\((\mathbf{a}, b)\)</span> from uniform random pairs <span class="math">\((\mathbf{a}, u)\)</span> with <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Search LWE problem:</strong> given a set of samples <span class="math">\((\mathbf{a}_i, b_i)\)</span>, find <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>LWE parameters</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Group Name</th>
-                        <th>Composition</th>
+                        <th>Parameter</th>
+                        <th>Symbol</th>
+                        <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><code>X25519MLKEM768</code></td>
-                        <td>X25519 + ML-KEM-768</td>
+                        <td>Dimension</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Security grows exponentially in <span class="math">\(n\)</span></td>
                     </tr>
                     <tr>
-                        <td><code>SecP256r1MLKEM768</code></td>
-                        <td>P-256 + ML-KEM-768</td>
+                        <td>Modulus</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Must be large enough to contain the noise</td>
+                    </tr>
+                    <tr>
+                        <td>Error distribution</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Discrete Gaussian or centered binomial</td>
+                    </tr>
+                    <tr>
+                        <td>Noise-to-signal ratio</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Must be small but not too small</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>Starting from Chrome 131 (late 2024), <code>X25519MLKEM768</code> is the default group. Firefox 128+ supports the same group.</p>
+            <h3>Example with n=2, q=7</h3>
 
-            <h3>OpenSSL configuration</h3>
-            <div class="code-block">
-                <pre><code># Server that accepts both classic X25519 and the hybrid group
-openssl s_server -accept 4433 -cert server.crt -key server.key \
-    -groups X25519MLKEM768:x25519:P-256
+            <p>Secret: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
 
-# Client that prefers the hybrid group
-openssl s_client -connect localhost:4433 \
-    -groups X25519MLKEM768:x25519</code></pre>
-            </div>
-        </section>
+            <p>LWE samples with small errors in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
 
-        <!-- Section 10.12 -->
-        <section id="id-1012">
-            <h2>10.12 Integration in C applications with OpenSSL</h2>
-
-            <div class="code-block">
-                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
-#include &lt;openssl/err.h&gt;
-
-SSL_CTX *create_pqc_context(void) {
-    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
-    if (!ctx) {
-        ERR_print_errors_fp(stderr);
-        return NULL;
-    }
-
-    // Set preferred groups: hybrid first, then classics as fallback
-    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
-        fprintf(stderr, "Error configuring groups\n");
-        SSL_CTX_free(ctx);
-        return NULL;
-    }
-
-    return ctx;
-}</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 10.13 -->
-        <section id="id-1013">
-            <h2>10.13 Migration checklist</h2>
-
-            <h3>For application developers</h3>
-            <ul>
-                <li>Inventory where asymmetric cryptography is used (key exchange, signatures, KEM).</li>
-                <li>Identify which data must remain secret for more than 5 years.</li>
-                <li>Update dependencies: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
-                <li>Adopt hybrid approach: <code>X25519 + ML-KEM-768</code> for TLS.</li>
-                <li>For digital signatures: migrate to ML-DSA (FIPS 204) or SLH-DSA (FIPS 205).</li>
-                <li>Test the increased size of keys and ciphertexts in protocols.</li>
-                <li>Verify that timeouts and buffer sizes do not assume small key sizes.</li>
-            </ul>
-
-            <h3>For infrastructure managers</h3>
-            <ul>
-                <li>Update TLS stack to versions with ML-KEM support.</li>
-                <li>Enable <code>X25519MLKEM768</code> on TLS servers.</li>
-                <li>Monitor client compatibility (Chrome 131+, Firefox 128+ support hybrid PQC).</li>
-                <li>Plan long-term key rotation.</li>
-            </ul>
-
-            <h3>Reference standards</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Standard</th>
-                        <th>Content</th>
+                        <th>The vector a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>FIPS 203</td>
-                        <td>ML-KEM (Key Encapsulation)</td>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
                     </tr>
                     <tr>
-                        <td>FIPS 204</td>
-                        <td>ML-DSA (lattice-based digital signature)</td>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
                     </tr>
                     <tr>
-                        <td>FIPS 205</td>
-                        <td>SLH-DSA (hash-based signature, conservative)</td>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
                     </tr>
                 </tbody>
             </table>
+
+            <p>Given the system with errors, finding <span class="math">\(\mathbf{s}\)</span> is difficult: you can't use Gaussian elimination because the <span class="math">\(b_i\)</span> values are not exact.</p>
         </section>
 
-        <!-- Section 10.14 -->
-        <section id="id-1014">
-            <h2>10.14 Scenario: migrating a REST API</h2>
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: ring-based variant</h2>
 
-            <h3>Current situation (pre-migration)</h3>
-            <p>Client → TLS 1.3 with X25519 → API Server</p>
+            <p>Standard LWE uses vectors. <strong>Ring-LWE (RLWE)</strong> moves operations to the polynomial ring:</p>
 
-            <h3>Phase 1: hybrid (today, recommended)</h3>
-            <p>Client → TLS 1.3 with X25519MLKEM768 → API Server</p>
-
-            <div class="code-block">
-                <pre><code># nginx configuration
-ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
-
-# Apache configuration
-SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
             </div>
 
-            <h3>Phase 2: pure post-quantum (future)</h3>
-            <p>Client → TLS 1.3 with ML-KEM-768 + ML-DSA → API Server</p>
-            <p>To be adopted when the majority of clients support native ML-KEM and server certificates use ML-DSA for signing.</p>
+            <p>In RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (a polynomial, not a vector of integers)</li>
+                <li><span class="math">\(a \in R_q\)</span> (sampled uniformly)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Advantages of RLWE over LWE:</strong></p>
+            <ul>
+                <li>Key size: <span class="math">\(O(n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
+                <li>Speed: polynomial multiplication with NTT is <span class="math">\(O(n \log n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Disadvantage:</strong> additional algebraic structure → potentially more vulnerable; the security proof is slightly weaker.</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: the basis of ML‑KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> is a compromise between LWE and RLWE: it uses modules of polynomials (matrices of polynomials in <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>The parameter <span class="math">\(k\)</span> is the <strong>module dimension</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> for ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> for ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> for ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Why MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scheme</th>
+                        <th>Key size</th>
+                        <th>Speed</th>
+                        <th>Security</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → large</td>
+                        <td>slow</td>
+                        <td>more conservative</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → small</td>
+                        <td>fast</td>
+                        <td>extra structure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → medium</td>
+                        <td>fast</td>
+                        <td>balanced</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE allows scaling security by varying <span class="math">\(k\)</span> without changing <span class="math">\(n\)</span>, while maintaining the optimizations of the ring structure.</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Post‑quantum security of lattices</h2>
+
+            <h3>Best classical algorithm: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>The BKZ algorithm and its variants (BKZ 2.0, G6K) are the best classical algorithms for attacking lattices. Their complexity for ML-KEM-768 is estimated at <span class="math">\(> 2^{178}\)</span> operations.</p>
+
+            <h3>Impact of quantum computers</h3>
+
+            <p>The best quantum algorithms for attacking MLWE (including QRAM-based approaches) offer at most a modest speedup — at most quadratic, keeping the problem's difficulty in the exponential regime.</p>
+
+            <p>This contrasts sharply with Shor, which offers an exponential speedup on factorization and DLP.</p>
+
+            <h3>Why MLWE has no "Shor's algorithm"</h3>
+
+            <p>MLWE does not have the abelian group structure that Shor exploits. The problem is fundamentally different: it is not a matter of finding periodicity in a function, but of finding a short vector in a high-dimensional lattice — a geometric problem for which no known quantum technique offers an exponential speedup.</p>
         </section>
 
         <!-- Sources -->
         <div class="sources">
             <h2>Sources</h2>
             <ul>
-                <li>Open Quantum Safe project — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
-                <li>liboqs documentation — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
-                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
-                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
-                <li>IETF draft — Hybrid key exchange in TLS 1.3</li>
-                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>The mathematics behind PQC: lattices</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Chapter 17</li>
             </ul>
         </div>
 
         <!-- Chapter navigation -->
         <div class="chapter-nav">
-            <a href="9.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">10 / 10</span>
-            <a href="#" class="nav-btn disabled">End of Guide →</a>
+            <a href="3.html" class="nav-btn">← Previous chapter</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>

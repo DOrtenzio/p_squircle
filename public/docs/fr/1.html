@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 3 – MONEOO.</title>
+    <title>Capitolo 1 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -371,9 +371,9 @@
             <h3>Chapters</h3>
             <ul>
                 <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
                 <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
-                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
                 <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
@@ -386,239 +386,231 @@
 
         <main class="chapter-content">
     <article>
-        <h1>03 – Shor's Algorithm</h1>
-        <p class="subtitle">Why RSA and ECC are vulnerable to quantum computers</p>
+        <h1>01 – Symmetric Cryptography</h1>
+        <p class="subtitle">The practical destination of the entire PQC journey</p>
 
-        <!-- Index -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>Table of Contents</h2>
             <ul>
-                <li><a href="#id-31">3.1 Quantum computers: the essential basics</a></li>
-                <li><a href="#id-32">3.2 Shor's algorithm</a></li>
-                <li><a href="#id-33">3.3 Impact on RSA, DH, ECC</a></li>
-                <li><a href="#id-34">3.4 Grover: the threat to symmetric cryptography</a></li>
-                <li><a href="#id-35">3.5 State of the art of quantum computers (2024–2025)</a></li>
-                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+                <li><a href="#id-11">1.1 What is symmetric cryptography</a></li>
+                <li><a href="#id-12">1.2 AES: Advanced Encryption Standard</a></li>
+                <li><a href="#id-13">1.3 Modes of operation</a></li>
+                <li><a href="#id-14">1.4 Authentication and AEAD</a></li>
+                <li><a href="#id-15">1.5 Role in the PQC context</a></li>
             </ul>
         </div>
 
-        <!-- Section 3.1 -->
-        <section id="id-31">
-            <h2>3.1 Quantum computers: the essential basics</h2>
+        <section id="id-11">
+            <h2>1.1 What is symmetric cryptography</h2>
 
-            <h3>Qubit vs. classical bits</h3>
+            <p>In a <strong>symmetric</strong> cryptographic system, the sender and recipient use the <strong>same key</strong> <span class="math">\(K\)</span> to encrypt and decrypt.</p>
 
-            <p>A classical bit is either 0 or 1. A <strong>qubit</strong> can be in <strong>superposition</strong>: a linear combination of <span class="math">\(|0\rangle\)</span> and <span class="math">\(|1\rangle\)</span>.</p>
+            <div class="example">
+                <p><span class="math">\(\text{Sender: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{Recipient: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>Main advantage:</strong> efficiency. AES-256 on modern hardware reaches speeds of tens of GB/s.</p>
+
+            <p><strong>Disadvantage:</strong> a secure channel is needed to exchange <span class="math">\(K\)</span> <em>before</em> communicating. This is exactly the problem that KEMs solve.</p>
+
+            <h3>Symmetric cryptography vs. quantum security</h3>
+
+            <p>Quantum computers do not break AES. Grover's algorithm offers a <em>quadratic</em> speedup in key searching, but:</p>
+            <ul>
+                <li><strong>AES-128:</strong> effective security drops from 128 bits to ~64 bits → insufficient</li>
+                <li><strong>AES-256:</strong> effective security drops from 256 bits to ~128 bits → still secure</li>
+            </ul>
+
+            <p>For this reason, FIPS 203 (ML-KEM) produces 256-bit keys, intended to be used with AES-256.</p>
+        </section>
+
+        <section id="id-12">
+            <h2>1.2 AES: Advanced Encryption Standard</h2>
+
+            <p>AES is a <strong>block cipher</strong>: it takes a 128-bit block and a key (<span class="math">\(K\)</span>), and produces a 128-bit ciphertext.</p>
+
+            <h3>Internal structure</h3>
+
+            <p>AES organizes the 128-bit input as a <span class="math">\(4 \times 4\)</span> matrix of bytes. It then applies <span class="math">\(r\)</span> <em>rounds</em> (10, 12, or 14 depending on the key size), each consisting of four transformations:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transformation</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>Non-linear substitution via S-Box (resistance to differential cryptanalysis)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>Cyclic row rotation (diffusion)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>Linear column combination (diffusion)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>XOR with the current round subkey</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key schedule</h3>
+
+            <p>The original key (<span class="math">\(K\)</span> of 128, 192, or 256 bits) is expanded into <span class="math">\(r+1\)</span> subkeys, one for each round.</p>
+
+            <div class="example">
+                <p>AES-128: 128-bit key, 10 rounds</p>
+                <p>AES-192: 192-bit key, 12 rounds</p>
+                <p>AES-256: 256-bit key, 14 rounds</p>
+            </div>
+
+            <h3>Security</h3>
+
+            <p>The best known attack on AES-128 requires <span class="math">\(2^{126.1}\)</span> operations (Biryukov &amp; Khovratovich, 2009) – substantially brute force.</p>
+        </section>
+
+        <section id="id-13">
+            <h2>1.3 Modes of operation</h2>
+
+            <p>AES encrypts a 128-bit block. However, real-world messages are longer. <strong>Modes of operation</strong> define how to apply AES repeatedly.</p>
+
+            <h3>ECB (Electronic Codebook) – do not use</h3>
+
+            <p>Each block is encrypted independently. Identical blocks produce identical ciphertexts → leaks the plaintext structure.</p>
+
+            <h3>CBC (Cipher Block Chaining)</h3>
+
+            <p>Each plaintext block is XORed with the ciphertext of the previous block before being encrypted. Requires a random IV (Initialization Vector).</p>
 
             <div class="math-block">
                 \[
-                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                C_i = E_K(P_i \oplus C_{i-1})
                 \]
             </div>
 
-            <p>Before measurement, the qubit is "both 0 and 1". After measurement, it collapses to 0 (with probability <span class="math">\(|\alpha|^2\)</span>) or 1 (with probability <span class="math">\(|\beta|^2\)</span>).</p>
+            <p>More secure than ECB, but not parallelizable during encryption.</p>
 
-            <blockquote>
-                <p><strong>Analogy:</strong> imagine flipping a coin that, while in the air, represents both heads and tails simultaneously. Only when you look at it does it become one of the two.</p>
-            </blockquote>
+            <h3>CTR (Counter Mode) – recommended</h3>
 
-            <h3>Entanglement and interference</h3>
+            <p>Generates a keystream by encrypting an incremental counter. The plaintext is XORed with the keystream.</p>
 
-            <ul>
-                <li><strong>Entanglement:</strong> two qubits can be correlated such that measuring one instantly determines the other.</li>
-                <li><strong>Quantum interference:</strong> the "wrong" computation paths cancel constructively (like waves that cancel out), while the "right" paths are amplified.</li>
-            </ul>
-
-            <p>Quantum algorithms leverage interference to amplify correct answers and suppress wrong ones.</p>
-
-            <h3>Quantum parallelism</h3>
-
-            <p>With <span class="math">\(n\)</span> qubits, one can represent a superposition of <span class="math">\(2^n\)</span> states simultaneously. But measurement returns only one state → the trick is to build algorithms where interference leaves only the right answer to survive.</p>
-        </section>
-
-        <!-- Section Algorithm Scheme -->
-        <section id="id-32">
-            <h2>3.2 Shor's algorithm</h2>
-            
-            <h3>Algorithm scheme for factoring \(n\)</h3>
-            
-            <div class="algorithm-steps">
-                <ol>
-                    <li><strong>Input:</strong> composite integer <span class="math">\(n\)</span></li>
-                    <li><strong>Initialization:</strong> Choose random <span class="math">\(a\)</span> such that <span class="math">\(1 < a < n\)</span> and <span class="math">\(\gcd(a,n)=1\)</span></li>
-                    <li><strong>Quantum Preparation:</strong> Prepare a register in uniform superposition from <span class="math">\(0\)</span> to <span class="math">\(2^k-1\)</span></li>
-                    <li><strong>Oracle:</strong> Compute <span class="math">\(f(x) = a^x \bmod n\)</span> in parallel (superposition)</li>
-                    <li><strong>QFT:</strong> Apply the Quantum Fourier Transform to the first register</li>
-                    <li><strong>Measurement:</strong> Measure the register to obtain a value correlated with the period <span class="math">\(r\)</span></li>
-                    <li><strong>Classical:</strong> Use the continued fractions algorithm to estimate <span class="math">\(r\)</span></li>
-                    <li><strong>Verification:</strong> If <span class="math">\(r\)</span> is even and <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
-                        <ul>
-                            <li>Compute <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> and <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
-                            <li>These are non-trivial factors of <span class="math">\(n\)</span></li>
-                        </ul>
-                    </li>
-                    <li><strong>Loop:</strong> If it fails, go back to step 2 with a new <span class="math">\(a\)</span></li>
-                </ol>
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
             </div>
 
-            <div class="note">
-                <p><strong>Note:</strong> The quantum core (steps 3-5) finds the period <span class="math">\(r\)</span> of the function <span class="math">\(f(x)\)</span> in polynomial time, leveraging the constructive/destructive interference of the QFT.</p>
-            </div>
+            <p>Parallelizable in both encryption and decryption. Transforms AES into a stream cipher.</p>
+
+            <h3>GCM (Galois/Counter Mode) – used in TLS 1.3</h3>
+
+            <p>Combines CTR with a MAC based on Galois fields. Provides confidentiality <strong>and</strong> authenticity.</p>
         </section>
 
-        <!-- Section 3.3 -->
-        <section id="id-33">
-            <h2>3.3 Impact on RSA, DH, ECC</h2>
+        <section id="id-14">
+            <h2>1.4 Authentication and AEAD</h2>
+
+            <p>Confidentiality is not enough: an attacker could modify the ciphertext without the recipient noticing. <strong>Authenticity</strong> is required.</p>
+
+            <h3>MAC (Message Authentication Code)</h3>
+
+            <p>A MAC is a function <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> where <span class="math">\(\tau\)</span> is the <em>authenticity tag</em>. Only those who know <span class="math">\(K\)</span> can generate and verify <span class="math">\(\tau\)</span>.</p>
+
+            <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
+
+            <p>Combines encryption and authentication into a single primitive:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> or <span class="math">\(\perp\)</span> (if tag is invalid)</p>
+            </div>
+
+            <p><code>AAD</code> (Additional Authenticated Data) represents authenticated but unencrypted data (e.g., packet headers).</p>
+
+            <p><strong>AES-256-GCM</strong> is the standard AEAD scheme used in TLS 1.3 and as a symmetric cipher following a KEM.</p>
+        </section>
+
+        <section id="id-15">
+            <h2>1.5 Role in the PQC context</h2>
+
+            <p>A complete ML-KEM workflow in real-world use works as follows:</p>
+
+            <div class="sequence-diagram">
+Alice                                 Bob
+  |                                    |
+  |  KeyGen() → (pk, sk)               |
+  |                                    |
+  |  ------------ pk ----------------->|
+  |                                    |
+  |            Encaps(pk) → (K, C)     |
+  |                                    |
+  |            K_enc = HKDF(K, "enc")  |
+  |            K_mac = HKDF(K, "mac")  |
+  |            C_data = AES-256-GCM(K_enc, Message) |
+  |                                    |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                    |
+  |  Decaps(sk, C) → K                 |
+  |  K_enc = HKDF(K, "enc")            |
+  |  Message = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                    |
+  |  ✓ Secure communication            |
+            </div>
+
+            <p>The key <span class="math">\(K\)</span> produced by ML-KEM (32 bytes) is not used directly as an AES key, but is derived using a <strong>KDF (Key Derivation Function)</strong> such as HKDF to separate different contexts.</p>
+
+            <h3>Practical sizes (ML-KEM-768 + AES-256-GCM)</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Security based on</th>
-                        <th>Vulnerable to Shor?</th>
+                        <th>Component</th>
+                        <th>Size</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>RSA</td>
-                        <td>Factorization</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>ML-KEM Public Key</td>
+                        <td>1184 bytes</td>
                     </tr>
                     <tr>
-                        <td>DH (mod <span class="math">\(p\)</span>)</td>
-                        <td>Discrete logarithm in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>ML-KEM Ciphertext</td>
+                        <td>1088 bytes</td>
                     </tr>
                     <tr>
-                        <td>ECDH / ECDSA</td>
-                        <td>ECDLP (discrete logarithm on EC)</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>Shared secret → AES key</td>
+                        <td>32 bytes</td>
                     </tr>
                     <tr>
-                        <td><strong>ML-KEM (MLWE)</strong></td>
-                        <td>Lattice problems</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">No known efficient algorithm</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>AES-256</strong></td>
-                        <td>Pseudorandom permutations</td>
-                        <td>Only Grover (see below)</td>
+                        <td>AEAD Overhead (GCM tag)</td>
+                        <td>16 bytes</td>
                     </tr>
                 </tbody>
             </table>
-
-            <p>Shor solves any structured problem like finding periodicity in an abelian group. Factorization and discrete logarithm (including on EC) have exactly this structure. Lattice problems do not.</p>
         </section>
 
-        <!-- Section 3.4 -->
-        <section id="id-34">
-            <h2>3.4 Grover: the threat to symmetric cryptography</h2>
-
-            <p>Grover's algorithm (1996) offers a <strong>quadratic</strong> speedup in unstructured search:</p>
-            <ul>
-                <li>Finding a key among <span class="math">\(2^k\)</span> possibilities classically: <span class="math">\(O(2^k)\)</span> attempts</li>
-                <li>With Grover: <span class="math">\(O(2^{k/2})\)</span> attempts</li>
-            </ul>
-
-            <p><strong>Practical consequences:</strong></p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Classical security</th>
-                        <th>Post-quantum security (Grover)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AES-128</td>
-                        <td>128 bits</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insufficient</span></td>
-                    </tr>
-                    <tr>
-                        <td>AES-256</td>
-                        <td>256 bits</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → still secure</span></td>
-                    </tr>
-                    <tr>
-                        <td>SHA-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                    <tr>
-                        <td>SHA3-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>This is why NIST recommends AES-256 (not AES-128) in the post-quantum context.</p>
-        </section>
-
-        <!-- Section 3.5 -->
-        <section id="id-35">
-            <h2>3.5 State of the art of quantum computers (2024–2025)</h2>
-
-            <p>Current quantum computers are <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: they have tens to hundreds of physical qubits but with a high error rate.</p>
-
-            <p>To break RSA-2048 with Shor you need:</p>
-            <ul>
-                <li>~4000 perfect logical qubits</li>
-                <li>or ~4 million physical qubits with quantum error correction</li>
-            </ul>
-
-            <p>The best current systems (Google Willow, IBM Heron, etc.) have ~100-1000 high-fidelity physical qubits, but we are still far from the required scale.</p>
-
-            <blockquote>
-                <p><strong>NIST estimate:</strong> cryptographically relevant quantum computers could exist within 10–15 years, with significant uncertainty in both directions.</p>
-            </blockquote>
-        </section>
-
-        <!-- Section 3.6 -->
-        <section id="id-36">
-            <h2>3.6 Harvest Now, Decrypt Later</h2>
-
-            <p>Even if quantum computers do not <em>yet</em> exist in cryptographically relevant form, there is a concrete threat <strong>today</strong>:</p>
-
-            <blockquote>
-                <p>An adversary can <strong>harvest now</strong> encrypted communications (even if they cannot decrypt them), and <strong>decrypt them in the future</strong> when they have a sufficiently powerful quantum computer.</p>
-            </blockquote>
-
-            <p>This attack is known as <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> or <em>store-now-decrypt-later</em>.</p>
-
-            <h4>Who is at risk:</h4>
-            <ul>
-                <li>Diplomatic and military communications with long secrecy requirements</li>
-                <li>Medical, financial, legal data with decades-long confidentiality requirements</li>
-                <li>Industrial secrets and IP</li>
-            </ul>
-
-            <h4>When to migrate?</h4>
-
-            <p>If your data must remain secret for more years than it will take for sufficiently powerful quantum computers to exist, you need to migrate <em>now</em>.</p>
-
-            <p>This is the main reason why NIST standardized ML-KEM (FIPS 203) in 2024, and why organizations like NSA, ENISA, and ANSSI recommend immediate migration for high-criticality systems.</p>
-        </section>
-
-        <!-- Sources -->
         <div class="sources">
             <h2>Sources</h2>
             <ul>
-                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
-                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
-                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
-                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
-                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Chapters 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
         <div class="chapter-nav">
-            <a href="2.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">03 / 10</span>
-            <a href="4.html" class="nav-btn">Next chapter →</a>
+            <a href="0.html" class="nav-btn">← Previous chapter</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>

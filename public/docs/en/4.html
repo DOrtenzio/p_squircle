@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 4 – MONEOO.</title>
+    <title> Chapter 4 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="../../index.html#featureSection">Perché</a>
-            <a href="../../index.html#learningPath">Percorso</a>
-            <a href="../../index.html#searchSection">La Guida</a>
+            <a href="index.html#featureSection">Why</a>
+            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
-                    <span class="lang-current" id="langCurrent">🇮🇹 Italiano</span>
+                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
+                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,49 +368,49 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Capitoli</h3>
+            <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisiti</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Simmetrica</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asimmetrica</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Reticoli</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Sicurezza</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementazioni</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
             </ul>
         </aside>
 
         <!-- Contenuto del capitolo -->
         <main class="chapter-content">
     <article>
-        <h1>04 – Reticoli (Lattices)</h1>
-        <p class="subtitle">La struttura matematica alla base della crittografia post‑quantum</p>
+        <h1>04 – Lattices</h1>
+        <p class="subtitle">The mathematical structure underlying post‑quantum cryptography</p>
 
-        <!-- Indice -->
+        <!-- Index -->
         <div class="toc">
-            <h2>Indice</h2>
+            <h2>Index</h2>
             <ul>
-                <li><a href="#id-41">4.1 Definizione di reticolo</a></li>
-                <li><a href="#id-42">4.2 Problemi difficili sui reticoli</a></li>
-                <li><a href="#id-43">4.3 Da SVP a LWE</a></li>
+                <li><a href="#id-41">4.1 Definition of a lattice</a></li>
+                <li><a href="#id-42">4.2 Hard problems on lattices</a></li>
+                <li><a href="#id-43">4.3 From SVP to LWE</a></li>
                 <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
-                <li><a href="#id-45">4.5 RLWE: variante su anelli</a></li>
-                <li><a href="#id-46">4.6 MLWE: la base di ML‑KEM</a></li>
-                <li><a href="#id-47">4.7 Sicurezza post‑quantum dei reticoli</a></li>
+                <li><a href="#id-45">4.5 RLWE: ring-based variant</a></li>
+                <li><a href="#id-46">4.6 MLWE: the basis of ML‑KEM</a></li>
+                <li><a href="#id-47">4.7 Post‑quantum security of lattices</a></li>
             </ul>
         </div>
 
-        <!-- Sezione 4.1 -->
+        <!-- Section 4.1 -->
         <section id="id-41">
-            <h2>4.1 Definizione di reticolo</h2>
+            <h2>4.1 Definition of a lattice</h2>
 
-            <h3>Definizione formale</h3>
+            <h3>Formal definition</h3>
 
-            <p>Un <strong>reticolo</strong> <span class="math">\(\mathcal{L}\)</span> in <span class="math">\(\mathbb{R}^m\)</span> è l'insieme di tutte le combinazioni lineari intere di <span class="math">\(n\)</span> vettori linearmente indipendenti <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+            <p>A <strong>lattice</strong> <span class="math">\(\mathcal{L}\)</span> in <span class="math">\(\mathbb{R}^m\)</span> is the set of all integer linear combinations of <span class="math">\(n\)</span> linearly independent vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -418,11 +418,11 @@
                 \]
             </div>
 
-            <p>I vettori <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> formano una <strong>base</strong> del reticolo.</p>
+            <p>The vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> form a <strong>basis</strong> of the lattice.</p>
 
-            <h3>Intuizione geometrica</h3>
+            <h3>Geometric intuition</h3>
 
-            <p>In 2D, immagina una griglia infinita di punti. Ogni punto è raggiungibile dalla combinazione intera (non reale) di due vettori base:</p>
+            <p>In 2D, imagine an infinite grid of points. Each point is reachable by the integer (not real) combination of two basis vectors:</p>
 
             <div class="math-block">
                 \[
@@ -430,9 +430,9 @@
                 \]
             </div>
 
-            <p>Questa è la griglia degli interi standard <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+            <p>This is the standard integer grid <span class="math">\(\mathbb{Z}^2\)</span>.</p>
 
-            <p>Ma la stessa griglia ha infinite basi diverse:</p>
+            <p>But the same grid has infinitely many different bases:</p>
 
             <div class="math-block">
                 \[
@@ -440,81 +440,81 @@
                 \]
             </div>
 
-            <p>genera lo stesso reticolo. Alcune basi sono "buone" (vettori corti e quasi ortogonali), altre sono "cattive" (vettori lunghi e quasi paralleli).</p>
+            <p>generates the same lattice. Some bases are "good" (short and nearly orthogonal vectors), others are "bad" (long and nearly parallel vectors).</p>
 
-            <h3>Dimensione e rango</h3>
+            <h3>Dimension and rank</h3>
 
             <ul>
-                <li><strong>Dimensione ambientale</strong> <span class="math">\(m\)</span>: numero di coordinate di ogni vettore</li>
-                <li><strong>Rango</strong> <span class="math">\(n\)</span>: numero di vettori nella base</li>
+                <li><strong>Ambient dimension</strong> <span class="math">\(m\)</span>: number of coordinates of each vector</li>
+                <li><strong>Rank</strong> <span class="math">\(n\)</span>: number of vectors in the basis</li>
             </ul>
 
-            <p>Se <span class="math">\(n = m\)</span>: reticolo a pieno rango (<em>full-rank lattice</em>)</p>
+            <p>If <span class="math">\(n = m\)</span>: full-rank lattice</p>
 
-            <p>In crittografia usiamo tipicamente reticoli con <span class="math">\(n = m\)</span> molto grande (256–4096).</p>
+            <p>In cryptography we typically use very large <span class="math">\(n = m\)</span> lattices (256–4096).</p>
         </section>
 
-        <!-- Sezione 4.2 -->
+        <!-- Section 4.2 -->
         <section id="id-42">
-            <h2>4.2 Problemi difficili sui reticoli</h2>
+            <h2>4.2 Hard problems on lattices</h2>
 
             <h3>SVP – Shortest Vector Problem</h3>
 
-            <p><strong>Dato:</strong> una base <span class="math">\(B\)</span> di un reticolo <span class="math">\(\mathcal{L}\)</span><br />
-            <strong>Trovare:</strong> il vettore non nullo più corto in <span class="math">\(\mathcal{L}\)</span></p>
+            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of a lattice <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Find:</strong> the shortest non-zero vector in <span class="math">\(\mathcal{L}\)</span></p>
 
             <div class="math-block">
                 \[
-                \text{SVP}: \quad \text{trovare } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ tale che } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \text{SVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ such that } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
                 \]
             </div>
 
-            <p>In 2D è facile (algoritmo di Gauss). In dimensione alta (centinaia), è <strong>NP-hard</strong> sotto alcune assunzioni, e il miglior algoritmo conosciuto richiede tempo esponenziale.</p>
+            <p>In 2D it's easy (Gauss's algorithm). In high dimension (hundreds), it is <strong>NP-hard</strong> under certain assumptions, and the best known algorithm requires exponential time.</p>
 
             <h3>CVP – Closest Vector Problem</h3>
 
-            <p><strong>Dato:</strong> una base <span class="math">\(B\)</span> di <span class="math">\(\mathcal{L}\)</span> e un punto target <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (non nel reticolo)<br />
-            <strong>Trovare:</strong> il punto del reticolo più vicino a <span class="math">\(\mathbf{t}\)</span></p>
+            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of <span class="math">\(\mathcal{L}\)</span> and a target point <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (not in the lattice)<br />
+            <strong>Find:</strong> the lattice point closest to <span class="math">\(\mathbf{t}\)</span></p>
 
             <div class="math-block">
                 \[
-                \text{CVP}: \quad \text{trovare } \mathbf{v} \in \mathcal{L} \text{ tale che } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \text{CVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \text{ such that } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
                 \]
             </div>
 
-            <p>CVP è almeno difficile quanto SVP. È al cuore del decapsulamento in ML-KEM: chi conosce il segreto <span class="math">\(\mathbf{s}\)</span> può risolvere il CVP "facile" corrispondente, chi non lo conosce non può.</p>
+            <p>CVP is at least as hard as SVP. It is at the heart of decapsulation in ML-KEM: those who know the secret <span class="math">\(\mathbf{s}\)</span> can solve the corresponding "easy" CVP, those who don't know it cannot.</p>
 
-            <h3>GapSVP e SIS</h3>
+            <h3>GapSVP and SIS</h3>
 
-            <p>Esistono varianti approssimate (GapSVP) e problemi correlati (SIS – Short Integer Solution) che formano la base delle prove di sicurezza della crittografia su reticoli. In questa sede è sufficiente sapere che tutti si riducono l'uno all'altro, formando una famiglia di problemi difficili.</p>
+            <p>There are approximate variants (GapSVP) and related problems (SIS – Short Integer Solution) that form the basis of security proofs for lattice-based cryptography. For our purposes, it is sufficient to know that they all reduce to one another, forming a family of hard problems.</p>
         </section>
 
-        <!-- Sezione 4.3 -->
+        <!-- Section 4.3 -->
         <section id="id-43">
-            <h2>4.3 Da SVP a LWE</h2>
+            <h2>4.3 From SVP to LWE</h2>
 
-            <p>Come si costruisce un sistema crittografico da SVP?</p>
+            <p>How do you build a cryptographic system from SVP?</p>
 
-            <p>L'idea di Regev (2005): invece di lavorare direttamente con SVP (geometricamente intuitivo ma scomodo da usare), si definisce un problema statistico equivalente: <strong>Learning With Errors (LWE)</strong>.</p>
+            <p>Regev's idea (2005): instead of working directly with SVP (geometrically intuitive but awkward to use), define an equivalent statistical problem: <strong>Learning With Errors (LWE)</strong>.</p>
 
-            <p>La riduzione di sicurezza dimostra che:</p>
+            <p>The security reduction demonstrates that:</p>
 
             <blockquote>
-                <p>Se si rompe LWE ⇒ Si risolve GapSVP</p>
+                <p>If you break LWE ⇒ You solve GapSVP</p>
             </blockquote>
 
-            <p>Quindi LWE è <strong>almeno difficile</strong> quanto GapSVP in dimensione elevata.</p>
+            <p>Therefore LWE is <strong>at least as hard</strong> as GapSVP in high dimension.</p>
         </section>
 
-        <!-- Sezione 4.4 -->
+        <!-- Section 4.4 -->
         <section id="id-44">
             <h2>4.4 LWE: Learning With Errors</h2>
 
-            <h3>Definizione</h3>
+            <h3>Definition</h3>
 
-            <p>Fissati parametri <span class="math">\(n\)</span> (dimensione), <span class="math">\(q\)</span> (modulo), <span class="math">\(\chi\)</span> (distribuzione del rumore):</p>
+            <p>Fix parameters <span class="math">\(n\)</span> (dimension), <span class="math">\(q\)</span> (modulus), <span class="math">\(\chi\)</span> (error distribution):</p>
 
-            <p><strong>Distribuzione LWE:</strong> scegli <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> segreto. Genera campioni:</p>
+            <p><strong>LWE distribution:</strong> choose secret <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Generate samples:</p>
 
             <div class="math-block">
                 \[
@@ -522,56 +522,56 @@
                 \]
             </div>
 
-            <p>dove <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniforme, <span class="math">\(e \leftarrow \chi\)</span> piccolo.</p>
+            <p>where <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniform, <span class="math">\(e \leftarrow \chi\)</span> small.</p>
 
-            <p><strong>Problema decisionale LWE:</strong> distinguere i campioni <span class="math">\((\mathbf{a}, b)\)</span> da coppie uniformi casuali <span class="math">\((\mathbf{a}, u)\)</span> con <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+            <p><strong>Decision LWE problem:</strong> distinguish samples <span class="math">\((\mathbf{a}, b)\)</span> from uniform random pairs <span class="math">\((\mathbf{a}, u)\)</span> with <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
 
-            <p><strong>Problema di ricerca LWE:</strong> dato un insieme di campioni <span class="math">\((\mathbf{a}_i, b_i)\)</span>, trovare <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p><strong>Search LWE problem:</strong> given a set of samples <span class="math">\((\mathbf{a}_i, b_i)\)</span>, find <span class="math">\(\mathbf{s}\)</span>.</p>
 
-            <h3>Parametri di LWE</h3>
+            <h3>LWE parameters</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Parametro</th>
-                        <th>Simbolo</th>
-                        <th>Ruolo</th>
+                        <th>Parameter</th>
+                        <th>Symbol</th>
+                        <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Dimensione</td>
+                        <td>Dimension</td>
                         <td><span class="math">\(n\)</span></td>
-                        <td>Sicurezza cresce esponenzialmente in <span class="math">\(n\)</span></td>
+                        <td>Security grows exponentially in <span class="math">\(n\)</span></td>
                     </tr>
                     <tr>
-                        <td>Modulo</td>
+                        <td>Modulus</td>
                         <td><span class="math">\(q\)</span></td>
-                        <td>Deve essere abbastanza grande da contenere il rumore</td>
+                        <td>Must be large enough to contain the noise</td>
                     </tr>
                     <tr>
-                        <td>Distribuzione errore</td>
+                        <td>Error distribution</td>
                         <td><span class="math">\(\chi\)</span></td>
-                        <td>Gaussiana discreta o binomiale centrata</td>
+                        <td>Discrete Gaussian or centered binomial</td>
                     </tr>
                     <tr>
-                        <td>Rapporto rumore/segnale</td>
+                        <td>Noise-to-signal ratio</td>
                         <td><span class="math">\(\alpha = \sigma/q\)</span></td>
-                        <td>Deve essere piccolo ma non troppo</td>
+                        <td>Must be small but not too small</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Esempio con n=2, q=7</h3>
+            <h3>Example with n=2, q=7</h3>
 
-            <p>Segreto: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+            <p>Secret: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
 
-            <p>Campioni LWE con errori piccoli in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+            <p>LWE samples with small errors in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Il vettore a</th>
+                        <th>The vector a</th>
                         <th>b = ⟨a, s⟩ + e mod 7</th>
                         <th>e</th>
                     </tr>
@@ -595,14 +595,14 @@
                 </tbody>
             </table>
 
-            <p>Dato il sistema con errori, trovare <span class="math">\(\mathbf{s}\)</span> è difficile: non puoi usare eliminazione gaussiana perché i valori <span class="math">\(b_i\)</span> non sono esatti.</p>
+            <p>Given the system with errors, finding <span class="math">\(\mathbf{s}\)</span> is difficult: you can't use Gaussian elimination because the <span class="math">\(b_i\)</span> values are not exact.</p>
         </section>
 
-        <!-- Sezione 4.5 -->
+        <!-- Section 4.5 -->
         <section id="id-45">
-            <h2>4.5 RLWE: variante su anelli</h2>
+            <h2>4.5 RLWE: ring-based variant</h2>
 
-            <p>LWE standard usa vettori. <strong>Ring-LWE (RLWE)</strong> sposta le operazioni nell'anello polinomiale:</p>
+            <p>Standard LWE uses vectors. <strong>Ring-LWE (RLWE)</strong> moves operations to the polynomial ring:</p>
 
             <div class="math-block">
                 \[
@@ -612,25 +612,25 @@
 
             <p>In RLWE:</p>
             <ul>
-                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (un polinomio, non un vettore di interi)</li>
-                <li><span class="math">\(a \in R_q\)</span> (campionato uniformemente)</li>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (a polynomial, not a vector of integers)</li>
+                <li><span class="math">\(a \in R_q\)</span> (sampled uniformly)</li>
                 <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
             </ul>
 
-            <p><strong>Vantaggi di RLWE rispetto a LWE:</strong></p>
+            <p><strong>Advantages of RLWE over LWE:</strong></p>
             <ul>
-                <li>Dimensione delle chiavi: <span class="math">\(O(n)\)</span> invece di <span class="math">\(O(n^2)\)</span></li>
-                <li>Velocità: la moltiplicazione polinomiale con NTT è <span class="math">\(O(n \log n)\)</span> invece di <span class="math">\(O(n^2)\)</span></li>
+                <li>Key size: <span class="math">\(O(n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
+                <li>Speed: polynomial multiplication with NTT is <span class="math">\(O(n \log n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
             </ul>
 
-            <p><strong>Svantaggio:</strong> struttura algebrica aggiuntiva → potenzialmente più vulnerabile; la prova di sicurezza è leggermente più debole.</p>
+            <p><strong>Disadvantage:</strong> additional algebraic structure → potentially more vulnerable; the security proof is slightly weaker.</p>
         </section>
 
-        <!-- Sezione 4.6 -->
+        <!-- Section 4.6 -->
         <section id="id-46">
-            <h2>4.6 MLWE: la base di ML‑KEM</h2>
+            <h2>4.6 MLWE: the basis of ML‑KEM</h2>
 
-            <p><strong>Module-LWE (MLWE)</strong> è un compromesso tra LWE e RLWE: usa moduli di polinomi (matrici di polinomi in <span class="math">\(R_q\)</span>).</p>
+            <p><strong>Module-LWE (MLWE)</strong> is a compromise between LWE and RLWE: it uses modules of polynomials (matrices of polynomials in <span class="math">\(R_q\)</span>).</p>
 
             <div class="math-block">
                 \[
@@ -644,86 +644,86 @@
                 \]
             </div>
 
-            <p>Il parametro <span class="math">\(k\)</span> è la <strong>dimensione del modulo</strong>:</p>
+            <p>The parameter <span class="math">\(k\)</span> is the <strong>module dimension</strong>:</p>
             <ul>
-                <li><span class="math">\(k = 2\)</span> per ML-KEM-512</li>
-                <li><span class="math">\(k = 3\)</span> per ML-KEM-768</li>
-                <li><span class="math">\(k = 4\)</span> per ML-KEM-1024</li>
+                <li><span class="math">\(k = 2\)</span> for ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> for ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> for ML-KEM-1024</li>
             </ul>
 
-            <p><strong>Perché MLWE?</strong></p>
+            <p><strong>Why MLWE?</strong></p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Schema</th>
-                        <th>Dimensione chiavi</th>
-                        <th>Velocità</th>
-                        <th>Sicurezza</th>
+                        <th>Scheme</th>
+                        <th>Key size</th>
+                        <th>Speed</th>
+                        <th>Security</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>LWE</td>
-                        <td><span class="math">\(O(n^2)\)</span> → grande</td>
-                        <td>lento</td>
-                        <td>più conservativa</td>
+                        <td><span class="math">\(O(n^2)\)</span> → large</td>
+                        <td>slow</td>
+                        <td>more conservative</td>
                     </tr>
                     <tr>
                         <td>RLWE</td>
-                        <td><span class="math">\(O(n)\)</span> → piccola</td>
-                        <td>veloce</td>
-                        <td>struttura extra</td>
+                        <td><span class="math">\(O(n)\)</span> → small</td>
+                        <td>fast</td>
+                        <td>extra structure</td>
                     </tr>
                     <tr>
                         <td><strong>MLWE</strong></td>
-                        <td><span class="math">\(O(k \cdot n)\)</span> → media</td>
-                        <td>veloce</td>
-                        <td>bilanciata</td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → medium</td>
+                        <td>fast</td>
+                        <td>balanced</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>MLWE permette di scalare la sicurezza variando <span class="math">\(k\)</span> senza cambiare <span class="math">\(n\)</span>, mantenendo le ottimizzazioni della struttura ad anello.</p>
+            <p>MLWE allows scaling security by varying <span class="math">\(k\)</span> without changing <span class="math">\(n\)</span>, while maintaining the optimizations of the ring structure.</p>
         </section>
 
-        <!-- Sezione 4.7 -->
+        <!-- Section 4.7 -->
         <section id="id-47">
-            <h2>4.7 Sicurezza post‑quantum dei reticoli</h2>
+            <h2>4.7 Post‑quantum security of lattices</h2>
 
-            <h3>Miglior algoritmo classico: BKZ (Block Korkine-Zolotarev)</h3>
+            <h3>Best classical algorithm: BKZ (Block Korkine-Zolotarev)</h3>
 
-            <p>L'algoritmo BKZ e le sue varianti (BKZ 2.0, G6K) sono i migliori algoritmi classici per attaccare i reticoli. La loro complessità per ML-KEM-768 è stimata <span class="math">\(> 2^{178}\)</span> operazioni.</p>
+            <p>The BKZ algorithm and its variants (BKZ 2.0, G6K) are the best classical algorithms for attacking lattices. Their complexity for ML-KEM-768 is estimated at <span class="math">\(> 2^{178}\)</span> operations.</p>
 
-            <h3>Impatto dei computer quantistici</h3>
+            <h3>Impact of quantum computers</h3>
 
-            <p>I migliori algoritmi quantistici per attaccare MLWE (inclusi approcci con QRAM) offrono uno speedup modesto — al più quadratico, mantenendo la difficoltà del problema in regime esponenziale.</p>
+            <p>The best quantum algorithms for attacking MLWE (including QRAM-based approaches) offer at most a modest speedup — at most quadratic, keeping the problem's difficulty in the exponential regime.</p>
 
-            <p>Questo contrasta nettamente con Shor, che offre uno speedup esponenziale su fattorizzazione e DLP.</p>
+            <p>This contrasts sharply with Shor, which offers an exponential speedup on factorization and DLP.</p>
 
-            <h3>Perché MLWE non ha un "algoritmo di Shor"</h3>
+            <h3>Why MLWE has no "Shor's algorithm"</h3>
 
-            <p>MLWE non ha la struttura di gruppo abeliano che Shor sfrutta. Il problema è fondamentalmente diverso: non è una questione di trovare periodicità in una funzione, ma di trovare un vettore corto in un reticolo ad alta dimensione — un problema geometrico per cui non esiste tecnica quantistica di speedup esponenziale nota.</p>
+            <p>MLWE does not have the abelian group structure that Shor exploits. The problem is fundamentally different: it is not a matter of finding periodicity in a function, but of finding a short vector in a high-dimensional lattice — a geometric problem for which no known quantum technique offers an exponential speedup.</p>
         </section>
 
-        <!-- Fonti -->
+        <!-- Sources -->
         <div class="sources">
-            <h2>Fonti</h2>
+            <h2>Sources</h2>
             <ul>
                 <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
                 <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
                 <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
-                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                <li>Telsy (2023) – <em>The mathematics behind PQC: lattices</em><br />
                     <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
-                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Capitolo 17</li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Chapter 17</li>
             </ul>
         </div>
 
-        <!-- Navigazione capitoli -->
+        <!-- Chapter navigation -->
         <div class="chapter-nav">
-            <a href="3.html" class="nav-btn">← Capitolo precedente</a>
+            <a href="3.html" class="nav-btn">← Previous chapter</a>
             <span class="nav-label">04 / 10</span>
-            <a href="5.html" class="nav-btn">Capitolo successivo →</a>
+            <a href="5.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>

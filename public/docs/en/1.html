@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitolo 1 – MONEOO.</title>
+    <title> Chapter 1 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="../../index.html#featureSection">Perché</a>
-            <a href="../../index.html#learningPath">Percorso</a>
-            <a href="../../index.html#searchSection">La Guida</a>
+            <a href="index.html#featureSection">Why</a>
+            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#searchSection">Guide</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Seleziona lingua">
-                    <span class="lang-current" id="langCurrent">🇮🇹 Italiano</span>
+                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
+                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,131 +368,126 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Capitoli</h3>
+            <h3>Chapters</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisiti</a></li>
-                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Simmetrica</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asimmetrica</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Reticoli</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Sicurezza</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementazioni</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
             </ul>
         </aside>
 
-        <!-- Contenuto del capitolo -->
         <main class="chapter-content">
     <article>
-        <h1>01 – Crittografia Simmetrica</h1>
-        <p class="subtitle">Il punto di arrivo pratico di tutto il percorso PQC</p>
+        <h1>01 – Symmetric Cryptography</h1>
+        <p class="subtitle">The practical destination of the entire PQC journey</p>
 
-        <!-- Indice -->
         <div class="toc">
-            <h2>Indice</h2>
+            <h2>Table of Contents</h2>
             <ul>
-                <li><a href="#id-11">1.1 Cos'è la crittografia simmetrica</a></li>
+                <li><a href="#id-11">1.1 What is symmetric cryptography</a></li>
                 <li><a href="#id-12">1.2 AES: Advanced Encryption Standard</a></li>
-                <li><a href="#id-13">1.3 Modalità operative</a></li>
-                <li><a href="#id-14">1.4 Autenticazione e AEAD</a></li>
-                <li><a href="#id-15">1.5 Ruolo nel contesto PQC</a></li>
+                <li><a href="#id-13">1.3 Modes of operation</a></li>
+                <li><a href="#id-14">1.4 Authentication and AEAD</a></li>
+                <li><a href="#id-15">1.5 Role in the PQC context</a></li>
             </ul>
         </div>
 
-        <!-- Sezione 1.1 -->
         <section id="id-11">
-            <h2>1.1 Cos'è la crittografia simmetrica</h2>
+            <h2>1.1 What is symmetric cryptography</h2>
 
-            <p>In un sistema a crittografia <strong>simmetrica</strong>, mittente e destinatario usano la <strong>stessa chiave</strong> <span class="math">\(K\)</span> per cifrare e decifrare.</p>
+            <p>In a <strong>symmetric</strong> cryptographic system, the sender and recipient use the <strong>same key</strong> <span class="math">\(K\)</span> to encrypt and decrypt.</p>
 
             <div class="example">
-                <p><span class="math">\(\text{Mittente: } C = \text{Enc}(K, M)\)</span></p>
-                <p><span class="math">\(\text{Destinatario: } M = \text{Dec}(K, C)\)</span></p>
+                <p><span class="math">\(\text{Sender: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{Recipient: } M = \text{Dec}(K, C)\)</span></p>
             </div>
 
-            <p><strong>Vantaggio principale:</strong> efficienza. AES-256 su hardware moderno raggiunge decine di GB/s.</p>
+            <p><strong>Main advantage:</strong> efficiency. AES-256 on modern hardware reaches speeds of tens of GB/s.</p>
 
-            <p><strong>Svantaggio:</strong> serve un canale sicuro per scambiarsi <span class="math">\(K\)</span> <em>prima</em> di comunicare. Questo è esattamente il problema che i KEM risolvono.</p>
+            <p><strong>Disadvantage:</strong> a secure channel is needed to exchange <span class="math">\(K\)</span> <em>before</em> communicating. This is exactly the problem that KEMs solve.</p>
 
-            <h3>Sicurezza della crittografia simmetrica vs. quantistica</h3>
+            <h3>Symmetric cryptography vs. quantum security</h3>
 
-            <p>I computer quantistici non rompono AES. L'algoritmo di Grover offre un <em>quadratico</em> speedup nella ricerca della chiave, ma:</p>
+            <p>Quantum computers do not break AES. Grover's algorithm offers a <em>quadratic</em> speedup in key searching, but:</p>
             <ul>
-                <li><strong>AES-128:</strong> sicurezza effettiva da 128 bit scende a ~64 bit → insufficiente</li>
-                <li><strong>AES-256:</strong> sicurezza effettiva da 256 bit scende a ~128 bit → ancora sicuro</li>
+                <li><strong>AES-128:</strong> effective security drops from 128 bits to ~64 bits → insufficient</li>
+                <li><strong>AES-256:</strong> effective security drops from 256 bits to ~128 bits → still secure</li>
             </ul>
 
-            <p>Per questo FIPS 203 (ML-KEM) produce chiavi da 256 bit, destinate ad essere usate con AES-256.</p>
+            <p>For this reason, FIPS 203 (ML-KEM) produces 256-bit keys, intended to be used with AES-256.</p>
         </section>
 
-        <!-- Sezione 1.2 -->
         <section id="id-12">
             <h2>1.2 AES: Advanced Encryption Standard</h2>
 
-            <p>AES è un <strong>cifrario a blocchi</strong>: prende un blocco di 128 bit e una chiave (<span class="math">\(K\)</span>), e produce 128 bit cifrati.</p>
+            <p>AES is a <strong>block cipher</strong>: it takes a 128-bit block and a key (<span class="math">\(K\)</span>), and produces a 128-bit ciphertext.</p>
 
-            <h3>Struttura interna</h3>
+            <h3>Internal structure</h3>
 
-            <p>AES organizza i 128 bit di input come una matrice <span class="math">\(4 \times 4\)</span> di byte. Applica poi <span class="math">\(r\)</span> <em>round</em> (10, 12 o 14 in base alla dimensione della chiave), ciascuno composto da quattro trasformazioni:</p>
+            <p>AES organizes the 128-bit input as a <span class="math">\(4 \times 4\)</span> matrix of bytes. It then applies <span class="math">\(r\)</span> <em>rounds</em> (10, 12, or 14 depending on the key size), each consisting of four transformations:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Trasformazione</th>
-                        <th>Scopo</th>
+                        <th>Transformation</th>
+                        <th>Purpose</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>SubBytes</strong></td>
-                        <td>Sostituzione non lineare via S-Box (resistenza alla crittanalisi differenziale)</td>
+                        <td>Non-linear substitution via S-Box (resistance to differential cryptanalysis)</td>
                     </tr>
                     <tr>
                         <td><strong>ShiftRows</strong></td>
-                        <td>Rotazione ciclica delle righe (diffusione)</td>
+                        <td>Cyclic row rotation (diffusion)</td>
                     </tr>
                     <tr>
                         <td><strong>MixColumns</strong></td>
-                        <td>Combinazione lineare delle colonne (diffusione)</td>
+                        <td>Linear column combination (diffusion)</td>
                     </tr>
                     <tr>
                         <td><strong>AddRoundKey</strong></td>
-                        <td>XOR con la sottochiave del round corrente</td>
+                        <td>XOR with the current round subkey</td>
                     </tr>
                 </tbody>
             </table>
 
             <h3>Key schedule</h3>
 
-            <p>La chiave originale (<span class="math">\(K\)</span> di 128, 192 o 256 bit) viene espansa in <span class="math">\(r+1\)</span> sottochiavi, una per ogni round.</p>
+            <p>The original key (<span class="math">\(K\)</span> of 128, 192, or 256 bits) is expanded into <span class="math">\(r+1\)</span> subkeys, one for each round.</p>
 
             <div class="example">
-                <p>AES-128: chiave 128 bit, 10 round</p>
-                <p>AES-192: chiave 192 bit, 12 round</p>
-                <p>AES-256: chiave 256 bit, 14 round</p>
+                <p>AES-128: 128-bit key, 10 rounds</p>
+                <p>AES-192: 192-bit key, 12 rounds</p>
+                <p>AES-256: 256-bit key, 14 rounds</p>
             </div>
 
-            <h3>Sicurezza</h3>
+            <h3>Security</h3>
 
-            <p>Il migliore attacco noto ad AES-128 richiede <span class="math">\(2^{126.1}\)</span> operazioni (Biryukov &amp; Khovratovich, 2009) – sostanzialmente forza bruta.</p>
+            <p>The best known attack on AES-128 requires <span class="math">\(2^{126.1}\)</span> operations (Biryukov &amp; Khovratovich, 2009) – substantially brute force.</p>
         </section>
 
-        <!-- Sezione 1.3 -->
         <section id="id-13">
-            <h2>1.3 Modalità operative</h2>
+            <h2>1.3 Modes of operation</h2>
 
-            <p>AES cifra un blocco da 128 bit. Ma i messaggi reali sono più lunghi. Le <strong>modalità operative</strong> definiscono come applicare AES ripetutamente.</p>
+            <p>AES encrypts a 128-bit block. However, real-world messages are longer. <strong>Modes of operation</strong> define how to apply AES repeatedly.</p>
 
-            <h3>ECB (Electronic Codebook) – da non usare</h3>
+            <h3>ECB (Electronic Codebook) – do not use</h3>
 
-            <p>Ogni blocco è cifrato indipendentemente. Blocchi identici producono ciphertext identici → perde la struttura del plaintext.</p>
+            <p>Each block is encrypted independently. Identical blocks produce identical ciphertexts → leaks the plaintext structure.</p>
 
             <h3>CBC (Cipher Block Chaining)</h3>
 
-            <p>Ogni blocco plaintext viene XORato con il ciphertext del blocco precedente prima di essere cifrato. Richiede un IV (Initialization Vector) casuale.</p>
+            <p>Each plaintext block is XORed with the ciphertext of the previous block before being encrypted. Requires a random IV (Initialization Vector).</p>
 
             <div class="math-block">
                 \[
@@ -500,11 +495,11 @@
                 \]
             </div>
 
-            <p>Più sicuro di ECB, ma non parallelizzabile in cifratura.</p>
+            <p>More secure than ECB, but not parallelizable during encryption.</p>
 
-            <h3>CTR (Counter Mode) – consigliato</h3>
+            <h3>CTR (Counter Mode) – recommended</h3>
 
-            <p>Genera un keystream cifrando un contatore incrementale. Il plaintext viene XORato con il keystream.</p>
+            <p>Generates a keystream by encrypting an incremental counter. The plaintext is XORed with the keystream.</p>
 
             <div class="math-block">
                 \[
@@ -512,114 +507,110 @@
                 \]
             </div>
 
-            <p>Parallelizzabile sia in cifratura che decifratura. Trasforma AES in cifrario a flusso.</p>
+            <p>Parallelizable in both encryption and decryption. Transforms AES into a stream cipher.</p>
 
-            <h3>GCM (Galois/Counter Mode) – usato in TLS 1.3</h3>
+            <h3>GCM (Galois/Counter Mode) – used in TLS 1.3</h3>
 
-            <p>Combina CTR con un MAC basato su campi di Galois. Offre confidenzialità <strong>e</strong> autenticità.</p>
+            <p>Combines CTR with a MAC based on Galois fields. Provides confidentiality <strong>and</strong> authenticity.</p>
         </section>
 
-        <!-- Sezione 1.4 -->
         <section id="id-14">
-            <h2>1.4 Autenticazione e AEAD</h2>
+            <h2>1.4 Authentication and AEAD</h2>
 
-            <p>La confidenzialità non basta: un attaccante potrebbe modificare il ciphertext senza che il destinatario se ne accorga. Serve <strong>autenticità</strong>.</p>
+            <p>Confidentiality is not enough: an attacker could modify the ciphertext without the recipient noticing. <strong>Authenticity</strong> is required.</p>
 
             <h3>MAC (Message Authentication Code)</h3>
 
-            <p>Un MAC è una funzione <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> dove <span class="math">\(\tau\)</span> è il <em>tag di autenticità</em>. Solo chi conosce <span class="math">\(K\)</span> può generare e verificare <span class="math">\(\tau\)</span>.</p>
+            <p>A MAC is a function <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> where <span class="math">\(\tau\)</span> is the <em>authenticity tag</em>. Only those who know <span class="math">\(K\)</span> can generate and verify <span class="math">\(\tau\)</span>.</p>
 
             <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
 
-            <p>Combina cifratura e autenticazione in una sola primitiva:</p>
+            <p>Combines encryption and authentication into a single primitive:</p>
 
             <div class="example">
                 <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
-                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> oppure <span class="math">\(\perp\)</span> (se tag non valido)</p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> or <span class="math">\(\perp\)</span> (if tag is invalid)</p>
             </div>
 
-            <p><code>AAD</code> (Additional Authenticated Data) è dati autenticati ma non cifrati (es. header di pacchetti).</p>
+            <p><code>AAD</code> (Additional Authenticated Data) represents authenticated but unencrypted data (e.g., packet headers).</p>
 
-            <p><strong>AES-256-GCM</strong> è lo schema AEAD standard usato in TLS 1.3 e come cifrario simmetrico dopo un KEM.</p>
+            <p><strong>AES-256-GCM</strong> is the standard AEAD scheme used in TLS 1.3 and as a symmetric cipher following a KEM.</p>
         </section>
 
-        <!-- Sezione 1.5 -->
         <section id="id-15">
-            <h2>1.5 Ruolo nel contesto PQC</h2>
+            <h2>1.5 Role in the PQC context</h2>
 
-            <p>Un ML-KEM completo in uso reale funziona così:</p>
+            <p>A complete ML-KEM workflow in real-world use works as follows:</p>
 
             <div class="sequence-diagram">
-Alice                                Bob
-  |                                   |
-  |  KeyGen() → (pk, sk)              |
-  |                                   |
+Alice                                 Bob
+  |                                    |
+  |  KeyGen() → (pk, sk)               |
+  |                                    |
   |  ------------ pk ----------------->|
-  |                                   |
-  |            Encaps(pk) → (K, C)    |
-  |                                   |
-  |        K_enc = HKDF(K, "enc")     |
-  |        K_mac = HKDF(K, "mac")     |
-  |        C_data = AES-256-GCM(K_enc, Messaggio) |
-  |                                   |
+  |                                    |
+  |            Encaps(pk) → (K, C)     |
+  |                                    |
+  |            K_enc = HKDF(K, "enc")  |
+  |            K_mac = HKDF(K, "mac")  |
+  |            C_data = AES-256-GCM(K_enc, Message) |
+  |                                    |
   |  <----- (C, C_data, nonce, tag) --|
-  |                                   |
-  |  Decaps(sk, C) → K                |
-  |  K_enc = HKDF(K, "enc")           |
-  |  Messaggio = AES-256-GCM-Dec(K_enc, C_data) |
-  |                                   |
-  |  ✓ Comunicazione sicura           |
+  |                                    |
+  |  Decaps(sk, C) → K                 |
+  |  K_enc = HKDF(K, "enc")            |
+  |  Message = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                    |
+  |  ✓ Secure communication            |
             </div>
 
-            <p>La chiave <span class="math">\(K\)</span> prodotta da ML-KEM (32 byte) non viene usata direttamente come chiave AES, ma derivata con una <strong>KDF (Key Derivation Function)</strong> come HKDF per separare contesti diversi.</p>
+            <p>The key <span class="math">\(K\)</span> produced by ML-KEM (32 bytes) is not used directly as an AES key, but is derived using a <strong>KDF (Key Derivation Function)</strong> such as HKDF to separate different contexts.</p>
 
-            <h3>Dimensioni pratiche (ML-KEM-768 + AES-256-GCM)</h3>
+            <h3>Practical sizes (ML-KEM-768 + AES-256-GCM)</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Componente</th>
-                        <th>Dimensione</th>
+                        <th>Component</th>
+                        <th>Size</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Chiave pubblica ML-KEM</td>
-                        <td>1184 byte</td>
+                        <td>ML-KEM Public Key</td>
+                        <td>1184 bytes</td>
                     </tr>
                     <tr>
-                        <td>Ciphertext ML-KEM</td>
-                        <td>1088 byte</td>
+                        <td>ML-KEM Ciphertext</td>
+                        <td>1088 bytes</td>
                     </tr>
                     <tr>
-                        <td>Shared secret → chiave AES</td>
-                        <td>32 byte</td>
+                        <td>Shared secret → AES key</td>
+                        <td>32 bytes</td>
                     </tr>
                     <tr>
-                        <td>Overhead AEAD (tag GCM)</td>
-                        <td>16 byte</td>
+                        <td>AEAD Overhead (GCM tag)</td>
+                        <td>16 bytes</td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
-        <!-- Fonti -->
         <div class="sources">
-            <h2>Fonti</h2>
+            <h2>Sources</h2>
             <ul>
                 <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
                     <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
                 <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
-                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Capitoli 4–5)<br />
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Chapters 4–5)<br />
                     <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
             </ul>
         </div>
 
-        <!-- Navigazione capitoli -->
         <div class="chapter-nav">
-            <a href="0.html" class="nav-btn">← Capitolo precedente</a>
+            <a href="0.html" class="nav-btn">← Previous chapter</a>
             <span class="nav-label">01 / 10</span>
-            <a href="2.html" class="nav-btn">Capitolo successivo →</a>
+            <a href="2.html" class="nav-btn">Next chapter →</a>
         </div>
     </article>
 </main>
