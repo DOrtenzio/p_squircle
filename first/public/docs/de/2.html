@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -386,70 +386,73 @@
 
        <main class="chapter-content">
     <article>
-        <h1>02 – Asymmetric Cryptography</h1>
-        <p class="subtitle">The foundation of classical security and its quantum limit</p>
+        <h1>02 – Asymmetrische Kryptographie</h1>
+        <p class="subtitle">Das Fundament der klassischen Sicherheit und ihre quantenmechanische Grenze</p>
 
+        <!-- Inhaltsverzeichnis -->
         <div class="toc">
-            <h2>Table of Contents</h2>
+            <h2>Inhaltsverzeichnis</h2>
             <ul>
-                <li><a href="#id-21">2.1 The key exchange problem</a></li>
+                <li><a href="#id-21">2.1 Das Problem des Schlüsselaustauschs</a></li>
                 <li><a href="#id-22">2.2 RSA</a></li>
                 <li><a href="#id-23">2.3 Diffie-Hellman</a></li>
-                <li><a href="#id-24">2.4 Elliptic Curve Cryptography (ECC)</a></li>
-                <li><a href="#id-25">2.5 Classical security and quantum limits</a></li>
+                <li><a href="#id-24">2.4 Elliptische-Kurven-Kryptographie (ECC)</a></li>
+                <li><a href="#id-25">2.5 Klassische Sicherheit und quantenmechanische Grenzen</a></li>
             </ul>
         </div>
 
+        <!-- Abschnitt 2.1 -->
         <section id="id-21">
-            <h2>2.1 The key exchange problem</h2>
+            <h2>2.1 Das Problem des Schlüsselaustauschs</h2>
 
-            <p>Alice wants to communicate securely with Bob over a public channel. To use AES, they need a shared key. How do they establish it without Eve (who is listening to everything) discovering it?</p>
+            <p>Alice möchte sicher mit Bob über einen öffentlichen Kanal kommunizieren. Für die Verwendung von AES wird ein gemeinsamer Schlüssel benötigt. Wie können sie ihn festlegen, ohne dass Eve (die alles mithört) ihn herausfindet?</p>
 
-            <p>This problem remained unsolved for centuries. The solution arrived in 1976 with <strong>Diffie and Hellman</strong>, and in 1977 with <strong>Rivest, Shamir, and Adleman (RSA)</strong>.</p>
+            <p>Dieses Problem war jahrhundertelang ungelöst. Die Lösung kam 1976 mit <strong>Diffie und Hellman</strong> und 1977 mit <strong>Rivest, Shamir und Adleman (RSA)</strong>.</p>
 
-            <p>The key idea: there are mathematical operations that are <strong>easy in one direction, hard in the other</strong>.</p>
+            <p>Die Schlüsselidee: Es gibt mathematische Operationen, die <strong>in einer Richtung einfach, in der anderen schwer</strong> sind.</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Easy operation</th>
-                        <th>Hard operation</th>
+                        <th>Einfache Operation</th>
+                        <th>Schwere Operation</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Multiplying two large primes: <span class="math">\(p \cdot q = n\)</span></td>
-                        <td>Factoring <span class="math">\(n\)</span> to find <span class="math">\(p\)</span> and <span class="math">\(q\)</span></td>
+                        <td>Multiplikation zweier großer Primzahlen: <span class="math">\(p \cdot q = n\)</span></td>
+                        <td>Faktorisierung von <span class="math">\(n\)</span> zur Bestimmung von <span class="math">\(p\)</span> und <span class="math">\(q\)</span></td>
                     </tr>
                     <tr>
-                        <td>Computing <span class="math">\(g^x \bmod p\)</span></td>
-                        <td>Finding <span class="math">\(x\)</span> given <span class="math">\(g^x \bmod p\)</span> (discrete logarithm)</td>
+                        <td>Berechnung von <span class="math">\(g^x \bmod p\)</span></td>
+                        <td>Bestimmung von <span class="math">\(x\)</span> aus <span class="math">\(g^x \bmod p\)</span> (diskreter Logarithmus)</td>
                     </tr>
                     <tr>
-                        <td>Adding a point on an elliptic curve <span class="math">\(k\)</span> times: <span class="math">\(kP\)</span></td>
-                        <td>Finding <span class="math">\(k\)</span> given <span class="math">\(kP\)</span> (ECDLP)</td>
+                        <td><span class="math">\(k\)</span>-fache Addition eines Punkts auf einer elliptischen Kurve: <span class="math">\(kP\)</span></td>
+                        <td>Bestimmung von <span class="math">\(k\)</span> aus <span class="math">\(kP\)</span> (ECDLP)</td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
+        <!-- Abschnitt 2.2 -->
         <section id="id-22">
             <h2>2.2 RSA</h2>
 
-            <h3>Key Generation</h3>
+            <h3>Schlüsselgenerierung</h3>
             <ol>
-                <li>Choose two large prime numbers <span class="math">\(p\)</span> and <span class="math">\(q\)</span> (typically 2048+ bits each)</li>
-                <li>Compute <span class="math">\(n = p \cdot q\)</span></li>
-                <li>Compute <span class="math">\(\phi(n) = (p-1)(q-1)\)</span></li>
-                <li>Choose <span class="math">\(e\)</span> such that <span class="math">\(\gcd(e, \phi(n)) = 1\)</span> (typically <span class="math">\(e = 65537\)</span>)</li>
-                <li>Compute <span class="math">\(d = e^{-1} \bmod \phi(n)\)</span></li>
+                <li>Wähle zwei große Primzahlen <span class="math">\(p\)</span> und <span class="math">\(q\)</span> (typischerweise jeweils 2048+ Bit)</li>
+                <li>Berechne <span class="math">\(n = p \cdot q\)</span></li>
+                <li>Berechne <span class="math">\(\phi(n) = (p-1)(q-1)\)</span></li>
+                <li>Wähle <span class="math">\(e\)</span> mit <span class="math">\(\gcd(e, \phi(n)) = 1\)</span> (typischerweise <span class="math">\(e = 65537\)</span>)</li>
+                <li>Berechne <span class="math">\(d = e^{-1} \bmod \phi(n)\)</span></li>
             </ol>
 
-            <p><strong>Public key:</strong> <span class="math">\((n, e)\)</span><br />
-            <strong>Private key:</strong> <span class="math">\((n, d)\)</span><br />
-            <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, <span class="math">\(\phi(n)\)</span> must be destroyed.</p>
+            <p><strong>Öffentlicher Schlüssel:</strong> <span class="math">\((n, e)\)</span><br />
+            <strong>Privater Schlüssel:</strong> <span class="math">\((n, d)\)</span><br />
+            <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, <span class="math">\(\phi(n)\)</span> müssen vernichtet werden.</p>
 
-            <h3>Encryption and Decryption</h3>
+            <h3>Verschlüsselung und Entschlüsselung</h3>
             <div class="math-block">
                 \[
                 C = M^e \bmod n
@@ -460,40 +463,41 @@
                 M = C^d \bmod n
                 \]
             </div>
-            <p><strong>Why it works:</strong> by Euler's theorem, <span class="math">\(M^{\phi(n)} \equiv 1 \pmod{n}\)</span>, therefore <span class="math">\(M^{ed} = M^{1 + k\phi(n)} \equiv M \pmod{n}\)</span>.</p>
+            <p><strong>Warum es funktioniert:</strong> Nach dem Satz von Euler gilt <span class="math">\(M^{\phi(n)} \equiv 1 \pmod{n}\)</span>, also <span class="math">\(M^{ed} = M^{1 + k\phi(n)} \equiv M \pmod{n}\)</span>.</p>
 
-            <h3>Numerical Example (with small numbers, for educational purposes only)</h3>
+            <h3>Numerisches Beispiel (mit kleinen Zahlen, nur zu Lehrzwecken)</h3>
             <p><span class="math">\(p = 61, \quad q = 53, \quad n = 3233\)</span></p>
             <p><span class="math">\(\phi(n) = 60 \cdot 52 = 3120\)</span></p>
-            <p><span class="math">\(e = 17, \quad d = 2753 \quad \text{(since } 17 \cdot 2753 \equiv 1 \pmod{3120}\text{)}\)</span></p>
-            <p>Let's encrypt <span class="math">\(M = 65\)</span>:</p>
+            <p><span class="math">\(e = 17, \quad d = 2753 \quad \text{(weil } 17 \cdot 2753 \equiv 1 \pmod{3120}\text{)}\)</span></p>
+            <p>Verschlüsseln wir <span class="math">\(M = 65\)</span>:</p>
             <p><span class="math">\(C = 65^{17} \bmod 3233 = 2790\)</span></p>
-            <p>Let's decrypt:</p>
+            <p>Entschlüsseln wir:</p>
             <p><span class="math">\(M = 2790^{2753} \bmod 3233 = 65 \quad \checkmark\)</span></p>
 
-            <h3>RSA as KEM</h3>
-            <p>RSA-KEM (simplified):</p>
+            <h3>RSA als KEM</h3>
+            <p>RSA-KEM (vereinfacht):</p>
             <ol>
-                <li>Bob randomly generates <span class="math">\(r \leftarrow \{1, \ldots, n-1\}\)</span></li>
+                <li>Bob wählt zufällig <span class="math">\(r \leftarrow \{1, \ldots, n-1\}\)</span></li>
                 <li><span class="math">\(C = r^e \bmod n\)</span></li>
-                <li><span class="math">\(K = H(r)\)</span> (symmetric key)</li>
-                <li>Sends <span class="math">\(C\)</span> to Alice</li>
-                <li>Alice computes <span class="math">\(r = C^d \bmod n\)</span>, then <span class="math">\(K = H(r)\)</span></li>
+                <li><span class="math">\(K = H(r)\)</span> (symmetrischer Schlüssel)</li>
+                <li>Sendet <span class="math">\(C\)</span> an Alice</li>
+                <li>Alice berechnet <span class="math">\(r = C^d \bmod n\)</span>, dann <span class="math">\(K = H(r)\)</span></li>
             </ol>
         </section>
 
+        <!-- Abschnitt Diffie-Hellman klassisch -->
         <section id="id-23">
             <h2>2.3 Diffie-Hellman (DH)</h2>
             
-            <h3>The Protocol</h3>
-            <p>Public parameters: a large prime <span class="math">\(p\)</span> and a generator <span class="math">\(g\)</span> of <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+            <h3>Das Protokoll</h3>
+            <p>Öffentliche Parameter: eine große Primzahl <span class="math">\(p\)</span> und ein Generator <span class="math">\(g\)</span> von <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
 
             <div class="protocol-flow">
                 <div class="party alice">
                     <strong>Alice</strong>
                     <ol>
-                        <li>Chooses a secret <span class="math">\(a\)</span></li>
-                        <li>Computes <span class="math">\(A = g^a \bmod p\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(a\)</span></li>
+                        <li>Berechnet <span class="math">\(A = g^a \bmod p\)</span></li>
                     </ol>
                 </div>
                 <div class="channel">
@@ -503,8 +507,8 @@
                 <div class="party bob">
                     <strong>Bob</strong>
                     <ol>
-                        <li>Chooses a secret <span class="math">\(b\)</span></li>
-                        <li>Computes <span class="math">\(B = g^b \bmod p\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(b\)</span></li>
+                        <li>Berechnet <span class="math">\(B = g^b \bmod p\)</span></li>
                     </ol>
                 </div>
             </div>
@@ -512,26 +516,27 @@
             <div class="math-block">
                 \[
                 \begin{aligned}
-                \text{Alice computes: } & K = B^a \bmod p = (g^b)^a = g^{ab} \bmod p \\
-                \text{Bob computes: } & K = A^b \bmod p = (g^a)^b = g^{ab} \bmod p
+                \text{Alice berechnet: } & K = B^a \bmod p = (g^b)^a = g^{ab} \bmod p \\
+                \text{Bob berechnet: } & K = A^b \bmod p = (g^a)^b = g^{ab} \bmod p
                 \end{aligned}
                 \]
             </div>
 
-            <p><strong>Result:</strong> Both share the same secret key <span class="math">\(K\)</span>. Eve, who only sees <span class="math">\(A\)</span> and <span class="math">\(B\)</span>, cannot compute <span class="math">\(K\)</span> without solving the discrete logarithm problem.</p>
+            <p><strong>Ergebnis:</strong> Beide teilen denselben geheimen Schlüssel <span class="math">\(K\)</span>. Eve, die nur <span class="math">\(A\)</span> und <span class="math">\(B\)</span> sieht, kann <span class="math">\(K\)</span> nicht berechnen, ohne das Problem des diskreten Logarithmus zu lösen.</p>
         </section>
 
+        <!-- Abschnitt ECDH -->
         <section id="id-24">
-            <h2>2.4 Elliptic Curve Cryptography (ECDH)</h2>
+            <h2>2.4 Elliptische-Kurven-Kryptographie (ECDH)</h2>
             
-            <p>ECDH is the elliptic curve analogue of DH. It is used in TLS 1.3 with the <strong>X25519</strong> curve.</p>
+            <p>ECDH ist das Analogon zu DH auf elliptischen Kurven. Es wird in TLS 1.3 mit der Kurve <strong>X25519</strong> verwendet.</p>
 
             <div class="protocol-flow">
                 <div class="party alice">
                     <strong>Alice</strong>
                     <ol>
-                        <li>Chooses a secret <span class="math">\(a\)</span></li>
-                        <li>Computes <span class="math">\(A = a \cdot G\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(a\)</span></li>
+                        <li>Berechnet <span class="math">\(A = a \cdot G\)</span></li>
                     </ol>
                 </div>
                 <div class="channel">
@@ -541,8 +546,8 @@
                 <div class="party bob">
                     <strong>Bob</strong>
                     <ol>
-                        <li>Chooses a secret <span class="math">\(b\)</span></li>
-                        <li>Computes <span class="math">\(B = b \cdot G\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(b\)</span></li>
+                        <li>Berechnet <span class="math">\(B = b \cdot G\)</span></li>
                     </ol>
                 </div>
             </div>
@@ -550,125 +555,124 @@
             <div class="math-block">
                 \[
                 \begin{aligned}
-                \text{Alice computes: } & K = a \cdot B = a(b \cdot G) = ab \cdot G \\
-                \text{Bob computes: } & K = b \cdot A = b(a \cdot G) = ba \cdot G
+                \text{Alice berechnet: } & K = a \cdot B = a(b \cdot G) = ab \cdot G \\
+                \text{Bob berechnet: } & K = b \cdot A = b(a \cdot G) = ba \cdot G
                 \end{aligned}
                 \]
             </div>
 
-            <p>Where <span class="math">\(G\)</span> is the generator point of the curve. Security is based on the hardness of the ECDLP (Elliptic Curve Discrete Logarithm Problem).</p>
-        </section>
+            <p>Wobei <span class="math">\(G\)</span> der Generatorpunkt der Kurve ist. Die Sicherheit basiert auf der Schwierigkeit des ECDLP (Elliptic Curve Discrete Logarithm Problem).</p>
 
-        <section id="id-24">
-            <h2>2.4 Elliptic Curve Cryptography (ECC)</h2>
-
-            <h3>What Elliptic Curves Are</h3>
-            <p>An <strong>elliptic curve</strong> over <span class="math">\(\mathbb{Z}_p\)</span> is the set of points <span class="math">\((x, y)\)</span> that satisfy:</p>
+            <h3>Was sind elliptische Kurven</h3>
+            <p>Eine <strong>elliptische Kurve</strong> über <span class="math">\(\mathbb{Z}_p\)</span> ist die Menge der Punkte <span class="math">\((x, y)\)</span>, die erfüllen:</p>
             <div class="math-block">
                 \[
                 y^2 \equiv x^3 + ax + b \pmod{p}
                 \]
             </div>
-            <p>plus a special point <span class="math">\(\mathcal{O}\)</span> called the <em>point at infinity</em>.</p>
-            <p>An <em>addition</em> operation with group properties is defined on these points.</p>
+            <p>plus einem speziellen Punkt <span class="math">\(\mathcal{O}\)</span>, dem <em>Punkt im Unendlichen</em>.</p>
+            <p>Auf diesen Punkten wird eine <em>Additions</em>-Operation mit Gruppeneigenschaften definiert.</p>
 
-            <h3>Scalar Multiplication</h3>
-            <p>Given the addition of points, <strong>scalar multiplication</strong> is defined as:</p>
-            <p><span class="math">\(kP = P + P + \cdots + P \quad (k \text{ times})\)</span></p>
-            <p>Computing <span class="math">\(kP\)</span> from <span class="math">\(P\)</span> and <span class="math">\(k\)</span> is easy (<span class="math">\(O(\log k)\)</span> operations). The inverse problem – finding <span class="math">\(k\)</span> given <span class="math">\(P\)</span> and <span class="math">\(kP\)</span> – is the <strong>Elliptic Curve Discrete Logarithm Problem (ECDLP)</strong>, which is computationally hard.</p>
+            <h3>Skalarmultiplikation</h3>
+            <p>Mit der Punktaddition wird die <strong>Skalarmultiplikation</strong> definiert:</p>
+            <p><span class="math">\(kP = P + P + \cdots + P \quad (k \text{-mal})\)</span></p>
+            <p>Die Berechnung von <span class="math">\(kP\)</span> aus <span class="math">\(P\)</span> und <span class="math">\(k\)</span> ist einfach (<span class="math">\(O(\log k)\)</span> Operationen). Das inverse Problem – die Bestimmung von <span class="math">\(k\)</span> aus <span class="math">\(P\)</span> und <span class="math">\(kP\)</span> – ist das <strong>Elliptic Curve Discrete Logarithm Problem (ECDLP)</strong>, das rechnerisch schwer ist.</p>
 
-            <h3>Advantages of ECC compared to DH/RSA</h3>
+            <h3>Vorteile von ECC gegenüber DH/RSA</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Equivalent Security</th>
-                        <th>RSA/DH (bits of n/p)</th>
-                        <th>ECC (key bits)</th>
+                        <th>Äquivalente Sicherheit</th>
+                        <th>RSA/DH (Bit von n/p)</th>
+                        <th>ECC (Schlüsselbit)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>80 bits</td>
+                        <td>80 Bit</td>
                         <td>1024</td>
                         <td>160</td>
                     </tr>
                     <tr>
-                        <td>128 bits</td>
+                        <td>128 Bit</td>
                         <td>3072</td>
                         <td>256</td>
                     </tr>
                     <tr>
-                        <td>256 bits</td>
+                        <td>256 Bit</td>
                         <td>15360</td>
                         <td>512</td>
                     </tr>
                 </tbody>
             </table>
-            <p>ECC offers <strong>much smaller keys</strong> for the same level of security → making it more efficient.</p>
+            <p>ECC bietet <strong>viel kleinere Schlüssel</strong> bei gleicher Sicherheit → effizienter.</p>
 
             <h3>ECDH (Elliptic Curve Diffie-Hellman)</h3>
             <div class="sequence-diagram">
-Alice                        Bob
-  |                            |
-  | chooses secret a           | chooses secret b
-  | A = aG                     | B = bG
-  |                            |
-  | ------------ A ----------->|
-  |                            |
-  | <------------ B -----------|
-  |                            |
-  | K = aB = abG               | K = bA = abG
-  |                            |
-  |  ✓ shared key K            |
+Alice                          Bob
+  |                              |
+  | wählt geheimes a             | wählt geheimes b
+  | A = aG                       | B = bG
+  |                              |
+  | ------------ A ------------->|
+  |                              |
+  | <------------ B -------------|
+  |                              |
+  | K = aB = abG                 | K = bA = abG
+  |                              |
+  |  ✓ gemeinsamer Schlüssel K   |
             </div>
-            <p>ECDH is used in TLS 1.3 with the <strong>X25519</strong> curve (Bernstein's curve25519).</p>
+            <p>ECDH wird in TLS 1.3 mit der Kurve <strong>X25519</strong> (Curve25519 von Bernstein) verwendet.</p>
         </section>
 
+        <!-- Abschnitt 2.5 -->
         <section id="id-25">
-            <h2>2.5 Classical security and quantum limits</h2>
+            <h2>2.5 Klassische Sicherheit und quantenmechanische Grenzen</h2>
 
-            <h3>Against Classical Computers</h3>
-            <p>The problems on which RSA and ECC are based are <strong>subexponential</strong> (not purely exponential) for classical computers.</p>
-            <p>The best classical algorithm for factorization is the <strong>General Number Field Sieve (GNFS)</strong>:</p>
+            <h3>Gegen klassische Computer</h3>
+            <p>Die Probleme, auf denen RSA und ECC basieren, sind für klassische Computer <strong>subexponentiell</strong> (nicht rein exponentiell).</p>
+            <p>Der beste klassische Algorithmus für die Faktorisierung ist das <strong>General Number Field Sieve (GNFS)</strong>:</p>
             <div class="math-block">
                 \[
                 O\!\left(\exp\!\left(\left(\frac{64}{9}\right)^{1/3} (\ln n)^{1/3} (\ln \ln n)^{2/3}\right)\right)
                 \]
             </div>
-            <p>For an <span class="math">\(n\)</span> of 2048 bits, this requires an astronomically long time → secure in practice.</p>
+            <p>Für <span class="math">\(n\)</span> mit 2048 Bit benötigt dies astronomisch lange Zeit → in der Praxis sicher.</p>
 
-            <h3>Against Quantum Computers: Shor's Algorithm</h3>
-            <p>In 1994, Peter Shor demonstrated that a quantum computer can:</p>
+            <h3>Gegen Quantencomputer: Shors Algorithmus</h3>
+            <p>1994 zeigte Peter Shor, dass ein Quantencomputer:</p>
             <ul>
-                <li><strong>Factor</strong> <span class="math">\(n\)</span> in <span class="math">\(O((\log n)^3)\)</span> time</li>
-                <li><strong>Solve the DLP</strong> in <span class="math">\(O((\log p)^3)\)</span> time</li>
-                <li><strong>Solve the ECDLP</strong> in <span class="math">\(O((\log p)^3)\)</span> time</li>
+                <li><strong>Faktorisieren</strong> von <span class="math">\(n\)</span> in Zeit <span class="math">\(O((\log n)^3)\)</span></li>
+                <li><strong>DLP lösen</strong> in Zeit <span class="math">\(O((\log p)^3)\)</span></li>
+                <li><strong>ECDLP lösen</strong> in Zeit <span class="math">\(O((\log p)^3)\)</span></li>
             </ul>
-            <p>A quantum computer with enough qubits would break RSA-2048 in <strong>hours or days</strong>.</p>
+            <p>Ein Quantencomputer mit genügend Qubits würde RSA-2048 in <strong>Stunden oder Tagen</strong> brechen.</p>
             <blockquote>
-                <p>The detailed analysis of Shor's algorithm can be found in the file <a href="3.html">03 – Shor's Algorithm</a>.</p>
+                <p>Die detaillierte Analyse von Shors Algorithmus findet sich in Datei <a href="3.html">03 – Shors Algorithmus</a>.</p>
             </blockquote>
 
-            <h3>The Answer: Post-Quantum Cryptography</h3>
-            <p>To continue having secure asymmetric cryptography in the quantum era, we need mathematical problems that <strong>do not have</strong> known efficient quantum algorithms.</p>
-            <p>Lattice-based problems, on which ML-KEM is built, satisfy this requirement: the best known quantum algorithms offer at most a modest speedup compared to classical algorithms.</p>
+            <h3>Die Antwort: Post-Quanten-Kryptographie</h3>
+            <p>Um auch im Quantenzeitalter über sichere asymmetrische Kryptographie zu verfügen, werden mathematische Probleme benötigt, für die <strong>keine</strong> effizienten Quantenalgorithmen bekannt sind.</p>
+            <p>Die Gitterprobleme (Lattice), auf denen ML-KEM basiert, erfüllen diese Anforderung: Die besten bekannten Quantenalgorithmen bieten höchstens eine moderate Beschleunigung gegenüber klassischen Algorithmen.</p>
         </section>
 
+        <!-- Quellen -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>Quellen</h2>
             <ul>
                 <li>Rivest, R., Shamir, A., Adleman, L. (1978) – <em>A Method for Obtaining Digital Signatures and Public-Key Cryptosystems</em></li>
                 <li>Diffie, W., Hellman, M. (1976) – <em>New Directions in Cryptography</em></li>
                 <li>Miller, V. (1985) – <em>Use of Elliptic Curves in Cryptography</em></li>
                 <li>Bernstein, D.J. (2006) – <em>Curve25519: new Diffie-Hellman speed records</em></li>
-                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Chapters 10–12)</li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Kapitel 10–12)</li>
             </ul>
         </div>
 
+        <!-- Kapitelnavigation -->
         <div class="chapter-nav">
-            <a href="1.html" class="nav-btn">← Previous chapter</a>
+            <a href="1.html" class="nav-btn">← Vorheriges Kapitel</a>
             <span class="nav-label">02 / 10</span>
-            <a href="3.html" class="nav-btn">Next chapter →</a>
+            <a href="3.html" class="nav-btn">Nächstes Kapitel →</a>
         </div>
     </article>
 </main>

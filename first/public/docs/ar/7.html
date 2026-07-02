@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 7 – MONEOO.</title>
+    <title> فصل 7 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,70 +368,70 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
-        <h1>07 – NTT (Number Theoretic Transform)</h1>
-        <p class="subtitle">The engine that makes ML-KEM practically usable</p>
+        <h1>07 – NTT (تحويل نظرية الأعداد)</h1>
+        <p class="subtitle">المحرك الذي يجعل ML-KEM قابلاً للاستخدام عملياً</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-71">7.1 The problem: multiplying polynomials</a></li>
-                <li><a href="#id-72">7.2 Fourier transforms and DFT</a></li>
-                <li><a href="#id-73">7.3 NTT: DFT in the modular world</a></li>
-                <li><a href="#id-74">7.4 NTT in ML-KEM</a></li>
-                <li><a href="#id-75">7.5 Simplified numerical example</a></li>
-                <li><a href="#id-76">7.6 Implementation</a></li>
+                <li><a href="#id-71">7.1 المشكلة: ضرب كثيرات الحدود</a></li>
+                <li><a href="#id-72">7.2 تحويلات فورييه و DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT في العالم النمطي</a></li>
+                <li><a href="#id-74">7.4 NTT في ML-KEM</a></li>
+                <li><a href="#id-75">7.5 مثال عددي مبسط</a></li>
+                <li><a href="#id-76">7.6 التنفيذ</a></li>
             </ul>
         </div>
 
-        <!-- Section 7.1 -->
+        <!-- القسم 7.1 -->
         <section id="id-71">
-            <h2>7.1 The problem: multiplying polynomials</h2>
+            <h2>7.1 المشكلة: ضرب كثيرات الحدود</h2>
 
-            <p>In ML-KEM, the fundamental operations involve polynomial multiplications in the ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+            <p>في ML-KEM، تتضمن العمليات الأساسية ضرب كثيرات الحدود في الحلقة <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
 
-            <h3>Naïve multiplication</h3>
-            <p>Two polynomials of degree <span class="math">\(n-1\)</span> are multiplied using the schoolbook algorithm with complexity <span class="math">\(O(n^2)\)</span>.</p>
+            <h3>الضرب الساذج</h3>
+            <p>يتم ضرب كثيرتي حدود من درجة <span class="math">\(n-1\)</span> بالخوارزمية المدرسية بتعقيد <span class="math">\(O(n^2)\)</span>.</p>
             
             <ul>
-                <li>For <span class="math">\(n = 256\)</span>: about <span class="math">\(256^2 = 65536\)</span> multiplications per single product.</li>
-                <li>In ML-KEM-768 (<span class="math">\(k=3\)</span>), a single <code>Encaps</code> operation requires dozens of polynomial products → millions of multiplications with the naïve method.</li>
+                <li>لـ <span class="math">\(n = 256\)</span>: حوالي <span class="math">\(256^2 = 65536\)</span> عملية ضرب لكل منتج.</li>
+                <li>في ML-KEM-768 (<span class="math">\(k=3\)</span>)، تتطلب عملية <code>Encaps</code> واحدة عشرات من ضربات كثيرات الحدود → ملايين عمليات الضرب بالطريقة الساذجة.</li>
             </ul>
 
-            <h3>With NTT</h3>
-            <p>Complexity drops to <span class="math">\(O(n \log n)\)</span>:</p>
+            <h3>مع NTT</h3>
+            <p>ينخفض التعقيد إلى <span class="math">\(O(n \log n)\)</span>:</p>
             <div class="math-block">
                 \[
-                256 \cdot 8 = 2048 \text{ operations per product}
+                256 \cdot 8 = 2048 \text{ عملية لكل منتج}
                 \]
             </div>
-            <p><strong>Speedup:</strong> ~32×. On optimized hardware, ML-KEM-768 takes less than 1 ms.</p>
+            <p><strong>التسريع:</strong> ~32×. على الأجهزة المحسّنة، يستغرق ML-KEM-768 أقل من 1 مللي ثانية.</p>
         </section>
 
-        <!-- Section 7.2 -->
+        <!-- القسم 7.2 -->
         <section id="id-72">
-            <h2>7.2 Fourier transforms and DFT</h2>
+            <h2>7.2 تحويلات فورييه و DFT</h2>
 
-            <h3>The convolution theorem</h3>
-            <p>The Fourier transform turns a convolution (like polynomial multiplication) into a pointwise product:</p>
+            <h3>نظرية الالتفاف</h3>
+            <p>يحول تحويل فورييه الالتفاف (مثل ضرب كثيرات الحدود) إلى ضرب نقطي:</p>
 
             <div class="math-block">
                 \[
@@ -439,121 +439,121 @@
                 \]
             </div>
 
-            <p><strong>Procedure:</strong></p>
+            <p><strong>الإجراء:</strong></p>
             <ol>
-                <li>Compute <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> and <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
-                <li>Multiply pointwise: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
-                <li>Inverse transform: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+                <li>احسب <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> و <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>اضرب نقطياً: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>حول عكسياً: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
             </ol>
 
-            <p>If DFT and DFT<sup>-1</sup> cost <span class="math">\(O(n \log n)\)</span> (via FFT), the entire multiplication costs <span class="math">\(O(n \log n)\)</span>.</p>
+            <p>إذا كانت DFT و DFT<sup>-1</sup> تكلفان <span class="math">\(O(n \log n)\)</span> (عبر FFT)، فإن عملية الضرب بأكملها تكلف <span class="math">\(O(n \log n)\)</span>.</p>
 
-            <h3>Fast Fourier Transform (FFT)</h3>
-            <p>The Cooley-Tukey algorithm (1965) computes the DFT using a recursive structure:</p>
+            <h3>تحويل فورييه السريع (FFT)</h3>
+            <p>خوارزمية كولي-توكي (1965) تحسب DFT مستغلة البنية الاستعرافية:</p>
             <div class="math-block">
                 \[
-                \text{DFT}[f] = \left(\text{DFT}[f_{\text{even}}], \; \text{DFT}[f_{\text{odd}}]\right) \text{ combined with twiddle factors}
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{زوجي}}], \; \text{DFT}[f_{\text{فردي}}]\right) \text{ مدمجة مع عوامل الالتواء}
                 \]
             </div>
-            <p><strong>The problem:</strong> Standard FFT uses complex numbers (floating point), which introduce rounding errors and non-constant timing, making them unsuitable for cryptography.</p>
+            <p><strong>المشكلة:</strong> FFT القياسي يستخدم أعداداً مركبة (فاصلة عائمة)، مما يسبب أخطاء تقريب وزمن غير ثابت، مما يجعله غير مناسب للتشفير.</p>
         </section>
 
-        <!-- Section 7.3 -->
+        <!-- القسم 7.3 -->
         <section id="id-73">
-            <h2>7.3 NTT: DFT in the modular world</h2>
+            <h2>7.3 NTT: DFT في العالم النمطي</h2>
 
-            <h3>The idea</h3>
-            <p>The NTT (Number Theoretic Transform) is the DFT applied over <span class="math">\(\mathbb{Z}_q\)</span> instead of <span class="math">\(\mathbb{C}\)</span>. Instead of using complex roots of unity <span class="math">\(e^{2\pi i k/n}\)</span>, it uses primitive roots of unity in <span class="math">\(\mathbb{Z}_q\)</span>.</p>
+            <h3>الفكرة</h3>
+            <p>NTT (تحويل نظرية الأعداد) هو DFT مطبق على <span class="math">\(\mathbb{Z}_q\)</span> بدلاً من <span class="math">\(\mathbb{C}\)</span>. بدلاً من استخدام جذور الوحدة المركبة <span class="math">\(e^{2\pi i k/n}\)</span>، يتم استخدام جذور الوحدة البدائية في <span class="math">\(\mathbb{Z}_q\)</span>.</p>
 
-            <h3>Primitive roots of unity modulo q</h3>
-            <p>An element <span class="math">\(\omega \in \mathbb{Z}_q\)</span> is a primitive <span class="math">\(n\)</span>-th root of unity if:</p>
+            <h3>جذور الوحدة البدائية نمط q</h3>
+            <p>عنصر <span class="math">\(\omega \in \mathbb{Z}_q\)</span> هو جذر <span class="math">\(n\)</span>-ي بدائي للوحدة إذا:</p>
             <div class="math-block">
                 \[
-                \omega^n \equiv 1 \pmod{q} \quad \text{and} \quad \omega^k \not\equiv 1 \pmod{q} \text{ for } 0 < k < n
+                \omega^n \equiv 1 \pmod{q} \quad \text{و} \quad \omega^k \not\equiv 1 \pmod{q} \text{ لـ } 0 < k < n
                 \]
             </div>
-            <p>Necessary condition: <span class="math">\(n \mid (q-1)\)</span> (i.e., <span class="math">\(n\)</span> must divide <span class="math">\(q-1\)</span>).</p>
+            <p>شرط ضروري: <span class="math">\(n \mid (q-1)\)</span> (أي أن <span class="math">\(n\)</span> يقسم <span class="math">\(q-1\)</span>).</p>
 
-            <p><strong>In ML-KEM:</strong></p>
+            <p><strong>في ML-KEM:</strong></p>
             <ul>
-                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
-                <li>Verification: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
-                <li>Therefore, 256-th roots of unity modulo 3329 exist.</li>
-                <li>The primitive root used in FIPS 203: <span class="math">\(\omega = 17\)</span> (since <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, the root used for negacyclic NTT is <span class="math">\(\zeta = 17\)</span>).</li>
+                <li><span class="math">\(q = 3329\)</span>، <span class="math">\(n = 256\)</span></li>
+                <li>التحقق: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>إذن توجد جذور وحدة من الرتبة 256 نمط 3329.</li>
+                <li>الجذر البدائي المستخدم في FIPS 203: <span class="math">\(\omega = 17\)</span> (بما أن <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>، فإن الجذر المستخدم لـ NTT السلبي الدوري هو <span class="math">\(\zeta = 17\)</span>).</li>
             </ul>
 
-            <h3>NTT definition</h3>
+            <h3>تعريف NTT</h3>
             <div class="math-block">
                 \[
                 \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
                 \]
             </div>
-            <p><strong>Inverse NTT:</strong></p>
+            <p><strong>NTT العكسي:</strong></p>
             <div class="math-block">
                 \[
                 f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
                 \]
             </div>
-            <p>where <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
+            <p>حيث <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
 
-            <h3>Key properties</h3>
+            <h3>الخصائص الأساسية</h3>
             <ul>
-                <li><strong>Exact:</strong> no rounding errors, everything in <span class="math">\(\mathbb{Z}_q\)</span></li>
-                <li><strong>Efficient:</strong> <span class="math">\(O(n \log n)\)</span> like FFT</li>
-                <li><strong>Constant-time:</strong> implementable without branching on secret data (side-channel safe)</li>
+                <li><strong>دقيق:</strong> لا توجد أخطاء تقريب، كل شيء في <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>فعال:</strong> <span class="math">\(O(n \log n)\)</span> مثل FFT</li>
+                <li><strong>زمني ثابت:</strong> يمكن تنفيذه بدون فروع على بيانات سرية (أمن ضد القنوات الجانبية)</li>
             </ul>
         </section>
 
-        <!-- Section 7.4 -->
+        <!-- القسم 7.4 -->
         <section id="id-74">
-            <h2>7.4 NTT in ML-KEM</h2>
+            <h2>7.4 NTT في ML-KEM</h2>
 
-            <h3>Negacyclic NTT</h3>
-            <p>In ML-KEM, the reduction is not modulo <span class="math">\(X^n - 1\)</span> (cyclic), but modulo <span class="math">\(X^n + 1\)</span> (negacyclic). In negacyclic convolution, the "wrapped" terms change sign. This requires a variant of the classical NTT with adjusted twiddle factors.</p>
+            <h3>NTT سلبي دوري</h3>
+            <p>في ML-KEM، لا يتم الاختزال نمط <span class="math">\(X^n - 1\)</span> (دوري)، بل نمط <span class="math">\(X^n + 1\)</span> (سلبي دوري). في الالتفاف السلبي الدوري، تغير الحدود "الملتفة" إشارتها. هذا يتطلب متغيراً من NTT الكلاسيكي مع عوامل التواء معدلة.</p>
 
-            <p>The NTT in FIPS 203 applies a pre-twisting with powers of <span class="math">\(\zeta = 17\)</span>:</p>
+            <p>يطبق NTT في FIPS 203 التواءً مسبقاً بقوى <span class="math">\(\zeta = 17\)</span>:</p>
             <div class="math-block">
                 \[
-                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{before classical NTT}
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{قبل NTT الكلاسيكي}
                 \]
             </div>
 
-            <h3>ML-KEM operations in the NTT domain</h3>
-            <p>Once transformed, polynomials live in the NTT domain. Operations become elementary:</p>
+            <h3>عمليات ML-KEM في مجال NTT</h3>
+            <p>بمجرد التحويل، تعيش كثيرات الحدود في مجال NTT. تصبح العمليات أولية:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Operation</th>
-                        <th>In the NTT domain</th>
+                        <th>العملية</th>
+                        <th>في مجال NTT</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Multiplication <span class="math">\(f \cdot g\)</span></td>
-                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
+                        <td>ضرب <span class="math">\(f \cdot g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> لكل <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>Sum <span class="math">\(f + g\)</span></td>
-                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> for each <span class="math">\(i\)</span></td>
+                        <td>جمع <span class="math">\(f + g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> لكل <span class="math">\(i\)</span></td>
                     </tr>
                     <tr>
-                        <td>Matrix-vector product <span class="math">\(A \cdot s\)</span></td>
-                        <td><span class="math">\(k^2\)</span> products and <span class="math">\(k^2\)</span> pointwise sums</td>
+                        <td>ضرب مصفوفة في متجه <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> ضرب و <span class="math">\(k^2\)</span> جمع نقطي</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>The public key <span class="math">\(A\)</span> is generated and stored already in the NTT domain, avoiding recomputing the NTT each time.</p>
+            <p>يتم توليد المفتاح العام <span class="math">\(A\)</span> وتخزينه بالفعل في مجال NTT، مما يتجنب إعادة حساب NTT في كل مرة.</p>
 
-            <h3>Complete KeyGen flow</h3>
+            <h3>التدفق الكامل لـ KeyGen</h3>
             <div class="flowchart-container">
                 <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
-seed 
+البذرة 
   │
-  ├──► SHAKE128 ──► A_hat (already in NTT)
+  ├──► SHAKE128 ──► A_hat (بالفعل في NTT)
   │
-  └──► Binomial sampling ──► s, e
+  └──► المعاينة الثنائية ──► s, e
          │              │
          ▼              ▼
      s_hat = NTT(s)   e_hat = NTT(e)
@@ -563,19 +563,19 @@ seed
      t_hat = A_hat * s_hat + e_hat
                 │
                 ▼
-          Public Key (t_hat)
+          المفتاح العام (t_hat)
                 </pre>
             </div>
-            <p>The output <code>t_hat</code> is the public key (already in NTT). The NTT<sup>-1</sup> for <span class="math">\(t\)</span> is avoided.</p>
+            <p>المخرج <code>t_hat</code> هو المفتاح العام (بالفعل في NTT). يتم تجنب NTT<sup>-1</sup> لـ <span class="math">\(t\)</span>.</p>
         </section>
 
-        <!-- Section 7.5 -->
+        <!-- القسم 7.5 -->
         <section id="id-75">
-            <h2>7.5 Simplified numerical example</h2>
+            <h2>7.5 مثال عددي مبسط</h2>
 
-            <p>Use <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (4-th root of 1 modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+            <p>نستخدم <span class="math">\(n = 4\)</span>، <span class="math">\(q = 5\)</span>، <span class="math">\(\omega = 2\)</span> (جذر بدائي من الرتبة 4 للوحدة نمط 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
 
-            <p><strong>Polynomials:</strong></p>
+            <p><strong>كثيرات الحدود:</strong></p>
             <div class="math-block">
                 \[
                 f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
@@ -587,7 +587,7 @@ seed
                 \]
             </div>
 
-            <p><strong>NTT of f:</strong></p>
+            <p><strong>NTT لـ f:</strong></p>
             <ul>
                 <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
                 <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
@@ -595,30 +595,30 @@ seed
                 <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
             </ul>
 
-            <p><strong>NTT of g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. For <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; for <span class="math">\(i \neq 0\)</span>: sum of roots <span class="math">\(= 0\)</span>.</p>
+            <p><strong>NTT لـ g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. لـ <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>؛ لـ <span class="math">\(i \neq 0\)</span>: مجموع الجذور <span class="math">\(= 0\)</span>.</p>
 
-            <p><strong>Pointwise product:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
-            <p><strong>INTT of <span class="math">\(\hat{h}\)</span>:</strong> gives the product <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
+            <p><strong>الضرب النقطي:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>INTT لـ <span class="math">\(\hat{h}\)</span>:</strong> يعطي الناتج <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
 
             <blockquote>
-                <p><strong>Note:</strong> this example uses reduction modulo <span class="math">\(X^4-1\)</span> (cyclic). ML-KEM uses <span class="math">\(X^n+1\)</span> (negacyclic) with the variant described in section 7.4.</p>
+                <p><strong>ملاحظة:</strong> هذا المثال يستخدم اختزالاً نمط <span class="math">\(X^4-1\)</span> (دوري). يستخدم ML-KEM <span class="math">\(X^n+1\)</span> (سلبي دوري) بالمتغير الموصوف في القسم 7.4.</p>
             </blockquote>
         </section>
 
-        <!-- Section 7.6 -->
+        <!-- القسم 7.6 -->
         <section id="id-76">
-            <h2>7.6 Implementation</h2>
+            <h2>7.6 التنفيذ</h2>
 
-            <h3>Cooley-Tukey pseudocode for NTT</h3>
+            <h3>الكود الزائف لـ Cooley-Tukey لـ NTT</h3>
             <pre><code class="language-python">def ntt(f, q, omega):
     """
-    Iterative in-place NTT (Cooley-Tukey).
-    f: list of n coefficients in Z_q
-    q: prime modulus
-    omega: primitive n-th root of unity mod q
+    NTT تكراري في المكان (Cooley-Tukey).
+    f: قائمة من n معامل في Z_q
+    q: معامل أولي
+    omega: جذر بدائي من الرتبة n للوحدة نمط q
     """
     n = len(f)
-    # bit-reversal permutation
+    # تبديل عكس البتات
     j = 0
     for i in range(1, n):
         bit = n >> 1
@@ -629,7 +629,7 @@ seed
         if i < j:
             f[i], f[j] = f[j], f[i]
 
-    # butterfly operations
+    # عمليات الفراشة
     length = 2
     while length <= n:
         w = pow(omega, n // length, q)
@@ -644,33 +644,33 @@ seed
         length <<= 1
     return f</code></pre>
 
-            <h3>Reference implementation</h3>
-            <p>FIPS 203 specifies the exact NTT implementation and the table of precomputed roots <span class="math">\(\zeta^{br(i)}\)</span> (where <span class="math">\(br\)</span> is the bit-reversal permutation).</p>
+            <h3>التنفيذ المرجعي</h3>
+            <p>يحدد FIPS 203 التنفيذ الدقيق لـ NTT وجدول الجذور المحسوبة مسبقاً <span class="math">\(\zeta^{br(i)}\)</span> (حيث <span class="math">\(br\)</span> هو تبديل عكس البتات).</p>
             
-            <p>Optimized implementations in assembly/SIMD are available in:</p>
+            <p>التنفيذات المحسّنة في Assembly/SIMD متوفرة في:</p>
             <ul>
-                <li><code>liboqs</code> (C with AVX2)</li>
-                <li><code>pqclean</code> (portable C)</li>
-                <li><code>kyber</code> reference implementation (C)</li>
+                <li><code>liboqs</code> (C مع AVX2)</li>
+                <li><code>pqclean</code> (C محمول)</li>
+                <li><code>kyber</code> التنفيذ المرجعي (C)</li>
             </ul>
         </section>
 
-        <!-- Sources -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>المصادر</h2>
             <ul>
-                <li>NIST FIPS 203 (2024), Sections 4.3 and 5 – NTT definition and operations in <span class="math">\(R_q\)</span></li>
+                <li>NIST FIPS 203 (2024)، الأقسام 4.3 و 5 – تعريف NTT والعمليات في <span class="math">\(R_q\)</span></li>
                 <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
                 <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Section 6 (NTT implementation)</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>، IEEE EuroS&P – القسم 6 (تنفيذ NTT)</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="6.html" class="nav-btn">← Previous chapter</a>
+            <a href="6.html" class="nav-btn">← الفصل السابق</a>
             <span class="nav-label">07 / 10</span>
-            <a href="8.html" class="nav-btn">Next chapter →</a>
+            <a href="8.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -680,7 +680,7 @@ seed
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -387,45 +387,45 @@
        <main class="chapter-content">
     <article>
         <h1>05 – Module-LWE (MLWE)</h1>
-        <p class="subtitle">The mathematical foundation of ML-KEM</p>
+        <p class="subtitle">Die mathematische Grundlage von ML-KEM</p>
 
-        <!-- Index -->
+        <!-- Inhaltsverzeichnis -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>Inhaltsverzeichnis</h2>
             <ul>
-                <li><a href="#id-51">5.1 From LWE to MLWE: the motivation</a></li>
-                <li><a href="#id-52">5.2 Formal definition of MLWE</a></li>
-                <li><a href="#id-53">5.3 The noise distribution in ML-KEM</a></li>
-                <li><a href="#id-54">5.4 Sampling in ML-KEM</a></li>
-                <li><a href="#id-55">5.5 Hardness: why MLWE is difficult</a></li>
-                <li><a href="#id-56">5.6 From MLWE to a PKE: the constructive idea</a></li>
-                <li><a href="#id-57">5.7 Complete numerical example</a></li>
-                <li><a href="#id-58">5.8 Why ML-KEM's parameters are what they are</a></li>
+                <li><a href="#id-51">5.1 Von LWE zu MLWE: die Motivation</a></li>
+                <li><a href="#id-52">5.2 Formale Definition von MLWE</a></li>
+                <li><a href="#id-53">5.3 Die Rauschverteilung in ML-KEM</a></li>
+                <li><a href="#id-54">5.4 Erzeugung der öffentlichen Matrix A</a></li>
+                <li><a href="#id-55">5.5 Härte: warum MLWE schwierig ist</a></li>
+                <li><a href="#id-56">5.6 Von MLWE zu einem PKE: die konstruktive Idee</a></li>
+                <li><a href="#id-57">5.7 Vollständiges numerisches Beispiel</a></li>
+                <li><a href="#id-58">5.8 Warum die Parameter von ML-KEM genau so gewählt sind</a></li>
             </ul>
         </div>
 
-        <!-- Section 5.1 -->
+        <!-- Abschnitt 5.1 -->
         <section id="id-51">
-            <h2>5.1 From LWE to MLWE: the motivation</h2>
+            <h2>5.1 Von LWE zu MLWE: die Motivation</h2>
 
-            <h3>Classical LWE and its cost</h3>
+            <h3>Klassisches LWE und seine Kosten</h3>
 
-            <p>In <a href="4.html">04</a> we saw standard LWE: given <span class="math">\(m\)</span> samples <span class="math">\((\mathbf{a}_i, b_i)\)</span> with <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> and <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>, find <span class="math">\(\mathbf{s}\)</span>. The problem is hard, but it has a high practical cost:</p>
+            <p>In Datei <a href="4.html">04</a> haben wir Standard-LWE gesehen: Gegeben <span class="math">\(m\)</span> Stichproben <span class="math">\((\mathbf{a}_i, b_i)\)</span> mit <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> und <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>, finde <span class="math">\(\mathbf{s}\)</span>. Das Problem ist schwierig, hat aber in der Praxis hohe Kosten:</p>
 
             <ul>
-                <li>The public key (the matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) has size <span class="math">\(O(n^2)\)</span>: for <span class="math">\(n = 1024\)</span> and <span class="math">\(q = 3329\)</span> it would be over 2 MB.</li>
-                <li>The matrix-vector multiplication <span class="math">\(A \cdot \mathbf{s}\)</span> costs <span class="math">\(O(n^2)\)</span> multiplications.</li>
+                <li>Der öffentliche Schlüssel (die Matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) hat die Größe <span class="math">\(O(n^2)\)</span>: für <span class="math">\(n = 1024\)</span> und <span class="math">\(q = 3329\)</span> wären das über 2 MB.</li>
+                <li>Die Matrix-Vektor-Multiplikation <span class="math">\(A \cdot \mathbf{s}\)</span> kostet <span class="math">\(O(n^2)\)</span> Multiplikationen.</li>
             </ul>
 
-            <h3>RLWE: too rigid</h3>
+            <h3>RLWE: zu starr</h3>
 
-            <p>Ring-LWE moves operations to the ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. A single polynomial <span class="math">\(a \in R_q\)</span> replaces the entire matrix, reducing the public key to <span class="math">\(O(n)\)</span>.</p>
+            <p>Ring-LWE überführt die Operationen in den Ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. Ein einzelnes Polynom <span class="math">\(a \in R_q\)</span> ersetzt die gesamte Matrix und reduziert den öffentlichen Schlüssel auf <span class="math">\(O(n)\)</span>.</p>
 
-            <p>But RLWE has a very specific algebraic structure that some researchers consider potentially exploitable (although no practical attack is known as of 2024).</p>
+            <p>Aber RLWE hat eine sehr spezifische algebraische Struktur, die einige Forscher für potenziell ausnutzbar halten (obwohl bis 2024 kein praktischer Angriff bekannt ist).</p>
 
-            <h3>MLWE: the optimal compromise</h3>
+            <h3>MLWE: der optimale Kompromiss</h3>
 
-            <p><strong>Module-LWE</strong> generalizes both by using a <span class="math">\(k \times k\)</span> matrix of polynomials in <span class="math">\(R_q\)</span>:</p>
+            <p><strong>Module-LWE</strong> verallgemeinert beide, indem es eine <span class="math">\(k \times k\)</span>-Matrix von Polynomen in <span class="math">\(R_q\)</span> verwendet:</p>
 
             <div class="math-block">
                 \[
@@ -434,117 +434,117 @@
             </div>
 
             <ul>
-                <li>For <span class="math">\(k = 1\)</span>: reduces to RLWE</li>
-                <li>For <span class="math">\(k \to \infty\)</span> (polynomials of degree 0): reduces to classical LWE</li>
+                <li>Für <span class="math">\(k = 1\)</span>: reduziert sich auf RLWE</li>
+                <li>Für <span class="math">\(k \to \infty\)</span> (Polynome vom Grad 0): reduziert sich auf klassisches LWE</li>
             </ul>
 
-            <p>The parameter <span class="math">\(k\)</span> allows <strong>calibrating</strong> security and performance independently of <span class="math">\(n\)</span>.</p>
+            <p>Der Parameter <span class="math">\(k\)</span> ermöglicht es, Sicherheit und Leistung <strong>unabhängig</strong> von <span class="math">\(n\)</span> zu kalibrieren.</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Variant</th>
-                        <th>Public key</th>
-                        <th>Security</th>
-                        <th>Flexibility</th>
+                        <th>Variante</th>
+                        <th>Öffentlicher Schlüssel</th>
+                        <th>Sicherheit</th>
+                        <th>Flexibilität</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>LWE</td>
                         <td><span class="math">\(O(n^2)\)</span></td>
-                        <td>high</td>
-                        <td>low</td>
+                        <td>hoch</td>
+                        <td>niedrig</td>
                     </tr>
                     <tr>
                         <td>RLWE</td>
                         <td><span class="math">\(O(n)\)</span></td>
-                        <td>medium</td>
-                        <td>low</td>
+                        <td>mittel</td>
+                        <td>niedrig</td>
                     </tr>
                     <tr>
                         <td><strong>MLWE</strong></td>
                         <td><span class="math">\(O(k \cdot n)\)</span></td>
-                        <td>adjustable with <span class="math">\(k\)</span></td>
-                        <td><strong>high</strong></td>
+                        <td>mit <span class="math">\(k\)</span> einstellbar</td>
+                        <td><strong>hoch</strong></td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
-        <!-- Section 5.2 -->
+        <!-- Abschnitt 5.2 -->
         <section id="id-52">
-            <h2>5.2 Formal definition of MLWE</h2>
+            <h2>5.2 Formale Definition von MLWE</h2>
 
-            <h3>Working space</h3>
+            <h3>Arbeitsraum</h3>
 
-            <p>Fix the parameters:</p>
+            <p>Gegeben die Parameter:</p>
             <ul>
-                <li><span class="math">\(n = 256\)</span>: degree of the cyclotomic polynomial</li>
-                <li><span class="math">\(q = 3329\)</span>: prime modulus</li>
-                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: module dimension</li>
-                <li><span class="math">\(\chi\)</span>: noise distribution (centered binomial distribution <span class="math">\(B_\eta\)</span>)</li>
+                <li><span class="math">\(n = 256\)</span>: Grad des zyklotomischen Polynoms</li>
+                <li><span class="math">\(q = 3329\)</span>: Primmodul</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: Modul-Dimension</li>
+                <li><span class="math">\(\chi\)</span>: Rauschverteilung (zentrierte Binomialverteilung <span class="math">\(B_\eta\)</span>)</li>
             </ul>
 
-            <p>The base ring is <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+            <p>Der Basisring ist <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
 
-            <h3>MLWE distribution</h3>
+            <h3>MLWE-Verteilung</h3>
 
-            <p>Let <span class="math">\(\mathbf{s} \in R_q^k\)</span> be a secret vector of polynomials, each with coefficients sampled from <span class="math">\(\chi\)</span>.</p>
+            <p>Sei <span class="math">\(\mathbf{s} \in R_q^k\)</span> ein geheimer Vektor von Polynomen, deren Koeffizienten aus <span class="math">\(\chi\)</span> gezogen werden.</p>
 
-            <p>An <strong>MLWE instance</strong> is a pair:</p>
+            <p>Eine <strong>MLWE-Instanz</strong> ist ein Paar:</p>
 
             <div class="math-block">
                 \[
-                (\mathbf{A},\; \mathbf{t}) \quad \text{where} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                (\mathbf{A},\; \mathbf{t}) \quad \text{mit} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
                 \]
             </div>
 
-            <p>with <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
+            <p>mit <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
 
-            <h3>Decision MLWE problem</h3>
+            <h3>Entscheidungs-MLWE-Problem</h3>
 
-            <p><strong>Input:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> where:</p>
+            <p><strong>Eingabe:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> wobei:</p>
             <ul>
-                <li>either <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (MLWE distribution), or</li>
-                <li>either <span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> uniform</li>
+                <li>entweder <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (MLWE-Verteilung), oder</li>
+                <li><span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> gleichverteilt</li>
             </ul>
 
-            <p><strong>Goal:</strong> distinguish the two cases with non-negligible advantage.</p>
+            <p><strong>Ziel:</strong> Unterscheide die beiden Fälle mit nicht vernachlässigbarem Vorteil.</p>
 
-            <h3>Search MLWE problem</h3>
+            <h3>Such-MLWE-Problem</h3>
 
-            <p><strong>Input:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> with <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+            <p><strong>Eingabe:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> mit <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
 
-            <p><strong>Goal:</strong> find <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p><strong>Ziel:</strong> finde <span class="math">\(\mathbf{s}\)</span>.</p>
 
             <blockquote>
-                <p>Regev's reduction (adapted to MLWE) demonstrates that the search problem is computationally equivalent to the decision problem, and that both are at least as hard as GapSVP on high-dimensional lattices.</p>
+                <p>Die Reduktion von Regev (angepasst an MLWE) zeigt, dass das Suchproblem dem Entscheidungsproblem rechnerisch äquivalent ist und dass beide mindestens so schwer sind wie GapSVP auf hochdimensionalen Gittern.</p>
             </blockquote>
         </section>
 
-        <!-- Section 5.3 -->
+        <!-- Abschnitt 5.3 -->
         <section id="id-53">
-            <h2>5.3 The noise distribution in ML-KEM</h2>
+            <h2>5.3 Die Rauschverteilung in ML-KEM</h2>
 
-            <h3>Centered binomial distribution <span class="math">\(B_\eta\)</span></h3>
+            <h3>Zentrierte Binomialverteilung <span class="math">\(B_\eta\)</span></h3>
 
-            <p>In ML-KEM the noise is not Gaussian but centered binomial. To sample a single coefficient from <span class="math">\(B_\eta\)</span>:</p>
+            <p>In ML-KEM ist das Rauschen nicht gaußsch, sondern zentriert binomial. Um einen einzelnen Koeffizienten aus <span class="math">\(B_\eta\)</span> zu sampeln:</p>
 
             <ol>
-                <li>Sample <span class="math">\(2\eta\)</span> uniform bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
-                <li>Return <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span></li>
+                <li>Sampel <span class="math">\(2\eta\)</span> uniforme Bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li>Gib <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span> zurück</li>
             </ol>
 
-            <p>The result is an integer in <span class="math">\([-\eta, \eta]\)</span>.</p>
+            <p>Das Ergebnis ist eine ganze Zahl in <span class="math">\([-\eta, \eta]\)</span>.</p>
 
-            <p><strong>Probability distribution for η = 2:</strong></p>
+            <p><strong>Wahrscheinlichkeitsverteilung für η = 2:</strong></p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Value</th>
-                        <th>Probability</th>
+                        <th>Wert</th>
+                        <th>Wahrscheinlichkeit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -571,133 +571,133 @@
                 </tbody>
             </table>
 
-            <p><strong>Why not true Gaussian?</strong></p>
+            <p><strong>Warum keine echte Gauß-Verteilung?</strong></p>
 
-            <p>Discrete Gaussian is theoretically optimal, but sampling it in <em>constant-time</em> (resistant to timing attacks) is complex. Centered binomial:</p>
+            <p>Die diskrete Gauß-Verteilung ist theoretisch optimal, aber ihre <em>zeitkonstante</em> Stichprobennahme (resistenz gegen Timing-Angriffe) ist komplex. Die zentrierte Binomialverteilung:</p>
 
             <ul>
-                <li>has finite support → no extreme cases</li>
-                <li>is sampled with only bit operations → trivially constant-time</li>
-                <li>is statistically indistinguishable from Gaussian for known attacks</li>
+                <li>hat endlichen Träger → keine Extremfälle</li>
+                <li>wird mit reinen Bit-Operationen gesampelt → trivial zeitkonstant</li>
+                <li>ist für bekannte Angriffe statistisch von der Gauß-Verteilung nicht unterscheidbar</li>
             </ul>
 
-            <h3>Sampling in ML-KEM (the <code>SamplePolyCBD</code> function)</h3>
+            <h3>Stichprobennahme in ML-KEM (Funktion <code>SamplePolyCBD</code>)</h3>
 
             <div class="sequence-diagram">
 CBD_η(σ, b):
-    Input: seed σ ∈ {0,1}^256, nonce b ∈ {0,1}^8
-    Output: polynomial f ∈ R_q with coefficients in [-η, η]
+    Eingabe: Seed σ ∈ {0,1}^256, Nonce b ∈ {0,1}^8
+    Ausgabe: Polynom f ∈ R_q mit Koeffizienten in [-η, η]
 
-    bytes = PRF(σ, b)   // SHAKE256, generates 64η bytes
-    for j = 0..255:
-        a = sum of bits in bytes at positions [2ηj .. 2ηj+η-1]
-        b = sum of bits in bytes at positions [2ηj+η .. 2ηj+2η-1]
+    bytes = PRF(σ, b)   // SHAKE256, erzeugt 64η Byte
+    für j = 0..255:
+        a = Summe der Bits von bytes an den Positionen [2ηj .. 2ηj+η-1]
+        b = Summe der Bits von bytes an den Positionen [2ηj+η .. 2ηj+2η-1]
         f[j] = a - b
     return f
             </div>
 
-            <p>Each polynomial <span class="math">\(\mathbf{s}[i]\)</span> and <span class="math">\(\mathbf{e}[i]\)</span> is sampled with a different nonce, ensuring statistical independence.</p>
+            <p>Jedes Polynom <span class="math">\(\mathbf{s}[i]\)</span> und <span class="math">\(\mathbf{e}[i]\)</span> wird mit einer anderen Nonce gesampelt, was statistische Unabhängigkeit garantiert.</p>
         </section>
 
-        <!-- Section 5.4 -->
+        <!-- Abschnitt Stichprobennahme -->
         <section id="id-54">
-            <h2>5.4 Sampling in ML-KEM</h2>
+            <h2>5.4 Stichprobennahme in ML-KEM</h2>
 
             <h3>CBD: Centered Binomial Distribution</h3>
-            <p>ML-KEM uses a centered binomial distribution <span class="math">\(B_\eta\)</span> to generate small errors and secrets. This distribution is efficient and does not require rejection sampling.</p>
+            <p>ML-KEM verwendet eine zentrierte Binomialverteilung <span class="math">\(B_\eta\)</span>, um kleine Fehler und Geheimnisse zu erzeugen. Diese Verteilung ist effizient und benötigt kein Rejection Sampling.</p>
 
             <div class="code-block">
-                <h4>Function SamplePolyCBD(σ, b, η)</h4>
-                <pre><code>Input: seed σ ∈ {0,1}^256, nonce b, parameter η
-Output: polynomial f ∈ R_q with coeff. in [-η, η]
+                <h4>Funktion SamplePolyCBD(σ, b, η)</h4>
+                <pre><code>Eingabe: Seed σ ∈ {0,1}^256, Nonce b, Parameter η
+Ausgabe: Polynom f ∈ R_q mit Koeff. in [-η, η]
 
-1. bytes = PRF(σ, b)       // SHAKE256, generates 64·η bytes
-2. For j = 0 to 255:
-     a = sum(bits[2ηj .. 2ηj+η-1])   // count the 1s in the first group
-     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // count the 1s in the second group
-     f[j] = a - b                     // difference centered on 0
+1. bytes = PRF(σ, b)       // SHAKE256, erzeugt 64·η Byte
+2. Für j = 0 bis 255:
+     a = sum(bits[2ηj .. 2ηj+η-1])   // zähle die 1en in der ersten Gruppe
+     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // zähle die 1en in der zweiten Gruppe
+     f[j] = a - b                     // auf 0 zentrierte Differenz
 3. Return f</code></pre>
             </div>
 
-            <p>For <span class="math">\(\eta=2\)</span>, coefficients are in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>. For <span class="math">\(\eta=3\)</span>, in <span class="math">\(\{-3, \ldots, 3\}\)</span>.</p>
+            <p>Für <span class="math">\(\eta=2\)</span> liegen die Koeffizienten in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>. Für <span class="math">\(\eta=3\)</span> in <span class="math">\(\{-3, \ldots, 3\}\)</span>.</p>
 
-            <h3>SampleNTT: Uniform Sampling</h3>
-            <p>To generate the public matrix <span class="math">\(\mathbf{A}\)</span>, uniform coefficients in <span class="math">\(\mathbb{Z}_q\)</span> are needed. <em>Rejection sampling</em> is used on the output of SHAKE128.</p>
+            <h3>SampleNTT: Gleichverteilte Stichprobennahme</h3>
+            <p>Zur Erzeugung der öffentlichen Matrix <span class="math">\(\mathbf{A}\)</span> werden gleichverteilte Koeffizienten in <span class="math">\(\mathbb{Z}_q\)</span> benötigt. Dazu wird <em>Rejection Sampling</em> auf der Ausgabe von SHAKE128 verwendet.</p>
 
             <div class="code-block">
-                <h4>Function SampleNTT(stream)</h4>
-                <pre><code>Input: byte stream from XOF (SHAKE128)
-Output: polynomial with uniform coeff. in [0, q-1]
+                <h4>Funktion SampleNTT(stream)</h4>
+                <pre><code>Eingabe: Byte-Stream von XOF (SHAKE128)
+Ausgabe: Polynom mit gleichverteilten Koeff. in [0, q-1]
 
-coefficients = []
-while len(coefficients) < 256:
-    // Read 3 bytes to generate 2 candidate values
+koeffizienten = []
+while len(koeffizienten) < 256:
+    // Lese 3 Byte, um 2 Kandidatenwerte zu erzeugen
     b0, b1, b2 = next_3_bytes(stream)
     
-    // Combine bits to form two 12-bit numbers
+    // Kombiniere die Bits zu zwei 12-Bit-Zahlen
     d1 = b0 + 256 * (b1 mod 16)
     d2 = floor(b1 / 16) + 16 * b2
     
-    // Accept only if < q (3329)
+    // Akzeptiere nur, wenn < q (3329)
     if d1 < q:
-        coefficients.append(d1)
-    if d2 < q and len(coefficients) < 256:
-        coefficients.append(d2)
+        koeffizienten.append(d1)
+    if d2 < q and len(koeffizienten) < 256:
+        koeffizienten.append(d2)
 
-return coefficients</code></pre>
+return koeffizienten</code></pre>
             </div>
             
-            <p>This method guarantees a perfect uniform distribution, discarding out-of-range values.</p>
+            <p>Diese Methode garantiert eine perfekte gleichmäßige Verteilung, indem Werte außerhalb des Bereichs verworfen werden.</p>
         </section>
 
-        <!-- Section 5.5 -->
+        <!-- Abschnitt 5.5 -->
         <section id="id-55">
-            <h2>5.5 Hardness: why MLWE is difficult</h2>
+            <h2>5.5 Härte: warum MLWE schwierig ist</h2>
 
-            <h3>Worst-case to average-case reduction</h3>
+            <h3>Worst-Case-zu-Average-Case-Reduktion</h3>
 
-            <p>The most important property of LWE/MLWE is the <strong>worst-case to average-case reduction</strong>:</p>
+            <p>Die wichtigste Eigenschaft von LWE/MLWE ist die <strong>Worst-Case-zu-Average-Case-Reduktion</strong>:</p>
 
             <blockquote>
-                <p>If there exists an efficient algorithm that solves MLWE for a non-negligible fraction of random instances, then there exists an efficient algorithm to solve GapSVP (the approximate version of SVP) on <em>any</em> lattice, in the worst case.</p>
+                <p>Wenn es einen effizienten Algorithmus gibt, der MLWE für einen nicht vernachlässigbaren Bruchteil zufälliger Instanzen löst, dann gibt es einen effizienten Algorithmus zur Lösung von GapSVP (der approximierten Version von SVP) auf <em>jedem</em> Gitter im schlechtesten Fall.</p>
             </blockquote>
 
-            <p>This reduction (Regev 2005, adapted by Peikert 2009 and Brakerski et al. for MLWE) is exceptional: most cryptographic problems only have average-case to average-case reductions.</p>
+            <p>Diese Reduktion (Regev 2005, angepasst von Peikert 2009 und Brakerski et al. für MLWE) ist außergewöhnlich: Die meisten kryptographischen Probleme haben nur Average-Case-zu-Average-Case-Reduktionen.</p>
 
-            <p>In practice: breaking MLWE on random instances is as hard as solving SVP in the worst case → the cryptographic assumptions are extremely solid.</p>
+            <p>In der Praxis: MLWE auf zufälligen Instanzen zu brechen ist so schwierig wie SVP im schlechtesten Fall zu lösen → die kryptographischen Annahmen sind äußerst solide.</p>
 
-            <h3>Absence of structure exploitable by quantum computers</h3>
+            <h3>Fehlen einer für Quantencomputer ausnutzbaren Struktur</h3>
 
-            <p>Shor's algorithm exploits the <strong>abelian group</strong> structure of factorization and discrete logarithm problems: there is a periodic group action that the QFT can detect.</p>
+            <p>Shors Algorithmus nutzt die Struktur <strong>abelscher Gruppen</strong> bei Faktorisierung und diskretem Logarithmus: Es gibt eine periodische Gruppenwirkung, die die QFT erkennen kann.</p>
 
-            <p>MLWE does not have this structure:</p>
+            <p>MLWE hat diese Struktur nicht:</p>
 
             <ul>
-                <li>There is no periodicity to exploit</li>
-                <li>There is no natural abelian group on which to apply the QFT</li>
-                <li>The best quantum algorithms (based on quantum walks or QRAM) offer at most polynomial speedups, not exponential ones</li>
+                <li>Es gibt keine ausnutzbare Periodizität</li>
+                <li>Es gibt keine natürliche abelsche Gruppe, auf die die QFT angewendet werden kann</li>
+                <li>Die besten Quantenalgorithmen (basiert auf Quantum Walks oder QRAM) bieten höchstens polynomiale Beschleunigung, keine exponentielle</li>
             </ul>
         </section>
 
-        <!-- Section 5.6 -->
+        <!-- Abschnitt 5.6 -->
         <section id="id-56">
-            <h2>5.6 From MLWE to a PKE: the constructive idea</h2>
+            <h2>5.6 Von MLWE zu einem PKE: die konstruktive Idee</h2>
 
-            <p>How do you build an encryption system from MLWE? The intuition is elegant.</p>
+            <p>Wie konstruiert man ein Verschlüsselungssystem aus MLWE? Die Intuition ist elegant.</p>
 
-            <h3>Analogy with Diffie-Hellman</h3>
+            <h3>Analogie zu Diffie-Hellman</h3>
 
-            <p>In DH, the public key is <span class="math">\(g^s\)</span>: easy to compute, hard to invert.<br />
-            In MLWE, the public key is <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: easy to compute, hard to invert.</p>
+            <p>Bei DH ist der öffentliche Schlüssel <span class="math">\(g^s\)</span>: leicht zu berechnen, schwer zu invertieren.<br />
+            Bei MLWE ist der öffentliche Schlüssel <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: leicht zu berechnen, schwer zu invertieren.</p>
 
-            <h3>Encryption scheme (Regev-like)</h3>
+            <h3>Verschlüsselungsschema (Regev-ähnlich)</h3>
 
             <p><strong>KeyGen:</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
 
-            <p style="text-align: right;">Public key: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
-            Private key: <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p style="text-align: right;">Öffentlicher Schlüssel: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
+            Privater Schlüssel: <span class="math">\(\mathbf{s}\)</span>.</p>
 
-            <p><strong>Encrypt</strong> (message <span class="math">\(m \in \{0,1\}\)</span>, encoded as <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
+            <p><strong>Verschlüsseln</strong> (Nachricht <span class="math">\(m \in \{0,1\}\)</span>, codiert als <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
 
             <div class="math-block">
                 \[
@@ -711,11 +711,11 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p style="text-align: right;">Ciphertext: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
+            <p style="text-align: right;">Chiffrat: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
 
-            <p><strong>Decrypt:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+            <p><strong>Entschlüsseln:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
 
-            <p><strong>Analysis:</strong></p>
+            <p><strong>Analyse:</strong></p>
 
             <div class="math-block">
                 \[
@@ -731,15 +731,15 @@ return coefficients</code></pre>
 
             <div class="math-block">
                 \[
-                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{small noise}} + \mu \approx \mu
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{kleines Rauschen}} + \mu \approx \mu
                 \]
             </div>
 
-            <p>The noise is small → rounding recovers <span class="math">\(\mu\)</span> and thus <span class="math">\(m\)</span>.</p>
+            <p>Das Rauschen ist klein → durch Runden wird <span class="math">\(\mu\)</span> und damit <span class="math">\(m\)</span> wiederhergestellt.</p>
 
-            <h3>The polynomial version (real MLWE)</h3>
+            <h3>Die polynomielle Version (echtes MLWE)</h3>
 
-            <p>In ML-KEM, every scalar becomes a polynomial in <span class="math">\(R_q\)</span>, and operations are polynomial products. The mechanism is identical, but multiplications happen in the ring:</p>
+            <p>In ML-KEM wird jeder Skalar zu einem Polynom in <span class="math">\(R_q\)</span>, und die Operationen sind Polynomprodukte. Der Mechanismus ist identisch, aber die Multiplikationen finden im Ring statt:</p>
 
             <div class="math-block">
                 \[
@@ -747,20 +747,20 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>where <span class="math">\(\circ\)</span> is multiplication in <span class="math">\(R_q\)</span> (polynomial, accelerated by NTT).</p>
+            <p>wobei <span class="math">\(\circ\)</span> die Multiplikation in <span class="math">\(R_q\)</span> ist (polynomiell, beschleunigt durch NTT).</p>
         </section>
 
-        <!-- Section 5.7 -->
+        <!-- Abschnitt 5.7 -->
         <section id="id-57">
-            <h2>5.7 Complete numerical example</h2>
+            <h2>5.7 Vollständiges numerisches Beispiel</h2>
 
-            <p>We use toy parameters: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, small coefficients in <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
+            <p>Wir verwenden Spielzeugparameter: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, kleine Koeffizienten in <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
 
-            <p>Polynomials are in <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>, so degree <span class="math">\(\leq 3\)</span>.</p>
+            <p>Die Polynome liegen in <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>, haben also Grad <span class="math">\(\leq 3\)</span>.</p>
 
-            <h3>Starting data</h3>
+            <h3>Ausgangsdaten</h3>
 
-            <p><strong>Public matrix</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
+            <p><strong>Öffentliche Matrix</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -768,15 +768,15 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>with <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+            <p>mit <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
 
-            <p><strong>Secret</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> with <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
+            <p><strong>Geheimnis</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> mit <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
 
-            <p><strong>Error</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> with <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
+            <p><strong>Fehler</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> mit <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
 
-            <h3>Calculation of t = As + e</h3>
+            <h3>Berechnung von t = As + e</h3>
 
-            <p><strong>Component t0 = a00 s0 + a01 s1 + e0:</strong></p>
+            <p><strong>Komponente t0 = a00 s0 + a01 s1 + e0:</strong></p>
 
             <div class="math-block">
                 \[
@@ -790,7 +790,7 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>Reduce <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
+            <p>Wir reduzieren <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -822,75 +822,75 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p><strong>Result:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (the second component is computed similarly).</p>
+            <p><strong>Ergebnis:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (die zweite Komponente wird analog berechnet).</p>
 
-            <h3>Key observation</h3>
+            <h3>Schlüsselbeobachtung</h3>
 
-            <p>An adversary seeing <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> must find <span class="math">\((\mathbf{s}, \mathbf{e})\)</span>. Even with these small numbers, the problem is already non-trivial: they cannot use Gaussian elimination (the error breaks linearity) and the search space is exponential in ML-KEM's real dimension.</p>
+            <p>Ein Angreifer, der <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> sieht, muss <span class="math">\((\mathbf{s}, \mathbf{e})\)</span> finden. Selbst mit diesen kleinen Zahlen ist das Problem bereits nicht trivial: Er kann keine Gauß-Elimination verwenden (der Fehler bricht die Linearität), und der Suchraum ist exponentiell in der realen Dimension von ML-KEM.</p>
         </section>
 
-        <!-- Section 5.8 -->
+        <!-- Abschnitt 5.8 -->
         <section id="id-58">
-            <h2>5.8 Why ML-KEM's parameters are what they are</h2>
+            <h2>5.8 Warum die Parameter von ML-KEM genau so gewählt sind</h2>
 
             <h3><span class="math">\(n = 256\)</span></h3>
 
             <ul>
-                <li>Must be a power of 2 (for efficient NTT)</li>
-                <li>The polynomial <span class="math">\(X^{256}+1\)</span> must be irreducible over <span class="math">\(\mathbb{Z}_q\)</span>: it is if <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
-                <li><span class="math">\(256\)</span> balances security and performance: <span class="math">\(n = 128\)</span> would be too insecure, <span class="math">\(n = 512\)</span> too slow</li>
+                <li>Muss eine Zweierpotenz sein (für effiziente NTT)</li>
+                <li>Das Polynom <span class="math">\(X^{256}+1\)</span> muss über <span class="math">\(\mathbb{Z}_q\)</span> irreduzibel sein: Dies ist der Fall, wenn <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
+                <li><span class="math">\(256\)</span> balanciert Sicherheit und Leistung: <span class="math">\(n = 128\)</span> wäre zu unsicher, <span class="math">\(n = 512\)</span> zu langsam</li>
             </ul>
 
             <h3><span class="math">\(q = 3329\)</span></h3>
 
             <ul>
-                <li>Must be prime (for <span class="math">\(\mathbb{Z}_q\)</span> field)</li>
-                <li>Must satisfy <span class="math">\(q \equiv 1 \pmod{256}\)</span>: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
-                <li>Must be such that 256th roots of unity exist: guaranteed by the condition above</li>
-                <li>Must be as small as possible (compact keys) while being compatible with the noise budget</li>
-                <li><span class="math">\(3329\)</span> is the first prime satisfying all conditions with enough margin for the noise</li>
+                <li>Muss prim sein (damit <span class="math">\(\mathbb{Z}_q\)</span> ein Körper ist)</li>
+                <li>Muss <span class="math">\(q \equiv 1 \pmod{256}\)</span> erfüllen: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>Muss so sein, dass 256-te Einheitswurzeln existieren: durch die obige Bedingung garantiert</li>
+                <li>Muss so klein wie möglich sein (kompakte Schlüssel), aber mit ausreichend Rauschbudget</li>
+                <li><span class="math">\(3329\)</span> ist die erste Primzahl, die alle Bedingungen mit ausreichend Rauschmarge erfüllt</li>
             </ul>
 
             <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
 
             <ul>
-                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): NIST level 1, equivalent to pre-quantum AES-128</li>
-                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): level 3, equivalent to AES-192, recommended for general use</li>
-                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): level 5, equivalent to AES-256, for high-criticality systems</li>
+                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): NIST-Stufe 1, äquivalent zu AES-128 vor-Quanten</li>
+                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): Stufe 3, äquivalent zu AES-192, für den allgemeinen Gebrauch empfohlen</li>
+                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): Stufe 5, äquivalent zu AES-256, für hochkritische Systeme</li>
             </ul>
 
             <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
 
-            <p>The noise must be:</p>
+            <p>Das Rauschen muss:</p>
 
             <ul>
-                <li><strong>large</strong> enough to make the MLWE problem hard</li>
-                <li><strong>small</strong> enough to ensure that decryption does not fail (noise budget)</li>
+                <li><strong>groß</strong> genug sein, um das MLWE-Problem schwierig zu machen</li>
+                <li><strong>klein</strong> genug, um sicherzustellen, dass die Entschlüsselung nicht fehlschlägt (Rauschbudget)</li>
             </ul>
 
-            <p>Increasing <span class="math">\(\eta\)</span> increases security but also the probability of decryption error. The values <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> for ML-KEM-768 are the optimal point.</p>
+            <p>Eine Erhöhung von <span class="math">\(\eta\)</span> erhöht die Sicherheit, aber auch die Wahrscheinlichkeit von Entschlüsselungsfehlern. Die Werte <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> für ML-KEM-768 sind der optimale Punkt.</p>
         </section>
 
-        <!-- Sources -->
+        <!-- Quellen -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>Quellen</h2>
             <ul>
                 <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
-                STOC 2005. Foundation of LWE.</li>
+                STOC 2005. Grundlage von LWE.</li>
                 <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
-                Designs, Codes and Cryptography. Foundation of MLWE.</li>
+                Designs, Codes and Cryptography. Grundlage von MLWE.</li>
                 <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
-                EUROCRYPT 2010. Foundation of RLWE.</li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Sections 1–4 (rational parameter design)</li>
-                <li>NIST FIPS 203 (2024), Sections 3–4 (notation and primitives)</li>
+                EUROCRYPT 2010. Grundlage von RLWE.</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Abschnitte 1–4 (rationales Parameterdesign)</li>
+                <li>NIST FIPS 203 (2024), Abschnitte 3–4 (Notation und Primitiven)</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Kapitelnavigation -->
         <div class="chapter-nav">
-            <a href="4.html" class="nav-btn">← Previous chapter</a>
+            <a href="4.html" class="nav-btn">← Vorheriges Kapitel</a>
             <span class="nav-label">05 / 10</span>
-            <a href="6.html" class="nav-btn">Next chapter →</a>
+            <a href="6.html" class="nav-btn">Nächstes Kapitel →</a>
         </div>
     </article>
 </main>

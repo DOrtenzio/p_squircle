@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> فصل 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Select language">
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>فصول</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+            <article>
+                <h1>00 – الأساسيات الرياضية</h1>
+                <p class="subtitle">الأدوات الأساسية لفهم التشفير ما بعد الكمي</p>
+
+                <!-- الفهرس -->
+                <div class="toc">
+                    <h2>المحتوى</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 الحسابيات النمطية</a></li>
+                        <li><a href="#id-02">0.2 الجبر الخطي: المتجهات والمصفوفات</a></li>
+                        <li><a href="#id-03">0.3 كثيرات الحدود</a></li>
+                        <li><a href="#id-04">0.4 التراكيب الجبرية: الزمر، الحلقات، الحقول</a></li>
+                        <li><a href="#id-05">0.5 دوال التجزئة التشفيرية</a></li>
+                        <li><a href="#id-06">0.6 الاحتمالات وتوزيع الضوضاء</a></li>
+                        <li><a href="#id-07">0.7 التعقيد الحسابي</a></li>
+                    </ul>
+                </div>
+
+                <!-- القسم 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 الحسابيات النمطية</h2>
+
+                    <h3>ما هو المعامل</h3>
+                    <p>العملية <span class="math">\(a \bmod m\)</span> تعيد <strong>باقي</strong> القسمة الصحيحة لـ <span class="math">\(a\)</span> على <span class="math">\(m\)</span>.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{لأن } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{لأن } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>الاتفاقية:</strong> في التشفير، تكون النتائج نمط <span class="math">\(q\)</span> دائماً في المجال <span class="math">\([0, q-1]\)</span>.</p>
+                    </blockquote>
+
+                    <h3>الحسابيات في <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>نرمز بـ <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> لمجموعة الأعداد الصحيحة نمط <span class="math">\(q\)</span>. في هذه المجموعة، يتم اختزال الجمع والطرح والضرب دائماً نمط <span class="math">\(q\)</span>:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>المعكوس الضربي</h3>
+                    <p>في الرياضيات العادية، يُستخدم معكوس العدد للحصول على <span class="math">\(1\)</span> عبر الضرب (مثال: معكوس <span class="math">\(5\)</span> هو <span class="math">\(\frac{1}{5}\)</span>، لأن <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). في الحسابيات النمطية، لا وجود للكسور. لذلك يجب أن يكون معكوس العدد <span class="math">\(a\)</span> عدداً صحيحاً آخر <span class="math">\(b\)</span> بحيث، عند ضربه بـ <span class="math">\(a\)</span>، يعطي باقي 1 نمط <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>قاعدة الوجود</h4>
+                    <p>معكوس <span class="math">\(a\)</span> لا يوجد دائماً. يمكن إيجاده إذا وفقط إذا كان <span class="math">\(a\)</span> و <span class="math">\(q\)</span> ليس لهما قواسم مشتركة (أي إذا كان القاسم المشترك الأكبر لهما هو 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+                    <ul>
+                        <li><strong>خاصية أساسية:</strong> إذا كان المعامل <span class="math">\(q\)</span> عدداً أولياً، فإن جميع الأعداد في المجموعة (ما عدا الصفر) لها معكوس مضمون دائماً.</li>
+                    </ul>
+
+                    <h4>مثال عملي: حساب <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>الكتابة <span class="math">\(5^{-1}\)</span> تعني: "أوجد معكوس 5 نمط 13". نبحث عن عدد <span class="math">\(b\)</span> بحيث أن <span class="math">\(5 \cdot b\)</span> يعطي باقي <span class="math">\(1\)</span> عند القسمة على <span class="math">\(13\)</span>:</p>
+                    <ol>
+                        <li>نجرب ضرب <span class="math">\(5\)</span> بأعداد صحيحة مختلفة.</li>
+                        <li>باختيار <span class="math">\(b = 8\)</span>، نحصل على: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                        <li>نقسم <span class="math">\(40\)</span> على <span class="math">\(13\)</span>: العدد 13 يدخل 3 مرات (<span class="math">\(13 \cdot 3 = 39\)</span>) والباقي 1.</li>
+                    </ol>
+                    <p><strong>الإجابة هي 8</strong>، لأن <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>الرفع النمطي</h3>
+                    <p>الرفع النمطي هو حساب باقي قسمة قوة: <span class="math">\(a^k \pmod m\)</span>. هذه العملية هي العمود الفقري للتشفير الحديث (مثل خوارزمية RSA). تُستخدم لأنها "ساعة ذات اتجاه واحد": من السهل جداً حساب النتيجة، لكن يكاد يكون من المستحيل القيام بالمسار العكسي (اكتشاف الأس <span class="math">\(k\)</span> انطلاقاً من النتيجة).</p>
+
+                    <h4>مشكلة الأعداد الكبيرة</h4>
+                    <p>إذا أردنا حساب <span class="math">\(5^{11} \pmod{13}\)</span>، فإن الحساب المباشر مستحيل للحاسوب إذا كان الأس يحتوي على مئات الأرقام. سيصبح العدد <span class="math">\(5^{11}\)</span> كبيراً جداً للذاكرة.</p>
+
+                    <h4>الحل: خوارزمية التربيع والضرب</h4>
+                    <p>تسمح هذه الخوارزمية بحساب النتيجة في خطوات قليلة جداً (<span class="math">\(O(\log k)\)</span> عمليات ضرب)، مع العمل دائماً على أعداد صغيرة وتجنب نمو القوة إلى ما لا نهاية.</p>
+
+                    <details>
+                        <summary><strong>كيف تعمل عملياً (مثال: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>نحول الأس إلى النظام الثنائي: <span class="math">\(11 = 8 + 2 + 1\)</span>. بدلاً من ضرب <span class="math">\(5\)</span> في نفسه <span class="math">\(11\)</span> مرة، نحسب القوى المربعة خطوة بخطوة ونختزل النتيجة فوراً نمط <span class="math">\(13\)</span>:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{الأساس: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{المربع: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{مربع المربع: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{المربع التالي: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>الآن ندمج فقط الأجزاء التي تشكل الأس <span class="math">\(11\)</span> (أي <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>نقسم <span class="math">\(60\)</span> على <span class="math">\(13\)</span>: العدد <span class="math">\(13\)</span> يدخل <span class="math">\(4\)</span> مرات (<span class="math">\(52\)</span>) والباقي <span class="math">\(8\)</span>.</p>
+                        <p><strong>النتيجة النهائية:</strong> <span class="math">\(8\)</span> (أجرينا 4 خطوات فقط بدلاً من 11).</p>
+                    </details>
+                </section>
+
+                <!-- القسم 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 الجبر الخطي: المتجهات والمصفوفات</h2>
+
+                    <h3>المتجهات</h3>
+                    <p>المتجه <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> هو قائمة مرتبة من <span class="math">\(n\)</span> أعداد صحيحة محسوبة نمط <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>في العمليات بين المتجهات، يتم اختزال كل نتيجة نمط <span class="math">\(q\)</span>.</p>
+
+                    <h4>مثال عملي</h4>
+                    <p>مع <span class="math">\(q = 13\)</span>:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>جمع المتجهات</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>الجداء القياسي</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>الحساب:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>المجموع: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>الاختزال نمط 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>المصفوفات</h3>
+                    <p>المصفوفة <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> هي جدول من الصفوف والأعمدة.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="مثال لمصفوفة" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(في التطبيق العملي، المصفوفة <span class="math">\(A\)</span> في ML-KEM لها أبعاد <span class="math">\(k \times k\)</span> مع <span class="math">\(k = 3, 4\)</span> أو <span class="math">\(5\)</span> ويتم توليدها من بذرة عشوائية بواسطة SHAKE.)</em></p>
+
+                    <h4>جداء مصفوفة في متجه</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>مثال</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>الخطوات التفصيلية</summary>
+                        <p>الصف الأول: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>الصف الثاني: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>الاختزال نمط 13: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>إذن: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>معيار اللانهاية</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>هذا المعيار يقيس المركبة ذات القيمة المطلقة القصوى. في سياق MLWE، يجب أن تكون متجهات الخطأ صغيرة جداً من حيث المعيار.</p>
+                    <details>
+                        <summary>أمثلة عملية</summary>
+                        <p><strong>حالة صالحة:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>حالة غير صالحة:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- القسم 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 كثيرات الحدود</h2>
+
+                    <h3>كثيرات الحدود بمعاملات في <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>كثيرة الحدود في <span class="math">\(\mathbb{Z}_q[X]\)</span> لها الشكل:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>حيث كل <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+
+                    <h4>جمع كثيرات الحدود</h4>
+                    <p>تُجمع المعاملات المتناظرة نمط <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>ضرب كثيرات الحدود والاختزال</h4>
+                    <p>ناتج ضرب كثيرتي حدود من درجة <span class="math">\(\leq n-1\)</span> يمكن أن يكون من درجة تصل إلى <span class="math">\(2n-2\)</span>. ولإبقائها مدمجة، يُختزل الناتج نمط كثيرة حدود خاصة.</p>
+                    <p>في ML-KEM يُستخدم <span class="math">\(X^n + 1\)</span> مع <span class="math">\(n = 256\)</span>. قاعدة الاختزال هي:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>لذلك كلما ظهر <span class="math">\(X^{256}\)</span> في الناتج، يُستبدل بـ <span class="math">\(-1\)</span>.</p>
+
+                    <h4>مثال بسيط</h4>
+                    <p>مع <span class="math">\(n = 4\)</span>، <span class="math">\(q = 5\)</span>، النمط <span class="math">\(X^4+1\)</span>:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- القسم 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 التراكيب الجبرية: الزمر، الحلقات، الحقول</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التركيب</th>
+                                <th>العمليات</th>
+                                <th>الخاصية الأساسية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>زمرة</strong></td>
+                                <td>واحدة (+)</td>
+                                <td>الانغلاق، التجميعية، الحيادي، المعكوس</td>
+                            </tr>
+                            <tr>
+                                <td><strong>حلقة</strong></td>
+                                <td>اثنتان (+, ×)</td>
+                                <td>زمرة أبيلية لـ +، نصف زمرة لـ ×</td>
+                            </tr>
+                            <tr>
+                                <td><strong>حقل</strong></td>
+                                <td>اثنتان (+, ×)</td>
+                                <td>حلقة مع معكوس ضربي لجميع العناصر ≠ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> كحقل</h3>
+                    <p>إذا كان <span class="math">\(q\)</span> أولياً، فإن <span class="math">\(\mathbb{Z}_q\)</span> <strong>هو حقل</strong>: لكل عنصر غير صفري معكوس ضربي. في ML-KEM، <span class="math">\(q = 3329\)</span> هو عدد أولي → <span class="math">\(\mathbb{Z}_{3329}\)</span> هو حقل.</p>
+
+                    <h3>الحلقة <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>هي حلقة (ليست حقلاً، لأن ليست كل كثيرات الحدود لها معكوس)، لكن لها خصائص مفيدة للتشفير:</p>
+                    <ul>
+                        <li>كل كثيرة حدود لها بالضبط 256 معاملاً؛</li>
+                        <li>الضرب فعال عبر NTT (انظر الملف 07)؛</li>
+                        <li>كثيرة الحدود <span class="math">\(X^{256}+1\)</span> هي <em>دائرية</em>، مما يضمن خصائص أمنية جيدة.</li>
+                    </ul>
+                    <details>
+                        <summary>ماذا يعني أن <span class="math">\(X^{256}+1\)</span> دائرية؟</summary>
+                        <p>في الجبر، كثيرة الحدود الدائرية هي كثيرة حدود خاصة جذورها هي <strong>الجذور البدائية للوحدة</strong> (أي الأعداد المركبة التي عند رفعها لقوة معينة تعطي <span class="math">\(1\)</span>).</p>
+                        <p>في الحالة الخاصة لـ <span class="math">\(X^{256}+1\)</span>، تضمن هذه الخاصية ثلاث مزايا هائلة في التشفير (كما في ML-KEM):</p>
+                        <ul>
+                            <li><strong>عدم الاختزال</strong>: لا يمكن تحليل كثيرة الحدود إلى كثيرات حدود أصغر ذات معاملات صحيحة. هذا يمنع المهاجم من "تقسيم" المشكلة الرياضية إلى أجزاء أسهل حلاً.</li>
+                            <li><strong>ضرب فائق السرعة (NTT)</strong>: يسمح باستخدام <em>تحويل نظرية الأعداد</em> (NTT). بفضل هذه الخوارزمية، ينخفض تعقيد ضرب كثيرات الحدود من <span class="math">\(O(n^2)\)</span> إلى <span class="math">\(O(n \log n)\)</span> فقط، مما يجعل التشفير ما بعد الكمي سريعاً بشكل لا يصدق.</li>
+                            <li><strong>أمن موحد</strong>: يوزع الخطأ (الضوضاء) بشكل متماثل تماماً على جميع المعاملات الـ 256 أثناء العمليات، مما يلغي نقاط الضعف الهيكلية التي قد يستغلها القراصنة.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- القسم 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 دوال التجزئة التشفيرية</h2>
+                    <p>دالة التجزئة <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> تحول مدخلات ذات طول عشوائي إلى مخرجات ذات طول ثابت.</p>
+                    <p><strong>الخصائص المطلوبة في التشفير:</strong></p>
+                    <ul>
+                        <li><em>مقاومة الصورة المسبقة:</em> من <span class="math">\(H(x)\)</span> لا يمكن الوصول إلى <span class="math">\(x\)</span></li>
+                        <li><em>مقاومة التصادم:</em> إيجاد <span class="math">\(x \neq y\)</span> مع <span class="math">\(H(x) = H(y)\)</span> مستحيل حسابياً</li>
+                        <li><em>تأثير الانهيار الجليدي:</em> تغيير بت واحد في المدخلات يغير ~50% من المخرجات</li>
+                    </ul>
+
+                    <h3>SHA-3 و SHAKE</h3>
+                    <p>يستخدم ML-KEM حصراً بدائيات عائلة <strong>SHA-3</strong> (التي وحدها NIST عام 2015):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الدالة</th>
+                                <th>المخرج</th>
+                                <th>الاستخدام في ML-KEM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 بت ثابتة</td>
+                                <td>تجزئة عامة</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 بت ثابتة</td>
+                                <td>تجزئة المفاتيح</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>طول متغير</td>
+                                <td>توليد <span class="math">\(A\)</span> (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>طول متغير</td>
+                                <td>اشتقاق المفاتيح</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE هي <strong>XOF (دالة مخرجات قابلة للتمديد)</strong>: تنتج أي عدد من البايتات من مدخل معين. في ML-KEM، <code>SHAKE128(seed)</code> تولد المصفوفة العامة <span class="math">\(A\)</span> بأكملها من بذرة طولها 32 بايت.</p>
+                </section>
+
+                <!-- القسم 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 الاحتمالات وتوزيع الضوضاء</h2>
+
+                    <h3>التوزيع الثنائي المتمركز <span class="math">\(B_\eta\)</span></h3>
+                    <p>في ML-KEM، الضوضاء ليست غاوسية بل <strong>ثنائية متمركزة</strong>. تعمل عملية المعاينة كالتالي:</p>
+                    <ol>
+                        <li>نعاين <span class="math">\(2\eta\)</span> بتة موزعة بشكل منتظم: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>نعيد <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                    </ol>
+                    <p>النتيجة هي عدد صحيح في <span class="math">\([-\eta, +\eta]\)</span> مع توزيع يقارب الغاوسي حول 0.</p>
+                    <p><strong>لماذا ليس غاوسياً حقيقياً؟</strong> التوزيع الثنائي أسهل في المعاينة بشكل <em>زمني ثابت</em> (مقاوم للهجمات الجانبية)، والأمن مشابه.</p>
+                    <p>لـ ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. ستكون قيم الضوضاء في <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+
+                    <h3>الإهمالية</h3>
+                    <p>الدالة <span class="math">\(f(\lambda)\)</span> تكون <strong>مهملة</strong> إذا كان لكل كثيرة حدود <span class="math">\(p(\cdot)\)</span> يوجد <span class="math">\(\lambda_0\)</span> بحيث لكل <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>عملياً: تتناقص أسرع من أي مقلوب حدودي. احتمالات الخطأ في ML-KEM مهملة في معامل الأمن <span class="math">\(\lambda\)</span>.</p>
+                </section>
+
+                <!-- القسم 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 التعقيد الحسابي</h2>
+
+                    <h3>الترميزات</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: رتبة مقدار مقاربة (حد أعلى)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: حد أدنى</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: حد ضيق</li>
+                    </ul>
+
+                    <h3>الصناف المهمة</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الصنف</th>
+                                <th>المعنى</th>
+                                <th>أمثلة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>قابل للحل في زمن حدودي</td>
+                                <td>الضرب، الترتيب</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>قابل للتحقق في زمن حدودي</td>
+                                <td>SAT، TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-صعب</strong></td>
+                                <td>على الأقل بصعوبة NP</td>
+                                <td>تحليل العوامل (يفترض)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>المسائل التشفيرية وصعوبتها</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المسألة</th>
+                                <th>الصعوبة الكلاسيكية</th>
+                                <th>الصعوبة الكمومية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>تحليل العوامل</td>
+                                <td>شبه أسي</td>
+                                <td><strong>حدودي</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>اللوغاريتم المتقطع</td>
+                                <td>شبه أسي</td>
+                                <td><strong>حدودي</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (الشبكات)</td>
+                                <td>أسي</td>
+                                <td>أسي (لا يوجد تسريع معروف)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>أسي</td>
+                                <td>أسي (لا يوجد تسريع معروف)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>هذا الجدول يبرر وجود التشفير ما بعد الكمي بأكمله.</p>
+                    </blockquote>
+                </section>
+
+                <!-- المصادر -->
+                <div class="sources">
+                    <h2>المصادر والاستزادة</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (الفصول 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (متاح مجاناً على الإنترنت)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">فيديو: الحلقات الجبرية</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – الأقسام 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- التنقل بين الفصول -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← الفصل السابق</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">الفصل التالي →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'it';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

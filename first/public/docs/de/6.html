@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -387,29 +387,29 @@
        <main class="chapter-content">
     <article>
         <h1>06 – Key Encapsulation Mechanism (KEM)</h1>
-        <p class="subtitle">The bridge between MLWE mathematics and the FIPS 203 standard</p>
+        <p class="subtitle">Die Brücke zwischen der Mathematik von MLWE und dem Standard FIPS 203</p>
 
-        <!-- Index -->
+        <!-- Inhaltsverzeichnis -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>Inhaltsverzeichnis</h2>
             <ul>
-                <li><a href="#id-61">6.1 Formal definition of KEM</a></li>
-                <li><a href="#id-62">6.2 Security properties</a></li>
-                <li><a href="#id-63">6.3 KEM vs PKE: why KEMs</a></li>
-                <li><a href="#id-64">6.4 Intuitive example: KEM from Diffie-Hellman</a></li>
-                <li><a href="#id-65">6.5 The Fujisaki-Okamoto (FO) transformation</a></li>
-                <li><a href="#id-66">6.6 From K-PKE (CPA) to ML-KEM (CCA2)</a></li>
-                <li><a href="#id-67">6.7 KEM in a real protocol: TLS 1.3</a></li>
-                <li><a href="#id-68">6.8 Generic structure of the KEM flow</a></li>
+                <li><a href="#id-61">6.1 Formale Definition eines KEM</a></li>
+                <li><a href="#id-62">6.2 Sicherheitseigenschaften</a></li>
+                <li><a href="#id-63">6.3 KEM vs. PKE: warum KEMs</a></li>
+                <li><a href="#id-64">6.4 Intuitives Beispiel: KEM aus Diffie-Hellman</a></li>
+                <li><a href="#id-65">6.5 Die Fujisaki-Okamoto-Transformation (FO)</a></li>
+                <li><a href="#id-66">6.6 Von K-PKE (CPA) zu ML-KEM (CCA2)</a></li>
+                <li><a href="#id-67">6.7 KEM in einem realen Protokoll: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 Generische Struktur des KEM-Flusses</a></li>
             </ul>
         </div>
 
-        <!-- Section 6.1 -->
+        <!-- Abschnitt 6.1 -->
         <section id="id-61">
-            <h2>6.1 Formal definition of KEM</h2>
+            <h2>6.1 Formale Definition eines KEM</h2>
 
-            <h3>Triple of algorithms</h3>
-            <p>A Key Encapsulation Mechanism (KEM) is a triple of probabilistic polynomial-time algorithms:</p>
+            <h3>Triple von Algorithmen</h3>
+            <p>Ein Key Encapsulation Mechanism (KEM) ist ein Triple von probabilistischen polynomialen Algorithmen:</p>
             <div class="math-block">
                 \[
                 \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
@@ -418,51 +418,51 @@
 
             <ul>
                 <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
-                    Probabilistic algorithm (uses internal randomness). Takes no input.
+                    Probabilistischer Algorithmus (verwendet interne Zufälligkeit). Hat keine Eingabe.
                     <ul>
-                        <li><code>ek</code>: encapsulation key (public key)</li>
-                        <li><code>dk</code>: decapsulation key (private key)</li>
+                        <li><code>ek</code>: Encapsulation Key (öffentlicher Schlüssel)</li>
+                        <li><code>dk</code>: Decapsulation Key (privater Schlüssel)</li>
                     </ul>
                 </li>
                 <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
-                    Given <code>ek</code>, produces:
+                    Gegeben <code>ek</code>, erzeugt:
                     <ul>
-                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: symmetric secret key (typically 256 bits)</li>
-                        <li><code>c</code>: ciphertext (the "capsule")</li>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: geheimer symmetrischer Schlüssel (typischerweise 256 Bit)</li>
+                        <li><code>c</code>: Chiffrat (die "Kapsel")</li>
                     </ul>
                 </li>
                 <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
-                    Given <code>dk</code> and <code>c</code>, recovers <span class="math">\(K\)</span>.</li>
+                    Gegeben <code>dk</code> und <code>c</code>, stellt <span class="math">\(K\)</span> wieder her.</li>
             </ul>
 
             <div class="note">
-                <p><strong>FIPS 203 terminological note:</strong> the standard uses <code>ek</code> for encapsulation key (not <code>pk</code>) and <code>dk</code> for decapsulation key (not <code>sk</code>). The distinction is intentional: it emphasizes that the public key is used to encapsulate, not to encrypt arbitrary messages.</p>
+                <p><strong>Terminologie-Hinweis FIPS 203:</strong> Der Standard verwendet <code>ek</code> für den Encapsulation Key (nicht <code>pk</code>) und <code>dk</code> für den Decapsulation Key (nicht <code>sk</code>). Die Unterscheidung ist beabsichtigt: Sie unterstreicht, dass der öffentliche Schlüssel zum Einkapseln dient, nicht zum Verschlüsseln beliebiger Nachrichten.</p>
             </div>
 
-            <h3>Correctness</h3>
-            <p>A KEM is correct if for every valid key pair:</p>
+            <h3>Korrektheit</h3>
+            <p>Ein KEM ist korrekt, wenn für jedes gültige Schlüsselpaar gilt:</p>
             <div class="math-block">
                 \[
                 \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
                 \]
             </div>
-            <p>where <span class="math">\(\delta\)</span> is a negligible error probability (typically <span class="math">\(< 2^{-128}\)</span>).<br>
-            For ML-KEM-768: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+            <p>wobei <span class="math">\(\delta\)</span> eine vernachlässigbare Fehlerwahrscheinlichkeit ist (typischerweise <span class="math">\(< 2^{-128}\)</span>).<br>
+            Für ML-KEM-768: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
         </section>
 
-        <!-- Section 6.2 -->
+        <!-- Abschnitt 6.2 -->
         <section id="id-62">
-            <h2>6.2 Security properties</h2>
+            <h2>6.2 Sicherheitseigenschaften</h2>
 
             <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
             
             <div class="security-game">
-                <h4>IND-CPA security game</h4>
+                <h4>IND-CPA-Sicherheitsspiel</h4>
                 <table>
                     <thead>
                         <tr>
-                            <th>Challenger</th>
-                            <th>Adversary <span class="math">\(\mathcal{A}\)</span></th>
+                            <th>Herausforderer</th>
+                            <th>Angreifer <span class="math">\(\mathcal{A}\)</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -476,11 +476,11 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td>Chooses challenge (implicit in KEM)</td>
+                            <td>Wählt Challenge (implizit im KEM)</td>
                         </tr>
                         <tr>
                             <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
-                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Zufall}\)</span><br>
                                 <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
                             <td></td>
                         </tr>
@@ -490,100 +490,100 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td>Returns <span class="math">\(b'\)</span></td>
+                            <td>Gibt <span class="math">\(b'\)</span> zurück</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <p><strong>Advantage:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
-            <p>The KEM is IND-CPA if the advantage is negligible for every polynomial-time adversary. Intuitively: the adversary cannot distinguish the real key <span class="math">\(K\)</span> from a random one, even seeing the ciphertext <code>c</code>.</p>
+            <p><strong>Vorteil:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>Das KEM ist IND-CPA, wenn der Vorteil für jeden polynomialen Angreifer vernachlässigbar ist. Intuitiv: Der Angreifer kann den echten Schlüssel <span class="math">\(K\)</span> nicht von einem zufälligen unterscheiden, selbst wenn er das Chiffrat <code>c</code> sieht.</p>
 
             <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
-            <p>Like CPA, but the adversary also has access to a decapsulation oracle:</p>
+            <p>Wie CPA, aber der Angreifer hat zusätzlich Zugang zu einem Decapsulations-Orakel:</p>
 
             <div class="security-game">
                 <table>
                     <thead>
                         <tr>
                             <th>Phase</th>
-                            <th>Action</th>
+                            <th>Aktion</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Initialization</td>
-                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, sends <span class="math">\(ek\)</span></td>
+                            <td>Initialisierung</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, sende <span class="math">\(ek\)</span></td>
                         </tr>
                         <tr>
-                            <td>Phase 1 (Query)</td>
+                            <td>Phase 1 (Abfragen)</td>
                             <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
                         </tr>
                         <tr>
                             <td>Challenge</td>
-                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. Sends <span class="math">\((c^*, K_b)\)</span>.</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Zufall}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. Sende <span class="math">\((c^*, K_b)\)</span>.</td>
                         </tr>
                         <tr>
-                            <td>Phase 2 (Query)</td>
-                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> with <span class="math">\(c_j \neq c^*\)</span></td>
+                            <td>Phase 2 (Abfragen)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> mit <span class="math">\(c_j \neq c^*\)</span></td>
                         </tr>
                         <tr>
-                            <td>Guess</td>
-                            <td>Returns <span class="math">\(b'\)</span></td>
+                            <td>Schätzung</td>
+                            <td>Gibt <span class="math">\(b'\)</span> zurück</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <p>IND-CCA2 is the security standard required for KEMs in real-world use.</p>
+            <p>IND-CCA2 ist der Sicherheitsstandard, der für KEMs im realen Einsatz erforderlich ist.</p>
             
             <div class="note">
-                <p><strong>Why is CCA2 necessary?</strong> In a real protocol (TLS, SSH), an active adversary can send manipulated ciphertexts and observe the server's responses. Even in MLWE, an adversary who knows the decapsulation of ciphertexts close to the challenge ciphertext could extract information about the secret. ML-KEM is IND-CCA2.</p>
+                <p><strong>Warum ist CCA2 notwendig?</strong> In einem realen Protokoll (TLS, SSH) kann ein aktiver Angreifer manipulierte Chiffrate senden und die Antworten des Servers beobachten. Selbst bei MLWE könnte ein Angreifer, der die Decapsulation von Chiffraten kennt, die dem Challenge-Chiffrat nahe kommen, Informationen über das Geheimnis extrahieren. ML-KEM ist IND-CCA2.</p>
             </div>
 
-            <h3>Additional desirable properties</h3>
+            <h3>Zusätzliche wünschenswerte Eigenschaften</h3>
             <ul>
-                <li><strong>Robustness:</strong> hard to construct ciphertexts that decapsulate to the same key with two different private keys.</li>
-                <li><strong>Forward secrecy:</strong> if the private key <code>dk</code> is compromised in the future, past sessions remain secure (requires ephemeral keys).</li>
+                <li><strong>Robustheit (Robustness):</strong> Es ist schwierig, Chiffrate zu konstruieren, die mit zwei verschiedenen privaten Schlüsseln zum gleichen Schlüssel decapsulieren.</li>
+                <li><strong>Forward Secrecy:</strong> Wenn der private Schlüssel <code>dk</code> in Zukunft kompromittiert wird, bleiben vergangene Sitzungen sicher (erfordert ephemere Schlüssel).</li>
             </ul>
         </section>
 
-        <!-- Section 6.3 -->
+        <!-- Abschnitt 6.3 -->
         <section id="id-63">
-            <h2>6.3 KEM vs PKE: why KEMs</h2>
+            <h2>6.3 KEM vs. PKE: warum KEMs</h2>
 
             <h3>PKE (Public Key Encryption)</h3>
-            <p>A PKE encrypts arbitrary messages: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. The problem is that if the message <span class="math">\(m\)</span> has predictable structure (short password, card number), an adversary can exploit low-entropy attacks or padding oracle attacks (Bleichenbacher).</p>
+            <p>Ein PKE verschlüsselt beliebige Nachrichten: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. Das Problem ist, dass wenn die Nachricht <span class="math">\(m\)</span> eine vorhersagbare Struktur hat (kurzes Passwort, Kreditkartennummer), ein Angreifer Angriffe mit geringer Entropie oder Padding-Orakel (Bleichenbacher) ausnutzen kann.</p>
 
-            <h3>KEM: separation of roles</h3>
-            <p>The KEM does not encrypt user messages. It generates a high-entropy symmetric key and encapsulates it:</p>
+            <h3>KEM: Trennung der Rollen</h3>
+            <p>Das KEM verschlüsselt keine Benutzernachrichten. Es erzeugt einen symmetrischen Schlüssel hoher Entropie und kapselt ihn ein:</p>
             <div class="math-block">
                 \[
-                \text{System} = \underbrace{\text{KEM}}_{\text{exchanges } K} + \underbrace{\text{AES-GCM}}_{\text{encrypts data with } K}
+                \text{System} = \underbrace{\text{KEM}}_{\text{tauscht } K \text{ aus}} + \underbrace{\text{AES-GCM}}_{\text{verschlüsselt Daten mit } K}
                 \]
             </div>
-            <p><strong>Advantages:</strong></p>
+            <p><strong>Vorteile:</strong></p>
             <ul>
-                <li>The key <span class="math">\(K\)</span> is always pseudorandom → no low-entropy attacks.</li>
-                <li>No complex padding needed for user messages.</li>
-                <li><span class="math">\(K\)</span> is used with a symmetric cipher (DEM) to encrypt the actual data.</li>
+                <li>Der Schlüssel <span class="math">\(K\)</span> ist immer pseudozufällig → keine Angriffe mit geringer Entropie.</li>
+                <li>Es wird kein komplexes Padding für Benutzernachrichten benötigt.</li>
+                <li><span class="math">\(K\)</span> wird mit einer symmetrischen Chiffre (DEM) zur Verschlüsselung der eigentlichen Daten verwendet.</li>
             </ul>
         </section>
 
-        <!-- Section 6.4 -->
+        <!-- Abschnitt 6.4 -->
         <section id="id-64">
-            <h2>6.4 Intuitive example: KEM from Diffie-Hellman</h2>
+            <h2>6.4 Intuitives Beispiel: KEM aus Diffie-Hellman</h2>
             
-            <p>Before ML-KEM, the most widely used KEM was built on Diffie-Hellman. This example helps understand the structure.</p>
+            <p>Vor ML-KEM war das am häufigsten verwendete KEM auf Diffie-Hellman aufgebaut. Dieses Beispiel hilft, die Struktur zu verstehen.</p>
 
-            <p><strong>Public parameters:</strong> prime <span class="math">\(p\)</span>, generator <span class="math">\(g\)</span> of <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+            <p><strong>Öffentliche Parameter:</strong> Primzahl <span class="math">\(p\)</span>, Generator <span class="math">\(g\)</span> von <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
 
             <div class="protocol-flow">
                 <div class="party alice">
                     <strong>Alice</strong>
                     <ol>
-                        <li>Chooses secret <span class="math">\(a\)</span></li>
-                        <li>Computes <span class="math">\(A = g^a \bmod p\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(a\)</span></li>
+                        <li>Berechnet <span class="math">\(A = g^a \bmod p\)</span></li>
                     </ol>
                 </div>
                 <div class="channel">
@@ -593,8 +593,8 @@
                 <div class="party bob">
                     <strong>Bob</strong>
                     <ol>
-                        <li>Chooses secret <span class="math">\(b\)</span></li>
-                        <li>Computes <span class="math">\(B = g^b \bmod p\)</span></li>
+                        <li>Wählt geheimes <span class="math">\(b\)</span></li>
+                        <li>Berechnet <span class="math">\(B = g^b \bmod p\)</span></li>
                     </ol>
                 </div>
             </div>
@@ -602,86 +602,86 @@
             <div class="math-block">
                 \[
                 \begin{aligned}
-                \text{Alice computes: } & K = B^a \bmod p = g^{ab} \bmod p \\
-                \text{Bob computes: } & K = A^b \bmod p = g^{ab} \bmod p
+                \text{Alice berechnet: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{Bob berechnet: } & K = A^b \bmod p = g^{ab} \bmod p
                 \end{aligned}
                 \]
             </div>
 
-            <p><strong>Numerical example:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
+            <p><strong>Numerisches Beispiel:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
             <ul>
                 <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
-                <li>Bob chooses <span class="math">\(b = 7\)</span>: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
-                <li>Alice decapsulates: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+                <li>Bob wählt <span class="math">\(b = 7\)</span>: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>Alice decapsuliert: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
             </ul>
         </section>
 
-        <!-- Section 6.5 -->
+        <!-- Abschnitt 6.5 -->
         <section id="id-65">
-            <h2>6.5 The Fujisaki-Okamoto (FO) transformation</h2>
+            <h2>6.5 Die Fujisaki-Okamoto-Transformation (FO)</h2>
 
-            <h3>The problem: from CPA to CCA2</h3>
-            <p>Starting from a CPA-secure PKE, how do you build an IND-CCA2 KEM? The answer is the FO transformation.</p>
+            <h3>Das Problem: von CPA zu CCA2</h3>
+            <p>Ausgehend von einem nur CPA-sicheren PKE, wie konstruiert man ein IND-CCA2-sicheres KEM? Die Antwort ist die FO-Transformation.</p>
 
-            <h3>Core idea</h3>
+            <h3>Zentrale Idee</h3>
             <ul>
-                <li><strong>Deterministic encryption:</strong> the randomness used in encryption is deterministically derived from the message via a hash. If the ciphertext is modified, re-encryption produces something different.</li>
-                <li><strong>Verification in decryption:</strong> instead of decrypting directly, re-encrypt the decrypted message and compare with the received ciphertext. If they don't match → implicit rejection.</li>
+                <li><strong>Deterministische Verschlüsselung:</strong> Die bei der Verschlüsselung verwendete Zufälligkeit wird deterministisch aus der Nachricht durch eine Hash-Funktion abgeleitet. Wenn das Chiffrat modifiziert wird, erzeugt die erneute Verschlüsselung etwas anderes.</li>
+                <li><strong>Verifikation bei der Entschlüsselung:</strong> Anstatt direkt zu entschlüsseln, wird die entschlüsselte Nachricht erneut verschlüsselt und mit dem empfangenen Chiffrat verglichen. Bei Nichtübereinstimmung → implizite Ablehnung.</li>
             </ul>
 
-            <h3>Simplified FO scheme</h3>
+            <h3>Vereinfachtes FO-Schema</h3>
             <div class="math-block">
                 \[
                 \begin{aligned}
                 \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
                 \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
-                & \quad \text{return } \begin{cases} K' & \text{if } c' = c \\ K_{\text{reject}} & \text{otherwise} \end{cases}
+                & \quad \text{return } \begin{cases} K' & \text{falls } c' = c \\ K_{\text{reject}} & \text{sonst} \end{cases}
                 \end{aligned}
                 \]
             </div>
-            <p>Where <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> with <span class="math">\(z\)</span> fixed secret. This "implicit reject" prevents the adversary from using errors as an oracle.</p>
+            <p>Wobei <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> mit festem geheimen <span class="math">\(z\)</span>. Diese "implizite Ablehnung" verhindert, dass der Angreifer Fehler als Orakel nutzen kann.</p>
         </section>
 
-        <!-- Section 6.6 -->
+        <!-- Abschnitt 6.6 -->
         <section id="id-66">
-            <h2>6.6 From K-PKE (CPA) to ML-KEM (CCA2)</h2>
+            <h2>6.6 Von K-PKE (CPA) zu ML-KEM (CCA2)</h2>
 
-            <p>In ML-KEM, the two-level structure is:</p>
+            <p>In ML-KEM ist die zweistufige Struktur:</p>
             <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
 ML-KEM (IND-CCA2)
-└── K-PKE (IND-CPA) + FO transformation
-    └── MLWE problem</pre>
+└── K-PKE (IND-CPA) + FO-Transformation
+    └── MLWE-Problem</pre>
 
             <h3>ML-KEM.Encaps(ek)</h3>
             <div class="code-block">
-                <pre><code>m ← Random(32)                  // 256-bit random message
-(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = first 32 bytes, r = last 32 bytes
-c = K-PKE.Encrypt(ek, m, r)     // deterministic encryption with randomness r
-K = KDF(K̄ ‖ H(c))              // final key
+                <pre><code>m ← Zufall(32)                  // zufällige Nachricht 256 Bit
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = erste 32 Byte, r = letzte 32 Byte
+c = K-PKE.Encrypt(ek, m, r)     // deterministische Verschlüsselung mit Zufälligkeit r
+K = KDF(K̄ ‖ H(c))              // finaler Schlüssel
 return (K, c)</code></pre>
             </div>
 
             <h3>ML-KEM.Decaps(dk, c)</h3>
             <div class="code-block">
-                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = fallback secret
-m' = K-PKE.Decrypt(dk_PKE, c)   // decryption attempt
-(K̄', r') = G(m' ‖ h)           // recompute
-c' = K-PKE.Encrypt(ek, m', r')  // re-encryption for verification
-if c' == c:
-    K = KDF(K̄' ‖ H(c))         // decryption successful
-else:
-    K = KDF(z ‖ H(c))           // fallback: pseudorandom key
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = Fallback-Geheimnis
+m' = K-PKE.Decrypt(dk_PKE, c)   // Entschlüsselungsversuch
+(K̄', r') = G(m' ‖ h)           // Neuberechnung
+c' = K-PKE.Encrypt(ek, m', r')  // Verifikations-Wiederverschlüsselung
+falls c' == c:
+    K = KDF(K̄' ‖ H(c))         // Entschlüsselung erfolgreich
+sonst:
+    K = KDF(z ‖ H(c))           // Fallback: pseudozufälliger Schlüssel
 return K</code></pre>
             </div>
 
             <div class="note">
-                <p><strong>Important details:</strong> The private key <code>dk</code> also contains <code>ek</code> to allow re-encryption. The comparison <code>c' == c</code> must be constant-time.</p>
+                <p><strong>Wichtige Details:</strong> Der private Schlüssel <code>dk</code> enthält auch <code>ek</code>, um die Wiederverschlüsselung durchführen zu können. Der Vergleich <code>c' == c</code> muss zeitkonstant sein.</p>
             </div>
         </section>
 
-        <!-- Section 6.7 -->
+        <!-- Abschnitt 6.7 -->
         <section id="id-67">
-            <h2>6.7 KEM in a real protocol: TLS 1.3</h2>
+            <h2>6.7 KEM in einem realen Protokoll: TLS 1.3</h2>
 
             <div class="protocol-flow tls-handshake">
                 <div class="party client">
@@ -693,74 +693,74 @@ return K</code></pre>
                 </div>
 
                 <div class="step">
-                    <span class="msg-right">ClientHello (supports ML-KEM-768)</span>
+                    <span class="msg-right">ClientHello (unterstützt ML-KEM-768)</span>
                 </div>
                 <div class="step">
-                    <span class="msg-left">ServerHello + Certificate + KeyShare (ek)</span>
+                    <span class="msg-left">ServerHello + Zertifikat + KeyShare (ek)</span>
                 </div>
                 <div class="step">
-                    <span class="msg-right">KeyShare (c) + Finished (MAC with K)</span>
+                    <span class="msg-right">KeyShare (c) + Finished (MAC mit K)</span>
                 </div>
                 <div class="step">
-                    <span class="msg-left">Finished (MAC with K)</span>
+                    <span class="msg-left">Finished (MAC mit K)</span>
                 </div>
             </div>
 
-            <h3>X25519 + ML-KEM hybrid</h3>
-            <p>In practice, TLS 1.3 uses a hybrid approach:</p>
+            <h3>Hybrid X25519 + ML-KEM</h3>
+            <p>In der Praxis verwendet TLS 1.3 einen hybriden Ansatz:</p>
             <div class="math-block">
                 \[
                 K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
                 \]
             </div>
-            <p>This ensures security if at least one of the two schemes holds. The <code>X25519MLKEM768</code> group is already deployed in Chrome 131+.</p>
+            <p>Dies garantiert Sicherheit, wenn mindestens eines der beiden Schemata standhält. Die Gruppe <code>X25519MLKEM768</code> wird bereits seit Chrome 131+ eingesetzt.</p>
         </section>
 
-        <!-- Section 6.8 -->
+        <!-- Abschnitt 6.8 -->
         <section id="id-68">
-            <h2>6.8 Generic structure of the KEM flow</h2>
+            <h2>6.8 Generische Struktur des KEM-Flusses</h2>
 
             <div class="algorithm-steps">
-                <h3>Complete flow Alice (Recipient) / Bob (Sender)</h3>
+                <h3>Vollständiger Fluss Alice (Empfänger) / Bob (Sender)</h3>
                 <ol>
-                    <li><strong>Alice:</strong> <code>KeyGen()</code> generates <span class="math">\((ek, dk)\)</span>. Publishes <span class="math">\(ek\)</span>.</li>
-                    <li><strong>Bob:</strong> Receives <span class="math">\(ek\)</span>. Runs <code>Encaps(ek)</code>:
+                    <li><strong>Alice:</strong> <code>KeyGen()</code> erzeugt <span class="math">\((ek, dk)\)</span>. Veröffentlicht <span class="math">\(ek\)</span>.</li>
+                    <li><strong>Bob:</strong> Empfängt <span class="math">\(ek\)</span>. Führt <code>Encaps(ek)</code> aus:
                         <ul>
-                            <li>Generates random <span class="math">\(m\)</span></li>
+                            <li>Erzeugt zufälliges <span class="math">\(m\)</span></li>
                             <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
                             <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
                             <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
                         </ul>
                     </li>
-                    <li><strong>Bob:</strong> Encrypts data with AES-256-GCM using <span class="math">\(K\)</span> and a random nonce.</li>
-                    <li><strong>Bob:</strong> Sends <span class="math">\((c, \text{nonce}, \text{ciphertext}, \text{tag})\)</span> to Alice.</li>
-                    <li><strong>Alice:</strong> Runs <code>Decaps(dk, c)</code> to recover <span class="math">\(K\)</span>.</li>
-                    <li><strong>Alice:</strong> Decrypts data with AES-256-GCM. If the tag fails, discards the message.</li>
+                    <li><strong>Bob:</strong> Verschlüsselt die Daten mit AES-256-GCM unter Verwendung von <span class="math">\(K\)</span> und einer zufälligen Nonce.</li>
+                    <li><strong>Bob:</strong> Sendet <span class="math">\((c, \text{Nonce}, \text{Chiffrat}, \text{Tag})\)</span> an Alice.</li>
+                    <li><strong>Alice:</strong> Führt <code>Decaps(dk, c)</code> aus, um <span class="math">\(K\)</span> wiederherzustellen.</li>
+                    <li><strong>Alice:</strong> Entschlüsselt die Daten mit AES-256-GCM. Wenn der Tag fehlschlägt, verwirft sie die Nachricht.</li>
                 </ol>
             </div>
 
             <div class="note">
-                <p><strong>Double protection:</strong> If <code>c</code> is tampered with, Decaps returns a pseudorandom key (<span class="math">\(K_{\text{reject}}\)</span>). Even if the adversary guesses this key, the AEAD tag in AES-GCM would fail, ensuring integrity.</p>
+                <p><strong>Doppelter Schutz:</strong> Wenn <code>c</code> manipuliert wird, gibt Decaps einen pseudozufälligen Schlüssel (<span class="math">\(K_{\text{reject}}\)</span>) zurück. Selbst wenn der Angreifer diesen Schlüssel erraten würde, würde das AEAD-Tag von AES-GCM fehlschlagen, was die Integrität gewährleistet.</p>
             </div>
         </section>
 
-        <!-- Sources -->
+        <!-- Quellen -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>Quellen</h2>
             <ul>
                 <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
                 <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
                 <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
-                <li>NIST FIPS 203 (2024), Sections 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>NIST FIPS 203 (2024), Abschnitte 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
                 <li>IETF draft-ietf-tls-hybrid-design – Hybrid key exchange in TLS 1.3</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Kapitelnavigation -->
         <div class="chapter-nav">
-            <a href="5.html" class="nav-btn">← Previous chapter</a>
+            <a href="5.html" class="nav-btn">← Vorheriges Kapitel</a>
             <span class="nav-label">06 / 10</span>
-            <a href="7.html" class="nav-btn">Next chapter →</a>
+            <a href="7.html" class="nav-btn">Nächstes Kapitel →</a>
         </div>
     </article>
 </main>

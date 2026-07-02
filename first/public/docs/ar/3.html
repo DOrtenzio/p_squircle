@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 9 – MONEOO.</title>
+    <title> فصل 3 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,294 +368,257 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
-                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li class="active"><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
-        <h1>09 – Security and Parameters</h1>
-        <p class="subtitle">Why ML-KEM is secure and how the numbers were chosen</p>
+        <h1>03 – خوارزمية شور</h1>
+        <p class="subtitle">لماذا RSA و ECC عرضة للحواسيب الكمومية</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-91">9.1 Security models</a></li>
-                <li><a href="#id-92">9.2 Measuring the difficulty of MLWE</a></li>
-                <li><a href="#id-93">9.3 Main attacks on lattices</a></li>
-                <li><a href="#id-94">9.4 NIST security levels</a></li>
-                <li><a href="#id-95">9.5 Comparison with other PQC schemes</a></li>
-                <li><a href="#id-96">9.6 Side-channel and secure implementations</a></li>
+                <li><a href="#id-31">3.1 الحواسيب الكمومية: الأساسيات الضرورية</a></li>
+                <li><a href="#id-32">3.2 خوارزمية شور</a></li>
+                <li><a href="#id-33">3.3 التأثير على RSA، DH، ECC</a></li>
+                <li><a href="#id-34">3.4 غروفر: التهديد للتشفير المتماثل</a></li>
+                <li><a href="#id-35">3.5 الوضع الحالي للحواسيب الكمومية (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 احصد الآن، فك التشفير لاحقاً</a></li>
             </ul>
         </div>
 
-        <!-- Section 9.1 -->
-        <section id="id-91">
-            <h2>9.1 Security models</h2>
+        <!-- القسم 3.1 -->
+        <section id="id-31">
+            <h2>3.1 الحواسيب الكمومية: الأساسيات الضرورية</h2>
 
-            <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
-            <p>In this model, an adversary:</p>
-            <ol>
-                <li>Receives the public key <span class="math">\(ek\)</span></li>
-                <li>Chooses two messages <span class="math">\(m_0, m_1\)</span></li>
-                <li>Receives the ciphertext of one of them (chosen at random)</li>
-                <li>Must guess which message was encrypted</li>
-            </ol>
-            <p>The scheme is secure if: <span class="math">\(\Pr[\text{guesses}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
-            <p>K-PKE (the base encryption component) is IND-CPA under the MLWE assumption.</p>
+            <h3>الكيوبت مقابل البت الكلاسيكي</h3>
 
-            <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
-            <p>Like CPA, but the adversary can also query a decryption oracle on any ciphertext (except the challenge one). This model captures real-world attacks (like Bleichenbacher), where an active adversary sends ad-hoc messages and observes responses.</p>
-            <p><strong>ML-KEM is IND-CCA2.</strong> This is the level required for a secure KEM in real protocols like TLS or SSH.</p>
+            <p>البت الكلاسيكي هو إما 0 أو 1. أما <strong>الكيوبت</strong> فيمكن أن يكون في <strong>تراكب</strong>: مزيج خطي من <span class="math">\(|0\rangle\)</span> و <span class="math">\(|1\rangle\)</span>.</p>
 
-            <h3>ROM vs. QROM</h3>
-            <p>Security proofs use idealized models for hash functions:</p>
-            <ul>
-                <li><strong>ROM (Random Oracle Model):</strong> hashes are perfect random oracles.</li>
-                <li><strong>QROM (Quantum Random Oracle Model):</strong> the quantum adversary can query the oracle in superposition.</li>
-            </ul>
-            <p>Modern proofs for the FO (Fujisaki-Okamoto) transformation used in ML-KEM guarantee security in the QROM, essential against quantum adversaries.</p>
-        </section>
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
 
-        <!-- Section 9.2 -->
-        <section id="id-92">
-            <h2>9.2 How to measure the difficulty of MLWE</h2>
-
-            <h3>Security as attack cost</h3>
-            <p>There is no absolute proof that MLWE is hard. Security is estimated by computing the cost of the best known attack algorithm. A security of <span class="math">\(\lambda\)</span> bits means that the attack requires about <span class="math">\(2^\lambda\)</span> operations.</p>
-
-            <h3>The parameters</h3>
-            <p>The difficulty depends on:</p>
-            <ul>
-                <li><span class="math">\(n = 256\)</span> (polynomial dimension, fixed)</li>
-                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (module dimension)</li>
-                <li><span class="math">\(q = 3329\)</span> (prime modulus)</li>
-                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (noise width)</li>
-            </ul>
-
-            <h3>Lattice Estimator</h3>
-            <p>The standard tool is the <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> by Albrecht et al. For ML-KEM-768:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Attack</th>
-                        <th>Estimated cost (bits)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Primal attack (BKZ)</td>
-                        <td>~178 bits</td>
-                    </tr>
-                    <tr>
-                        <td>Dual attack</td>
-                        <td>~175 bits</td>
-                    </tr>
-                    <tr>
-                        <td>Combinatorial</td>
-                        <td>&gt; 200 bits</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>The security margin is large compared to the 128-bit classical/quantum target.</p>
-        </section>
-
-        <!-- Section 9.3 -->
-        <section id="id-93">
-            <h2>9.3 Main attacks on lattices</h2>
-
-            <h3>BKZ (Block Korkine-Zolotarev)</h3>
-            <p>This is the best general algorithm for finding short vectors. It divides the lattice into blocks of size <span class="math">\(\beta\)</span> and solves SVP locally. Complexity: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. For ML-KEM-768, <span class="math">\(\beta \approx 430\)</span>.</p>
-
-            <h3>Primal attack (uSVP)</h3>
-            <p>Reduces MLWE to a short vector problem in an augmented lattice containing the public key and ciphertext. The secret vector <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> becomes a short vector that BKZ tries to find.</p>
-
-            <h3>Dual attack</h3>
-            <p>Exploits the dual lattice to distinguish MLWE samples from uniform ones using statistics. Builds many short vectors in the dual to perform the distinguisher.</p>
-
-            <h3>Choice of q = 3329</h3>
-            <p>Being prime and lacking special algebraic structure, it prevents specific algebraic attacks. There are no small factors or simple relations that could be exploited.</p>
-        </section>
-
-        <!-- Section 9.4 -->
-        <section id="id-94">
-            <h2>9.4 NIST security levels</h2>
-
-            <p>NIST defined 5 levels. ML-KEM covers levels 1, 3 and 5:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Scheme</th>
-                        <th>NIST Level</th>
-                        <th>Classical Security</th>
-                        <th>Quantum Security</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>ML-KEM-512</td>
-                        <td>1 (AES-128)</td>
-                        <td>~118 bits</td>
-                        <td>~100 bits</td>
-                    </tr>
-                    <tr>
-                        <td><strong>ML-KEM-768</strong></td>
-                        <td>3 (AES-192)</td>
-                        <td><strong>~178 bits</strong></td>
-                        <td><strong>~164 bits</strong></td>
-                    </tr>
-                    <tr>
-                        <td>ML-KEM-1024</td>
-                        <td>5 (AES-256)</td>
-                        <td>~230 bits</td>
-                        <td>~218 bits</td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>قبل القياس، يكون الكيوبت "كل من 0 و 1". بعد القياس، ينهار إلى 0 (باحتمال <span class="math">\(|\alpha|^2\)</span>) أو 1 (باحتمال <span class="math">\(|\beta|^2\)</span>).</p>
 
             <blockquote>
-                <p><strong>Recommendation:</strong> ML-KEM-768 offers the optimal security/performance balance for most use cases. ML-KEM-1024 is reserved for extremely high-criticality systems.</p>
+                <p><strong>تشبيه:</strong> تخيل أنك تقذف عملة معدنية، وأثناء وجودها في الهواء تمثل كلاً من الوجه والكتابة في آن واحد. فقط عندما تنظر إليها، تصبح واحدة منهما.</p>
+            </blockquote>
+
+            <h3>التشابك والتداخل</h3>
+
+            <ul>
+                <li><strong>التشابك:</strong> يمكن أن يكون كيوبتان مترابطين بحيث أن قياس أحدهما يحدد الآخر فوراً.</li>
+                <li><strong>التداخل الكمومي:</strong> مسارات الحساب "الخاطئة" تلغي بعضها البعض بشكل بنّاء (مثل موجات تلغي بعضها)، بينما تتضخم المسارات "الصحيحة".</li>
+            </ul>
+
+            <p>تستغل الخوارزميات الكمومية التداخل لتضخيم الإجابات الصحيحة وقمع الخاطئة.</p>
+
+            <h3>التوازي الكمومي</h3>
+
+            <p>مع <span class="math">\(n\)</span> كيوبت، يمكن تمثيل تراكب من <span class="math">\(2^n\)</span> حالة في وقت واحد. لكن القياس يعيد حالة واحدة فقط → الحيلة هي بناء خوارزميات حيث يسمح التداخل فقط للإجابة الصحيحة بالبقاء.</p>
+        </section>
+
+        <!-- القسم مخطط الخوارزمية -->
+        <section id="id-32">
+            <h2>3.2 خوارزمية شور</h2>
+            
+            <h3>مخطط الخوارزمية لتحليل \(n\)</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>المدخل:</strong> عدد مركب <span class="math">\(n\)</span></li>
+                    <li><strong>التهيئة:</strong> اختر <span class="math">\(a\)</span> عشوائياً بحيث <span class="math">\(1 < a < n\)</span> و <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>التحضير الكمومي:</strong> هيئ مسجلاً في تراكب منتظم من <span class="math">\(0\)</span> إلى <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>الأوراكل:</strong> احسب <span class="math">\(f(x) = a^x \bmod n\)</span> بالتوازي (تراكب)</li>
+                    <li><strong>QFT:</strong> طبق تحويل فورييه الكمومي على المسجل الأول</li>
+                    <li><strong>القياس:</strong> قس المسجل للحصول على قيمة مرتبطة بالدورة <span class="math">\(r\)</span></li>
+                    <li><strong>كلاسيكي:</strong> استخدم خوارزمية الكسور المستمرة لتقدير <span class="math">\(r\)</span></li>
+                    <li><strong>التحقق:</strong> إذا كان <span class="math">\(r\)</span> زوجياً و <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li>احسب <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> و <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>هذه عوامل غير بديهية لـ <span class="math">\(n\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>التكرار:</strong> في حالة الفشل، عد إلى الخطوة 2 مع <span class="math">\(a\)</span> جديد</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>ملاحظة:</strong> القلب الكمومي (الخطوات 3-5) يجد الدورة <span class="math">\(r\)</span> للدالة <span class="math">\(f(x)\)</span> في زمن حدودي، مستغلاً التداخل البنّاء/الهدّام لـ QFT.</p>
+            </div>
+        </section>
+
+        <!-- القسم 3.3 -->
+        <section id="id-33">
+            <h2>3.3 التأثير على RSA، DH، ECC</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>المخطط</th>
+                        <th>يعتمد أمنه على</th>
+                        <th>عرضة لشور؟</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>التحليل إلى عوامل</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">نعم</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (نمط <span class="math">\(p\)</span>)</td>
+                        <td>اللوغاريتم المتقطع في <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">نعم</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (لوغاريتم متقطع على EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">نعم</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>مسائل الشبكات</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">لا توجد خوارزمية فعالة معروفة</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>تباديل شبه عشوائية</td>
+                        <td>فقط غروفر (انظر أدناه)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>يحل شور أي مسألة منظمة كالبحث عن دورية في زمرة أبيلية. التحليل واللوغاريتم المتقطع (بما في ذلك على EC) لهما هذه البنية بالضبط. مسائل الشبكات ليست كذلك.</p>
+        </section>
+
+        <!-- القسم 3.4 -->
+        <section id="id-34">
+            <h2>3.4 غروفر: التهديد للتشفير المتماثل</h2>
+
+            <p>تقدم خوارزمية غروفر (1996) تسريعاً <strong>تربيعياً</strong> في البحث غير المنظم:</p>
+            <ul>
+                <li>إيجاد مفتاح بين <span class="math">\(2^k\)</span> احتمالياً بشكل كلاسيكي: <span class="math">\(O(2^k)\)</span> محاولة</li>
+                <li>مع غروفر: <span class="math">\(O(2^{k/2})\)</span> محاولة</li>
+            </ul>
+
+            <p><strong>النتائج العملية:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>المفتاح</th>
+                        <th>الأمن الكلاسيكي</th>
+                        <th>الأمن ما بعد الكمي (غروفر)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 بت</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 بت → غير كافٍ</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 بت</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 بت → لا يزال آمناً</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 بت</td>
+                        <td>128 بت → آمن</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 بت</td>
+                        <td>128 بت → آمن</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>لهذا يوصي NIST باستخدام AES-256 (وليس AES-128) في السياق ما بعد الكمي.</p>
+        </section>
+
+        <!-- القسم 3.5 -->
+        <section id="id-35">
+            <h2>3.5 الوضع الحالي للحواسيب الكمومية (2024–2025)</h2>
+
+            <p>الحواسيب الكمومية الحالية هي <strong>NISQ (كمومية متوسطة الحجم صاخبة)</strong>: لديها عشرات إلى مئات من الكيوبتات الفيزيائية ولكن مع معدل خطأ مرتفع.</p>
+
+            <p>لكسر RSA-2048 بشور، نحتاج إلى:</p>
+            <ul>
+                <li>~4000 كيوبت منطقية مثالية</li>
+                <li>أو ~4 ملايين كيوبت فيزيائية مع تصحيح الأخطاء الكمومية</li>
+            </ul>
+
+            <p>أفضل الأنظمة الحالية (Google Willow، IBM Heron، إلخ) لديها ~100-1000 كيوبت فيزيائية عالية الدقة، لكننا لا نزال بعيدين عن المقياس المطلوب.</p>
+
+            <blockquote>
+                <p><strong>تقدير NIST:</strong> قد توجد حواسيب كمومية ذات أهمية تشفيرية خلال 10-15 سنة، مع عدم يقين كبير في كلا الاتجاهين.</p>
             </blockquote>
         </section>
 
-        <!-- Section 9.5 -->
-        <section id="id-95">
-            <h2>9.5 Comparison with other PQC schemes</h2>
+        <!-- القسم 3.6 -->
+        <section id="id-36">
+            <h2>3.6 احصد الآن، فك التشفير لاحقاً</h2>
 
-            <h3>Standardized Post-Quantum KEMs (NIST 2024)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Scheme</th>
-                        <th>Math Basis</th>
-                        <th>Public Key</th>
-                        <th>Ciphertext</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>ML-KEM-768</strong></td>
-                        <td>MLWE (Lattices)</td>
-                        <td>1184 B</td>
-                        <td>1088 B</td>
-                    </tr>
-                    <tr>
-                        <td>BIKE</td>
-                        <td>Error-correcting codes</td>
-                        <td>~1541 B</td>
-                        <td>~1573 B</td>
-                    </tr>
-                    <tr>
-                        <td>HQC</td>
-                        <td>Error-correcting codes</td>
-                        <td>~2249 B</td>
-                        <td>~4522 B</td>
-                    </tr>
-                    <tr>
-                        <td>Classic McEliece</td>
-                        <td>Goppa codes</td>
-                        <td>~261 KB</td>
-                        <td>128 B</td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>حتى لو لم تكن الحواسيب الكمومية موجودة <em>بعد</em> بشكل ذي أهمية تشفيرية، هناك تهديد ملموس <strong>اليوم</strong>:</p>
 
-            <h3>Comparison with Classical Cryptography</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Scheme</th>
-                        <th>Public Key</th>
-                        <th>Quantum Security</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>RSA-3072</td>
-                        <td>384 B</td>
-                        <td>❌ Vulnerable</td>
-                    </tr>
-                    <tr>
-                        <td>ECDH X25519</td>
-                        <td>32 B</td>
-                        <td>❌ Vulnerable</td>
-                    </tr>
-                    <tr>
-                        <td><strong>ML-KEM-768</strong></td>
-                        <td>1184 B</td>
-                        <td>✅ 164+ bits</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>The main cost is the larger size (~37× compared to ECDH), but it remains acceptable for modern TLS handshakes.</p>
-        </section>
+            <blockquote>
+                <p>يمكن للخصم <strong>جمع</strong> الاتصالات المشفرة الآن (حتى لو لم يستطع فك تشفيرها)، و <strong>فك تشفيرها في المستقبل</strong> عندما يكون لديه حاسوب كمومي قوي بما فيه الكفاية.</p>
+            </blockquote>
 
-        <!-- Section 9.6 -->
-        <section id="id-96">
-            <h2>9.6 Side-channel and secure implementations</h2>
+            <p>هذا الهجوم معروف باسم <strong>"احصد الآن، فك التشفير لاحقاً" (HNDL)</strong> أو <em>خزّن-الآن-فك-لاحقاً</em>.</p>
 
-            <p>A correct implementation can be vulnerable if it leaks information through execution timing or power consumption.</p>
-
-            <h3>Constant-Time (CT)</h3>
-            <p>All operations must have constant time regardless of secret data. Critical example in Decaps:</p>
-
-            <pre><code class="language-c">// NOT secure (variable timing):
-if (memcmp(c, c_prime, len) == 0) { 
-    K = K_good; 
-} else { 
-    K = K_reject; 
-}
-
-// Secure (constant-time):
-uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF if equal, 0x00 if different
-K = ct_select(mask, K_good, K_reject);     // CT selection without branch</code></pre>
-
-            <h3>Critical areas for CT in ML-KEM</h3>
+            <h4>من هو المعرض للخطر:</h4>
             <ul>
-                <li><strong><span class="math">\(B_\eta\)</span> sampling:</strong> bit additions without conditional branches.</li>
-                <li><strong>NTT:</strong> butterfly operations must always be executed, even if the result doesn't change.</li>
-                <li><strong>Ciphertext verification:</strong> use of <code>ct_memcmp</code>.</li>
+                <li>الاتصالات الدبلوماسية والعسكرية ذات العمر السري الطويل</li>
+                <li>البيانات الطبية والمالية والقانونية ذات متطلبات سرية لعقود</li>
+                <li>الأسرار الصناعية والملكية الفكرية</li>
             </ul>
 
-            <h3>Reference implementations</h3>
-            <ul>
-                <li><code>pqclean</code>: portable CT implementations.</li>
-                <li><code>liboqs</code>: AVX2 optimizations with verified CT properties.</li>
-            </ul>
+            <h4>متى ننتقل؟</h4>
+
+            <p>إذا كانت بياناتك بحاجة إلى البقاء سرية لأكثر من السنوات المتبقية لظهور حواسيب كمومية قوية بما فيه الكفاية، فيجب عليك الانتقال <em>الآن</em>.</p>
+
+            <p>هذا هو السبب الرئيسي الذي جعل NIST يوحد ML-KEM (FIPS 203) في عام 2024، ولماذا توصي منظمات مثل NSA و ENISA و ANSSI بالانتقال الفوري للأنظمة عالية الأهمية.</p>
         </section>
 
-        <!-- Sources -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>المصادر</h2>
             <ul>
-                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
-                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
-                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
-                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National الأمان Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="8.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">09 / 10</span>
-            <a href="10.html" class="nav-btn">Next chapter →</a>
+            <a href="2.html" class="nav-btn">← الفصل السابق</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -665,7 +628,7 @@ K = ct_select(mask, K_good, K_reject);     // CT selection without branch</code>
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -717,7 +680,7 @@ K = ct_select(mask, K_good, K_reject);     // CT selection without branch</code>
                 e.stopPropagation();
                 const lang = option.dataset.lang;
                 if (lang && langMap[lang]) {
-                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
                 }
             });
         });

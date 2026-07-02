@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 3 – MONEOO.</title>
+    <title> فصل 1 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,257 +368,257 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
-                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
-        <main class="chapter-content">
+       <main class="chapter-content">
     <article>
-        <h1>03 – Shor's Algorithm</h1>
-        <p class="subtitle">Why RSA and ECC are vulnerable to quantum computers</p>
+        <h1>01 – التشفير المتماثل</h1>
+        <p class="subtitle">نقطة الوصول العملية النهائية لمسار التشفير ما بعد الكمي بأكمله</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-31">3.1 Quantum computers: the essential basics</a></li>
-                <li><a href="#id-32">3.2 Shor's algorithm</a></li>
-                <li><a href="#id-33">3.3 Impact on RSA, DH, ECC</a></li>
-                <li><a href="#id-34">3.4 Grover: the threat to symmetric cryptography</a></li>
-                <li><a href="#id-35">3.5 State of the art of quantum computers (2024–2025)</a></li>
-                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+                <li><a href="#id-11">1.1 ما هو التشفير المتماثل</a></li>
+                <li><a href="#id-12">1.2 AES: معيار التشفير المتقدم</a></li>
+                <li><a href="#id-13">1.3 أنماط التشغيل</a></li>
+                <li><a href="#id-14">1.4 المصادقة و AEAD</a></li>
+                <li><a href="#id-15">1.5 الدور في سياق التشفير ما بعد الكمي</a></li>
             </ul>
         </div>
 
-        <!-- Section 3.1 -->
-        <section id="id-31">
-            <h2>3.1 Quantum computers: the essential basics</h2>
+        <!-- القسم 1.1 -->
+        <section id="id-11">
+            <h2>1.1 ما هو التشفير المتماثل</h2>
 
-            <h3>Qubit vs. classical bits</h3>
+            <p>في نظام <strong>متماثل</strong> للتشفير، يستخدم المرسل والمستقبل <strong>نفس المفتاح</strong> <span class="math">\(K\)</span> للتشفير وفك التشفير.</p>
 
-            <p>A classical bit is either 0 or 1. A <strong>qubit</strong> can be in <strong>superposition</strong>: a linear combination of <span class="math">\(|0\rangle\)</span> and <span class="math">\(|1\rangle\)</span>.</p>
+            <div class="example">
+                <p><span class="math">\(\text{المرسل: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{المستقبل: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>الميزة الرئيسية:</strong> الكفاءة. يحقق AES-256 على الأجهزة الحديثة عشرات الـ GB/s.</p>
+
+            <p><strong>العيب:</strong> يحتاج إلى قناة آمنة لتبادل <span class="math">\(K\)</span> <em>قبل</em> التواصل. هذه هي بالضبط المشكلة التي تحلها أنظمة KEM.</p>
+
+            <h3>أمن التشفير المتماثل مقابل الكمومي</h3>
+
+            <p>أجهزة الكمبيوتر الكمومية لا تكسر AES. تقدم خوارزمية غروفر تسريعاً <em>تربيعياً</em> في البحث عن المفتاح، لكن:</p>
+            <ul>
+                <li><strong>AES-128:</strong> الأمن الفعال من 128 بت ينخفض إلى ~64 بت → غير كافٍ</li>
+                <li><strong>AES-256:</strong> الأمن الفعال من 256 بت ينخفض إلى ~128 بت → لا يزال آمناً</li>
+            </ul>
+
+            <p>لهذا السبب ينتج FIPS 203 (ML-KEM) مفاتيح بطول 256 بت، مخصصة للاستخدام مع AES-256.</p>
+        </section>
+
+        <!-- القسم 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES: معيار التشفير المتقدم</h2>
+
+            <p>AES هو <strong>شيفرة كتلية</strong>: يأخذ كتلة من 128 بت ومفتاحاً (<span class="math">\(K\)</span>)، وينتج 128 بت مشفرة.</p>
+
+            <h3>التركيب الداخلي</h3>
+
+            <p>ينظم AES 128 بت المدخلات كمصفوفة <span class="math">\(4 \times 4\)</span> من البايتات. ثم يطبق <span class="math">\(r\)</span> <em>جولة</em> (10، 12 أو 14 حسب حجم المفتاح)، كل منها تتألف من أربع تحويلات:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>التحويل</th>
+                        <th>الغرض</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>استبدال لاخطي عبر S-Box (مقاومة للتحليل التفاضلي)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>إزاحة دورانية للصفوف (نشر)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>تركيب خطي للأعمدة (نشر)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>XOR مع المفتاح الفرعي للجولة الحالية</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>جدولة المفاتيح</h3>
+
+            <p>يتم توسيع المفتاح الأصلي (<span class="math">\(K\)</span> بطول 128 أو 192 أو 256 بت) إلى <span class="math">\(r+1\)</span> مفتاحاً فرعياً، واحد لكل جولة.</p>
+
+            <div class="example">
+                <p>AES-128: مفتاح 128 بت، 10 جولات</p>
+                <p>AES-192: مفتاح 192 بت، 12 جولة</p>
+                <p>AES-256: مفتاح 256 بت، 14 جولة</p>
+            </div>
+
+            <h3>الأمن</h3>
+
+            <p>أفضل هجوم معروف على AES-128 يتطلب <span class="math">\(2^{126.1}\)</span> عملية (Biryukov &amp; Khovratovich، 2009) – جوهرها بحث شامل.</p>
+        </section>
+
+        <!-- القسم 1.3 -->
+        <section id="id-13">
+            <h2>1.3 أنماط التشغيل</h2>
+
+            <p>AES يشفر كتلة من 128 بت. لكن الرسائل الحقيقية أطول. <strong>أنماط التشغيل</strong> تحدد كيفية تطبيق AES بشكل متكرر.</p>
+
+            <h3>ECB (كتاب الشفرات الإلكتروني) – لا يُستخدم</h3>
+
+            <p>يتم تشفير كل كتلة بشكل مستقل. الكتل المتطابقة تنتج نصوصاً مشفرة متطابقة → تفقد بنية النص العادي.</p>
+
+            <h3>CBC (تسلسل كتل الشفرات)</h3>
+
+            <p>يتم XOR كل كتلة نص عادي مع النص المشفر للكتلة السابقة قبل التشفير. يتطلب IV (متجه تهيئة) عشوائياً.</p>
 
             <div class="math-block">
                 \[
-                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                C_i = E_K(P_i \oplus C_{i-1})
                 \]
             </div>
 
-            <p>Before measurement, the qubit is "both 0 and 1". After measurement, it collapses to 0 (with probability <span class="math">\(|\alpha|^2\)</span>) or 1 (with probability <span class="math">\(|\beta|^2\)</span>).</p>
+            <p>أكثر أماناً من ECB، لكنه غير قابل للتوازي في التشفير.</p>
 
-            <blockquote>
-                <p><strong>Analogy:</strong> imagine flipping a coin that, while in the air, represents both heads and tails simultaneously. Only when you look at it does it become one of the two.</p>
-            </blockquote>
+            <h3>CTR (نمط العداد) – موصى به</h3>
 
-            <h3>Entanglement and interference</h3>
+            <p>ينشئ تدفقاً مفتاحياً عن طريق تشفير عداد متزايد. يتم XOR النص العادي مع التدفق المفتاحي.</p>
 
-            <ul>
-                <li><strong>Entanglement:</strong> two qubits can be correlated such that measuring one instantly determines the other.</li>
-                <li><strong>Quantum interference:</strong> the "wrong" computation paths cancel constructively (like waves that cancel out), while the "right" paths are amplified.</li>
-            </ul>
-
-            <p>Quantum algorithms leverage interference to amplify correct answers and suppress wrong ones.</p>
-
-            <h3>Quantum parallelism</h3>
-
-            <p>With <span class="math">\(n\)</span> qubits, one can represent a superposition of <span class="math">\(2^n\)</span> states simultaneously. But measurement returns only one state → the trick is to build algorithms where interference leaves only the right answer to survive.</p>
-        </section>
-
-        <!-- Section Algorithm Scheme -->
-        <section id="id-32">
-            <h2>3.2 Shor's algorithm</h2>
-            
-            <h3>Algorithm scheme for factoring \(n\)</h3>
-            
-            <div class="algorithm-steps">
-                <ol>
-                    <li><strong>Input:</strong> composite integer <span class="math">\(n\)</span></li>
-                    <li><strong>Initialization:</strong> Choose random <span class="math">\(a\)</span> such that <span class="math">\(1 < a < n\)</span> and <span class="math">\(\gcd(a,n)=1\)</span></li>
-                    <li><strong>Quantum Preparation:</strong> Prepare a register in uniform superposition from <span class="math">\(0\)</span> to <span class="math">\(2^k-1\)</span></li>
-                    <li><strong>Oracle:</strong> Compute <span class="math">\(f(x) = a^x \bmod n\)</span> in parallel (superposition)</li>
-                    <li><strong>QFT:</strong> Apply the Quantum Fourier Transform to the first register</li>
-                    <li><strong>Measurement:</strong> Measure the register to obtain a value correlated with the period <span class="math">\(r\)</span></li>
-                    <li><strong>Classical:</strong> Use the continued fractions algorithm to estimate <span class="math">\(r\)</span></li>
-                    <li><strong>Verification:</strong> If <span class="math">\(r\)</span> is even and <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
-                        <ul>
-                            <li>Compute <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> and <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
-                            <li>These are non-trivial factors of <span class="math">\(n\)</span></li>
-                        </ul>
-                    </li>
-                    <li><strong>Loop:</strong> If it fails, go back to step 2 with a new <span class="math">\(a\)</span></li>
-                </ol>
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
             </div>
 
-            <div class="note">
-                <p><strong>Note:</strong> The quantum core (steps 3-5) finds the period <span class="math">\(r\)</span> of the function <span class="math">\(f(x)\)</span> in polynomial time, leveraging the constructive/destructive interference of the QFT.</p>
-            </div>
+            <p>قابل للتوازي في كل من التشفير وفك التشفير. يحول AES إلى شيفرة تدفقية.</p>
+
+            <h3>GCM (نمط غالوا/العداد) – مستخدم في TLS 1.3</h3>
+
+            <p>يجمع CTR مع MAC مبني على حقول غالوا. يوفر سرية <strong>و</strong> صحة.</p>
         </section>
 
-        <!-- Section 3.3 -->
-        <section id="id-33">
-            <h2>3.3 Impact on RSA, DH, ECC</h2>
+        <!-- القسم 1.4 -->
+        <section id="id-14">
+            <h2>1.4 المصادقة و AEAD</h2>
+
+            <p>السرية وحدها لا تكفي: قد يعدل المهاجم النص المشفر دون أن يلاحظ المستقبل. هناك حاجة إلى <strong>صحة</strong>.</p>
+
+            <h3>MAC (رمز مصادقة الرسالة)</h3>
+
+            <p>MAC هو دالة <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> حيث <span class="math">\(\tau\)</span> هو <em>وسم الصحة</em>. فقط من يعرف <span class="math">\(K\)</span> يمكنه توليد والتحقق من <span class="math">\(\tau\)</span>.</p>
+
+            <h3>AEAD (تشفير مصادق مع بيانات مرتبطة)</h3>
+
+            <p>يجمع التشفير والمصادقة في بدائية واحدة:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{نص عادي}) \to (\text{نص مشفر}, \text{وسم})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{نص مشفر}, \text{وسم}) \to \text{نص عادي}\)</span> أو <span class="math">\(\perp\)</span> (إذا كان الوسم غير صالح)</p>
+            </div>
+
+            <p><code>AAD</code> (بيانات إضافية مصادق عليها) هي بيانات مصادق عليها ولكن غير مشفرة (مثل رؤوس الحزم).</p>
+
+            <p><strong>AES-256-GCM</strong> هو مخطط AEAD القياسي المستخدم في TLS 1.3 وكشيفرة متماثلة بعد KEM.</p>
+        </section>
+
+        <!-- القسم 1.5 -->
+        <section id="id-15">
+            <h2>1.5 الدور في سياق التشفير ما بعد الكمي</h2>
+
+            <p>يعمل ML-KEM الكامل في الاستخدام الحقيقي على النحو التالي:</p>
+
+            <div class="sequence-diagram">
+أليس                                بوب
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, الرسالة) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  الرسالة = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ تواصل آمن                     |
+            </div>
+
+            <p>المفتاح <span class="math">\(K\)</span> الناتج من ML-KEM (32 بايت) لا يُستخدم مباشرة كمفتاح AES، بل يُشتق باستخدام <strong>KDF (دالة اشتقاق المفاتيح)</strong> مثل HKDF لفصل السياقات المختلفة.</p>
+
+            <h3>الأحجام العملية (ML-KEM-768 + AES-256-GCM)</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Security based on</th>
-                        <th>Vulnerable to Shor?</th>
+                        <th>المكون</th>
+                        <th>الحجم</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>RSA</td>
-                        <td>Factorization</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>المفتاح العام ML-KEM</td>
+                        <td>1184 بايت</td>
                     </tr>
                     <tr>
-                        <td>DH (mod <span class="math">\(p\)</span>)</td>
-                        <td>Discrete logarithm in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>النص المشفر ML-KEM</td>
+                        <td>1088 بايت</td>
                     </tr>
                     <tr>
-                        <td>ECDH / ECDSA</td>
-                        <td>ECDLP (discrete logarithm on EC)</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">Yes</span></td>
+                        <td>السر المشترك → مفتاح AES</td>
+                        <td>32 بايت</td>
                     </tr>
                     <tr>
-                        <td><strong>ML-KEM (MLWE)</strong></td>
-                        <td>Lattice problems</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">No known efficient algorithm</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>AES-256</strong></td>
-                        <td>Pseudorandom permutations</td>
-                        <td>Only Grover (see below)</td>
+                        <td>العبء الإضافي AEAD (وسم GCM)</td>
+                        <td>16 بايت</td>
                     </tr>
                 </tbody>
             </table>
-
-            <p>Shor solves any structured problem like finding periodicity in an abelian group. Factorization and discrete logarithm (including on EC) have exactly this structure. Lattice problems do not.</p>
         </section>
 
-        <!-- Section 3.4 -->
-        <section id="id-34">
-            <h2>3.4 Grover: the threat to symmetric cryptography</h2>
-
-            <p>Grover's algorithm (1996) offers a <strong>quadratic</strong> speedup in unstructured search:</p>
-            <ul>
-                <li>Finding a key among <span class="math">\(2^k\)</span> possibilities classically: <span class="math">\(O(2^k)\)</span> attempts</li>
-                <li>With Grover: <span class="math">\(O(2^{k/2})\)</span> attempts</li>
-            </ul>
-
-            <p><strong>Practical consequences:</strong></p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Classical security</th>
-                        <th>Post-quantum security (Grover)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AES-128</td>
-                        <td>128 bits</td>
-                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insufficient</span></td>
-                    </tr>
-                    <tr>
-                        <td>AES-256</td>
-                        <td>256 bits</td>
-                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → still secure</span></td>
-                    </tr>
-                    <tr>
-                        <td>SHA-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                    <tr>
-                        <td>SHA3-256</td>
-                        <td>256 bits</td>
-                        <td>128 bits → secure</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>This is why NIST recommends AES-256 (not AES-128) in the post-quantum context.</p>
-        </section>
-
-        <!-- Section 3.5 -->
-        <section id="id-35">
-            <h2>3.5 State of the art of quantum computers (2024–2025)</h2>
-
-            <p>Current quantum computers are <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: they have tens to hundreds of physical qubits but with a high error rate.</p>
-
-            <p>To break RSA-2048 with Shor you need:</p>
-            <ul>
-                <li>~4000 perfect logical qubits</li>
-                <li>or ~4 million physical qubits with quantum error correction</li>
-            </ul>
-
-            <p>The best current systems (Google Willow, IBM Heron, etc.) have ~100-1000 high-fidelity physical qubits, but we are still far from the required scale.</p>
-
-            <blockquote>
-                <p><strong>NIST estimate:</strong> cryptographically relevant quantum computers could exist within 10–15 years, with significant uncertainty in both directions.</p>
-            </blockquote>
-        </section>
-
-        <!-- Section 3.6 -->
-        <section id="id-36">
-            <h2>3.6 Harvest Now, Decrypt Later</h2>
-
-            <p>Even if quantum computers do not <em>yet</em> exist in cryptographically relevant form, there is a concrete threat <strong>today</strong>:</p>
-
-            <blockquote>
-                <p>An adversary can <strong>harvest now</strong> encrypted communications (even if they cannot decrypt them), and <strong>decrypt them in the future</strong> when they have a sufficiently powerful quantum computer.</p>
-            </blockquote>
-
-            <p>This attack is known as <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> or <em>store-now-decrypt-later</em>.</p>
-
-            <h4>Who is at risk:</h4>
-            <ul>
-                <li>Diplomatic and military communications with long secrecy requirements</li>
-                <li>Medical, financial, legal data with decades-long confidentiality requirements</li>
-                <li>Industrial secrets and IP</li>
-            </ul>
-
-            <h4>When to migrate?</h4>
-
-            <p>If your data must remain secret for more years than it will take for sufficiently powerful quantum computers to exist, you need to migrate <em>now</em>.</p>
-
-            <p>This is the main reason why NIST standardized ML-KEM (FIPS 203) in 2024, and why organizations like NSA, ENISA, and ANSSI recommend immediate migration for high-criticality systems.</p>
-        </section>
-
-        <!-- Sources -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>المصادر</h2>
             <ul>
-                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
-                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
-                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
-                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
-                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (الفصول 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="2.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">03 / 10</span>
-            <a href="4.html" class="nav-btn">Next chapter →</a>
+            <a href="0.html" class="nav-btn">← الفصل السابق</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -628,7 +628,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -680,7 +680,7 @@
                 e.stopPropagation();
                 const lang = option.dataset.lang;
                 if (lang && langMap[lang]) {
-                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
                 }
             });
         });

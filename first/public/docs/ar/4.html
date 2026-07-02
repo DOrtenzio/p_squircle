@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 4 – MONEOO.</title>
+    <title> فصل 4 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,49 +368,49 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
         <!-- Contenuto del capitolo -->
         <main class="chapter-content">
     <article>
-        <h1>04 – Lattices</h1>
-        <p class="subtitle">The mathematical structure underlying post‑quantum cryptography</p>
+        <h1>04 – الشبكات (Lattices)</h1>
+        <p class="subtitle">البنية الرياضية الأساسية للتشفير ما بعد الكمي</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-41">4.1 Definition of a lattice</a></li>
-                <li><a href="#id-42">4.2 Hard problems on lattices</a></li>
-                <li><a href="#id-43">4.3 From SVP to LWE</a></li>
-                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
-                <li><a href="#id-45">4.5 RLWE: ring-based variant</a></li>
-                <li><a href="#id-46">4.6 MLWE: the basis of ML‑KEM</a></li>
-                <li><a href="#id-47">4.7 Post‑quantum security of lattices</a></li>
+                <li><a href="#id-41">4.1 تعريف الشبكة</a></li>
+                <li><a href="#id-42">4.2 المسائل الصعبة على الشبكات</a></li>
+                <li><a href="#id-43">4.3 من SVP إلى LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: التعلّم بالأخطاء</a></li>
+                <li><a href="#id-45">4.5 RLWE: البديل على الحلقات</a></li>
+                <li><a href="#id-46">4.6 MLWE: أساس ML-KEM</a></li>
+                <li><a href="#id-47">4.7 الأمن ما بعد الكمي للشبكات</a></li>
             </ul>
         </div>
 
-        <!-- Section 4.1 -->
+        <!-- القسم 4.1 -->
         <section id="id-41">
-            <h2>4.1 Definition of a lattice</h2>
+            <h2>4.1 تعريف الشبكة</h2>
 
-            <h3>Formal definition</h3>
+            <h3>التعريف الرسمي</h3>
 
-            <p>A <strong>lattice</strong> <span class="math">\(\mathcal{L}\)</span> in <span class="math">\(\mathbb{R}^m\)</span> is the set of all integer linear combinations of <span class="math">\(n\)</span> linearly independent vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+            <p><strong>الشبكة</strong> <span class="math">\(\mathcal{L}\)</span> في <span class="math">\(\mathbb{R}^m\)</span> هي مجموعة كل التوافيق الخطية الصحيحة لـ <span class="math">\(n\)</span> متجهات مستقلة خطياً <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -418,11 +418,11 @@
                 \]
             </div>
 
-            <p>The vectors <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> form a <strong>basis</strong> of the lattice.</p>
+            <p>المتجهات <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> تشكل <strong>أساساً</strong> للشبكة.</p>
 
-            <h3>Geometric intuition</h3>
+            <h3>التصور الهندسي</h3>
 
-            <p>In 2D, imagine an infinite grid of points. Each point is reachable by the integer (not real) combination of two basis vectors:</p>
+            <p>في البعد الثاني، تخيل شبكة لا نهائية من النقاط. كل نقطة يمكن الوصول إليها من خلال التركيبة الصحيحة (ليست الحقيقية) لمتجهي أساس:</p>
 
             <div class="math-block">
                 \[
@@ -430,9 +430,9 @@
                 \]
             </div>
 
-            <p>This is the standard integer grid <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+            <p>هذه هي شبكة الأعداد الصحيحة القياسية <span class="math">\(\mathbb{Z}^2\)</span>.</p>
 
-            <p>But the same grid has infinitely many different bases:</p>
+            <p>لكن نفس الشبكة لها عدد لا نهائي من الأسس المختلفة:</p>
 
             <div class="math-block">
                 \[
@@ -440,81 +440,81 @@
                 \]
             </div>
 
-            <p>generates the same lattice. Some bases are "good" (short and nearly orthogonal vectors), others are "bad" (long and nearly parallel vectors).</p>
+            <p>تولّد نفس الشبكة. بعض الأسس "جيدة" (متجهات قصيرة ومتعامدة تقريباً)، وأخرى "سيئة" (متجهات طويلة ومتوازية تقريباً).</p>
 
-            <h3>Dimension and rank</h3>
+            <h3>البعد والرتبة</h3>
 
             <ul>
-                <li><strong>Ambient dimension</strong> <span class="math">\(m\)</span>: number of coordinates of each vector</li>
-                <li><strong>Rank</strong> <span class="math">\(n\)</span>: number of vectors in the basis</li>
+                <li><strong>البعد البيئي</strong> <span class="math">\(m\)</span>: عدد إحداثيات كل متجه</li>
+                <li><strong>الرتبة</strong> <span class="math">\(n\)</span>: عدد المتجهات في الأساس</li>
             </ul>
 
-            <p>If <span class="math">\(n = m\)</span>: full-rank lattice</p>
+            <p>إذا كان <span class="math">\(n = m\)</span>: شبكة كاملة الرتبة (<em>full-rank lattice</em>)</p>
 
-            <p>In cryptography we typically use very large <span class="math">\(n = m\)</span> lattices (256–4096).</p>
+            <p>في التشفير نستخدم عادة شبكات ذات <span class="math">\(n = m\)</span> كبيرة جداً (256–4096).</p>
         </section>
 
-        <!-- Section 4.2 -->
+        <!-- القسم 4.2 -->
         <section id="id-42">
-            <h2>4.2 Hard problems on lattices</h2>
+            <h2>4.2 المسائل الصعبة على الشبكات</h2>
 
-            <h3>SVP – Shortest Vector Problem</h3>
+            <h3>SVP – مسألة أقصر متجه</h3>
 
-            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of a lattice <span class="math">\(\mathcal{L}\)</span><br />
-            <strong>Find:</strong> the shortest non-zero vector in <span class="math">\(\mathcal{L}\)</span></p>
-
-            <div class="math-block">
-                \[
-                \text{SVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ such that } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
-                \]
-            </div>
-
-            <p>In 2D it's easy (Gauss's algorithm). In high dimension (hundreds), it is <strong>NP-hard</strong> under certain assumptions, and the best known algorithm requires exponential time.</p>
-
-            <h3>CVP – Closest Vector Problem</h3>
-
-            <p><strong>Given:</strong> a basis <span class="math">\(B\)</span> of <span class="math">\(\mathcal{L}\)</span> and a target point <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (not in the lattice)<br />
-            <strong>Find:</strong> the lattice point closest to <span class="math">\(\mathbf{t}\)</span></p>
+            <p><strong>المعطيات:</strong> أساس <span class="math">\(B\)</span> لشبكة <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>المطلوب:</strong> إيجاد أقصر متجه غير صفري في <span class="math">\(\mathcal{L}\)</span></p>
 
             <div class="math-block">
                 \[
-                \text{CVP}: \quad \text{find } \mathbf{v} \in \mathcal{L} \text{ such that } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \text{SVP}: \quad \text{إيجاد } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ بحيث } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
                 \]
             </div>
 
-            <p>CVP is at least as hard as SVP. It is at the heart of decapsulation in ML-KEM: those who know the secret <span class="math">\(\mathbf{s}\)</span> can solve the corresponding "easy" CVP, those who don't know it cannot.</p>
+            <p>في البعد الثاني هي سهلة (خوارزمية غاوس). في الأبعاد العالية (المئات)، هي <strong>NP-صعبة</strong> تحت بعض الافتراضات، وأفضل خوارزمية معروفة تتطلب زمناً أسياً.</p>
 
-            <h3>GapSVP and SIS</h3>
+            <h3>CVP – مسألة أقرب متجه</h3>
 
-            <p>There are approximate variants (GapSVP) and related problems (SIS – Short Integer Solution) that form the basis of security proofs for lattice-based cryptography. For our purposes, it is sufficient to know that they all reduce to one another, forming a family of hard problems.</p>
+            <p><strong>المعطيات:</strong> أساس <span class="math">\(B\)</span> لـ <span class="math">\(\mathcal{L}\)</span> ونقطة هدف <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (ليست في الشبكة)<br />
+            <strong>المطلوب:</strong> إيجاد نقطة الشبكة الأقرب إلى <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{إيجاد } \mathbf{v} \in \mathcal{L} \text{ بحيث } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP على الأقل بصعوبة SVP. هي في قلب عملية فك التغليف في ML-KEM: من يعرف السر <span class="math">\(\mathbf{s}\)</span> يمكنه حل CVP "السهل" المقابل، ومن لا يعرفه لا يستطيع.</p>
+
+            <h3>GapSVP و SIS</h3>
+
+            <p>هناك متغيرات تقريبية (GapSVP) ومسائل مرتبطة (SIS – الحل الصحيح القصير) التي تشكل أساس براهين الأمن للتشفير على الشبكات. في هذا المقام، يكفي معرفة أنها جميعاً قابلة للاختزال إلى بعضها البعض، لتشكل عائلة من المسائل الصعبة.</p>
         </section>
 
-        <!-- Section 4.3 -->
+        <!-- القسم 4.3 -->
         <section id="id-43">
-            <h2>4.3 From SVP to LWE</h2>
+            <h2>4.3 من SVP إلى LWE</h2>
 
-            <p>How do you build a cryptographic system from SVP?</p>
+            <p>كيف نبني نظاماً تشفيرياً من SVP؟</p>
 
-            <p>Regev's idea (2005): instead of working directly with SVP (geometrically intuitive but awkward to use), define an equivalent statistical problem: <strong>Learning With Errors (LWE)</strong>.</p>
+            <p>فكرة ريغيف (2005): بدلاً من العمل مباشرة مع SVP (بديهي هندسياً لكن غير مريح للاستخدام)، نعرّف مسألة إحصائية مكافئة: <strong>التعلّم بالأخطاء (LWE)</strong>.</p>
 
-            <p>The security reduction demonstrates that:</p>
+            <p>برهان الأمن يظهر أن:</p>
 
             <blockquote>
-                <p>If you break LWE ⇒ You solve GapSVP</p>
+                <p>إذا كسرت LWE ⇒ فأنت تحل GapSVP</p>
             </blockquote>
 
-            <p>Therefore LWE is <strong>at least as hard</strong> as GapSVP in high dimension.</p>
+            <p>لذا فإن LWE <strong>على الأقل بصعوبة</strong> GapSVP في الأبعاد العالية.</p>
         </section>
 
-        <!-- Section 4.4 -->
+        <!-- القسم 4.4 -->
         <section id="id-44">
-            <h2>4.4 LWE: Learning With Errors</h2>
+            <h2>4.4 LWE: التعلّم بالأخطاء</h2>
 
-            <h3>Definition</h3>
+            <h3>التعريف</h3>
 
-            <p>Fix parameters <span class="math">\(n\)</span> (dimension), <span class="math">\(q\)</span> (modulus), <span class="math">\(\chi\)</span> (error distribution):</p>
+            <p>بثبات المعاملات <span class="math">\(n\)</span> (البعد)، <span class="math">\(q\)</span> (المعامل)، <span class="math">\(\chi\)</span> (توزيع الضوضاء):</p>
 
-            <p><strong>LWE distribution:</strong> choose secret <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Generate samples:</p>
+            <p><strong>توزيع LWE:</strong> اختر <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> سرياً. ولّد عينات:</p>
 
             <div class="math-block">
                 \[
@@ -522,56 +522,56 @@
                 \]
             </div>
 
-            <p>where <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniform, <span class="math">\(e \leftarrow \chi\)</span> small.</p>
+            <p>حيث <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> منتظم، <span class="math">\(e \leftarrow \chi\)</span> صغير.</p>
 
-            <p><strong>Decision LWE problem:</strong> distinguish samples <span class="math">\((\mathbf{a}, b)\)</span> from uniform random pairs <span class="math">\((\mathbf{a}, u)\)</span> with <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+            <p><strong>مسألة LWE القرارية:</strong> تمييز العينات <span class="math">\((\mathbf{a}, b)\)</span> عن أزواج عشوائية منتظمة <span class="math">\((\mathbf{a}, u)\)</span> مع <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
 
-            <p><strong>Search LWE problem:</strong> given a set of samples <span class="math">\((\mathbf{a}_i, b_i)\)</span>, find <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p><strong>مسألة LWE البحثية:</strong> بمعطيات مجموعة من العينات <span class="math">\((\mathbf{a}_i, b_i)\)</span>، أوجد <span class="math">\(\mathbf{s}\)</span>.</p>
 
-            <h3>LWE parameters</h3>
+            <h3>معاملات LWE</h3>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Parameter</th>
-                        <th>Symbol</th>
-                        <th>Role</th>
+                        <th>المعامل</th>
+                        <th>الرمز</th>
+                        <th>الدور</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Dimension</td>
+                        <td>البعد</td>
                         <td><span class="math">\(n\)</span></td>
-                        <td>Security grows exponentially in <span class="math">\(n\)</span></td>
+                        <td>الأمن ينمو أسياً في <span class="math">\(n\)</span></td>
                     </tr>
                     <tr>
-                        <td>Modulus</td>
+                        <td>المعامل</td>
                         <td><span class="math">\(q\)</span></td>
-                        <td>Must be large enough to contain the noise</td>
+                        <td>يجب أن يكون كبيراً بما يكفي لاستيعاب الضوضاء</td>
                     </tr>
                     <tr>
-                        <td>Error distribution</td>
+                        <td>توزيع الخطأ</td>
                         <td><span class="math">\(\chi\)</span></td>
-                        <td>Discrete Gaussian or centered binomial</td>
+                        <td>غاوسي متقطع أو ثنائي متمركز</td>
                     </tr>
                     <tr>
-                        <td>Noise-to-signal ratio</td>
+                        <td>نسبة الإشارة إلى الضوضاء</td>
                         <td><span class="math">\(\alpha = \sigma/q\)</span></td>
-                        <td>Must be small but not too small</td>
+                        <td>يجب أن تكون صغيرة ولكن ليست صغيرة جداً</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Example with n=2, q=7</h3>
+            <h3>مثال مع n=2, q=7</h3>
 
-            <p>Secret: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+            <p>السر: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
 
-            <p>LWE samples with small errors in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+            <p>عينات LWE بأخطاء صغيرة في <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>The vector a</th>
+                        <th>المتجه a</th>
                         <th>b = ⟨a, s⟩ + e mod 7</th>
                         <th>e</th>
                     </tr>
@@ -595,14 +595,14 @@
                 </tbody>
             </table>
 
-            <p>Given the system with errors, finding <span class="math">\(\mathbf{s}\)</span> is difficult: you can't use Gaussian elimination because the <span class="math">\(b_i\)</span> values are not exact.</p>
+            <p>نظراً لنظام المعادلات مع الأخطاء، فإن إيجاد <span class="math">\(\mathbf{s}\)</span> صعب: لا يمكنك استخدام الحذف الغاوسي لأن قيم <span class="math">\(b_i\)</span> ليست دقيقة.</p>
         </section>
 
-        <!-- Section 4.5 -->
+        <!-- القسم 4.5 -->
         <section id="id-45">
-            <h2>4.5 RLWE: ring-based variant</h2>
+            <h2>4.5 RLWE: البديل على الحلقات</h2>
 
-            <p>Standard LWE uses vectors. <strong>Ring-LWE (RLWE)</strong> moves operations to the polynomial ring:</p>
+            <p>LWE القياسي يستخدم متجهات. <strong>Ring-LWE (RLWE)</strong> ينقل العمليات إلى حلقة كثيرات الحدود:</p>
 
             <div class="math-block">
                 \[
@@ -610,27 +610,27 @@
                 \]
             </div>
 
-            <p>In RLWE:</p>
+            <p>في RLWE:</p>
             <ul>
-                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (a polynomial, not a vector of integers)</li>
-                <li><span class="math">\(a \in R_q\)</span> (sampled uniformly)</li>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (كثيرة حدود، وليس متجه أعداد صحيحة)</li>
+                <li><span class="math">\(a \in R_q\)</span> (موزعة بشكل منتظم)</li>
                 <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
             </ul>
 
-            <p><strong>Advantages of RLWE over LWE:</strong></p>
+            <p><strong>مزايا RLWE مقارنة بـ LWE:</strong></p>
             <ul>
-                <li>Key size: <span class="math">\(O(n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
-                <li>Speed: polynomial multiplication with NTT is <span class="math">\(O(n \log n)\)</span> instead of <span class="math">\(O(n^2)\)</span></li>
+                <li>حجم المفاتيح: <span class="math">\(O(n)\)</span> بدلاً من <span class="math">\(O(n^2)\)</span></li>
+                <li>السرعة: ضرب كثيرات الحدود مع NTT هو <span class="math">\(O(n \log n)\)</span> بدلاً من <span class="math">\(O(n^2)\)</span></li>
             </ul>
 
-            <p><strong>Disadvantage:</strong> additional algebraic structure → potentially more vulnerable; the security proof is slightly weaker.</p>
+            <p><strong>العيب:</strong> بنية جبرية إضافية → عرضة للخطر بشكل محتمل؛ برهان الأمن أضعف قليلاً.</p>
         </section>
 
-        <!-- Section 4.6 -->
+        <!-- القسم 4.6 -->
         <section id="id-46">
-            <h2>4.6 MLWE: the basis of ML‑KEM</h2>
+            <h2>4.6 MLWE: أساس ML-KEM</h2>
 
-            <p><strong>Module-LWE (MLWE)</strong> is a compromise between LWE and RLWE: it uses modules of polynomials (matrices of polynomials in <span class="math">\(R_q\)</span>).</p>
+            <p><strong>Module-LWE (MLWE)</strong> هو حل وسط بين LWE و RLWE: يستخدم وحدات من كثيرات الحدود (مصفوفات من كثيرات الحدود في <span class="math">\(R_q\)</span>).</p>
 
             <div class="math-block">
                 \[
@@ -644,86 +644,86 @@
                 \]
             </div>
 
-            <p>The parameter <span class="math">\(k\)</span> is the <strong>module dimension</strong>:</p>
+            <p>المعامل <span class="math">\(k\)</span> هو <strong>بعد الوحدة</strong>:</p>
             <ul>
-                <li><span class="math">\(k = 2\)</span> for ML-KEM-512</li>
-                <li><span class="math">\(k = 3\)</span> for ML-KEM-768</li>
-                <li><span class="math">\(k = 4\)</span> for ML-KEM-1024</li>
+                <li><span class="math">\(k = 2\)</span> لـ ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> لـ ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> لـ ML-KEM-1024</li>
             </ul>
 
-            <p><strong>Why MLWE?</strong></p>
+            <p><strong>لماذا MLWE؟</strong></p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Key size</th>
-                        <th>Speed</th>
-                        <th>Security</th>
+                        <th>المخطط</th>
+                        <th>حجم المفتاح</th>
+                        <th>السرعة</th>
+                        <th>الأمن</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>LWE</td>
-                        <td><span class="math">\(O(n^2)\)</span> → large</td>
-                        <td>slow</td>
-                        <td>more conservative</td>
+                        <td><span class="math">\(O(n^2)\)</span> → كبير</td>
+                        <td>بطيء</td>
+                        <td>أكثر تحفظاً</td>
                     </tr>
                     <tr>
                         <td>RLWE</td>
-                        <td><span class="math">\(O(n)\)</span> → small</td>
-                        <td>fast</td>
-                        <td>extra structure</td>
+                        <td><span class="math">\(O(n)\)</span> → صغير</td>
+                        <td>سريع</td>
+                        <td>بنية إضافية</td>
                     </tr>
                     <tr>
                         <td><strong>MLWE</strong></td>
-                        <td><span class="math">\(O(k \cdot n)\)</span> → medium</td>
-                        <td>fast</td>
-                        <td>balanced</td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → متوسط</td>
+                        <td>سريع</td>
+                        <td>متوازن</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>MLWE allows scaling security by varying <span class="math">\(k\)</span> without changing <span class="math">\(n\)</span>, while maintaining the optimizations of the ring structure.</p>
+            <p>يسمح MLWE بتحجيم الأمن بتغيير <span class="math">\(k\)</span> دون تغيير <span class="math">\(n\)</span>، مع الحفاظ على تحسينات البنية الحلقية.</p>
         </section>
 
-        <!-- Section 4.7 -->
+        <!-- القسم 4.7 -->
         <section id="id-47">
-            <h2>4.7 Post‑quantum security of lattices</h2>
+            <h2>4.7 الأمن ما بعد الكمي للشبكات</h2>
 
-            <h3>Best classical algorithm: BKZ (Block Korkine-Zolotarev)</h3>
+            <h3>أفضل خوارزمية كلاسيكية: BKZ (Block Korkine-Zolotarev)</h3>
 
-            <p>The BKZ algorithm and its variants (BKZ 2.0, G6K) are the best classical algorithms for attacking lattices. Their complexity for ML-KEM-768 is estimated at <span class="math">\(> 2^{178}\)</span> operations.</p>
+            <p>خوارزمية BKZ ومتغيراتها (BKZ 2.0، G6K) هي أفضل الخوارزميات الكلاسيكية لمهاجمة الشبكات. يُقدّر تعقيدها لـ ML-KEM-768 بـ <span class="math">\(> 2^{178}\)</span> عملية.</p>
 
-            <h3>Impact of quantum computers</h3>
+            <h3>تأثير الحواسيب الكمومية</h3>
 
-            <p>The best quantum algorithms for attacking MLWE (including QRAM-based approaches) offer at most a modest speedup — at most quadratic, keeping the problem's difficulty in the exponential regime.</p>
+            <p>أفضل الخوارزميات الكمومية لمهاجمة MLWE (بما في ذلك الأساليب مع QRAM) تقدم تسريعاً متواضعاً – على الأكثر تربيعياً، مع بقاء صعوبة المسألة في النطاق الأسي.</p>
 
-            <p>This contrasts sharply with Shor, which offers an exponential speedup on factorization and DLP.</p>
+            <p>هذا يتناقض بشكل حاد مع شور، الذي يقدم تسريعاً أسياً على التحليل و DLP.</p>
 
-            <h3>Why MLWE has no "Shor's algorithm"</h3>
+            <h3>لماذا ليس لـ MLWE "خوارزمية شور"</h3>
 
-            <p>MLWE does not have the abelian group structure that Shor exploits. The problem is fundamentally different: it is not a matter of finding periodicity in a function, but of finding a short vector in a high-dimensional lattice — a geometric problem for which no known quantum technique offers an exponential speedup.</p>
+            <p>ليس لـ MLWE بنية الزمرة الأبيلية التي يستغلها شور. المسألة مختلفة جوهرياً: ليست مسألة إيجاد دورية في دالة، بل إيجاد متجه قصير في شبكة عالية الأبعاد – مسألة هندسية لا توجد لها تقنية كمومية معروفة بتسريع أسي.</p>
         </section>
 
-        <!-- Sources -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>المصادر</h2>
             <ul>
                 <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
                 <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
                 <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
-                <li>Telsy (2023) – <em>The mathematics behind PQC: lattices</em><br />
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
                     <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
-                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Chapter 17</li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>، الفصل 17</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="3.html" class="nav-btn">← Previous chapter</a>
+            <a href="3.html" class="nav-btn">← الفصل السابق</a>
             <span class="nav-label">04 / 10</span>
-            <a href="5.html" class="nav-btn">Next chapter →</a>
+            <a href="5.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -733,7 +733,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -386,262 +386,262 @@
 
         <main class="chapter-content">
     <article>
-        <h1>09 – Security and Parameters</h1>
-        <p class="subtitle">Why ML-KEM is secure and how the numbers were chosen</p>
+        <h1>09 – Sicherheit und Parameter</h1>
+        <p class="subtitle">Warum ML-KEM sicher ist und wie die Zahlen gewählt wurden</p>
 
-        <!-- Index -->
+        <!-- Inhaltsverzeichnis -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>Inhaltsverzeichnis</h2>
             <ul>
-                <li><a href="#id-91">9.1 Security models</a></li>
-                <li><a href="#id-92">9.2 Measuring the difficulty of MLWE</a></li>
-                <li><a href="#id-93">9.3 Main attacks on lattices</a></li>
-                <li><a href="#id-94">9.4 NIST security levels</a></li>
-                <li><a href="#id-95">9.5 Comparison with other PQC schemes</a></li>
-                <li><a href="#id-96">9.6 Side-channel and secure implementations</a></li>
+                <li><a href="#id-91">9.1 Sicherheitsmodelle</a></li>
+                <li><a href="#id-92">9.2 Messung der Schwierigkeit von MLWE</a></li>
+                <li><a href="#id-93">9.3 Hauptangriffe auf Gitter</a></li>
+                <li><a href="#id-94">9.4 NIST-Sicherheitsstufen</a></li>
+                <li><a href="#id-95">9.5 Vergleich mit anderen PQC-Schemata</a></li>
+                <li><a href="#id-96">9.6 Seitenkanäle und sichere Implementierungen</a></li>
             </ul>
         </div>
 
-        <!-- Section 9.1 -->
+        <!-- Abschnitt 9.1 -->
         <section id="id-91">
-            <h2>9.1 Security models</h2>
+            <h2>9.1 Sicherheitsmodelle</h2>
 
             <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
-            <p>In this model, an adversary:</p>
+            <p>In diesem Modell:</p>
             <ol>
-                <li>Receives the public key <span class="math">\(ek\)</span></li>
-                <li>Chooses two messages <span class="math">\(m_0, m_1\)</span></li>
-                <li>Receives the ciphertext of one of them (chosen at random)</li>
-                <li>Must guess which message was encrypted</li>
+                <li>Erhält der Angreifer den öffentlichen Schlüssel <span class="math">\(ek\)</span></li>
+                <li>Wählt er zwei Nachrichten <span class="math">\(m_0, m_1\)</span></li>
+                <li>Erhält er das Chiffrat einer der beiden (zufällig ausgewählt)</li>
+                <li>Muss er erraten, welche Nachricht verschlüsselt wurde</li>
             </ol>
-            <p>The scheme is secure if: <span class="math">\(\Pr[\text{guesses}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
-            <p>K-PKE (the base encryption component) is IND-CPA under the MLWE assumption.</p>
+            <p>Das Schema ist sicher, wenn: <span class="math">\(\Pr[\text{errät}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (die zugrundeliegende Verschlüsselungskomponente) ist unter der MLWE-Annahme IND-CPA.</p>
 
             <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
-            <p>Like CPA, but the adversary can also query a decryption oracle on any ciphertext (except the challenge one). This model captures real-world attacks (like Bleichenbacher), where an active adversary sends ad-hoc messages and observes responses.</p>
-            <p><strong>ML-KEM is IND-CCA2.</strong> This is the level required for a secure KEM in real protocols like TLS or SSH.</p>
+            <p>Wie CPA, aber der Angreifer kann zusätzlich ein Entschlüsselungsorakel für beliebige Chiffrate abfragen (außer dem Challenge-Chiffrat). Dieses Modell erfasst reale Angriffe (wie Bleichenbacher), bei denen ein aktiver Angreifer maßgeschneiderte Nachrichten sendet und die Antworten beobachtet.</p>
+            <p><strong>ML-KEM ist IND-CCA2.</strong> Dies ist das für ein sicheres KEM in realen Protokollen wie TLS oder SSH erforderliche Niveau.</p>
 
             <h3>ROM vs. QROM</h3>
-            <p>Security proofs use idealized models for hash functions:</p>
+            <p>Die Sicherheitsbeweise verwenden idealisierte Modelle für Hash-Funktionen:</p>
             <ul>
-                <li><strong>ROM (Random Oracle Model):</strong> hashes are perfect random oracles.</li>
-                <li><strong>QROM (Quantum Random Oracle Model):</strong> the quantum adversary can query the oracle in superposition.</li>
+                <li><strong>ROM (Random Oracle Model):</strong> Die Hashes sind perfekte Zufallsorakel.</li>
+                <li><strong>QROM (Quantum Random Oracle Model):</strong> Der Quantenangreifer kann das Orakel in Superposition abfragen.</li>
             </ul>
-            <p>Modern proofs for the FO (Fujisaki-Okamoto) transformation used in ML-KEM guarantee security in the QROM, essential against quantum adversaries.</p>
+            <p>Die modernen Beweise für die in ML-KEM verwendete FO-Transformation (Fujisaki-Okamoto) garantieren Sicherheit im QROM, was gegen Quantenangreifer unerlässlich ist.</p>
         </section>
 
-        <!-- Section 9.2 -->
+        <!-- Abschnitt 9.2 -->
         <section id="id-92">
-            <h2>9.2 How to measure the difficulty of MLWE</h2>
+            <h2>9.2 Messung der Schwierigkeit von MLWE</h2>
 
-            <h3>Security as attack cost</h3>
-            <p>There is no absolute proof that MLWE is hard. Security is estimated by computing the cost of the best known attack algorithm. A security of <span class="math">\(\lambda\)</span> bits means that the attack requires about <span class="math">\(2^\lambda\)</span> operations.</p>
+            <h3>Sicherheit als Kosten des Angriffs</h3>
+            <p>Es gibt keinen absoluten Beweis, dass MLWE schwierig ist. Die Sicherheit wird geschätzt, indem die Kosten des besten bekannten Angriffsalgorithmus berechnet werden. Eine Sicherheit von <span class="math">\(\lambda\)</span> Bit bedeutet, dass der Angriff etwa <span class="math">\(2^\lambda\)</span> Operationen erfordert.</p>
 
-            <h3>The parameters</h3>
-            <p>The difficulty depends on:</p>
+            <h3>Die Parameter</h3>
+            <p>Die Schwierigkeit hängt ab von:</p>
             <ul>
-                <li><span class="math">\(n = 256\)</span> (polynomial dimension, fixed)</li>
-                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (module dimension)</li>
-                <li><span class="math">\(q = 3329\)</span> (prime modulus)</li>
-                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (noise width)</li>
+                <li><span class="math">\(n = 256\)</span> (Polynomdimension, fest)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (Modul-Dimension)</li>
+                <li><span class="math">\(q = 3329\)</span> (Primmodul)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (Rauschamplitude)</li>
             </ul>
 
             <h3>Lattice Estimator</h3>
-            <p>The standard tool is the <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> by Albrecht et al. For ML-KEM-768:</p>
+            <p>Das Standardwerkzeug ist der <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> von Albrecht et al. Für ML-KEM-768:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Attack</th>
-                        <th>Estimated cost (bits)</th>
+                        <th>Angriff</th>
+                        <th>Geschätzte Kosten (Bit)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Primal attack (BKZ)</td>
-                        <td>~178 bits</td>
+                        <td>Primal Attack (BKZ)</td>
+                        <td>~178 Bit</td>
                     </tr>
                     <tr>
-                        <td>Dual attack</td>
-                        <td>~175 bits</td>
+                        <td>Dual Attack</td>
+                        <td>~175 Bit</td>
                     </tr>
                     <tr>
-                        <td>Combinatorial</td>
-                        <td>&gt; 200 bits</td>
+                        <td>Kombinatorisch</td>
+                        <td>&gt; 200 Bit</td>
                     </tr>
                 </tbody>
             </table>
-            <p>The security margin is large compared to the 128-bit classical/quantum target.</p>
+            <p>Die Sicherheitsmarge ist im Vergleich zum Ziel von 128 Bit klassisch/quantisch groß.</p>
         </section>
 
-        <!-- Section 9.3 -->
+        <!-- Abschnitt 9.3 -->
         <section id="id-93">
-            <h2>9.3 Main attacks on lattices</h2>
+            <h2>9.3 Hauptangriffe auf Gitter</h2>
 
             <h3>BKZ (Block Korkine-Zolotarev)</h3>
-            <p>This is the best general algorithm for finding short vectors. It divides the lattice into blocks of size <span class="math">\(\beta\)</span> and solves SVP locally. Complexity: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. For ML-KEM-768, <span class="math">\(\beta \approx 430\)</span>.</p>
+            <p>Dies ist der beste allgemeine Algorithmus zum Finden kurzer Vektoren. Er teilt das Gitter in Blöcke der Größe <span class="math">\(\beta\)</span> auf und löst SVP lokal. Komplexität: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. Für ML-KEM-768: <span class="math">\(\beta \approx 430\)</span>.</p>
 
-            <h3>Primal attack (uSVP)</h3>
-            <p>Reduces MLWE to a short vector problem in an augmented lattice containing the public key and ciphertext. The secret vector <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> becomes a short vector that BKZ tries to find.</p>
+            <h3>Primal Attack (uSVP)</h3>
+            <p>Reduziert MLWE auf ein Problem des kurzen Vektors in einem erweiterten Gitter, das den öffentlichen Schlüssel und das Chiffrat enthält. Der geheime Vektor <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> wird zu einem kurzen Vektor, den BKZ zu finden versucht.</p>
 
-            <h3>Dual attack</h3>
-            <p>Exploits the dual lattice to distinguish MLWE samples from uniform ones using statistics. Builds many short vectors in the dual to perform the distinguisher.</p>
+            <h3>Dual Attack</h3>
+            <p>Nutzt das duale Gitter aus, um MLWE-Stichproben von gleichverteilten mittels Statistik zu unterscheiden. Es konstruiert viele kurze Vektoren im Dualen, um den Unterscheider durchzuführen.</p>
 
-            <h3>Choice of q = 3329</h3>
-            <p>Being prime and lacking special algebraic structure, it prevents specific algebraic attacks. There are no small factors or simple relations that could be exploited.</p>
+            <h3>Wahl von q = 3329</h3>
+            <p>Da es prim ist und keine spezielle algebraische Struktur aufweist, verhindert es spezifische algebraische Angriffe. Es gibt keine kleinen Faktoren oder einfachen Beziehungen, die ausgenutzt werden könnten.</p>
         </section>
 
-        <!-- Section 9.4 -->
+        <!-- Abschnitt 9.4 -->
         <section id="id-94">
-            <h2>9.4 NIST security levels</h2>
+            <h2>9.4 NIST-Sicherheitsstufen</h2>
 
-            <p>NIST defined 5 levels. ML-KEM covers levels 1, 3 and 5:</p>
+            <p>NIST hat 5 Stufen definiert. ML-KEM deckt die Stufen 1, 3 und 5 ab:</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>NIST Level</th>
-                        <th>Classical Security</th>
-                        <th>Quantum Security</th>
+                        <th>Schema</th>
+                        <th>NIST-Stufe</th>
+                        <th>Klassische Sicherheit</th>
+                        <th>Quantensicherheit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>ML-KEM-512</td>
                         <td>1 (AES-128)</td>
-                        <td>~118 bits</td>
-                        <td>~100 bits</td>
+                        <td>~118 Bit</td>
+                        <td>~100 Bit</td>
                     </tr>
                     <tr>
                         <td><strong>ML-KEM-768</strong></td>
                         <td>3 (AES-192)</td>
-                        <td><strong>~178 bits</strong></td>
-                        <td><strong>~164 bits</strong></td>
+                        <td><strong>~178 Bit</strong></td>
+                        <td><strong>~164 Bit</strong></td>
                     </tr>
                     <tr>
                         <td>ML-KEM-1024</td>
                         <td>5 (AES-256)</td>
-                        <td>~230 bits</td>
-                        <td>~218 bits</td>
+                        <td>~230 Bit</td>
+                        <td>~218 Bit</td>
                     </tr>
                 </tbody>
             </table>
 
             <blockquote>
-                <p><strong>Recommendation:</strong> ML-KEM-768 offers the optimal security/performance balance for most use cases. ML-KEM-1024 is reserved for extremely high-criticality systems.</p>
+                <p><strong>Empfehlung:</strong> ML-KEM-768 bietet das optimale Gleichgewicht zwischen Sicherheit und Leistung für die meisten Anwendungen. ML-KEM-1024 ist für hochkritische Systeme reserviert.</p>
             </blockquote>
         </section>
 
-        <!-- Section 9.5 -->
+        <!-- Abschnitt 9.5 -->
         <section id="id-95">
-            <h2>9.5 Comparison with other PQC schemes</h2>
+            <h2>9.5 Vergleich mit anderen PQC-Schemata</h2>
 
-            <h3>Standardized Post-Quantum KEMs (NIST 2024)</h3>
+            <h3>Standardisierte Post-Quanten-KEMs (NIST 2024)</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Math Basis</th>
-                        <th>Public Key</th>
-                        <th>Ciphertext</th>
+                        <th>Schema</th>
+                        <th>Mathematische Basis</th>
+                        <th>Öffentlicher Schlüssel</th>
+                        <th>Chiffrat</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>ML-KEM-768</strong></td>
-                        <td>MLWE (Lattices)</td>
+                        <td>MLWE (Gitter)</td>
                         <td>1184 B</td>
                         <td>1088 B</td>
                     </tr>
                     <tr>
                         <td>BIKE</td>
-                        <td>Error-correcting codes</td>
+                        <td>Korrekturkodes</td>
                         <td>~1541 B</td>
                         <td>~1573 B</td>
                     </tr>
                     <tr>
                         <td>HQC</td>
-                        <td>Error-correcting codes</td>
+                        <td>Korrekturkodes</td>
                         <td>~2249 B</td>
                         <td>~4522 B</td>
                     </tr>
                     <tr>
                         <td>Classic McEliece</td>
-                        <td>Goppa codes</td>
+                        <td>Goppa-Kodes</td>
                         <td>~261 KB</td>
                         <td>128 B</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Comparison with Classical Cryptography</h3>
+            <h3>Vergleich mit klassischer Kryptographie</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Scheme</th>
-                        <th>Public Key</th>
-                        <th>Quantum Security</th>
+                        <th>Schema</th>
+                        <th>Öffentlicher Schlüssel</th>
+                        <th>Quantensicherheit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>RSA-3072</td>
                         <td>384 B</td>
-                        <td>❌ Vulnerable</td>
+                        <td>❌ Verwundbar</td>
                     </tr>
                     <tr>
                         <td>ECDH X25519</td>
                         <td>32 B</td>
-                        <td>❌ Vulnerable</td>
+                        <td>❌ Verwundbar</td>
                     </tr>
                     <tr>
                         <td><strong>ML-KEM-768</strong></td>
                         <td>1184 B</td>
-                        <td>✅ 164+ bits</td>
+                        <td>✅ 164+ Bit</td>
                     </tr>
                 </tbody>
             </table>
-            <p>The main cost is the larger size (~37× compared to ECDH), but it remains acceptable for modern TLS handshakes.</p>
+            <p>Der Hauptkostenfaktor ist die größere Größe (~37× im Vergleich zu ECDH), bleibt aber für moderne TLS-Handshakes akzeptabel.</p>
         </section>
 
-        <!-- Section 9.6 -->
+        <!-- Abschnitt 9.6 -->
         <section id="id-96">
-            <h2>9.6 Side-channel and secure implementations</h2>
+            <h2>9.6 Seitenkanäle und sichere Implementierungen</h2>
 
-            <p>A correct implementation can be vulnerable if it leaks information through execution timing or power consumption.</p>
+            <p>Eine korrekte Implementierung kann verwundbar sein, wenn Informationen über die Ausführungszeit (Timing-Angriffe) oder den Stromverbrauch preisgegeben werden.</p>
 
-            <h3>Constant-Time (CT)</h3>
-            <p>All operations must have constant time regardless of secret data. Critical example in Decaps:</p>
+            <h3>Zeitkonstanz (Constant-Time, CT)</h3>
+            <p>Alle Operationen müssen unabhängig von geheimen Daten eine konstante Laufzeit haben. Ein kritisches Beispiel in Decaps:</p>
 
-            <pre><code class="language-c">// NOT secure (variable timing):
+            <pre><code class="language-c">// NICHT sicher (variable Laufzeit):
 if (memcmp(c, c_prime, len) == 0) { 
     K = K_good; 
 } else { 
     K = K_reject; 
 }
 
-// Secure (constant-time):
-uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF if equal, 0x00 if different
-K = ct_select(mask, K_good, K_reject);     // CT selection without branch</code></pre>
+// Sicher (zeitkonstant):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF bei Gleichheit, 0x00 bei Ungleichheit
+K = ct_select(mask, K_good, K_reject);     // CT-Auswahl ohne Verzweigung</code></pre>
 
-            <h3>Critical areas for CT in ML-KEM</h3>
+            <h3>Kritische Bereiche für CT in ML-KEM</h3>
             <ul>
-                <li><strong><span class="math">\(B_\eta\)</span> sampling:</strong> bit additions without conditional branches.</li>
-                <li><strong>NTT:</strong> butterfly operations must always be executed, even if the result doesn't change.</li>
-                <li><strong>Ciphertext verification:</strong> use of <code>ct_memcmp</code>.</li>
+                <li><strong>Sampling <span class="math">\(B_\eta\)</span>:</strong> Addition von Bits ohne bedingte Verzweigungen.</li>
+                <li><strong>NTT:</strong> Butterfly-Operationen müssen immer ausgeführt werden, auch wenn sich das Ergebnis nicht ändert.</li>
+                <li><strong>Chiffrat-Verifikation:</strong> Verwendung von <code>ct_memcmp</code>.</li>
             </ul>
 
-            <h3>Reference implementations</h3>
+            <h3>Referenzimplementierungen</h3>
             <ul>
-                <li><code>pqclean</code>: portable CT implementations.</li>
-                <li><code>liboqs</code>: AVX2 optimizations with verified CT properties.</li>
+                <li><code>pqclean</code>: portable CT-Implementierungen.</li>
+                <li><code>liboqs</code>: AVX2-Optimierungen mit verifizierten CT-Eigenschaften.</li>
             </ul>
         </section>
 
-        <!-- Sources -->
+        <!-- Quellen -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>Quellen</h2>
             <ul>
                 <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
                 <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
@@ -651,11 +651,11 @@ K = ct_select(mask, K_good, K_reject);     // CT selection without branch</code>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- Kapitelnavigation -->
         <div class="chapter-nav">
-            <a href="8.html" class="nav-btn">← Previous chapter</a>
+            <a href="8.html" class="nav-btn">← Vorheriges Kapitel</a>
             <span class="nav-label">09 / 10</span>
-            <a href="10.html" class="nav-btn">Next chapter →</a>
+            <a href="10.html" class="nav-btn">Nächstes Kapitel →</a>
         </div>
     </article>
 </main>

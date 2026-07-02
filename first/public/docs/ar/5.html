@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 5 – MONEOO.</title>
+    <title> فصل 5 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,64 +368,64 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li class="active"><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
        <main class="chapter-content">
     <article>
         <h1>05 – Module-LWE (MLWE)</h1>
-        <p class="subtitle">The mathematical foundation of ML-KEM</p>
+        <p class="subtitle">الأساس الرياضي لـ ML-KEM</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-51">5.1 From LWE to MLWE: the motivation</a></li>
-                <li><a href="#id-52">5.2 Formal definition of MLWE</a></li>
-                <li><a href="#id-53">5.3 The noise distribution in ML-KEM</a></li>
-                <li><a href="#id-54">5.4 Sampling in ML-KEM</a></li>
-                <li><a href="#id-55">5.5 Hardness: why MLWE is difficult</a></li>
-                <li><a href="#id-56">5.6 From MLWE to a PKE: the constructive idea</a></li>
-                <li><a href="#id-57">5.7 Complete numerical example</a></li>
-                <li><a href="#id-58">5.8 Why ML-KEM's parameters are what they are</a></li>
+                <li><a href="#id-51">5.1 من LWE إلى MLWE: الدافع</a></li>
+                <li><a href="#id-52">5.2 التعريف الرسمي لـ MLWE</a></li>
+                <li><a href="#id-53">5.3 توزيع الضوضاء في ML-KEM</a></li>
+                <li><a href="#id-54">5.4 توليد المصفوفة العامة A</a></li>
+                <li><a href="#id-55">5.5 الصعوبة: لماذا MLWE صعب</a></li>
+                <li><a href="#id-56">5.6 من MLWE إلى PKE: الفكرة البناءة</a></li>
+                <li><a href="#id-57">5.7 مثال عددي كامل</a></li>
+                <li><a href="#id-58">5.8 لماذا تم اختيار معاملات ML-KEM بهذه الطريقة</a></li>
             </ul>
         </div>
 
-        <!-- Section 5.1 -->
+        <!-- القسم 5.1 -->
         <section id="id-51">
-            <h2>5.1 From LWE to MLWE: the motivation</h2>
+            <h2>5.1 من LWE إلى MLWE: الدافع</h2>
 
-            <h3>Classical LWE and its cost</h3>
+            <h3>LWE الكلاسيكي وتكلفته</h3>
 
-            <p>In <a href="4.html">04</a> we saw standard LWE: given <span class="math">\(m\)</span> samples <span class="math">\((\mathbf{a}_i, b_i)\)</span> with <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> and <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>, find <span class="math">\(\mathbf{s}\)</span>. The problem is hard, but it has a high practical cost:</p>
+            <p>في الملف <a href="4.html">04</a> رأينا LWE القياسي: بمعطيات <span class="math">\(m\)</span> عينة <span class="math">\((\mathbf{a}_i, b_i)\)</span> مع <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> و <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>، أوجد <span class="math">\(\mathbf{s}\)</span>. المسألة صعبة، لكن لها تكلفة عملية عالية:</p>
 
             <ul>
-                <li>The public key (the matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) has size <span class="math">\(O(n^2)\)</span>: for <span class="math">\(n = 1024\)</span> and <span class="math">\(q = 3329\)</span> it would be over 2 MB.</li>
-                <li>The matrix-vector multiplication <span class="math">\(A \cdot \mathbf{s}\)</span> costs <span class="math">\(O(n^2)\)</span> multiplications.</li>
+                <li>المفتاح العام (المصفوفة <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) حجمه <span class="math">\(O(n^2)\)</span>: لـ <span class="math">\(n = 1024\)</span> و <span class="math">\(q = 3329\)</span> سيكون أكثر من 2 ميجابايت.</li>
+                <li>ضرب المصفوفة في المتجه <span class="math">\(A \cdot \mathbf{s}\)</span> يكلف <span class="math">\(O(n^2)\)</span> عملية ضرب.</li>
             </ul>
 
-            <h3>RLWE: too rigid</h3>
+            <h3>RLWE: جامد جداً</h3>
 
-            <p>Ring-LWE moves operations to the ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. A single polynomial <span class="math">\(a \in R_q\)</span> replaces the entire matrix, reducing the public key to <span class="math">\(O(n)\)</span>.</p>
+            <p>Ring-LWE ينقل العمليات إلى الحلقة <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. كثيرة حدود واحدة <span class="math">\(a \in R_q\)</span> تحل محل المصفوفة بأكملها، مما يقلل المفتاح العام إلى <span class="math">\(O(n)\)</span>.</p>
 
-            <p>But RLWE has a very specific algebraic structure that some researchers consider potentially exploitable (although no practical attack is known as of 2024).</p>
+            <p>لكن RLWE له بنية جبرية محددة جداً يعتبرها بعض الباحثين قابلة للاستغلال (رغم عدم وجود هجوم عملي معروف حتى 2024).</p>
 
-            <h3>MLWE: the optimal compromise</h3>
+            <h3>MLWE: الحل الوسط الأمثل</h3>
 
-            <p><strong>Module-LWE</strong> generalizes both by using a <span class="math">\(k \times k\)</span> matrix of polynomials in <span class="math">\(R_q\)</span>:</p>
+            <p><strong>Module-LWE</strong> يعمم كليهما باستخدام مصفوفة <span class="math">\(k \times k\)</span> من كثيرات الحدود في <span class="math">\(R_q\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -434,117 +434,117 @@
             </div>
 
             <ul>
-                <li>For <span class="math">\(k = 1\)</span>: reduces to RLWE</li>
-                <li>For <span class="math">\(k \to \infty\)</span> (polynomials of degree 0): reduces to classical LWE</li>
+                <li>لـ <span class="math">\(k = 1\)</span>: يختزل إلى RLWE</li>
+                <li>لـ <span class="math">\(k \to \infty\)</span> (كثيرات حدود من درجة 0): يختزل إلى LWE الكلاسيكي</li>
             </ul>
 
-            <p>The parameter <span class="math">\(k\)</span> allows <strong>calibrating</strong> security and performance independently of <span class="math">\(n\)</span>.</p>
+            <p>المعامل <span class="math">\(k\)</span> يسمح <strong>بضبط</strong> الأمن والأداء بشكل مستقل عن <span class="math">\(n\)</span>.</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Variant</th>
-                        <th>Public key</th>
-                        <th>Security</th>
-                        <th>Flexibility</th>
+                        <th>المتغير</th>
+                        <th>المفتاح العام</th>
+                        <th>الأمن</th>
+                        <th>المرونة</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>LWE</td>
                         <td><span class="math">\(O(n^2)\)</span></td>
-                        <td>high</td>
-                        <td>low</td>
+                        <td>عالٍ</td>
+                        <td>منخفض</td>
                     </tr>
                     <tr>
                         <td>RLWE</td>
                         <td><span class="math">\(O(n)\)</span></td>
-                        <td>medium</td>
-                        <td>low</td>
+                        <td>متوسط</td>
+                        <td>منخفض</td>
                     </tr>
                     <tr>
                         <td><strong>MLWE</strong></td>
                         <td><span class="math">\(O(k \cdot n)\)</span></td>
-                        <td>adjustable with <span class="math">\(k\)</span></td>
-                        <td><strong>high</strong></td>
+                        <td>قابل للضبط بـ <span class="math">\(k\)</span></td>
+                        <td><strong>عالٍ</strong></td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
-        <!-- Section 5.2 -->
+        <!-- القسم 5.2 -->
         <section id="id-52">
-            <h2>5.2 Formal definition of MLWE</h2>
+            <h2>5.2 التعريف الرسمي لـ MLWE</h2>
 
-            <h3>Working space</h3>
+            <h3>فضاء العمل</h3>
 
-            <p>Fix the parameters:</p>
+            <p>بثبات المعاملات:</p>
             <ul>
-                <li><span class="math">\(n = 256\)</span>: degree of the cyclotomic polynomial</li>
-                <li><span class="math">\(q = 3329\)</span>: prime modulus</li>
-                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: module dimension</li>
-                <li><span class="math">\(\chi\)</span>: noise distribution (centered binomial distribution <span class="math">\(B_\eta\)</span>)</li>
+                <li><span class="math">\(n = 256\)</span>: درجة كثيرة الحدود الدائرية</li>
+                <li><span class="math">\(q = 3329\)</span>: معامل أولي</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: بعد الوحدة</li>
+                <li><span class="math">\(\chi\)</span>: توزيع الضوضاء (التوزيع الثنائي المتمركز <span class="math">\(B_\eta\)</span>)</li>
             </ul>
 
-            <p>The base ring is <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+            <p>الحلقة الأساسية هي <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
 
-            <h3>MLWE distribution</h3>
+            <h3>توزيع MLWE</h3>
 
-            <p>Let <span class="math">\(\mathbf{s} \in R_q^k\)</span> be a secret vector of polynomials, each with coefficients sampled from <span class="math">\(\chi\)</span>.</p>
+            <p>لتكن <span class="math">\(\mathbf{s} \in R_q^k\)</span> متجه سري من كثيرات الحدود، معاملات كل منها مأخوذة من <span class="math">\(\chi\)</span>.</p>
 
-            <p>An <strong>MLWE instance</strong> is a pair:</p>
+            <p><strong>نموذج MLWE</strong> هو زوج:</p>
 
             <div class="math-block">
                 \[
-                (\mathbf{A},\; \mathbf{t}) \quad \text{where} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                (\mathbf{A},\; \mathbf{t}) \quad \text{حيث} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
                 \]
             </div>
 
-            <p>with <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
+            <p>مع <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
 
-            <h3>Decision MLWE problem</h3>
+            <h3>مسألة MLWE القرارية</h3>
 
-            <p><strong>Input:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> where:</p>
+            <p><strong>المدخل:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> حيث:</p>
             <ul>
-                <li>either <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (MLWE distribution), or</li>
-                <li>either <span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> uniform</li>
+                <li>إما <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (توزيع MLWE)، أو</li>
+                <li><span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> منتظم</li>
             </ul>
 
-            <p><strong>Goal:</strong> distinguish the two cases with non-negligible advantage.</p>
+            <p><strong>الهدف:</strong> تمييز الحالتين بميزة غير مهملة.</p>
 
-            <h3>Search MLWE problem</h3>
+            <h3>مسألة MLWE البحثية</h3>
 
-            <p><strong>Input:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> with <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+            <p><strong>المدخل:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> مع <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
 
-            <p><strong>Goal:</strong> find <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p><strong>الهدف:</strong> إيجاد <span class="math">\(\mathbf{s}\)</span>.</p>
 
             <blockquote>
-                <p>Regev's reduction (adapted to MLWE) demonstrates that the search problem is computationally equivalent to the decision problem, and that both are at least as hard as GapSVP on high-dimensional lattices.</p>
+                <p>اختزال ريغيف (المكيف لـ MLWE) يبرهن أن المسألة البحثية مكافئة حسابياً للمسألة القرارية، وأن كلاهما على الأقل بصعوبة GapSVP على شبكات عالية الأبعاد.</p>
             </blockquote>
         </section>
 
-        <!-- Section 5.3 -->
+        <!-- القسم 5.3 -->
         <section id="id-53">
-            <h2>5.3 The noise distribution in ML-KEM</h2>
+            <h2>5.3 توزيع الضوضاء في ML-KEM</h2>
 
-            <h3>Centered binomial distribution <span class="math">\(B_\eta\)</span></h3>
+            <h3>التوزيع الثنائي المتمركز <span class="math">\(B_\eta\)</span></h3>
 
-            <p>In ML-KEM the noise is not Gaussian but centered binomial. To sample a single coefficient from <span class="math">\(B_\eta\)</span>:</p>
+            <p>في ML-KEM، الضوضاء ليست غاوسية بل ثنائية متمركزة. لمعاينة معامل واحد من <span class="math">\(B_\eta\)</span>:</p>
 
             <ol>
-                <li>Sample <span class="math">\(2\eta\)</span> uniform bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
-                <li>Return <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span></li>
+                <li>عاين <span class="math">\(2\eta\)</span> بتة منتظمة: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li>أعد <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span></li>
             </ol>
 
-            <p>The result is an integer in <span class="math">\([-\eta, \eta]\)</span>.</p>
+            <p>النتيجة هي عدد صحيح في <span class="math">\([-\eta, \eta]\)</span>.</p>
 
-            <p><strong>Probability distribution for η = 2:</strong></p>
+            <p><strong>توزيع الاحتمالات لـ η = 2:</strong></p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Value</th>
-                        <th>Probability</th>
+                        <th>القيمة</th>
+                        <th>الاحتمال</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -571,133 +571,133 @@
                 </tbody>
             </table>
 
-            <p><strong>Why not true Gaussian?</strong></p>
+            <p><strong>لماذا ليس غاوسياً حقيقياً؟</strong></p>
 
-            <p>Discrete Gaussian is theoretically optimal, but sampling it in <em>constant-time</em> (resistant to timing attacks) is complex. Centered binomial:</p>
+            <p>التوزيع الغاوسي المتقطع هو الأمثل نظرياً، لكن معاينته بشكل <em>زمني ثابت</em> (مقاوم لهجمات التوقيت) معقدة. التوزيع الثنائي المتمركز:</p>
 
             <ul>
-                <li>has finite support → no extreme cases</li>
-                <li>is sampled with only bit operations → trivially constant-time</li>
-                <li>is statistically indistinguishable from Gaussian for known attacks</li>
+                <li>له دعم محدود → لا توجد حالات متطرفة</li>
+                <li>يُعاين بعمليات بت فقط → زمني ثابت بشكل تافه</li>
+                <li>لا يمكن تمييزه إحصائياً عن الغاوسي للهجمات المعروفة</li>
             </ul>
 
-            <h3>Sampling in ML-KEM (the <code>SamplePolyCBD</code> function)</h3>
+            <h3>المعاينة في ML-KEM (الدالة <code>SamplePolyCBD</code>)</h3>
 
             <div class="sequence-diagram">
 CBD_η(σ, b):
-    Input: seed σ ∈ {0,1}^256, nonce b ∈ {0,1}^8
-    Output: polynomial f ∈ R_q with coefficients in [-η, η]
+    المدخل: بذرة σ ∈ {0,1}^256، قيمة b ∈ {0,1}^8
+    المخرج: كثيرة حدود f ∈ R_q بمعاملات في [-η, η]
 
-    bytes = PRF(σ, b)   // SHAKE256, generates 64η bytes
-    for j = 0..255:
-        a = sum of bits in bytes at positions [2ηj .. 2ηj+η-1]
-        b = sum of bits in bytes at positions [2ηj+η .. 2ηj+2η-1]
+    bytes = PRF(σ, b)   // SHAKE256، تولد 64η بايت
+    لكل j = 0..255:
+        a = مجموع البتات في bytes في المواضع [2ηj .. 2ηj+η-1]
+        b = مجموع البتات في bytes في المواضع [2ηj+η .. 2ηj+2η-1]
         f[j] = a - b
-    return f
+    أعد f
             </div>
 
-            <p>Each polynomial <span class="math">\(\mathbf{s}[i]\)</span> and <span class="math">\(\mathbf{e}[i]\)</span> is sampled with a different nonce, ensuring statistical independence.</p>
+            <p>كل كثيرة حدود <span class="math">\(\mathbf{s}[i]\)</span> و <span class="math">\(\mathbf{e}[i]\)</span> تُعاين بقيمة مختلفة، مما يضمن الاستقلال الإحصائي.</p>
         </section>
 
-        <!-- Section 5.4 -->
+        <!-- القسم المعاينة -->
         <section id="id-54">
-            <h2>5.4 Sampling in ML-KEM</h2>
+            <h2>5.4 المعاينة في ML-KEM</h2>
 
-            <h3>CBD: Centered Binomial Distribution</h3>
-            <p>ML-KEM uses a centered binomial distribution <span class="math">\(B_\eta\)</span> to generate small errors and secrets. This distribution is efficient and does not require rejection sampling.</p>
+            <h3>CBD: التوزيع الثنائي المتمركز</h3>
+            <p>يستخدم ML-KEM توزيعاً ثنائياً متمركزاً <span class="math">\(B_\eta\)</span> لتوليد أخطاء وأسرار صغيرة. هذا التوزيع فعال ولا يتطلب معاينة بالرفض.</p>
 
             <div class="code-block">
-                <h4>Function SamplePolyCBD(σ, b, η)</h4>
-                <pre><code>Input: seed σ ∈ {0,1}^256, nonce b, parameter η
-Output: polynomial f ∈ R_q with coeff. in [-η, η]
+                <h4>الدالة SamplePolyCBD(σ, b, η)</h4>
+                <pre><code>المدخل: بذرة σ ∈ {0,1}^256، قيمة b، معامل η
+المخرج: كثيرة حدود f ∈ R_q بمعاملات في [-η, η]
 
-1. bytes = PRF(σ, b)       // SHAKE256, generates 64·η bytes
-2. For j = 0 to 255:
-     a = sum(bits[2ηj .. 2ηj+η-1])   // count the 1s in the first group
-     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // count the 1s in the second group
-     f[j] = a - b                     // difference centered on 0
-3. Return f</code></pre>
+1. bytes = PRF(σ, b)       // SHAKE256، تولد 64·η بايت
+2. لكل j = 0 إلى 255:
+     a = sum(bits[2ηj .. 2ηj+η-1])   // عد الآحاد في المجموعة الأولى
+     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // عد الآحاد في المجموعة الثانية
+     f[j] = a - b                     // فرق متمركز حول 0
+3. أعد f</code></pre>
             </div>
 
-            <p>For <span class="math">\(\eta=2\)</span>, coefficients are in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>. For <span class="math">\(\eta=3\)</span>, in <span class="math">\(\{-3, \ldots, 3\}\)</span>.</p>
+            <p>لـ <span class="math">\(\eta=2\)</span>، المعاملات تكون في <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>. لـ <span class="math">\(\eta=3\)</span>، في <span class="math">\(\{-3, \ldots, 3\}\)</span>.</p>
 
-            <h3>SampleNTT: Uniform Sampling</h3>
-            <p>To generate the public matrix <span class="math">\(\mathbf{A}\)</span>, uniform coefficients in <span class="math">\(\mathbb{Z}_q\)</span> are needed. <em>Rejection sampling</em> is used on the output of SHAKE128.</p>
+            <h3>SampleNTT: المعاينة المنتظمة</h3>
+            <p>لتوليد المصفوفة العامة <span class="math">\(\mathbf{A}\)</span>، نحتاج إلى معاملات منتظمة في <span class="math">\(\mathbb{Z}_q\)</span>. يُستخدم <em>معاينة الرفض</em> على مخرجات SHAKE128.</p>
 
             <div class="code-block">
-                <h4>Function SampleNTT(stream)</h4>
-                <pre><code>Input: byte stream from XOF (SHAKE128)
-Output: polynomial with uniform coeff. in [0, q-1]
+                <h4>الدالة SampleNTT(stream)</h4>
+                <pre><code>المدخل: تدفق بايتات من XOF (SHAKE128)
+المخرج: كثيرة حدود بمعاملات منتظمة في [0, q-1]
 
-coefficients = []
-while len(coefficients) < 256:
-    // Read 3 bytes to generate 2 candidate values
+المعاملات = []
+طالما len(المعاملات) < 256:
+    // اقرأ 3 بايت لتوليد قيمتين مرشحتين
     b0, b1, b2 = next_3_bytes(stream)
     
-    // Combine bits to form two 12-bit numbers
+    // اجمع البتات لتشكيل عددين بطول 12 بت
     d1 = b0 + 256 * (b1 mod 16)
     d2 = floor(b1 / 16) + 16 * b2
     
-    // Accept only if < q (3329)
+    // اقبل فقط إذا كان < q (3329)
     if d1 < q:
-        coefficients.append(d1)
-    if d2 < q and len(coefficients) < 256:
-        coefficients.append(d2)
+        المعاملات.append(d1)
+    if d2 < q and len(المعاملات) < 256:
+        المعاملات.append(d2)
 
-return coefficients</code></pre>
+أعد المعاملات</code></pre>
             </div>
             
-            <p>This method guarantees a perfect uniform distribution, discarding out-of-range values.</p>
+            <p>تضمن هذه الطريقة توزيعاً منتظماً مثالياً، برفض القيم خارج النطاق.</p>
         </section>
 
-        <!-- Section 5.5 -->
+        <!-- القسم 5.5 -->
         <section id="id-55">
-            <h2>5.5 Hardness: why MLWE is difficult</h2>
+            <h2>5.5 الصعوبة: لماذا MLWE صعب</h2>
 
-            <h3>Worst-case to average-case reduction</h3>
+            <h3>اختزال أسوأ حالة إلى متوسط حالة</h3>
 
-            <p>The most important property of LWE/MLWE is the <strong>worst-case to average-case reduction</strong>:</p>
+            <p>أهم خاصية في LWE/MLWE هي <strong>اختزال أسوأ حالة إلى متوسط حالة</strong>:</p>
 
             <blockquote>
-                <p>If there exists an efficient algorithm that solves MLWE for a non-negligible fraction of random instances, then there exists an efficient algorithm to solve GapSVP (the approximate version of SVP) on <em>any</em> lattice, in the worst case.</p>
+                <p>إذا وجدت خوارزمية فعالة تحل MLWE لكسر غير مهمل من النماذج العشوائية، فإنه توجد خوارزمية فعالة لحل GapSVP (النسخة التقريبية من SVP) على <em>أي</em> شبكة، في أسوأ حالة.</p>
             </blockquote>
 
-            <p>This reduction (Regev 2005, adapted by Peikert 2009 and Brakerski et al. for MLWE) is exceptional: most cryptographic problems only have average-case to average-case reductions.</p>
+            <p>هذا الاختزال (ريغيف 2005، مكيف من بيكيرت 2009 وبراكيرسكي وآخرون لـ MLWE) استثنائي: معظم المسائل التشفيرية لها فقط اختزالات من متوسط حالة إلى متوسط حالة.</p>
 
-            <p>In practice: breaking MLWE on random instances is as hard as solving SVP in the worst case → the cryptographic assumptions are extremely solid.</p>
+            <p>عملياً: كسر MLWE على نماذج عشوائية صعب بقدر حل SVP في أسوأ حالة → الافتراضات التشفيرية قوية جداً.</p>
 
-            <h3>Absence of structure exploitable by quantum computers</h3>
+            <h3>غياب بنية قابلة للاستغلال كمومياً</h3>
 
-            <p>Shor's algorithm exploits the <strong>abelian group</strong> structure of factorization and discrete logarithm problems: there is a periodic group action that the QFT can detect.</p>
+            <p>تستغل خوارزمية شور بنية <strong>الزمر الأبيلية</strong> في مسائل التحليل واللوغاريتم المتقطع: هناك تأثير زمري دوري يمكن لـ QFT اكتشافه.</p>
 
-            <p>MLWE does not have this structure:</p>
+            <p>MLWE ليس له هذه البنية:</p>
 
             <ul>
-                <li>There is no periodicity to exploit</li>
-                <li>There is no natural abelian group on which to apply the QFT</li>
-                <li>The best quantum algorithms (based on quantum walks or QRAM) offer at most polynomial speedups, not exponential ones</li>
+                <li>لا توجد دورية للاستغلال</li>
+                <li>لا توجد زمرة أبيلية طبيعية لتطبيق QFT عليها</li>
+                <li>أفضل الخوارزميات الكمومية (المبنية على المشي الكمومي أو QRAM) تقدم على الأكثر تسريعاً حدودياً، ليس أسياً</li>
             </ul>
         </section>
 
-        <!-- Section 5.6 -->
+        <!-- القسم 5.6 -->
         <section id="id-56">
-            <h2>5.6 From MLWE to a PKE: the constructive idea</h2>
+            <h2>5.6 من MLWE إلى PKE: الفكرة البناءة</h2>
 
-            <p>How do you build an encryption system from MLWE? The intuition is elegant.</p>
+            <p>كيف نبني نظام تشفير من MLWE؟ الحدس أنيق.</p>
 
-            <h3>Analogy with Diffie-Hellman</h3>
+            <h3>التشبيه بـ Diffie-Hellman</h3>
 
-            <p>In DH, the public key is <span class="math">\(g^s\)</span>: easy to compute, hard to invert.<br />
-            In MLWE, the public key is <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: easy to compute, hard to invert.</p>
+            <p>في DH، المفتاح العام هو <span class="math">\(g^s\)</span>: سهل الحساب، صعب القلب.<br />
+            في MLWE، المفتاح العام هو <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: سهل الحساب، صعب القلب.</p>
 
-            <h3>Encryption scheme (Regev-like)</h3>
+            <h3>مخطط التشفير (شبيه بـ Regev)</h3>
 
             <p><strong>KeyGen:</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
 
-            <p style="text-align: right;">Public key: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
-            Private key: <span class="math">\(\mathbf{s}\)</span>.</p>
+            <p style="text-align: right;">المفتاح العام: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
+            المفتاح الخاص: <span class="math">\(\mathbf{s}\)</span>.</p>
 
-            <p><strong>Encrypt</strong> (message <span class="math">\(m \in \{0,1\}\)</span>, encoded as <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
+            <p><strong>التشفير</strong> (الرسالة <span class="math">\(m \in \{0,1\}\)</span>، مشفرة كـ <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
 
             <div class="math-block">
                 \[
@@ -711,11 +711,11 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p style="text-align: right;">Ciphertext: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
+            <p style="text-align: right;">النص المشفر: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
 
-            <p><strong>Decrypt:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+            <p><strong>فك التشفير:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
 
-            <p><strong>Analysis:</strong></p>
+            <p><strong>التحليل:</strong></p>
 
             <div class="math-block">
                 \[
@@ -731,15 +731,15 @@ return coefficients</code></pre>
 
             <div class="math-block">
                 \[
-                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{small noise}} + \mu \approx \mu
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{ضوضاء صغيرة}} + \mu \approx \mu
                 \]
             </div>
 
-            <p>The noise is small → rounding recovers <span class="math">\(\mu\)</span> and thus <span class="math">\(m\)</span>.</p>
+            <p>الضوضاء صغيرة → بالتقريب يُسترد <span class="math">\(\mu\)</span> وبالتالي <span class="math">\(m\)</span>.</p>
 
-            <h3>The polynomial version (real MLWE)</h3>
+            <h3>النسخة الحدودية (MLWE الحقيقي)</h3>
 
-            <p>In ML-KEM, every scalar becomes a polynomial in <span class="math">\(R_q\)</span>, and operations are polynomial products. The mechanism is identical, but multiplications happen in the ring:</p>
+            <p>في ML-KEM، كل قيمة قياسية تصبح كثيرة حدود في <span class="math">\(R_q\)</span>، والعمليات هي ضرب كثيرات حدود. الآلية متطابقة، لكن الضرب يحدث في الحلقة:</p>
 
             <div class="math-block">
                 \[
@@ -747,20 +747,20 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>where <span class="math">\(\circ\)</span> is multiplication in <span class="math">\(R_q\)</span> (polynomial, accelerated by NTT).</p>
+            <p>حيث <span class="math">\(\circ\)</span> هو الضرب في <span class="math">\(R_q\)</span> (حدودي، مسرع بواسطة NTT).</p>
         </section>
 
-        <!-- Section 5.7 -->
+        <!-- القسم 5.7 -->
         <section id="id-57">
-            <h2>5.7 Complete numerical example</h2>
+            <h2>5.7 مثال عددي كامل</h2>
 
-            <p>We use toy parameters: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, small coefficients in <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
+            <p>نستخدم معاملات تعليمية: <span class="math">\(n = 4\)</span>، <span class="math">\(q = 17\)</span>، <span class="math">\(k = 2\)</span>، معاملات صغيرة في <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
 
-            <p>Polynomials are in <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>, so degree <span class="math">\(\leq 3\)</span>.</p>
+            <p>كثيرات الحدود في <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>، لذا درجة ≤ 3.</p>
 
-            <h3>Starting data</h3>
+            <h3>المعطيات الأولية</h3>
 
-            <p><strong>Public matrix</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
+            <p><strong>المصفوفة العامة</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -768,15 +768,15 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>with <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+            <p>مع <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>، <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>، <span class="math">\(a_{10} = 3 + X^3\)</span>، <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
 
-            <p><strong>Secret</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> with <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
+            <p><strong>السر</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> مع <span class="math">\(s_0 = 1 - X\)</span>، <span class="math">\(s_1 = X^2\)</span>.</p>
 
-            <p><strong>Error</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> with <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
+            <p><strong>الخطأ</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> مع <span class="math">\(e_0 = 1\)</span>، <span class="math">\(e_1 = -X\)</span>.</p>
 
-            <h3>Calculation of t = As + e</h3>
+            <h3>حساب t = As + e</h3>
 
-            <p><strong>Component t0 = a00 s0 + a01 s1 + e0:</strong></p>
+            <p><strong>المركبة t0 = a00 s0 + a01 s1 + e0:</strong></p>
 
             <div class="math-block">
                 \[
@@ -790,7 +790,7 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p>Reduce <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
+            <p>نختزل <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
 
             <div class="math-block">
                 \[
@@ -822,75 +822,75 @@ return coefficients</code></pre>
                 \]
             </div>
 
-            <p><strong>Result:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (the second component is computed similarly).</p>
+            <p><strong>النتيجة:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (المركبة الثانية تحسب بالمثل).</p>
 
-            <h3>Key observation</h3>
+            <h3>الملاحظة الأساسية</h3>
 
-            <p>An adversary seeing <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> must find <span class="math">\((\mathbf{s}, \mathbf{e})\)</span>. Even with these small numbers, the problem is already non-trivial: they cannot use Gaussian elimination (the error breaks linearity) and the search space is exponential in ML-KEM's real dimension.</p>
+            <p>المهاجم الذي يرى <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> يجب أن يجد <span class="math">\((\mathbf{s}, \mathbf{e})\)</span>. حتى مع هذه الأعداد الصغيرة، المسألة ليست تافهة: لا يمكنه استخدام الحذف الغاوسي (الخطأ يكسر الخطية) وفضاء البحث أسي في البعد الحقيقي لـ ML-KEM.</p>
         </section>
 
-        <!-- Section 5.8 -->
+        <!-- القسم 5.8 -->
         <section id="id-58">
-            <h2>5.8 Why ML-KEM's parameters are what they are</h2>
+            <h2>5.8 لماذا تم اختيار معاملات ML-KEM بهذه الطريقة</h2>
 
             <h3><span class="math">\(n = 256\)</span></h3>
 
             <ul>
-                <li>Must be a power of 2 (for efficient NTT)</li>
-                <li>The polynomial <span class="math">\(X^{256}+1\)</span> must be irreducible over <span class="math">\(\mathbb{Z}_q\)</span>: it is if <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
-                <li><span class="math">\(256\)</span> balances security and performance: <span class="math">\(n = 128\)</span> would be too insecure, <span class="math">\(n = 512\)</span> too slow</li>
+                <li>يجب أن تكون قوة للعدد 2 (لـ NTT فعال)</li>
+                <li>كثيرة الحدود <span class="math">\(X^{256}+1\)</span> يجب أن تكون غير قابلة للاختزال على <span class="math">\(\mathbb{Z}_q\)</span>: وهذا يتحقق إذا <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
+                <li><span class="math">\(256\)</span> توازن بين الأمن والأداء: <span class="math">\(n = 128\)</span> غير آمنة، <span class="math">\(n = 512\)</span> بطيئة جداً</li>
             </ul>
 
             <h3><span class="math">\(q = 3329\)</span></h3>
 
             <ul>
-                <li>Must be prime (for <span class="math">\(\mathbb{Z}_q\)</span> field)</li>
-                <li>Must satisfy <span class="math">\(q \equiv 1 \pmod{256}\)</span>: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
-                <li>Must be such that 256th roots of unity exist: guaranteed by the condition above</li>
-                <li>Must be as small as possible (compact keys) while being compatible with the noise budget</li>
-                <li><span class="math">\(3329\)</span> is the first prime satisfying all conditions with enough margin for the noise</li>
+                <li>يجب أن يكون أولياً (لكي يكون <span class="math">\(\mathbb{Z}_q\)</span> حقلاً)</li>
+                <li>يجب أن يحقق <span class="math">\(q \equiv 1 \pmod{256}\)</span>: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>يجب أن تكون هناك جذور وحدة من الرتبة 256: مضمون بالشرط أعلاه</li>
+                <li>يجب أن يكون أصغر ما يمكن (مفاتيح مدمجة) مع توافق مع ميزانية الضوضاء</li>
+                <li><span class="math">\(3329\)</span> هو العدد الأولي الأول الذي يحقق جميع الشروط مع هامش كافٍ للضوضاء</li>
             </ul>
 
             <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
 
             <ul>
-                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): NIST level 1, equivalent to pre-quantum AES-128</li>
-                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): level 3, equivalent to AES-192, recommended for general use</li>
-                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): level 5, equivalent to AES-256, for high-criticality systems</li>
+                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): مستوى NIST 1، مكافئ لـ AES-128 قبل الكم</li>
+                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): مستوى 3، مكافئ لـ AES-192، موصى به للاستخدام العام</li>
+                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): مستوى 5، مكافئ لـ AES-256، للأنظمة عالية الأهمية</li>
             </ul>
 
             <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
 
-            <p>The noise must be:</p>
+            <p>يجب أن تكون الضوضاء:</p>
 
             <ul>
-                <li><strong>large</strong> enough to make the MLWE problem hard</li>
-                <li><strong>small</strong> enough to ensure that decryption does not fail (noise budget)</li>
+                <li><strong>كبيرة</strong> بما يكفي لجعل مسألة MLWE صعبة</li>
+                <li><strong>صغيرة</strong> بما يكفي لضمان عدم فشل فك التشفير (ميزانية الضوضاء)</li>
             </ul>
 
-            <p>Increasing <span class="math">\(\eta\)</span> increases security but also the probability of decryption error. The values <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> for ML-KEM-768 are the optimal point.</p>
+            <p>زيادة <span class="math">\(\eta\)</span> تزيد الأمن ولكن أيضاً تزيد احتمال خطأ فك التشفير. القيم <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> لـ ML-KEM-768 هي النقطة المثلى.</p>
         </section>
 
-        <!-- Sources -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Sources</h2>
+            <h2>المصادر</h2>
             <ul>
                 <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
-                STOC 2005. Foundation of LWE.</li>
+                STOC 2005. أساس LWE.</li>
                 <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
-                Designs, Codes and Cryptography. Foundation of MLWE.</li>
+                Designs, Codes and Cryptography. أساس MLWE.</li>
                 <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
-                EUROCRYPT 2010. Foundation of RLWE.</li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Sections 1–4 (rational parameter design)</li>
-                <li>NIST FIPS 203 (2024), Sections 3–4 (notation and primitives)</li>
+                EUROCRYPT 2010. أساس RLWE.</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>، الأقسام 1–4 (التصميم العقلاني للمعاملات)</li>
+                <li>NIST FIPS 203 (2024)، الأقسام 3–4 (الترميز والبدائيات)</li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="4.html" class="nav-btn">← Previous chapter</a>
+            <a href="4.html" class="nav-btn">← الفصل السابق</a>
             <span class="nav-label">05 / 10</span>
-            <a href="6.html" class="nav-btn">Next chapter →</a>
+            <a href="6.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -900,7 +900,7 @@ return coefficients</code></pre>
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span>مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 

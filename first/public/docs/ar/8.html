@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Kapitel 4 – MONEOO.</title>
+    <title> فصل 8 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Warum</a>
-            <a href="index.html#learningPath">Pfad</a>
-            <a href="index.html#searchSection">Anleitung</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇩🇪 Deutsch</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,362 +368,294 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Kapitel</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Voraussetzungen</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Gitter</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
-                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Sicherheit</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementierungen</a></li>
+                <li class="active"><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
-        <!-- Contenuto del capitolo -->
         <main class="chapter-content">
     <article>
-        <h1>04 – Gitter (Lattices)</h1>
-        <p class="subtitle">Die mathematische Struktur hinter der Post‑Quanten‑Kryptographie</p>
+        <h1>08 – FIPS 203 / ML-KEM</h1>
+        <p class="subtitle">جوهر المعيار: KeyGen و Encaps و Decaps</p>
 
-        <!-- Inhaltsverzeichnis -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Inhaltsverzeichnis</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-41">4.1 Definition eines Gitters</a></li>
-                <li><a href="#id-42">4.2 Schwierige Probleme auf Gittern</a></li>
-                <li><a href="#id-43">4.3 Von SVP zu LWE</a></li>
-                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
-                <li><a href="#id-45">4.5 RLWE: Variante auf Ringen</a></li>
-                <li><a href="#id-46">4.6 MLWE: die Basis von ML‑KEM</a></li>
-                <li><a href="#id-47">4.7 Post‑Quanten‑Sicherheit von Gittern</a></li>
+                <li><a href="#id-81">8.1 نظرة عامة على المعيار</a></li>
+                <li><a href="#id-82">8.2 البدائيات K‑PKE</a></li>
+                <li><a href="#id-83">8.3 ML‑KEM (المخطط الكامل)</a></li>
+                <li><a href="#id-84">8.4 الدوال المساعدة البدائية</a></li>
+                <li><a href="#id-85">8.5 الضغط وفك الضغط</a></li>
+                <li><a href="#id-86">8.6 الصحة والأمن</a></li>
             </ul>
         </div>
 
-        <!-- Abschnitt 4.1 -->
-        <section id="id-41">
-            <h2>4.1 Definition eines Gitters</h2>
+        <!-- القسم 8.1 -->
+        <section id="id-81">
+            <h2>8.1 نظرة عامة على المعيار</h2>
 
-            <h3>Formale Definition</h3>
+            <p>تم نشر FIPS 203 من قبل NIST في أغسطس 2024 كأول معيار ما بعد كمي لحماية الاتصالات. يعتمد على提案 CRYSTALS-Kyber من مسابقة NIST PQC.</p>
 
-            <p>Ein <strong>Gitter</strong> <span class="math">\(\mathcal{L}\)</span> im <span class="math">\(\mathbb{R}^m\)</span> ist die Menge aller ganzzahligen Linearkombinationen von <span class="math">\(n\)</span> linear unabhängigen Vektoren <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
-
-            <div class="math-block">
-                \[
-                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
-                \]
-            </div>
-
-            <p>Die Vektoren <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> bilden eine <strong>Basis</strong> des Gitters.</p>
-
-            <h3>Geometrische Intuition</h3>
-
-            <p>In 2D stellen Sie sich ein unendliches Gitter von Punkten vor. Jeder Punkt ist durch die ganzzahlige (nicht reelle) Kombination zweier Basisvektoren erreichbar:</p>
-
-            <div class="math-block">
-                \[
-                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
-                \]
-            </div>
-
-            <p>Dies ist das Standard-Ganzzahlgitter <span class="math">\(\mathbb{Z}^2\)</span>.</p>
-
-            <p>Aber dasselbe Gitter hat unendlich viele verschiedene Basen:</p>
-
-            <div class="math-block">
-                \[
-                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
-                \]
-            </div>
-
-            <p>erzeugt dasselbe Gitter. Einige Basen sind "gut" (kurze und fast orthogonale Vektoren), andere sind "schlecht" (lange und fast parallele Vektoren).</p>
-
-            <h3>Dimension und Rang</h3>
-
+            <p><strong>ما يوحده FIPS 203:</strong></p>
             <ul>
-                <li><strong>Umgebungsdimension</strong> <span class="math">\(m\)</span>: Anzahl der Koordinaten jedes Vektors</li>
-                <li><strong>Rang</strong> <span class="math">\(n\)</span>: Anzahl der Vektoren in der Basis</li>
+                <li>KEM (آلية تغليف المفاتيح) آمن IND-CCA2</li>
+                <li>ثلاث مستويات أمنية: ML-KEM-512، ML-KEM-768، ML-KEM-1024</li>
+                <li>جميع الدوال المساعدة: التجزئة، المعاينة، الترميز، الضغط</li>
             </ul>
 
-            <p>Wenn <span class="math">\(n = m\)</span>: Gitter mit vollem Rang (<em>full-rank lattice</em>)</p>
-
-            <p>In der Kryptographie verwenden wir typischerweise Gitter mit sehr großem <span class="math">\(n = m\)</span> (256–4096).</p>
+            <p><strong>ما لا يوحده FIPS 203:</strong></p>
+            <ul>
+                <li>كيفية إدارة المفاتيح</li>
+                <li>أي شيفرة متماثلة يجب استخدامها مع المفتاح المشتق</li>
+                <li>بروتوكولات المصافحة (انظر TLS 1.3، SSH)</li>
+            </ul>
         </section>
 
-        <!-- Abschnitt 4.2 -->
-        <section id="id-42">
-            <h2>4.2 Schwierige Probleme auf Gittern</h2>
+        <!-- القسم 8.2 – K‑PKE -->
+        <section id="id-82">
+            <h2>8.2 البدائيات K‑PKE</h2>
+            <p>ML-KEM مبني على مستويين. المستوى الداخلي هو <strong>K‑PKE</strong>، وهو PKE (تشفير المفتاح العام) آمن CPA (وليس آمن CCA). يضيف ML-KEM تحويل FO للحصول على أمن CCA2.</p>
 
-            <h3>SVP – Shortest Vector Problem</h3>
+            <h3>K‑PKE.KeyGen</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>المدخل: بذرة <span class="math">\(d\)</span> بطول 32 بايت</li>
+                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> حيث <span class="math">\(G = \text{SHA3-512}\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (المصفوفة العامة، بالفعل في مجال NTT)</li>
+                    <li>لـ <span class="math">\(i = 0 \dots k-1\)</span>:
+                        <ul>
+                            <li><span class="math">\(\mathbf{s}[i], \mathbf{e}[i] = \text{SamplePolyCBD}(\sigma, i)\)</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{NTT}(\mathbf{s})\)</span>، <span class="math">\(\hat{\mathbf{e}} = \text{NTT}(\mathbf{e})\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{t}} = \mathbf{A} \circ \hat{\mathbf{s}} + \hat{\mathbf{e}}\)</span></li>
+                    <li>المخرج:
+                        <ul>
+                            <li><span class="math">\(ek_{\text{PKE}} = \text{Encode}(\hat{\mathbf{t}}) \| \rho\)</span></li>
+                            <li><span class="math">\(dk_{\text{PKE}} = \text{Encode}(\hat{\mathbf{s}})\)</span></li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
 
-            <p><strong>Gegeben:</strong> eine Basis <span class="math">\(B\)</span> eines Gitters <span class="math">\(\mathcal{L}\)</span><br />
-            <strong>Finde:</strong> den kürzesten Nicht-Null-Vektor in <span class="math">\(\mathcal{L}\)</span></p>
+            <h3>K‑PKE.Encrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>المدخل: <span class="math">\(ek_{\text{PKE}}\)</span>، رسالة <span class="math">\(m\)</span>، عشوائية <span class="math">\(r\)</span></li>
+                    <li>استخرج <span class="math">\(\hat{\mathbf{t}}\)</span> و <span class="math">\(\rho\)</span> من <span class="math">\(ek\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span></li>
+                    <li>عاين متجهات صغيرة <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> باستخدام <span class="math">\(r\)</span> كبذرة (CBD)</li>
+                    <li><span class="math">\(\hat{\mathbf{u}} = \text{NTT}^{-1}(\mathbf{A}^T \circ \text{NTT}(\mathbf{r})) + \mathbf{e}_1\)</span></li>
+                    <li><span class="math">\(v = \text{NTT}^{-1}(\hat{\mathbf{t}}^T \circ \text{NTT}(\mathbf{r})) + e_2 + \text{Decode}(m)\)</span></li>
+                    <li>اضغط <span class="math">\(\mathbf{u}\)</span> و <span class="math">\(v\)</span></li>
+                    <li>المخرج: النص المشفر <span class="math">\(c\)</span></li>
+                </ol>
+            </div>
 
+            <h3>K‑PKE.Decrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>المدخل: <span class="math">\(dk_{\text{PKE}}\)</span>، النص المشفر <span class="math">\(c\)</span></li>
+                    <li>افك ضغط <span class="math">\(\mathbf{u}\)</span> و <span class="math">\(v\)</span> من <span class="math">\(c\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{Decode}(dk_{\text{PKE}})\)</span></li>
+                    <li><span class="math">\(w = v - \text{NTT}^{-1}(\hat{\mathbf{s}}^T \circ \text{NTT}(\mathbf{u}))\)</span></li>
+                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (فك تشفير الرسالة من الضوضاء المتبقية)</li>
+                    <li>المخرج: <span class="math">\(m\)</span></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- القسم 8.3 – ML‑KEM الكامل -->
+        <section id="id-83">
+            <h2>8.3 ML‑KEM (المخطط الكامل)</h2>
+            <p>K‑PKE آمن فقط CPA. يستخدم ML‑KEM <strong>تحويل فوجيساكي‑أوكاموتو (FO)</strong> لرفع K‑PKE إلى <strong>IND‑CCA2</strong>. يتحقق فك التشفير من أن النص المشفر المستلم يطابق ما سينتج عن إعادة تشفير الرسالة المفككة؛ في حالة عدم المطابقة، يعيد مفتاحاً شبه عشوائي (رفض ضمني).</p>
+
+            <h3 id="id-831">8.3.1 ML‑KEM.KeyGen</h3>
             <div class="math-block">
                 \[
-                \text{SVP}: \quad \text{finde } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ mit } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \begin{aligned}
+                & z \leftarrow \{0,1\}^{256}, \quad d \leftarrow \{0,1\}^{256} \\
+                & (ek_{\text{PKE}}, dk_{\text{PKE}}) = \text{K-PKE.KeyGen}(d) \\
+                & ek = ek_{\text{PKE}} \\
+                & dk = dk_{\text{PKE}} \| ek \| H(ek) \| z \\
+                & \text{أعد } (ek, dk)
+                \end{aligned}
+                \]
+            </div>
+            <p>يحتوي المفتاح الخاص على <span class="math">\(ek\)</span> وقيم تجزئة محسوبة مسبقاً لتحسين Decaps.</p>
+
+            <h3 id="id-832">8.3.2 ML‑KEM.Encaps</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & m \leftarrow \{0,1\}^{256} \\
+                & (\bar{K}, r) = G(m \| H(ek)) \\
+                & c = \text{K-PKE.Encrypt}(ek, m, r) \\
+                & K = \text{KDF}(\bar{K} \| H(c)) \\
+                & \text{أعد } (K, c)
+                \end{aligned}
                 \]
             </div>
 
-            <p>In 2D ist es einfach (Gauß-Algorithmus). In hohen Dimensionen (Hunderte) ist es <strong>NP-schwer</strong> unter bestimmten Annahmen, und der beste bekannte Algorithmus benötigt exponentielle Zeit.</p>
-
-            <h3>CVP – Closest Vector Problem</h3>
-
-            <p><strong>Gegeben:</strong> eine Basis <span class="math">\(B\)</span> von <span class="math">\(\mathcal{L}\)</span> und einen Zielpunkt <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (nicht im Gitter)<br />
-            <strong>Finde:</strong> den Gitterpunkt, der <span class="math">\(\mathbf{t}\)</span> am nächsten liegt</p>
-
+            <h3 id="id-833">8.3.3 ML‑KEM.Decaps</h3>
             <div class="math-block">
                 \[
-                \text{CVP}: \quad \text{finde } \mathbf{v} \in \mathcal{L} \text{ mit } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \begin{aligned}
+                & (dk_{\text{PKE}}, ek, h, z) = \text{ParseDK}(dk) \\
+                & m' = \text{K-PKE.Decrypt}(dk_{\text{PKE}}, c) \\
+                & (\bar{K}', r') = G(m' \| h) \\
+                & c' = \text{K-PKE.Encrypt}(ek, m', r') \\
+                & \text{إذا } c' == c: \\
+                & \quad K = \text{KDF}(\bar{K}' \| H(c)) \\
+                & \text{خلاف ذلك:} \\
+                & \quad K = \text{KDF}(z \| H(c)) \\
+                & \text{أعد } K
+                \end{aligned}
                 \]
             </div>
-
-            <p>CVP ist mindestens so schwer wie SVP. Es liegt dem Decapsulieren in ML-KEM zugrunde: Wer das Geheimnis <span class="math">\(\mathbf{s}\)</span> kennt, kann das entsprechende "einfache" CVP lösen; wer es nicht kennt, kann es nicht.</p>
-
-            <h3>GapSVP und SIS</h3>
-
-            <p>Es gibt approximierte Varianten (GapSVP) und verwandte Probleme (SIS – Short Integer Solution), die die Grundlage der Sicherheitsbeweise der Gitterkryptographie bilden. An dieser Stelle genügt es zu wissen, dass sie alle aufeinander reduzierbar sind und eine Familie schwieriger Probleme bilden.</p>
+            <p><strong>ملاحظة:</strong> يجب أن تكون المقارنة <span class="math">\(c' == c\)</span> زمنية ثابتة لتجنب القنوات الجانبية.</p>
         </section>
 
-        <!-- Abschnitt 4.3 -->
-        <section id="id-43">
-            <h2>4.3 Von SVP zu LWE</h2>
+        <!-- القسم 8.4 – الدوال المساعدة -->
+        <section id="id-84">
+            <h2>8.4 الدوال المساعدة البدائية</h2>
 
-            <p>Wie konstruiert man ein kryptographisches System aus SVP?</p>
-
-            <p>Die Idee von Regev (2005): Anstatt direkt mit SVP zu arbeiten (geometrisch intuitiv, aber unbequem in der Anwendung), definiert man ein äquivalentes statistisches Problem: <strong>Learning With Errors (LWE)</strong>.</p>
-
-            <p>Der Sicherheitsbeweis zeigt, dass:</p>
-
-            <blockquote>
-                <p>Wenn man LWE bricht ⇒ Man löst GapSVP</p>
-            </blockquote>
-
-            <p>LWE ist also <strong>mindestens so schwer</strong> wie GapSVP in hoher Dimension.</p>
-        </section>
-
-        <!-- Abschnitt 4.4 -->
-        <section id="id-44">
-            <h2>4.4 LWE: Learning With Errors</h2>
-
-            <h3>Definition</h3>
-
-            <p>Gegeben Parameter <span class="math">\(n\)</span> (Dimension), <span class="math">\(q\)</span> (Modul), <span class="math">\(\chi\)</span> (Rauschverteilung):</p>
-
-            <p><strong>LWE-Verteilung:</strong> Wähle geheimes <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Generiere Stichproben:</p>
-
-            <div class="math-block">
-                \[
-                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
-                \]
-            </div>
-
-            <p>wobei <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> gleichverteilt, <span class="math">\(e \leftarrow \chi\)</span> klein.</p>
-
-            <p><strong>Entscheidungs-LWE-Problem:</strong> Unterscheide die Stichproben <span class="math">\((\mathbf{a}, b)\)</span> von gleichverteilten Zufallspaaren <span class="math">\((\mathbf{a}, u)\)</span> mit <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
-
-            <p><strong>Such-LWE-Problem:</strong> Gegeben eine Menge von Stichproben <span class="math">\((\mathbf{a}_i, b_i)\)</span>, finde <span class="math">\(\mathbf{s}\)</span>.</p>
-
-            <h3>Parameter von LWE</h3>
-
+            <h3>دوال التجزئة المستخدمة</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Parameter</th>
-                        <th>Symbol</th>
-                        <th>Rolle</th>
+                        <th>الدالة</th>
+                        <th>المدخل</th>
+                        <th>المخرج</th>
+                        <th>الاستخدام</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Dimension</td>
-                        <td><span class="math">\(n\)</span></td>
-                        <td>Sicherheit wächst exponentiell in <span class="math">\(n\)</span></td>
+                        <td><span class="math">\(H = \text{SHA3-256}\)</span></td>
+                        <td>أي</td>
+                        <td>32 بايت</td>
+                        <td>تجزئة عامة</td>
                     </tr>
                     <tr>
-                        <td>Modul</td>
-                        <td><span class="math">\(q\)</span></td>
-                        <td>Muss groß genug sein, um das Rauschen aufzunehmen</td>
+                        <td><span class="math">\(G = \text{SHA3-512}\)</span></td>
+                        <td>أي</td>
+                        <td>64 بايت</td>
+                        <td>اشتقاق المفاتيح</td>
                     </tr>
                     <tr>
-                        <td>Fehlerverteilung</td>
-                        <td><span class="math">\(\chi\)</span></td>
-                        <td>Diskrete Gauß- oder zentrierte Binomialverteilung</td>
+                        <td><span class="math">\(\text{XOF} = \text{SHAKE128}\)</span></td>
+                        <td>أي</td>
+                        <td>طول متغير</td>
+                        <td>توليد <span class="math">\(A\)</span></td>
                     </tr>
                     <tr>
-                        <td>Rausch-Signal-Verhältnis</td>
-                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
-                        <td>Muss klein, aber nicht zu klein sein</td>
+                        <td><span class="math">\(\text{PRF}_\eta = \text{SHAKE256}\)</span></td>
+                        <td>بذرة+قيمة</td>
+                        <td>طول متغير</td>
+                        <td>معاينة <span class="math">\(s\)</span>، <span class="math">\(e\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(\text{KDF} = \text{SHAKE256}\)</span></td>
+                        <td>أي</td>
+                        <td>طول متغير</td>
+                        <td>اشتقاق <span class="math">\(K\)</span> النهائي</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Beispiel mit n=2, q=7</h3>
+            <h3>معاينة <span class="math">\(A\)</span> (خوارزمية <code>SampleNTT</code>)</h3>
+            <p>يتم توليد المصفوفة <span class="math">\(A \in R_q^{k \times k}\)</span> بشكل حتمي من بذرة عامة <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
+            <div class="sequence-diagram">
+                لـ i = 0..k-1، j = 0..k-1:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
+            </div>
+            <p>يقرأ <code>SampleNTT</code> البايتات من XOF ويبني معاملات منتظمة في <span class="math">\(\{0, \ldots, q-1\}\)</span> (يرفض القيم <span class="math">\(\geq q\)</span>).</p>
 
-            <p>Geheimnis: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
-
-            <p>LWE-Stichproben mit kleinen Fehlern in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Vektor a</th>
-                        <th>b = ⟨a, s⟩ + e mod 7</th>
-                        <th>e</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="math">\((1, 2)\)</span></td>
-                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td><span class="math">\((4, 3)\)</span></td>
-                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
-                        <td>+1</td>
-                    </tr>
-                    <tr>
-                        <td><span class="math">\((2, 6)\)</span></td>
-                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
-                        <td>-1</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>Angesichts des Gleichungssystems mit Fehlern ist es schwierig, <span class="math">\(\mathbf{s}\)</span> zu finden: Man kann keine Gauß-Elimination verwenden, weil die <span class="math">\(b_i\)</span>-Werte nicht exakt sind.</p>
+            <h3>معاينة الضوضاء (خوارزمية <code>SamplePolyCBD</code>)</h3>
+            <p>تُعاين الضوضاء بالتوزيع الثنائي المتمركز <span class="math">\(B_\eta\)</span>:</p>
+            <div class="sequence-diagram">
+                بمعطيات بذرة σ طول 32 بايت وقيمة b:<br />
+                bytes = PRF<sub>η</sub>(σ, b) &nbsp; // 64η بايت<br />
+                لكل زوج (a_i, b_i) من البتات:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;المعامل = Σa_i - Σb_i
+            </div>
+            <p>النتيجة هي كثيرة حدود بمعاملات في <span class="math">\([-\eta, \eta]\)</span>.</p>
         </section>
 
-        <!-- Abschnitt 4.5 -->
-        <section id="id-45">
-            <h2>4.5 RLWE: Variante auf Ringen</h2>
-
-            <p>Standard-LWE verwendet Vektoren. <strong>Ring-LWE (RLWE)</strong> verlagert die Operationen in den Polynomring:</p>
-
+        <!-- القسم 8.5 – الضغط -->
+        <section id="id-85">
+            <h2>8.5 الضغط وفك الضغط</h2>
+            <p>يستخدم ML-KEM الضغط لتقليل حجم النص المشفر. معاملات كثيرات الحدود في <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 بت)، ولكن يتم ضغطها إلى <span class="math">\(d_u\)</span> أو <span class="math">\(d_v\)</span> بت.</p>
             <div class="math-block">
                 \[
-                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \text{Compress}_d(x) = \left\lfloor \frac{2^d}{q} \cdot x \right\rceil \bmod 2^d
                 \]
             </div>
-
-            <p>In RLWE:</p>
-            <ul>
-                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (ein Polynom, kein Vektor von ganzen Zahlen)</li>
-                <li><span class="math">\(a \in R_q\)</span> (gleichverteilt)</li>
-                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
-            </ul>
-
-            <p><strong>Vorteile von RLWE gegenüber LWE:</strong></p>
-            <ul>
-                <li>Schlüsselgröße: <span class="math">\(O(n)\)</span> statt <span class="math">\(O(n^2)\)</span></li>
-                <li>Geschwindigkeit: Polynommultiplikation mit NTT ist <span class="math">\(O(n \log n)\)</span> statt <span class="math">\(O(n^2)\)</span></li>
-            </ul>
-
-            <p><strong>Nachteil:</strong> Zusätzliche algebraische Struktur → potenziell anfälliger; der Sicherheitsbeweis ist etwas schwächer.</p>
-        </section>
-
-        <!-- Abschnitt 4.6 -->
-        <section id="id-46">
-            <h2>4.6 MLWE: die Basis von ML‑KEM</h2>
-
-            <p><strong>Module-LWE (MLWE)</strong> ist ein Kompromiss zwischen LWE und RLWE: Es verwendet Moduln von Polynomen (Matrizen von Polynomen in <span class="math">\(R_q\)</span>).</p>
-
             <div class="math-block">
                 \[
-                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \text{Decompress}_d(y) = \left\lfloor \frac{q}{2^d} \cdot y \right\rceil
                 \]
             </div>
+            <p><strong>الخطأ الناتج عن الضغط:</strong> يُدخل الضغط خطأ <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. لـ <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. يجب أن يكون هذا الخطأ صغيراً بما يكفي لعدم إفشال فك التشفير، مما يفرض قيداً على المعاملات <span class="math">\(\eta_1\)</span>، <span class="math">\(\eta_2\)</span>، <span class="math">\(d_u\)</span>، <span class="math">\(d_v\)</span>.</p>
 
+            <h3>ميزانية الضوضاء</h3>
+            <p>إجمالي الضوضاء التي تصل إلى فك التشفير هي:</p>
             <div class="math-block">
                 \[
-                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \epsilon_{\text{الإجمالي}} = \hat{\mathbf{e}}^T\hat{\mathbf{r}} + e_2 - \hat{\mathbf{s}}^T e_1 + \epsilon_u + \epsilon_v
                 \]
             </div>
-
-            <p>Der Parameter <span class="math">\(k\)</span> ist die <strong>Modul-Dimension</strong>:</p>
-            <ul>
-                <li><span class="math">\(k = 2\)</span> für ML-KEM-512</li>
-                <li><span class="math">\(k = 3\)</span> für ML-KEM-768</li>
-                <li><span class="math">\(k = 4\)</span> für ML-KEM-1024</li>
-            </ul>
-
-            <p><strong>Warum MLWE?</strong></p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Schema</th>
-                        <th>Schlüsselgröße</th>
-                        <th>Geschwindigkeit</th>
-                        <th>Sicherheit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>LWE</td>
-                        <td><span class="math">\(O(n^2)\)</span> → groß</td>
-                        <td>langsam</td>
-                        <td>konservativer</td>
-                    </tr>
-                    <tr>
-                        <td>RLWE</td>
-                        <td><span class="math">\(O(n)\)</span> → klein</td>
-                        <td>schnell</td>
-                        <td>zusätzliche Struktur</td>
-                    </tr>
-                    <tr>
-                        <td><strong>MLWE</strong></td>
-                        <td><span class="math">\(O(k \cdot n)\)</span> → mittel</td>
-                        <td>schnell</td>
-                        <td>ausgewogen</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>MLWE ermöglicht es, die Sicherheit durch Variation von <span class="math">\(k\)</span> zu skalieren, ohne <span class="math">\(n\)</span> zu ändern, und dabei die Optimierungen der Ringstruktur zu erhalten.</p>
+            <p>لفك التشفير بشكل صحيح، يجب أن يكون <span class="math">\(|\epsilon_{\text{الإجمالي}}| < \lfloor q/4 \rfloor = 832\)</span>. تم اختيار المعاملات لضمان ذلك باحتمال <span class="math">\(1 - 2^{-139}\)</span> لـ ML-KEM-768.</p>
         </section>
 
-        <!-- Abschnitt 4.7 -->
-        <section id="id-47">
-            <h2>4.7 Post‑Quanten‑Sicherheit von Gittern</h2>
+        <!-- القسم 8.6 – الصحة والأمن -->
+        <section id="id-86">
+            <h2>8.6 الصحة والأمن</h2>
 
-            <h3>Bester klassischer Algorithmus: BKZ (Block Korkine-Zolotarev)</h3>
+            <h3>صحة K‑PKE</h3>
+            <p>يتم تحليل احتمال خطأ K‑PKE بمعاينة <span class="math">\(s\)</span>، <span class="math">\(e\)</span>، <span class="math">\(r\)</span>، <span class="math">\(e_1\)</span>، <span class="math">\(e_2\)</span> من التوزيع <span class="math">\(B_\eta\)</span>. لـ ML-KEM-768 (<span class="math">\(k=3\)</span>، <span class="math">\(\eta_1=\eta_2=2\)</span>)، احتمال خطأ معامل واحد هو <span class="math">\(< 2^{-150}\)</span>، ومع 256 معاملاً وحد الاتحاد، الاحتمال الإجمالي هو <span class="math">\(< 2^{-139}\)</span>.</p>
 
-            <p>Der BKZ-Algorithmus und seine Varianten (BKZ 2.0, G6K) sind die besten klassischen Algorithmen zum Angriff auf Gitter. Ihre Komplexität für ML-KEM-768 wird auf <span class="math">\(> 2^{178}\)</span> Operationen geschätzt.</p>
-
-            <h3>Einfluss von Quantencomputern</h3>
-
-            <p>Die besten Quantenalgorithmen zum Angriff auf MLWE (einschließlich Ansätzen mit QRAM) bieten nur eine moderate Beschleunigung – höchstens quadratisch, wobei die Schwierigkeit des Problems im exponentiellen Bereich bleibt.</p>
-
-            <p>Dies steht in starkem Kontrast zu Shor, der eine exponentielle Beschleunigung bei Faktorisierung und DLP bietet.</p>
-
-            <h3>Warum MLWE keinen "Shor-Algorithmus" hat</h3>
-
-            <p>MLWE hat nicht die abelsche Gruppenstruktur, die Shor ausnutzt. Das Problem ist grundlegend anders: Es geht nicht darum, Periodizität in einer Funktion zu finden, sondern einen kurzen Vektor in einem hochdimensionalen Gitter zu finden – ein geometrisches Problem, für das keine bekannte Quantentechnik mit exponentieller Beschleunigung existiert.</p>
+            <h3>أمن IND‑CCA2 لـ ML‑KEM</h3>
+            <details>
+                <summary><strong>الخطوة 1: من MLWE إلى K‑PKE IND‑CPA</strong></summary>
+                <p>إذا ميّز خصم نصوص K‑PKE المشفرة، فيمكن استخدام ذلك لحل MLWE (اختزال حدودي).</p>
+            </details>
+            <details>
+                <summary><strong>الخطوة 2: من K‑PKE IND‑CPA إلى ML‑KEM IND‑CCA2</strong></summary>
+                <p>عبر تحويل FO في نموذج الأوراكل العشوائي. إعادة التشفير في فك التشفير هي المفتاح: تمنع الخصم من استخدام فك التشفير كأوراكل.</p>
+            </details>
         </section>
 
-        <!-- Quellen -->
+        <!-- المصادر -->
         <div class="sources">
-            <h2>Quellen</h2>
+            <h2>المصادر</h2>
             <ul>
-                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
-                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
-                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
-                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
-                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
-                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Kapitel 17</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em><br />
+                    <a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank">https://csrc.nist.gov/pubs/fips/203/final</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber: A CCA-Secure Module-Lattice-Based KEM</em></li>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em></li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em></li>
             </ul>
         </div>
 
-        <!-- Kapitelnavigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="3.html" class="nav-btn">← Vorheriges Kapitel</a>
-            <span class="nav-label">04 / 10</span>
-            <a href="5.html" class="nav-btn">Nächstes Kapitel →</a>
+            <a href="7.html" class="nav-btn">← الفصل السابق</a>
+            <span class="nav-label">08 / 10</span>
+            <a href="9.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
@@ -733,7 +665,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Kostenlose Bibliothek für alle. Alle Rechte vorbehalten.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -785,7 +717,7 @@
                 e.stopPropagation();
                 const lang = option.dataset.lang;
                 if (lang && langMap[lang]) {
-                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/8.html`;
                 }
             });
         });

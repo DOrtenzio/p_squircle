@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="ar">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Chapter 8 – MONEOO.</title>
+    <title> فصل 9 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -329,14 +329,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navigazione rapida">
-            <a href="index.html#featureSection">Why</a>
-            <a href="index.html#learningPath">Path</a>
-            <a href="index.html#searchSection">Guide</a>
+            <a href="index.html#featureSection">لماذا</a>
+ <a href="index.html#learningPath">المسار</a>
+ <a href="index.html#searchSection">الدليل</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
                 <button class="lang-toggle" id="langToggle" aria-label="Select Language">
-                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <span class="lang-current" id="langCurrent">🇸🇦 العربية</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -368,305 +368,304 @@
     <div class="container chapter-wrapper">
         <!-- Sidebar -->
         <aside class="chapter-sidebar">
-            <h3>Chapters</h3>
+            <h3>فصول</h3>
             <ul>
-                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> المتطلبات الأساسية</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> تماثلي</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> غير متماثل</a></li>
                 <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> شبكات</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
-                <li class="active"><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> الأمان</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> التنفيذات</a></li>
             </ul>
         </aside>
 
         <main class="chapter-content">
     <article>
-        <h1>08 – FIPS 203 / ML-KEM</h1>
-        <p class="subtitle">The heart of the standard: KeyGen, Encaps and Decaps</p>
+        <h1>09 – الأمن والمعاملات</h1>
+        <p class="subtitle">لماذا ML-KEM آمن وكيف تم اختيار الأرقام</p>
 
-        <!-- Index -->
+        <!-- الفهرس -->
         <div class="toc">
-            <h2>Index</h2>
+            <h2>المحتوى</h2>
             <ul>
-                <li><a href="#id-81">8.1 Standard overview</a></li>
-                <li><a href="#id-82">8.2 The K‑PKE primitives</a></li>
-                <li><a href="#id-83">8.3 ML‑KEM (the complete scheme)</a></li>
-                <li><a href="#id-84">8.4 Auxiliary primitive functions</a></li>
-                <li><a href="#id-85">8.5 Compression and decompression</a></li>
-                <li><a href="#id-86">8.6 Correctness and security</a></li>
+                <li><a href="#id-91">9.1 نماذج الأمن</a></li>
+                <li><a href="#id-92">9.2 قياس صعوبة MLWE</a></li>
+                <li><a href="#id-93">9.3 الهجمات الرئيسية على الشبكات</a></li>
+                <li><a href="#id-94">9.4 مستويات أمن NIST</a></li>
+                <li><a href="#id-95">9.5 مقارنة مع مخططات PQC الأخرى</a></li>
+                <li><a href="#id-96">9.6 القنوات الجانبية والتنفيذات الآمنة</a></li>
             </ul>
         </div>
 
-        <!-- Section 8.1 -->
-        <section id="id-81">
-            <h2>8.1 Standard overview</h2>
+        <!-- القسم 9.1 -->
+        <section id="id-91">
+            <h2>9.1 نماذج الأمن</h2>
 
-            <p>FIPS 203 was published by NIST in August 2024 as the first post-quantum standard for protecting communications. It is based on the CRYSTALS-Kyber submission from the NIST PQC Competition.</p>
+            <h3>IND-CPA (عدم قابلية التمييز تحت هجوم النص العادي المختار)</h3>
+            <p>في هذا النموذج، يقوم الخصم بـ:</p>
+            <ol>
+                <li>استلام المفتاح العام <span class="math">\(ek\)</span></li>
+                <li>اختيار رسالتين <span class="math">\(m_0, m_1\)</span></li>
+                <li>استلام النص المشفر لإحداهما (مختارة عشوائياً)</li>
+                <li>تخمين أي رسالة تم تشفيرها</li>
+            </ol>
+            <p>يكون المخطط آمناً إذا: <span class="math">\(\Pr[\text{يخمن}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (مكون التشفير الأساسي) هو IND-CPA تحت افتراض MLWE.</p>
 
-            <p><strong>What FIPS 203 standardizes:</strong></p>
+            <h3>IND-CCA2 (عدم قابلية التمييز تحت هجوم النص المشفر المختار التكيفي)</h3>
+            <p>مثل CPA، ولكن يمكن للخصم أيضاً استجواب أوراكل فك التشفير على أي نص مشفر (ما عدا نص التحدي). هذا النموذج يلتقط هجمات حقيقية (مثل Bleichenbacher)، حيث يرسل خصم نشط رسائل مصممة خصيصاً ويراقب الردود.</p>
+            <p><strong>ML-KEM هو IND-CCA2.</strong> هذا هو المستوى المطلوب لـ KEM آمن في بروتوكولات حقيقية مثل TLS أو SSH.</p>
+
+            <h3>ROM مقابل QROM</h3>
+            <p>تستخدم براهين الأمن نماذج مثالية لدوال التجزئة:</p>
             <ul>
-                <li>An IND-CCA2-secure KEM (Key Encapsulation Mechanism)</li>
-                <li>Three security levels: ML-KEM-512, ML-KEM-768, ML-KEM-1024</li>
-                <li>All auxiliary functions: hashing, sampling, encoding, compression</li>
+                <li><strong>ROM (نموذج الأوراكل العشوائي):</strong> دوال التجزئة هي أوراكل عشوائية مثالية.</li>
+                <li><strong>QROM (نموذج الأوراكل العشوائي الكمومي):</strong> يمكن للخصم الكمومي استجواب الأوراكل في تراكب.</li>
+            </ul>
+            <p>تضمن البراهين الحديثة لتحويل FO (فوجيساكي-أوكاموتو) المستخدم في ML-KEM الأمن في QROM، وهو ضروري ضد الخصوم الكموميين.</p>
+        </section>
+
+        <!-- القسم 9.2 -->
+        <section id="id-92">
+            <h2>9.2 قياس صعوبة MLWE</h2>
+
+            <h3>الأمن كتكلفة الهجوم</h3>
+            <p>لا يوجد برهان مطلق أن MLWE صعب. يُقدّر الأمن بحساب تكلفة أفضل خوارزمية هجوم معروفة. أمن بقيمة <span class="math">\(\lambda\)</span> بت يعني أن الهجوم يتطلب حوالي <span class="math">\(2^\lambda\)</span> عملية.</p>
+
+            <h3>المعاملات</h3>
+            <p>تعتمد الصعوبة على:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span> (بعد كثيرة الحدود، ثابت)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (بعد الوحدة)</li>
+                <li><span class="math">\(q = 3329\)</span> (معامل أولي)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (سعة الضوضاء)</li>
             </ul>
 
-            <p><strong>What it does NOT standardize:</strong></p>
-            <ul>
-                <li>How to manage keys</li>
-                <li>Which symmetric cipher to use with the derived key</li>
-                <li>Handshake protocols (see TLS 1.3, SSH)</li>
-            </ul>
-        </section>
+            <h3>مقدّر الشبكات (Lattice Estimator)</h3>
+            <p>الأداة القياسية هي <a href="https://github.com/malb/lattice-estimator" target="_blank">مقدّر الشبكات</a> من Albrecht وآخرون. لـ ML-KEM-768:</p>
 
-        <!-- Section 8.2 – K‑PKE -->
-        <section id="id-82">
-            <h2>8.2 The K‑PKE primitives</h2>
-            <p>ML-KEM is built on two levels. The inner level is <strong>K‑PKE</strong>, a CPA-secure PKE (but not CCA-secure). ML-KEM adds the FO transformation to achieve CCA2.</p>
-
-            <h3>K‑PKE.KeyGen</h3>
-            <div class="algorithm-steps">
-                <ol>
-                    <li>Input: 32-byte seed <span class="math">\(d\)</span></li>
-                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> where <span class="math">\(G = \text{SHA3-512}\)</span></li>
-                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (public matrix, already in NTT domain)</li>
-                    <li>For <span class="math">\(i = 0 \dots k-1\)</span>:
-                        <ul>
-                            <li><span class="math">\(\mathbf{s}[i], \mathbf{e}[i] = \text{SamplePolyCBD}(\sigma, i)\)</span></li>
-                        </ul>
-                    </li>
-                    <li><span class="math">\(\hat{\mathbf{s}} = \text{NTT}(\mathbf{s})\)</span>, <span class="math">\(\hat{\mathbf{e}} = \text{NTT}(\mathbf{e})\)</span></li>
-                    <li><span class="math">\(\hat{\mathbf{t}} = \mathbf{A} \circ \hat{\mathbf{s}} + \hat{\mathbf{e}}\)</span></li>
-                    <li>Output:
-                        <ul>
-                            <li><span class="math">\(ek_{\text{PKE}} = \text{Encode}(\hat{\mathbf{t}}) \| \rho\)</span></li>
-                            <li><span class="math">\(dk_{\text{PKE}} = \text{Encode}(\hat{\mathbf{s}})\)</span></li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <h3>K‑PKE.Encrypt</h3>
-            <div class="algorithm-steps">
-                <ol>
-                    <li>Input: <span class="math">\(ek_{\text{PKE}}\)</span>, message <span class="math">\(m\)</span>, randomness <span class="math">\(r\)</span></li>
-                    <li>Parse <span class="math">\(\hat{\mathbf{t}}\)</span> and <span class="math">\(\rho\)</span> from <span class="math">\(ek\)</span></li>
-                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span></li>
-                    <li>Sample small vectors <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> using <span class="math">\(r\)</span> as seed (CBD)</li>
-                    <li><span class="math">\(\hat{\mathbf{u}} = \text{NTT}^{-1}(\mathbf{A}^T \circ \text{NTT}(\mathbf{r})) + \mathbf{e}_1\)</span></li>
-                    <li><span class="math">\(v = \text{NTT}^{-1}(\hat{\mathbf{t}}^T \circ \text{NTT}(\mathbf{r})) + e_2 + \text{Decode}(m)\)</span></li>
-                    <li>Compress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span></li>
-                    <li>Output: ciphertext <span class="math">\(c\)</span></li>
-                </ol>
-            </div>
-
-            <h3>K‑PKE.Decrypt</h3>
-            <div class="algorithm-steps">
-                <ol>
-                    <li>Input: <span class="math">\(dk_{\text{PKE}}\)</span>, ciphertext <span class="math">\(c\)</span></li>
-                    <li>Decompress <span class="math">\(\mathbf{u}\)</span> and <span class="math">\(v\)</span> from <span class="math">\(c\)</span></li>
-                    <li><span class="math">\(\hat{\mathbf{s}} = \text{Decode}(dk_{\text{PKE}})\)</span></li>
-                    <li><span class="math">\(w = v - \text{NTT}^{-1}(\hat{\mathbf{s}}^T \circ \text{NTT}(\mathbf{u}))\)</span></li>
-                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (decode the message from residual noise)</li>
-                    <li>Output: <span class="math">\(m\)</span></li>
-                </ol>
-            </div>
-        </section>
-
-        <!-- Section 8.3 – Complete ML‑KEM -->
-        <section id="id-83">
-            <h2>8.3 ML‑KEM (the complete scheme)</h2>
-            <p>K‑PKE is only CPA‑secure. ML‑KEM uses the <strong>Fujisaki‑Okamoto (FO) transformation</strong> to elevate K‑PKE to <strong>IND‑CCA2</strong>. Decryption verifies that the received ciphertext matches what one would obtain by re-encrypting the decrypted message; if not, it returns a pseudorandom key (implicit reject).</p>
-
-            <h3 id="id-831">8.3.1 ML‑KEM.KeyGen</h3>
-            <div class="math-block">
-                \[
-                \begin{aligned}
-                & z \leftarrow \{0,1\}^{256}, \quad d \leftarrow \{0,1\}^{256} \\
-                & (ek_{\text{PKE}}, dk_{\text{PKE}}) = \text{K-PKE.KeyGen}(d) \\
-                & ek = ek_{\text{PKE}} \\
-                & dk = dk_{\text{PKE}} \| ek \| H(ek) \| z \\
-                & \text{return } (ek, dk)
-                \end{aligned}
-                \]
-            </div>
-            <p>The private key includes <span class="math">\(ek\)</span> and precomputed hashes to optimize Decaps.</p>
-
-            <h3 id="id-832">8.3.2 ML‑KEM.Encaps</h3>
-            <div class="math-block">
-                \[
-                \begin{aligned}
-                & m \leftarrow \{0,1\}^{256} \\
-                & (\bar{K}, r) = G(m \| H(ek)) \\
-                & c = \text{K-PKE.Encrypt}(ek, m, r) \\
-                & K = \text{KDF}(\bar{K} \| H(c)) \\
-                & \text{return } (K, c)
-                \end{aligned}
-                \]
-            </div>
-
-            <h3 id="id-833">8.3.3 ML‑KEM.Decaps</h3>
-            <div class="math-block">
-                \[
-                \begin{aligned}
-                & (dk_{\text{PKE}}, ek, h, z) = \text{ParseDK}(dk) \\
-                & m' = \text{K-PKE.Decrypt}(dk_{\text{PKE}}, c) \\
-                & (\bar{K}', r') = G(m' \| h) \\
-                & c' = \text{K-PKE.Encrypt}(ek, m', r') \\
-                & \text{if } c' == c: \\
-                & \quad K = \text{KDF}(\bar{K}' \| H(c)) \\
-                & \text{else:} \\
-                & \quad K = \text{KDF}(z \| H(c)) \\
-                & \text{return } K
-                \end{aligned}
-                \]
-            </div>
-            <p><strong>Note:</strong> the comparison <span class="math">\(c' == c\)</span> must be performed in constant time to avoid side‑channel attacks.</p>
-        </section>
-
-        <!-- Section 8.4 – Auxiliary functions -->
-        <section id="id-84">
-            <h2>8.4 Auxiliary primitive functions</h2>
-
-            <h3>Hashes used</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Function</th>
-                        <th>Input</th>
-                        <th>Output</th>
-                        <th>Use</th>
+                        <th>الهجوم</th>
+                        <th>التكلفة المقدرة (بت)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><span class="math">\(H = \text{SHA3-256}\)</span></td>
-                        <td>any</td>
-                        <td>32 bytes</td>
-                        <td>generic hashing</td>
+                        <td>الهجوم الأولي (BKZ)</td>
+                        <td>~178 بت</td>
                     </tr>
                     <tr>
-                        <td><span class="math">\(G = \text{SHA3-512}\)</span></td>
-                        <td>any</td>
-                        <td>64 bytes</td>
-                        <td>key derivation</td>
+                        <td>الهجوم المزدوج</td>
+                        <td>~175 بت</td>
                     </tr>
                     <tr>
-                        <td><span class="math">\(\text{XOF} = \text{SHAKE128}\)</span></td>
-                        <td>any</td>
-                        <td>variable length</td>
-                        <td>generate <span class="math">\(A\)</span></td>
+                        <td>توفيقي</td>
+                        <td>&gt; 200 بت</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>هامش الأمن كبير مقارنة بالهدف البالغ 128 بت كلاسيكياً/كمومياً.</p>
+        </section>
+
+        <!-- القسم 9.3 -->
+        <section id="id-93">
+            <h2>9.3 الهجمات الرئيسية على الشبكات</h2>
+
+            <h3>BKZ (Block Korkine-Zolotarev)</h3>
+            <p>هذه أفضل خوارزمية عامة لإيجاد متجهات قصيرة. تقسم الشبكة إلى كتل حجم <span class="math">\(\beta\)</span> وتحل SVP محلياً. التعقيد: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. لـ ML-KEM-768: <span class="math">\(\beta \approx 430\)</span>.</p>
+
+            <h3>الهجوم الأولي (uSVP)</h3>
+            <p>يختزل MLWE إلى مسألة متجه قصير في شبكة موسعة تحتوي على المفتاح العام والنص المشفر. يصبح المتجه السري <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> متجهاً قصيراً يحاول BKZ إيجاده.</p>
+
+            <h3>الهجوم المزدوج</h3>
+            <p>يستغل الشبكة المزدوجة لتمييز عينات MLWE عن العينات المنتظمة عبر الإحصاء. يبني العديد من المتجهات القصيرة في المزدوج لإجراء المميز.</p>
+
+            <h3>اختيار q = 3329</h3>
+            <p>كونه أولياً وخالياً من بنية جبرية خاصة، يمنع هجمات جبرية محددة. لا توجد عوامل صغيرة أو علاقات بسيطة يمكن استغلالها.</p>
+        </section>
+
+        <!-- القسم 9.4 -->
+        <section id="id-94">
+            <h2>9.4 مستويات أمن NIST</h2>
+
+            <p>حدد NIST 5 مستويات. يغطي ML-KEM المستويات 1 و 3 و 5:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>المخطط</th>
+                        <th>مستوى NIST</th>
+                        <th>الأمن الكلاسيكي</th>
+                        <th>الأمن الكمومي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1 (AES-128)</td>
+                        <td>~118 بت</td>
+                        <td>~100 بت</td>
                     </tr>
                     <tr>
-                        <td><span class="math">\(\text{PRF}_\eta = \text{SHAKE256}\)</span></td>
-                        <td>seed+nonce</td>
-                        <td>variable length</td>
-                        <td>sample <span class="math">\(s\)</span>, <span class="math">\(e\)</span></td>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3 (AES-192)</td>
+                        <td><strong>~178 بت</strong></td>
+                        <td><strong>~164 بت</strong></td>
                     </tr>
                     <tr>
-                        <td><span class="math">\(\text{KDF} = \text{SHAKE256}\)</span></td>
-                        <td>any</td>
-                        <td>variable length</td>
-                        <td>derive final <span class="math">\(K\)</span></td>
+                        <td>ML-KEM-1024</td>
+                        <td>5 (AES-256)</td>
+                        <td>~230 بت</td>
+                        <td>~218 بت</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>Sampling of <span class="math">\(A\)</span> (the <code>SampleNTT</code> algorithm)</h3>
-            <p>The matrix <span class="math">\(A \in R_q^{k \times k}\)</span> is generated deterministically from a public seed <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
-            <div class="sequence-diagram">
-                for i = 0..k-1, j = 0..k-1:<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
-            </div>
-            <p><code>SampleNTT</code> reads bytes from the XOF and builds uniform coefficients in <span class="math">\(\{0, \ldots, q-1\}\)</span> (discarding values <span class="math">\(\geq q\)</span>).</p>
-
-            <h3>Noise sampling (the <code>SamplePolyCBD</code> algorithm)</h3>
-            <p>Noise is sampled from the centered binomial distribution <span class="math">\(B_\eta\)</span>:</p>
-            <div class="sequence-diagram">
-                given a 32-byte seed σ and a nonce b:<br />
-                bytes = PRF<sub>η</sub>(σ, b) &nbsp; // 64η bytes<br />
-                for each pair of bits (a_i, b_i):<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;coefficient = Σa_i - Σb_i
-            </div>
-            <p>The result is a polynomial with coefficients in <span class="math">\([-\eta, \eta]\)</span>.</p>
+            <blockquote>
+                <p><strong>التوصية:</strong> يقدم ML-KEM-768 التوازن الأمثل بين الأمن والأداء لمعظم الاستخدامات. ML-KEM-1024 مخصص للأنظمة عالية الأهمية.</p>
+            </blockquote>
         </section>
 
-        <!-- Section 8.5 – Compression -->
-        <section id="id-85">
-            <h2>8.5 Compression and decompression</h2>
-            <p>ML-KEM uses compression to reduce ciphertext size. Polynomial coefficients are in <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 bits), but are compressed to <span class="math">\(d_u\)</span> or <span class="math">\(d_v\)</span> bits.</p>
-            <div class="math-block">
-                \[
-                \text{Compress}_d(x) = \left\lfloor \frac{2^d}{q} \cdot x \right\rceil \bmod 2^d
-                \]
-            </div>
-            <div class="math-block">
-                \[
-                \text{Decompress}_d(y) = \left\lfloor \frac{q}{2^d} \cdot y \right\rceil
-                \]
-            </div>
-            <p><strong>Error introduced by compression:</strong> compression introduces an error <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. For <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. This error must be small enough not to cause decryption failure, which imposes a constraint on the parameters <span class="math">\(\eta_1\)</span>, <span class="math">\(\eta_2\)</span>, <span class="math">\(d_u\)</span>, <span class="math">\(d_v\)</span>.</p>
+        <!-- القسم 9.5 -->
+        <section id="id-95">
+            <h2>9.5 مقارنة مع مخططات PQC الأخرى</h2>
 
-            <h3>Noise budget</h3>
-            <p>The total noise reaching decryption is:</p>
-            <div class="math-block">
-                \[
-                \epsilon_{\text{total}} = \hat{\mathbf{e}}^T\hat{\mathbf{r}} + e_2 - \hat{\mathbf{s}}^T e_1 + \epsilon_u + \epsilon_v
-                \]
-            </div>
-            <p>For correct decryption, we need <span class="math">\(|\epsilon_{\text{total}}| < \lfloor q/4 \rfloor = 832\)</span>. The parameters are chosen to ensure this holds with probability <span class="math">\(1 - 2^{-139}\)</span> for ML-KEM-768.</p>
+            <h3>KEMs ما بعد الكمية الموحدة (NIST 2024)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>المخطط</th>
+                        <th>الأساس الرياضي</th>
+                        <th>المفتاح العام</th>
+                        <th>النص المشفر</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE (شبكات)</td>
+                        <td>1184 ب</td>
+                        <td>1088 ب</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>رموز تصحيح</td>
+                        <td>~1541 ب</td>
+                        <td>~1573 ب</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>رموز تصحيح</td>
+                        <td>~2249 ب</td>
+                        <td>~4522 ب</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>رموز Goppa</td>
+                        <td>~261 ك.ب</td>
+                        <td>128 ب</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>مقارنة مع التشفير الكلاسيكي</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>المخطط</th>
+                        <th>المفتاح العام</th>
+                        <th>الأمن الكمومي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 ب</td>
+                        <td>❌ ضعيف</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 ب</td>
+                        <td>❌ ضعيف</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 ب</td>
+                        <td>✅ 164+ بت</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>التكلفة الرئيسية هي الحجم الأكبر (~37× مقارنة بـ ECDH)، لكنها تبقى مقبولة لمصافحات TLS الحديثة.</p>
         </section>
 
-        <!-- Section 8.6 – Correctness and security -->
-        <section id="id-86">
-            <h2>8.6 Correctness and security</h2>
+        <!-- القسم 9.6 -->
+        <section id="id-96">
+            <h2>9.6 القنوات الجانبية والتنفيذات الآمنة</h2>
 
-            <h3>Correctness of K‑PKE</h3>
-            <p>The error probability of K‑PKE is analyzed by sampling <span class="math">\(s\)</span>, <span class="math">\(e\)</span>, <span class="math">\(r\)</span>, <span class="math">\(e_1\)</span>, <span class="math">\(e_2\)</span> from the <span class="math">\(B_\eta\)</span> distribution. For ML-KEM-768 (<span class="math">\(k=3\)</span>, <span class="math">\(\eta_1=\eta_2=2\)</span>), the error probability for a single coefficient is <span class="math">\(< 2^{-150}\)</span>, and with 256 coefficients and the union bound the total probability is <span class="math">\(< 2^{-139}\)</span>.</p>
+            <p>يمكن أن يكون التنفيذ الصحيح ضعيفاً إذا تسربت معلومات عبر وقت التنفيذ (هجمات التوقيت) أو استهلاك الطاقة.</p>
 
-            <h3>IND‑CCA2 security of ML‑KEM</h3>
-            <details>
-                <summary><strong>Step 1: From MLWE to K‑PKE IND‑CPA</strong></summary>
-                <p>If an adversary distinguishes K‑PKE ciphertexts, it can be used to solve MLWE (polynomial reduction).</p>
-            </details>
-            <details>
-                <summary><strong>Step 2: From K‑PKE IND‑CPA to ML‑KEM IND‑CCA2</strong></summary>
-                <p>Via the FO transformation in the random oracle model. The re-encryption in decryption is the key: it prevents the adversary from using decryption as an oracle.</p>
-            </details>
-        </section>
+            <h3>الزمن الثابت (Constant-Time, CT)</h3>
+            <p>يجب أن يكون لجميع العمليات وقت ثابت بغض النظر عن البيانات السرية. مثال حاسم في Decaps:</p>
 
-        <!-- Sources -->
-        <div class="sources">
-            <h2>Sources</h2>
+            <pre><code class="language-c">// غير آمن (زمن متغير):
+if (memcmp(c, c_prime, len) == 0) { 
+    K = K_good; 
+} else { 
+    K = K_reject; 
+}
+
+// آمن (زمن ثابت):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF إذا متساوية، 0x00 إذا مختلفة
+K = ct_select(mask, K_good, K_reject);     // اختيار CT بدون فروع</code></pre>
+
+            <h3>المناطق الحرجة للزمن الثابت في ML-KEM</h3>
             <ul>
-                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em><br />
-                    <a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank">https://csrc.nist.gov/pubs/fips/203/final</a></li>
-                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber: A CCA-Secure Module-Lattice-Based KEM</em></li>
-                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em></li>
-                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em></li>
+                <li><strong>معاينة <span class="math">\(B_\eta\)</span>:</strong> جمع البتات بدون فروع شرطية.</li>
+                <li><strong>NTT:</strong> يجب تنفيذ عمليات الفراشة دائماً، حتى لو لم تتغير النتيجة.</li>
+                <li><strong>التحقق من النص المشفر:</strong> استخدام <code>ct_memcmp</code>.</li>
+            </ul>
+
+            <h3>التنفيذات المرجعية</h3>
+            <ul>
+                <li><code>pqclean</code>: تنفيذات CT محمولة.</li>
+                <li><code>liboqs</code>: تحسينات AVX2 مع خصائص CT محققة.</li>
+            </ul>
+        </section>
+
+        <!-- المصادر -->
+        <div class="sources">
+            <h2>المصادر</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>، IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
             </ul>
         </div>
 
-        <!-- Chapter navigation -->
+        <!-- التنقل بين الفصول -->
         <div class="chapter-nav">
-            <a href="7.html" class="nav-btn">← Previous chapter</a>
-            <span class="nav-label">08 / 10</span>
-            <a href="9.html" class="nav-btn">Next chapter →</a>
+            <a href="8.html" class="nav-btn">← الفصل السابق</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">الفصل التالي →</a>
         </div>
     </article>
 </main>
-
     </div>
 
     <!-- Footer del sito -->
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
-            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+            <p class="copyright">© <span id="current-year"></span> مكتبة مجانية للجميع. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -718,7 +717,7 @@
                 e.stopPropagation();
                 const lang = option.dataset.lang;
                 if (lang && langMap[lang]) {
-                    window.location.href = `${window.location.origin}/public/docs/${lang}/8.html`;
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
                 }
             });
         });
