@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Chapter 6 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- MathJax per le formule -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        /* ===== LAYOUT GENERALE ===== */
+        .chapter-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            align-items: flex-start;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .chapter-sidebar {
+            flex: 0 0 220px;
+            position: sticky;
+            top: 100px; /* sotto il toolbar */
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+        }
+        .chapter-sidebar h3 {
+            margin: 0 0 0.8rem 0.4rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .chapter-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chapter-sidebar li {
+            margin-bottom: 0.2rem;
+        }
+        .chapter-sidebar a {
+            display: block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .chapter-sidebar a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .chapter-sidebar .active a {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .chapter-sidebar .active a:hover {
+            background: var(--accent);
+        }
+        .chapter-sidebar .chapter-number {
+            display: inline-block;
+            min-width: 2rem;
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .chapter-sidebar .active .chapter-number {
+            opacity: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENUTO ===== */
+        .chapter-content {
+            flex: 1;
+            min-width: 0; /* evita overflow */
+        }
+
+        /* ===== MIGLIORIE TESTO ===== */
+        .chapter-content p {
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .chapter-content .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 2rem;
+        }
+        .chapter-content h2 {
+            margin-top: 2.4rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.4rem;
+        }
+        .chapter-content h3 {
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .chapter-content h4 {
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .chapter-content .example {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+        }
+        .chapter-content .example p:last-child {
+            margin-bottom: 0;
+        }
+        .chapter-content .math-block {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .chapter-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        .chapter-content blockquote p {
+            margin: 0;
+        }
+        .chapter-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .chapter-content table th,
+        .chapter-content table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+        }
+        .chapter-content table th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
+        .chapter-content table td {
+            background: #fff;
+        }
+        .chapter-content details {
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chapter-content details summary {
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .chapter-content details summary:hover {
+            color: var(--text-muted);
+        }
+        .chapter-content .sources {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.08);
+        }
+        .chapter-content .sources ul {
+            padding-left: 1.2rem;
+        }
+        .chapter-content .sources ul li {
+            margin: 0.4rem 0;
+        }
+        .chapter-content .sources ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .sources ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+        .chapter-content .toc {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .chapter-content .toc ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .chapter-content .toc ul li {
+            padding: 0.2rem 0;
+        }
+        .chapter-content .toc ul li a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        .chapter-content .toc ul li a:hover {
+            border-bottom-color: var(--text-main);
+        }
+
+        /* ===== NAVIGAZIONE CAPITOLI ===== */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2.5rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0,0,0,0.06);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .chapter-nav .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chapter-nav .nav-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .chapter-nav .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+        .chapter-nav .nav-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .chapter-wrapper {
+                flex-direction: column;
+            }
+            .chapter-sidebar {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .chapter-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.2rem;
+            }
+            .chapter-sidebar li {
+                margin: 0;
+            }
+            .chapter-sidebar a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .chapter-sidebar .chapter-number {
+                min-width: 1.5rem;
+            }
+        }
+        @media (max-width: 720px) {
+            .chapter-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chapter-nav .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar (identico all'index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navigazione rapida">
+            <a href="index.html#featureSection">Why</a>
+            <a href="index.html#learningPath">Path</a>
+            <a href="index.html#searchSection">Guide</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Select Language">
+                    <span class="lang-current" id="langCurrent">🇬🇧 English</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 lingue -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenitore principale con sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Chapters</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerequisites</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetric</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetric</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Lattices</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li class="active"><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Security</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementations</a></li>
+            </ul>
+        </aside>
+
+       <main class="chapter-content">
+    <article>
+        <h1>06 – Key Encapsulation Mechanism (KEM)</h1>
+        <p class="subtitle">The bridge between MLWE mathematics and the FIPS 203 standard</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>Index</h2>
+            <ul>
+                <li><a href="#id-61">6.1 Formal definition of KEM</a></li>
+                <li><a href="#id-62">6.2 Security properties</a></li>
+                <li><a href="#id-63">6.3 KEM vs PKE: why KEMs</a></li>
+                <li><a href="#id-64">6.4 Intuitive example: KEM from Diffie-Hellman</a></li>
+                <li><a href="#id-65">6.5 The Fujisaki-Okamoto (FO) transformation</a></li>
+                <li><a href="#id-66">6.6 From K-PKE (CPA) to ML-KEM (CCA2)</a></li>
+                <li><a href="#id-67">6.7 KEM in a real protocol: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 Generic structure of the KEM flow</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 6.1 -->
+        <section id="id-61">
+            <h2>6.1 Formal definition of KEM</h2>
+
+            <h3>Triple of algorithms</h3>
+            <p>A Key Encapsulation Mechanism (KEM) is a triple of probabilistic polynomial-time algorithms:</p>
+            <div class="math-block">
+                \[
+                \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
+                \]
+            </div>
+
+            <ul>
+                <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
+                    Probabilistic algorithm (uses internal randomness). Takes no input.
+                    <ul>
+                        <li><code>ek</code>: encapsulation key (public key)</li>
+                        <li><code>dk</code>: decapsulation key (private key)</li>
+                    </ul>
+                </li>
+                <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
+                    Given <code>ek</code>, produces:
+                    <ul>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: symmetric secret key (typically 256 bits)</li>
+                        <li><code>c</code>: ciphertext (the "capsule")</li>
+                    </ul>
+                </li>
+                <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
+                    Given <code>dk</code> and <code>c</code>, recovers <span class="math">\(K\)</span>.</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>FIPS 203 terminological note:</strong> the standard uses <code>ek</code> for encapsulation key (not <code>pk</code>) and <code>dk</code> for decapsulation key (not <code>sk</code>). The distinction is intentional: it emphasizes that the public key is used to encapsulate, not to encrypt arbitrary messages.</p>
+            </div>
+
+            <h3>Correctness</h3>
+            <p>A KEM is correct if for every valid key pair:</p>
+            <div class="math-block">
+                \[
+                \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
+                \]
+            </div>
+            <p>where <span class="math">\(\delta\)</span> is a negligible error probability (typically <span class="math">\(< 2^{-128}\)</span>).<br>
+            For ML-KEM-768: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+        </section>
+
+        <!-- Section 6.2 -->
+        <section id="id-62">
+            <h2>6.2 Security properties</h2>
+
+            <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
+            
+            <div class="security-game">
+                <h4>IND-CPA security game</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenger</th>
+                            <th>Adversary <span class="math">\(\mathcal{A}\)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\(ek \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Chooses challenge (implicit in KEM)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((c, K_b) \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Returns <span class="math">\(b'\)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Advantage:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>The KEM is IND-CPA if the advantage is negligible for every polynomial-time adversary. Intuitively: the adversary cannot distinguish the real key <span class="math">\(K\)</span> from a random one, even seeing the ciphertext <code>c</code>.</p>
+
+            <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
+            <p>Like CPA, but the adversary also has access to a decapsulation oracle:</p>
+
+            <div class="security-game">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Initialization</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, sends <span class="math">\(ek\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Phase 1 (Query)</td>
+                            <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Challenge</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. Sends <span class="math">\((c^*, K_b)\)</span>.</td>
+                        </tr>
+                        <tr>
+                            <td>Phase 2 (Query)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> with <span class="math">\(c_j \neq c^*\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Guess</td>
+                            <td>Returns <span class="math">\(b'\)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>IND-CCA2 is the security standard required for KEMs in real-world use.</p>
+            
+            <div class="note">
+                <p><strong>Why is CCA2 necessary?</strong> In a real protocol (TLS, SSH), an active adversary can send manipulated ciphertexts and observe the server's responses. Even in MLWE, an adversary who knows the decapsulation of ciphertexts close to the challenge ciphertext could extract information about the secret. ML-KEM is IND-CCA2.</p>
+            </div>
+
+            <h3>Additional desirable properties</h3>
+            <ul>
+                <li><strong>Robustness:</strong> hard to construct ciphertexts that decapsulate to the same key with two different private keys.</li>
+                <li><strong>Forward secrecy:</strong> if the private key <code>dk</code> is compromised in the future, past sessions remain secure (requires ephemeral keys).</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.3 -->
+        <section id="id-63">
+            <h2>6.3 KEM vs PKE: why KEMs</h2>
+
+            <h3>PKE (Public Key Encryption)</h3>
+            <p>A PKE encrypts arbitrary messages: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. The problem is that if the message <span class="math">\(m\)</span> has predictable structure (short password, card number), an adversary can exploit low-entropy attacks or padding oracle attacks (Bleichenbacher).</p>
+
+            <h3>KEM: separation of roles</h3>
+            <p>The KEM does not encrypt user messages. It generates a high-entropy symmetric key and encapsulates it:</p>
+            <div class="math-block">
+                \[
+                \text{System} = \underbrace{\text{KEM}}_{\text{exchanges } K} + \underbrace{\text{AES-GCM}}_{\text{encrypts data with } K}
+                \]
+            </div>
+            <p><strong>Advantages:</strong></p>
+            <ul>
+                <li>The key <span class="math">\(K\)</span> is always pseudorandom → no low-entropy attacks.</li>
+                <li>No complex padding needed for user messages.</li>
+                <li><span class="math">\(K\)</span> is used with a symmetric cipher (DEM) to encrypt the actual data.</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.4 -->
+        <section id="id-64">
+            <h2>6.4 Intuitive example: KEM from Diffie-Hellman</h2>
+            
+            <p>Before ML-KEM, the most widely used KEM was built on Diffie-Hellman. This example helps understand the structure.</p>
+
+            <p><strong>Public parameters:</strong> prime <span class="math">\(p\)</span>, generator <span class="math">\(g\)</span> of <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alice</strong>
+                    <ol>
+                        <li>Chooses secret <span class="math">\(a\)</span></li>
+                        <li>Computes <span class="math">\(A = g^a \bmod p\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Chooses secret <span class="math">\(b\)</span></li>
+                        <li>Computes <span class="math">\(B = g^b \bmod p\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alice computes: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{Bob computes: } & K = A^b \bmod p = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>Numerical example:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
+            <ul>
+                <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
+                <li>Bob chooses <span class="math">\(b = 7\)</span>: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>Alice decapsulates: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.5 -->
+        <section id="id-65">
+            <h2>6.5 The Fujisaki-Okamoto (FO) transformation</h2>
+
+            <h3>The problem: from CPA to CCA2</h3>
+            <p>Starting from a CPA-secure PKE, how do you build an IND-CCA2 KEM? The answer is the FO transformation.</p>
+
+            <h3>Core idea</h3>
+            <ul>
+                <li><strong>Deterministic encryption:</strong> the randomness used in encryption is deterministically derived from the message via a hash. If the ciphertext is modified, re-encryption produces something different.</li>
+                <li><strong>Verification in decryption:</strong> instead of decrypting directly, re-encrypt the decrypted message and compare with the received ciphertext. If they don't match → implicit rejection.</li>
+            </ul>
+
+            <h3>Simplified FO scheme</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
+                \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
+                & \quad \text{return } \begin{cases} K' & \text{if } c' = c \\ K_{\text{reject}} & \text{otherwise} \end{cases}
+                \end{aligned}
+                \]
+            </div>
+            <p>Where <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> with <span class="math">\(z\)</span> fixed secret. This "implicit reject" prevents the adversary from using errors as an oracle.</p>
+        </section>
+
+        <!-- Section 6.6 -->
+        <section id="id-66">
+            <h2>6.6 From K-PKE (CPA) to ML-KEM (CCA2)</h2>
+
+            <p>In ML-KEM, the two-level structure is:</p>
+            <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ML-KEM (IND-CCA2)
+└── K-PKE (IND-CPA) + FO transformation
+    └── MLWE problem</pre>
+
+            <h3>ML-KEM.Encaps(ek)</h3>
+            <div class="code-block">
+                <pre><code>m ← Random(32)                  // 256-bit random message
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = first 32 bytes, r = last 32 bytes
+c = K-PKE.Encrypt(ek, m, r)     // deterministic encryption with randomness r
+K = KDF(K̄ ‖ H(c))              // final key
+return (K, c)</code></pre>
+            </div>
+
+            <h3>ML-KEM.Decaps(dk, c)</h3>
+            <div class="code-block">
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = fallback secret
+m' = K-PKE.Decrypt(dk_PKE, c)   // decryption attempt
+(K̄', r') = G(m' ‖ h)           // recompute
+c' = K-PKE.Encrypt(ek, m', r')  // re-encryption for verification
+if c' == c:
+    K = KDF(K̄' ‖ H(c))         // decryption successful
+else:
+    K = KDF(z ‖ H(c))           // fallback: pseudorandom key
+return K</code></pre>
+            </div>
+
+            <div class="note">
+                <p><strong>Important details:</strong> The private key <code>dk</code> also contains <code>ek</code> to allow re-encryption. The comparison <code>c' == c</code> must be constant-time.</p>
+            </div>
+        </section>
+
+        <!-- Section 6.7 -->
+        <section id="id-67">
+            <h2>6.7 KEM in a real protocol: TLS 1.3</h2>
+
+            <div class="protocol-flow tls-handshake">
+                <div class="party client">
+                    <strong>Client (Bob)</strong>
+                </div>
+                <div class="channel"></div>
+                <div class="party server">
+                    <strong>Server (Alice)</strong>
+                </div>
+
+                <div class="step">
+                    <span class="msg-right">ClientHello (supports ML-KEM-768)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">ServerHello + Certificate + KeyShare (ek)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-right">KeyShare (c) + Finished (MAC with K)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">Finished (MAC with K)</span>
+                </div>
+            </div>
+
+            <h3>X25519 + ML-KEM hybrid</h3>
+            <p>In practice, TLS 1.3 uses a hybrid approach:</p>
+            <div class="math-block">
+                \[
+                K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
+                \]
+            </div>
+            <p>This ensures security if at least one of the two schemes holds. The <code>X25519MLKEM768</code> group is already deployed in Chrome 131+.</p>
+        </section>
+
+        <!-- Section 6.8 -->
+        <section id="id-68">
+            <h2>6.8 Generic structure of the KEM flow</h2>
+
+            <div class="algorithm-steps">
+                <h3>Complete flow Alice (Recipient) / Bob (Sender)</h3>
+                <ol>
+                    <li><strong>Alice:</strong> <code>KeyGen()</code> generates <span class="math">\((ek, dk)\)</span>. Publishes <span class="math">\(ek\)</span>.</li>
+                    <li><strong>Bob:</strong> Receives <span class="math">\(ek\)</span>. Runs <code>Encaps(ek)</code>:
+                        <ul>
+                            <li>Generates random <span class="math">\(m\)</span></li>
+                            <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
+                            <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
+                            <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Bob:</strong> Encrypts data with AES-256-GCM using <span class="math">\(K\)</span> and a random nonce.</li>
+                    <li><strong>Bob:</strong> Sends <span class="math">\((c, \text{nonce}, \text{ciphertext}, \text{tag})\)</span> to Alice.</li>
+                    <li><strong>Alice:</strong> Runs <code>Decaps(dk, c)</code> to recover <span class="math">\(K\)</span>.</li>
+                    <li><strong>Alice:</strong> Decrypts data with AES-256-GCM. If the tag fails, discards the message.</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Double protection:</strong> If <code>c</code> is tampered with, Decaps returns a pseudorandom key (<span class="math">\(K_{\text{reject}}\)</span>). Even if the adversary guesses this key, the AEAD tag in AES-GCM would fail, ensuring integrity.</p>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Sources</h2>
+            <ul>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
+                <li>NIST FIPS 203 (2024), Sections 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>IETF draft-ietf-tls-hybrid-design – Hybrid key exchange in TLS 1.3</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="5.html" class="nav-btn">← Previous chapter</a>
+            <span class="nav-label">06 / 10</span>
+            <a href="7.html" class="nav-btn">Next chapter →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Footer del sito -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'it';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/6.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
