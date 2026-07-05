@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <!-- Hoofdstukinhoud -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – Wiskundige Vereisten</h1>
+                <p class="subtitle">De essentiële hulpmiddelen voor het begrijpen van post-kwantumcryptografie</p>
+
+                <!-- Inhoudsopgave -->
+                <div class="toc">
+                    <h2>Inhoudsopgave</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 Modulair rekenen</a></li>
+                        <li><a href="#id-02">0.2 Lineaire algebra: vectoren en matrices</a></li>
+                        <li><a href="#id-03">0.3 Polynomen</a></li>
+                        <li><a href="#id-04">0.4 Algebraïsche structuren: groepen, ringen, lichamen</a></li>
+                        <li><a href="#id-05">0.5 Cryptografische hashfuncties</a></li>
+                        <li><a href="#id-06">0.6 Kansrekening en ruisverdeling</a></li>
+                        <li><a href="#id-07">0.7 Rekencomplexiteit</a></li>
+                    </ul>
+                </div>
+
+                <!-- Sectie 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 Modulair rekenen</h2>
+
+                    <h3>Wat is modulus?</h3>
+                    <p>De bewerking <span class="math">\(a \bmod m\)</span> geeft de <strong>rest</strong> van de gehele deling van <span class="math">\(a\)</span> door <span class="math">\(m\)</span>.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{omdat } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{omdat } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>Afspraak:</strong> in de cryptografie liggen resultaten modulo <span class="math">\(q\)</span> altijd in het interval <span class="math">\([0, q-1]\)</span>.</p>
+                    </blockquote>
+
+                    <h3>Rekenen in <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>We noteren <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> voor de verzameling gehele getallen modulo <span class="math">\(q\)</span>. In deze verzameling worden optelling, aftrekking en vermenigvuldiging altijd gereduceerd modulo <span class="math">\(q\)</span>:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>Multiplicatieve inverse</h3>
+                    <p>In de gewone wiskunde dient de inverse van een getal om <span class="math">\(1\)</span> te verkrijgen via vermenigvuldiging (bijv. de inverse van <span class="math">\(5\)</span> is <span class="math">\(\frac{1}{5}\)</span>, omdat <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). In het modulair rekenen bestaan geen breuken. De inverse van een getal <span class="math">\(a\)</span> moet daarom een ander geheel getal <span class="math">\(b\)</span> zijn dat, vermenigvuldigd met <span class="math">\(a\)</span>, rest 1 oplevert modulo <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>De bestaansregel</h4>
+                    <p>De inverse van <span class="math">\(a\)</span> bestaat niet altijd. Men kan deze vinden als en slechts als <span class="math">\(a\)</span> en <span class="math">\(q\)</span> geen gemeenschappelijke delers hebben (d.w.z. als hun Grootste Gemene Deler 1 is: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+                    <ul>
+                        <li><strong>Belangrijke eigenschap:</strong> Als de modulus <span class="math">\(q\)</span> een priemgetal is, heeft elk getal in de verzameling (behalve nul) altijd een gegarandeerde inverse.</li>
+                    </ul>
+
+                    <h4>Praktisch voorbeeld: Bereken <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>De notatie <span class="math">\(5^{-1}\)</span> betekent: "Vind de inverse van 5 modulo 13". We zoeken een getal <span class="math">\(b\)</span> zodat <span class="math">\(5 \cdot b\)</span> rest <span class="math">\(1\)</span> geeft bij deling door <span class="math">\(13\)</span>:</p>
+                    <ol>
+                        <li>We proberen <span class="math">\(5\)</span> te vermenigvuldigen met verschillende gehele getallen.</li>
+                        <li>Door <span class="math">\(b = 8\)</span> te kiezen, krijgen we: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                        <li>We delen <span class="math">\(40\)</span> door <span class="math">\(13\)</span>: de 13 past 3 keer (<span class="math">\(13 \cdot 3 = 39\)</span>) met rest 1.</li>
+                    </ol>
+                    <p><strong>Het antwoord is 8</strong>, omdat <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>Modulaire machtsverheffing</h3>
+                    <p>Modulaire machtsverheffing bestaat uit het berekenen van de rest van de deling van een macht: <span class="math">\(a^k \pmod m\)</span>. Deze bewerking is de ruggengraat van de moderne cryptografie (zoals het RSA-algoritme). Het wordt gebruikt omdat het een "eenrichtingsklok" is: het resultaat is heel gemakkelijk te berekenen, maar de omgekeerde weg (de exponent <span class="math">\(k\)</span> achterhalen uit het resultaat) is bijna onmogelijk.</p>
+
+                    <h4>Het probleem van grote getallen</h4>
+                    <p>Als we <span class="math">\(5^{11} \pmod{13}\)</span> moeten berekenen, is de directe berekening onmogelijk voor een computer als de exponent honderden cijfers heeft. Het getal <span class="math">\(5^{11}\)</span> zou te groot zijn voor het geheugen.</p>
+
+                    <h4>De oplossing: Het Square-and-Multiply algoritme</h4>
+                    <p>Dit algoritme maakt het mogelijk om het resultaat in zeer weinig stappen te berekenen (<span class="math">\(O(\log k)\)</span> vermenigvuldigingen), altijd werkend met kleine getallen en zonder dat de macht oneindig groot wordt.</p>
+
+                    <details>
+                        <summary><strong>Hoe het in de praktijk werkt (Voorbeeld: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>We zetten de exponent om naar binair: <span class="math">\(11 = 8 + 2 + 1\)</span>. In plaats van <span class="math">\(5\)</span> 11 keer met zichzelf te vermenigvuldigen, berekenen we stap voor stap de kwadraten en reduceren we het resultaat onmiddellijk modulo <span class="math">\(13\)</span>:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{Basis: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{Kwadraat: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{Kwadraat van het kwadraat: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{Volgend kwadraat: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>Nu combineren we alleen de stukjes die onze exponent <span class="math">\(11\)</span> vormen (d.w.z. <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>We delen <span class="math">\(60\)</span> door <span class="math">\(13\)</span>: de <span class="math">\(13\)</span> past <span class="math">\(4\)</span> keer (<span class="math">\(52\)</span>) met rest <span class="math">\(8\)</span>.</p>
+                        <p><strong>Eindresultaat:</strong> <span class="math">\(8\)</span> (we hebben slechts 4 stappen gedaan in plaats van 11).</p>
+                    </details>
+                </section>
+
+                <!-- Sectie 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 Lineaire algebra: vectoren en matrices</h2>
+
+                    <h3>Vectoren</h3>
+                    <p>Een vector <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> is een geordende lijst van <span class="math">\(n\)</span> gehele getallen, berekend modulo <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>Bij bewerkingen tussen vectoren wordt elk resultaat gereduceerd modulo <span class="math">\(q\)</span>.</p>
+
+                    <h4>Praktisch voorbeeld</h4>
+                    <p>Met <span class="math">\(q = 13\)</span>:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>Optelling van vectoren</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>Inwendig product</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>Berekening:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>Som: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>Reductie modulo 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>Matrices</h3>
+                    <p>Een matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> is een array van rijen en kolommen.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Voorbeeld van een matrix" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(In de praktijk heeft de matrix <span class="math">\(A\)</span> in ML-KEM afmetingen <span class="math">\(k \times k\)</span> met <span class="math">\(k = 3, 4\)</span> of <span class="math">\(5\)</span> en wordt gegenereerd uit een willekeurige seed met behulp van SHAKE.)</em></p>
+
+                    <h4>Matrix-vector product</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>Voorbeeld</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>Gedetailleerde stappen</summary>
+                        <p>Eerste rij: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>Tweede rij: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>Reductie modulo 13: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>Dus: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>Oneindigheidsnorm</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>Deze norm meet de component met de grootste absolute waarde. In de context van MLWE moeten foutvectoren een zeer kleine norm hebben.</p>
+                    <details>
+                        <summary>Praktische voorbeelden</summary>
+                        <p><strong>Geldig geval:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>Ongeldig geval:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Sectie 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 Polynomen</h2>
+
+                    <h3>Polynomen met coëfficiënten in <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Een polynoom in <span class="math">\(\mathbb{Z}_q[X]\)</span> heeft de vorm:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>waarbij elke <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+
+                    <h4>Optelling van polynomen</h4>
+                    <p>De overeenkomstige coëfficiënten worden modulo <span class="math">\(q\)</span> opgeteld:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>Product van polynomen en reductie</h4>
+                    <p>Het product van twee polynomen van graad <span class="math">\(\leq n-1\)</span> kan graad tot <span class="math">\(2n-2\)</span> hebben. Om ze compact te houden, wordt er gereduceerd modulo een speciaal polynoom.</p>
+                    <p>In ML-KEM wordt <span class="math">\(X^n + 1\)</span> gebruikt met <span class="math">\(n = 256\)</span>. De reductieregel is:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>Dus wanneer <span class="math">\(X^{256}\)</span> in het product verschijnt, wordt het vervangen door <span class="math">\(-1\)</span>.</p>
+
+                    <h4>Eenvoudig voorbeeld</h4>
+                    <p>Met <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, modulo <span class="math">\(X^4+1\)</span>:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Sectie 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 Algebraïsche structuren: groepen, ringen, lichamen</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Structuur</th>
+                                <th>Bewerkingen</th>
+                                <th>Belangrijkste eigenschappen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Groep</strong></td>
+                                <td>een (+)</td>
+                                <td>afsluiting, associativiteit, neutraal element, inverse</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ring</strong></td>
+                                <td>twee (+, ×)</td>
+                                <td>abelse groep voor +, semigroep voor ×</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lichaam</strong></td>
+                                <td>twee (+, ×)</td>
+                                <td>ring met multiplicatieve inverse voor alle ≠ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> als lichaam</h3>
+                    <p>Als <span class="math">\(q\)</span> priem is, dan <strong>is</strong> <span class="math">\(\mathbb{Z}_q\)</span> een lichaam: elk niet-nul element heeft een multiplicatieve inverse. In ML-KEM is <span class="math">\(q = 3329\)</span> priem → <span class="math">\(\mathbb{Z}_{3329}\)</span> is een lichaam.</p>
+
+                    <h3>De ring <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>Het is een ring (geen lichaam, omdat niet alle polynomen een inverse hebben), maar het heeft nuttige eigenschappen voor cryptografie:</p>
+                    <ul>
+                        <li>elk polynoom heeft exact 256 coëfficiënten;</li>
+                        <li>vermenigvuldiging is efficiënt via NTT (zie bestand 07);</li>
+                        <li>het polynoom <span class="math">\(X^{256}+1\)</span> is <em>cyclotomisch</em>, wat goede veiligheidseigenschappen garandeert.</li>
+                    </ul>
+                    <details>
+                        <summary>Wat betekent het dat <span class="math">\(X^{256}+1\)</span> cyclotomisch is?</summary>
+                        <p>In de algebra is een cyclotomisch polynoom een speciaal polynoom waarvan de wortels de <strong>primitieve eenheidswortels</strong> zijn (d.w.z. de complexe getallen die, verheven tot een bepaalde macht, <span class="math">\(1\)</span> opleveren).</p>
+                        <p>In het specifieke geval van <span class="math">\(X^{256}+1\)</span> garandeert deze eigenschap drie enorme voordelen in de cryptografie (zoals in ML-KEM):</p>
+                        <ul>
+                            <li><strong>Irreducibiliteit</strong>: Het polynoom kan niet worden ontbonden in kleinere polynomen met gehele coëfficiënten. Dit voorkomt dat een kwaadwillende gebruiker het wiskundige probleem in eenvoudiger oplosbare delen kan opsplitsen.</li>
+                            <li><strong>Zeer snelle vermenigvuldiging (NTT)</strong>: Het maakt gebruik van de <em>Number Theoretic Transform</em> (NTT). Dankzij dit algoritme wordt de complexiteit van polynoomvermenigvuldiging gereduceerd van <span class="math">\(O(n^2)\)</span> tot slechts <span class="math">\(O(n \log n)\)</span>, waardoor post-kwantumcryptografie ongelooflijk snel wordt.</li>
+                            <li><strong>Uniforme veiligheid</strong>: Het verdeelt de fout (de ruis) perfect symmetrisch over alle 256 coëfficiënten tijdens de bewerkingen, waardoor structurele zwakke punten worden geëlimineerd die hackers zouden kunnen misbruiken.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Sectie 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 Cryptografische hashfuncties</h2>
+                    <p>Een hashfunctie <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> beeldt invoer van willekeurige lengte af op een uitvoer van vaste lengte.</p>
+                    <p><strong>Vereiste eigenschappen in cryptografie:</strong></p>
+                    <ul>
+                        <li><em>Preimage-resistentie:</em> uit <span class="math">\(H(x)\)</span> kan men <span class="math">\(x\)</span> niet afleiden</li>
+                        <li><em>Collisie-resistentie:</em> het vinden van <span class="math">\(x \neq y\)</span> met <span class="math">\(H(x) = H(y)\)</span> is rekenkundig onmogelijk</li>
+                        <li><em>Lawine-effect:</em> het veranderen van één invoerbit verandert ~50% van de uitvoer</li>
+                    </ul>
+
+                    <h3>SHA-3 en SHAKE</h3>
+                    <p>ML-KEM gebruikt uitsluitend primitieven uit de <strong>SHA-3</strong>-familie (gestandaardiseerd door NIST in 2015):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Functie</th>
+                                <th>Uitvoer</th>
+                                <th>Gebruik in ML-KEM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 bits vast</td>
+                                <td>algemeen hashing</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 bits vast</td>
+                                <td>hashing van sleutels</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>variabele lengte</td>
+                                <td>generatie van <span class="math">\(A\)</span> (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>variabele lengte</td>
+                                <td>sleutelafleiding</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE is een <strong>XOF (eXtendable Output Function)</strong>: het produceert zoveel bytes als gewenst op basis van een gegeven invoer. In ML-KEM genereert <code>SHAKE128(seed)</code> de volledige publieke matrix <span class="math">\(A\)</span> op basis van een seed van 32 bytes.</p>
+                </section>
+
+                <!-- Sectie 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 Kansrekening en ruisverdeling</h2>
+
+                    <h3>Gecentreerde binomiale verdeling <span class="math">\(B_\eta\)</span></h3>
+                    <p>In ML-KEM is de ruis niet Gaussisch maar <strong>gecentreerd binomiaal</strong>. De steekproef werkt als volgt:</p>
+                    <ol>
+                        <li>Neem <span class="math">\(2\eta\)</span> uniforme bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>Geef <span class="math">\(\sum a_i - \sum b_i\)</span> terug</li>
+                    </ol>
+                    <p>Het resultaat is een geheel getal in <span class="math">\([-\eta, +\eta]\)</span> met een ongeveer Gaussische verdeling rond 0.</p>
+                    <p><strong>Waarom geen echte Gaussische?</strong> De binomiale verdeling is eenvoudiger om <em>tijdconstant</em> te bemonsteren (bestand tegen nevenkanaalaanvallen), en de veiligheid is vergelijkbaar.</p>
+                    <p>Voor ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. De ruiswaarden liggen in <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+
+                    <h3>Verwaarloosbaarheid</h3>
+                    <p>Een functie <span class="math">\(f(\lambda)\)</span> is <strong>verwaarloosbaar</strong> als voor elke polynoom <span class="math">\(p(\cdot)\)</span> er een <span class="math">\(\lambda_0\)</span> bestaat zodat voor alle <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>In de praktijk: het daalt sneller dan elke polynoom inverse. De foutkansen in ML-KEM zijn verwaarloosbaar in de veiligheidsparameter <span class="math">\(\lambda\)</span>.</p>
+                </section>
+
+                <!-- Sectie 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 Rekencomplexiteit</h2>
+
+                    <h3>Notaties</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: asymptotische orde van grootte (bovengrens)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: ondergrens</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: scherpe grens</li>
+                    </ul>
+
+                    <h3>Relevante klassen</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Klasse</th>
+                                <th>Betekenis</th>
+                                <th>Voorbeelden</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>Oplosbaar in polynomiale tijd</td>
+                                <td>vermenigvuldiging, sorteren</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>Verifieerbaar in polynomiale tijd</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-moeilijk</strong></td>
+                                <td>Minstens zo moeilijk als NP</td>
+                                <td>factorisatie (vermoedelijk)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Cryptografische problemen en hun moeilijkheidsgraad</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Probleem</th>
+                                <th>Klassieke moeilijkheid</th>
+                                <th>Kwantum moeilijkheid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Factorisatie</td>
+                                <td>subexponentieel</td>
+                                <td><strong>polynomial</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>Discrete logaritme</td>
+                                <td>subexponentieel</td>
+                                <td><strong>polynomial</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (rooster)</td>
+                                <td>exponentieel</td>
+                                <td>exponentieel (geen bekende versnelling)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>exponentieel</td>
+                                <td>exponentieel (geen bekende versnelling)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>Deze tabel motiveert het hele bestaan van post-kwantumcryptografie.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Bronnen -->
+                <div class="sources">
+                    <h2>Bronnen en verdieping</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Hoofdstukken 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (gratis online)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Video: Algebraïsche Ringen</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – secties 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Hoofdstuknavigatie -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← Vorig hoofdstuk</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">Volgend hoofdstuk →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

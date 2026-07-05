@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rozdział 9 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax dla formuł -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Pasek narzędzi (identyczny jak w index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Szybka nawigacja">
+            <a href="index.html#featureSection">Dlaczego</a>
+            <a href="index.html#learningPath">Ścieżka</a>
+            <a href="index.html#searchSection">Przewodnik</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Wybierz język">
+                    <span class="lang-current" id="langCurrent">🇵🇱 Polski</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 języków -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Główny kontener z paskiem bocznym -->
+    <div class="container chapter-wrapper">
+        <!-- Pasek boczny -->
+        <aside class="chapter-sidebar">
+            <h3>Rozdziały</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Wymagania wstępne</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symetryczna</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymetryczna</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kraty</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> Bezpieczeństwo</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementacje</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>09 – Bezpieczeństwo i parametry</h1>
+        <p class="subtitle">Dlaczego ML-KEM jest bezpieczny i jak dobrano liczby</p>
+
+        <!-- Spis treści -->
+        <div class="toc">
+            <h2>Spis treści</h2>
+            <ul>
+                <li><a href="#id-91">9.1 Modele bezpieczeństwa</a></li>
+                <li><a href="#id-92">9.2 Mierzenie trudności MLWE</a></li>
+                <li><a href="#id-93">9.3 Główne ataki na kraty</a></li>
+                <li><a href="#id-94">9.4 Poziomy bezpieczeństwa NIST</a></li>
+                <li><a href="#id-95">9.5 Porównanie z innymi schematami PQC</a></li>
+                <li><a href="#id-96">9.6 Ataki bocznokanałowe i bezpieczne implementacje</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja 9.1 -->
+        <section id="id-91">
+            <h2>9.1 Modele bezpieczeństwa</h2>
+
+            <h3>IND-CPA (Nierozróżnialność przy wybranym ataku jawnym)</h3>
+            <p>W tym modelu przeciwnik:</p>
+            <ol>
+                <li>Otrzymuje klucz publiczny <span class="math">\(ek\)</span></li>
+                <li>Wybiega dwie wiadomości <span class="math">\(m_0, m_1\)</span></li>
+                <li>Otrzymuje szyfrogram jednej z nich (wybranej losowo)</li>
+                <li>Musi zgadnąć, która wiadomość została zaszyfrowana</li>
+            </ol>
+            <p>Schemat jest bezpieczny, jeśli: <span class="math">\(\Pr[\text{zgadnie}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (podstawowy komponent szyfrowania) jest IND-CPA przy założeniu MLWE.</p>
+
+            <h3>IND-CCA2 (Nierozróżnialność przy adaptacyjnym wybranym ataku szyfrogramem)</h3>
+            <p>Jak CPA, ale przeciwnik może również zadawać pytania wyroczni deszyfrującej na dowolnych szyfrogramach (z wyjątkiem szyfrogramu wyzwania). Ten model oddaje rzeczywiste ataki (jak Bleichenbacher), gdzie aktywny przeciwnik wysyła specjalnie skonstruowane wiadomości i obserwuje odpowiedzi.</p>
+            <p><strong>ML-KEM jest IND-CCA2.</strong> To poziom wymagany dla bezpiecznego KEM w rzeczywistych protokołach, takich jak TLS czy SSH.</p>
+
+            <h3>ROM vs. QROM</h3>
+            <p>Dowody bezpieczeństwa używają wyidealizowanych modeli dla funkcji hash:</p>
+            <ul>
+                <li><strong>ROM (Random Oracle Model):</strong> hasze są idealnymi losowymi wyroczniami.</li>
+                <li><strong>QROM (Quantum Random Oracle Model):</strong> przeciwnik kwantowy może zadawać pytania wyroczni w superpozycji.</li>
+            </ul>
+            <p>Nowoczesne dowody dla transformacji FO (Fujisaki-Okamoto) używanej w ML-KEM gwarantują bezpieczeństwo w QROM, co jest niezbędne przeciwko przeciwnikom kwantowym.</p>
+        </section>
+
+        <!-- Sekcja 9.2 -->
+        <section id="id-92">
+            <h2>9.2 Jak mierzy się trudność MLWE</h2>
+
+            <h3>Bezpieczeństwo jako koszt ataku</h3>
+            <p>Nie ma absolutnego dowodu, że MLWE jest trudny. Bezpieczeństwo szacuje się, obliczając koszt najlepszego znanego algorytmu ataku. Bezpieczeństwo <span class="math">\(\lambda\)</span> bitów oznacza, że atak wymaga około <span class="math">\(2^\lambda\)</span> operacji.</p>
+
+            <h3>Parametry</h3>
+            <p>Trudność zależy od:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span> (wymiar wielomianu, stały)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (wymiar modułu)</li>
+                <li><span class="math">\(q = 3329\)</span> (moduł pierwszy)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (amplituda szumu)</li>
+            </ul>
+
+            <h3>Estymator krat</h3>
+            <p>Standardowym narzędziem jest <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> Albrechta i in. Dla ML-KEM-768:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atak</th>
+                        <th>Szacowany koszt (bity)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Atak pierwotny (BKZ)</td>
+                        <td>~178 bitów</td>
+                    </tr>
+                    <tr>
+                        <td>Atak dualny</td>
+                        <td>~175 bitów</td>
+                    </tr>
+                    <tr>
+                        <td>Kombinatoryczny</td>
+                        <td>&gt; 200 bitów</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Margines bezpieczeństwa jest duży w porównaniu z celem 128 bitów klasycznych/kwantowych.</p>
+        </section>
+
+        <!-- Sekcja 9.3 -->
+        <section id="id-93">
+            <h2>9.3 Główne ataki na kraty</h2>
+
+            <h3>BKZ (Block Korkine-Zolotarev)</h3>
+            <p>To najlepszy ogólny algorytm znajdowania krótkich wektorów. Dzieli kratę na bloki o rozmiarze <span class="math">\(\beta\)</span> i rozwiązuje SVP lokalnie. Złożoność: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. Dla ML-KEM-768, <span class="math">\(\beta \approx 430\)</span>.</p>
+
+            <h3>Atak pierwotny (uSVP)</h3>
+            <p>Sprowadza MLWE do problemu krótkiego wektora w rozszerzonej kracie zawierającej klucz publiczny i szyfrogram. Wektor sekretny <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> staje się krótkim wektorem, którego BKZ próbuje znaleźć.</p>
+
+            <h3>Atak dualny</h3>
+            <p>Wykorzystuje kratę dualną do odróżnienia próbek MLWE od jednorodnych za pomocą statystyk. Konstruuje wiele krótkich wektorów w dualnej, aby przeprowadzić rozróżniacz.</p>
+
+            <h3>Wybór q = 3329</h3>
+            <p>Będąc liczbą pierwszą i pozbawioną specjalnej struktury algebraicznej, zapobiega specyficznym atakom algebraicznym. Nie ma małych czynników ani prostych zależności, które można by wykorzystać.</p>
+        </section>
+
+        <!-- Sekcja 9.4 -->
+        <section id="id-94">
+            <h2>9.4 Poziomy bezpieczeństwa NIST</h2>
+
+            <p>NIST zdefiniował 5 poziomów. ML-KEM obejmuje poziomy 1, 3 i 5:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schemat</th>
+                        <th>Poziom NIST</th>
+                        <th>Bezpieczeństwo klasyczne</th>
+                        <th>Bezpieczeństwo kwantowe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1 (AES-128)</td>
+                        <td>~118 bitów</td>
+                        <td>~100 bitów</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3 (AES-192)</td>
+                        <td><strong>~178 bitów</strong></td>
+                        <td><strong>~164 bitów</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM-1024</td>
+                        <td>5 (AES-256)</td>
+                        <td>~230 bitów</td>
+                        <td>~218 bitów</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p><strong>Zalecenie:</strong> ML-KEM-768 oferuje optymalną równowagę bezpieczeństwa/wydajności dla większości zastosowań. ML-KEM-1024 jest zarezerwowany dla systemów o bardzo wysokiej krytyczności.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sekcja 9.5 -->
+        <section id="id-95">
+            <h2>9.5 Porównanie z innymi schematami PQC</h2>
+
+            <h3>Znormalizowane KEM post-kwantowe (NIST 2024)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schemat</th>
+                        <th>Podstawa matematyczna</th>
+                        <th>Klucz publiczny</th>
+                        <th>Szyfrogram</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE (Kraty)</td>
+                        <td>1184 B</td>
+                        <td>1088 B</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>Kody korekcyjne</td>
+                        <td>~1541 B</td>
+                        <td>~1573 B</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>Kody korekcyjne</td>
+                        <td>~2249 B</td>
+                        <td>~4522 B</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>Kody Goppa</td>
+                        <td>~261 KB</td>
+                        <td>128 B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Porównanie z kryptografią klasyczną</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schemat</th>
+                        <th>Klucz publiczny</th>
+                        <th>Bezpieczeństwo kwantowe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 B</td>
+                        <td>❌ Podatny</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 B</td>
+                        <td>❌ Podatny</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 B</td>
+                        <td>✅ 164+ bitów</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Głównym kosztem jest większy rozmiar (~37× w porównaniu z ECDH), ale pozostaje on akceptowalny dla nowoczesnych uzgodnień TLS.</p>
+        </section>
+
+        <!-- Sekcja 9.6 -->
+        <section id="id-96">
+            <h2>9.6 Ataki bocznokanałowe i bezpieczne implementacje</h2>
+
+            <p>Poprawna implementacja może być podatna, jeśli wycieka informacje poprzez czas wykonania (ataki czasowe) lub zużycie energii.</p>
+
+            <h3>Stałoczasowość (Constant-Time - CT)</h3>
+            <p>Wszystkie operacje muszą mieć stały czas niezależnie od tajnych danych. Krytyczny przykład w Decaps:</p>
+
+            <pre><code class="language-c">// NIEbezpieczne (zmienny czas):
+if (memcmp(c, c_prime, len) == 0) { 
+    K = K_good; 
+} else { 
+    K = K_reject; 
+}
+
+// Bezpieczne (stałoczasowe):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF jeśli równe, 0x00 jeśli różne
+K = ct_select(mask, K_good, K_reject);     // wybór CT bez rozgałęzień</code></pre>
+
+            <h3>Krytyczne obszary dla CT w ML-KEM</h3>
+            <ul>
+                <li><strong>Próbkowanie <span class="math">\(B_\eta\)</span>:</strong> dodawanie bitów bez warunkowych rozgałęzień.</li>
+                <li><strong>NTT:</strong> operacje motylkowe muszą być zawsze wykonywane, nawet jeśli wynik się nie zmienia.</li>
+                <li><strong>Weryfikacja szyfrogramu:</strong> użycie <code>ct_memcmp</code>.</li>
+            </ul>
+
+            <h3>Implementacje referencyjne</h3>
+            <ul>
+                <li><code>pqclean</code>: przenośne implementacje CT.</li>
+                <li><code>liboqs</code>: optymalizacje AVX2 ze zweryfikowanymi właściwościami CT.</li>
+            </ul>
+        </section>
+
+        <!-- Źródła -->
+        <div class="sources">
+            <h2>Źródła</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+            </ul>
+        </div>
+
+        <!-- Nawigacja między rozdziałami -->
+        <div class="chapter-nav">
+            <a href="8.html" class="nav-btn">← Poprzedni rozdział</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">Następny rozdział →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Stopka -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

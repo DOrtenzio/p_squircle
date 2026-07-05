@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>0장 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="빠른 탐색">
+            <a href="index.html#featureSection">이유</a>
+            <a href="index.html#learningPath">학습 경로</a>
+            <a href="index.html#searchSection">가이드</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="언어 선택">
+                    <span class="lang-current" id="langCurrent">🇰🇷 한국어</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>차례</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> 사전 지식</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 대칭키</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 비대칭키</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> 쇼어</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 격자</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 보안</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 구현</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – 수학적 사전 지식</h1>
+                <p class="subtitle">양자 내성 암호를 이해하기 위한 필수 도구</p>
+
+                <!-- Index -->
+                <div class="toc">
+                    <h2>목차</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 모듈러 산술</a></li>
+                        <li><a href="#id-02">0.2 선형대수: 벡터와 행렬</a></li>
+                        <li><a href="#id-03">0.3 다항식</a></li>
+                        <li><a href="#id-04">0.4 대수 구조: 군, 환, 체</a></li>
+                        <li><a href="#id-05">0.5 암호학적 해시 함수</a></li>
+                        <li><a href="#id-06">0.6 확률과 잡음 분포</a></li>
+                        <li><a href="#id-07">0.7 계산 복잡도</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 모듈러 산술</h2>
+
+                    <h3>모듈로란 무엇인가?</h3>
+                    <p><span class="math">\(a \bmod m\)</span> 연산은 <span class="math">\(a\)</span>를 <span class="math">\(m\)</span>으로 나눈 <strong>나머지</strong>를 반환합니다.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{왜냐하면 } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{왜냐하면 } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>관례:</strong> 암호학에서 모듈로 <span class="math">\(q\)</span>의 결과는 항상 <span class="math">\([0, q-1]\)</span> 구간에 있습니다.</p>
+                    </blockquote>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span>에서의 산술</h3>
+                    <p><span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span>은 정수 모듈로 <span class="math">\(q\)</span>의 집합을 나타냅니다. 이 집합에서 덧셈, 뺄셈, 곱셈은 항상 모듈로 <span class="math">\(q\)</span>로 축소됩니다:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>곱셈 역원</h3>
+                    <p>일반 수학에서 수의 역원은 곱셈을 통해 <span class="math">\(1\)</span>을 얻는 데 사용됩니다(예: <span class="math">\(5\)</span>의 역원은 <span class="math">\(\frac{1}{5}\)</span>입니다. 왜냐하면 <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>이기 때문입니다). 모듈러 산술에서는 분수가 존재하지 않습니다. 따라서 수 <span class="math">\(a\)</span>의 역원은 <span class="math">\(a\)</span>와 곱했을 때 모듈로 <span class="math">\(q\)</span>로 나머지가 1이 되는 또 다른 정수 <span class="math">\(b\)</span>여야 합니다:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>존재 규칙</h4>
+                    <p><span class="math">\(a\)</span>의 역원이 항상 존재하는 것은 아닙니다. <span class="math">\(a\)</span>와 <span class="math">\(q\)</span>가 공통 약수를 가지지 않는 경우(즉, 최대공약수가 1인 경우: <span class="math">\(\gcd(a, q) = 1\)</span>)에만 찾을 수 있습니다.</p>
+                    <ul>
+                        <li><strong>핵심 속성:</strong> 모듈로 <span class="math">\(q\)</span>가 소수인 경우, 집합의 모든 숫자(0 제외)는 항상 보장된 역원을 가집니다.</li>
+                    </ul>
+
+                    <h4>실용 예제: <span class="math">\(5^{-1} \bmod 13\)</span> 계산</h4>
+                    <p><span class="math">\(5^{-1}\)</span> 표기는 "5의 모듈로 13 역원을 찾아라"를 의미합니다. <span class="math">\(5 \cdot b\)</span>를 <span class="math">\(13\)</span>으로 나누었을 때 나머지가 <span class="math">\(1\)</span>이 되는 수 <span class="math">\(b\)</span>를 찾습니다:</p>
+                    <ol>
+                        <li><span class="math">\(5\)</span>에 다양한 정수를 곱해 봅니다.</li>
+                        <li><span class="math">\(b = 8\)</span>을 선택하면: <span class="math">\(5 \cdot 8 = 40\)</span>입니다.</li>
+                        <li><span class="math">\(40\)</span>을 <span class="math">\(13\)</span>으로 나누면: 13이 3번 들어가고(<span class="math">\(13 \cdot 3 = 39\)</span>) 나머지는 1입니다.</li>
+                    </ol>
+                    <p><strong>답은 8입니다</strong>, 왜냐하면 <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>이기 때문입니다.</p>
+
+                    <h3>모듈러 지수 연산</h3>
+                    <p>모듈러 지수 연산은 거듭제곱의 나머지를 계산하는 것입니다: <span class="math">\(a^k \pmod m\)</span>. 이 연산은 현대 암호화(RSA 알고리즘 등)의 중추입니다. 결과를 계산하는 것은 매우 쉽지만, 역방향(결과에서 지수 <span class="math">\(k\)</span>를 알아내는 것)은 거의 불가능하기 때문에 "단방향 시계"로 사용됩니다.</p>
+
+                    <h4>큰 숫자의 문제</h4>
+                    <p><span class="math">\(5^{11} \pmod{13}\)</span>을 계산해야 한다면, 지수가 수백 자리인 경우 컴퓨터가 직접 계산하는 것은 불가능합니다. <span class="math">\(5^{11}\)</span>이라는 숫자는 메모리에 비해 너무 커질 것입니다.</p>
+
+                    <h4>해결책: 제곱-곱셈 알고리즘</h4>
+                    <p>이 알고리즘은 항상 작은 숫자로 작업하고 거듭제곱이 무한정 커지는 것을 방지하면서, 매우 적은 단계(<span class="math">\(O(\log k)\)</span> 곱셈)로 결과를 계산할 수 있게 해줍니다.</p>
+
+                    <details>
+                        <summary><strong>실제 작동 방식 (예: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>지수를 이진수로 변환합니다: <span class="math">\(11 = 8 + 2 + 1\)</span>. <span class="math">\(5\)</span>를 <span class="math">\(11\)</span>번 곱하는 대신, 단계별로 제곱을 계산하고 결과를 즉시 모듈로 <span class="math">\(13\)</span>으로 축소합니다:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{기본: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{제곱: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{제곱의 제곱: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{다음 제곱: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>이제 지수 <span class="math">\(11\)</span>을 구성하는 조각들(<span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>)만 결합합니다:</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p><span class="math">\(60\)</span>을 <span class="math">\(13\)</span>으로 나누면: <span class="math">\(13\)</span>이 <span class="math">\(4\)</span>번 들어가고(<span class="math">\(52\)</span>) 나머지는 <span class="math">\(8\)</span>입니다.</p>
+                        <p><strong>최종 결과:</strong> <span class="math">\(8\)</span> (11단계 대신 4단계만 수행했습니다).</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 선형대수: 벡터와 행렬</h2>
+
+                    <h3>벡터</h3>
+                    <p>벡터 <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span>는 모듈로 <span class="math">\(q\)</span>로 계산된 <span class="math">\(n\)</span>개 정수의 순서 있는 목록입니다:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>벡터 간 연산에서 각 결과는 모듈로 <span class="math">\(q\)</span>로 축소됩니다.</p>
+
+                    <h4>실용 예제</h4>
+                    <p><span class="math">\(q = 13\)</span>일 때:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>벡터 덧셈</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>내적</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>계산:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>합계: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>모듈로 13 축소: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>행렬</h3>
+                    <p>행렬 <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>은 행과 열의 배열입니다.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="행렬 예제" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(실제로 ML-KEM의 행렬 <span class="math">\(A\)</span>는 <span class="math">\(k \times k\)</span> 차원(<span class="math">\(k = 3, 4\)</span> 또는 <span class="math">\(5\)</span>)을 가지며 SHAKE를 사용하여 무작위 시드로부터 생성됩니다.)</em></p>
+
+                    <h4>행렬-벡터 곱셈</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>예제</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>자세한 단계</summary>
+                        <p>첫 번째 행: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>두 번째 행: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>모듈로 13 축소: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>따라서: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>무한대 노름</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>이 노름은 절대값이 최대인 성분을 측정합니다. MLWE의 맥락에서 오류 벡터는 매우 작은 노름을 가져야 합니다.</p>
+                    <details>
+                        <summary>실용 예제</summary>
+                        <p><strong>유효한 경우:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>유효하지 않은 경우:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 다항식</h2>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span>의 계수를 가진 다항식</h3>
+                    <p><span class="math">\(\mathbb{Z}_q[X]\)</span>의 다항식은 다음과 같은 형태를 가집니다:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>여기서 각 <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>입니다.</p>
+
+                    <h4>다항식 덧셈</h4>
+                    <p>동일한 차수의 계수를 모듈로 <span class="math">\(q\)</span>로 더합니다:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>다항식 곱셈과 축소</h4>
+                    <p>차수가 <span class="math">\(\leq n-1\)</span>인 두 다항식의 곱은 최대 <span class="math">\(2n-2\)</span>차까지 될 수 있습니다. 이를 간결하게 유지하기 위해 특수 다항식으로 모듈로 축소합니다.</p>
+                    <p>ML-KEM에서는 <span class="math">\(n = 256\)</span>인 <span class="math">\(X^n + 1\)</span>을 사용합니다. 축소 규칙은 다음과 같습니다:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>따라서 곱셈에서 <span class="math">\(X^{256}\)</span>이 나타날 때마다 <span class="math">\(-1\)</span>로 대체됩니다.</p>
+
+                    <h4>간단한 예제</h4>
+                    <p><span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, 모듈로 <span class="math">\(X^4+1\)</span>일 때:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 대수 구조: 군, 환, 체</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구조</th>
+                                <th>연산</th>
+                                <th>핵심 속성</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>군</strong></td>
+                                <td>하나 (+)</td>
+                                <td>닫힘, 결합성, 항등원, 역원</td>
+                            </tr>
+                            <tr>
+                                <td><strong>환</strong></td>
+                                <td>둘 (+, ×)</td>
+                                <td>+에 대해 아벨 군, ×에 대해 반군</td>
+                            </tr>
+                            <tr>
+                                <td><strong>체</strong></td>
+                                <td>둘 (+, ×)</td>
+                                <td>0이 아닌 모든 원소에 대해 곱셈 역원을 가진 환</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>체로서의 <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p><span class="math">\(q\)</span>가 소수이면, <span class="math">\(\mathbb{Z}_q\)</span>는 <strong>체</strong>입니다: 0이 아닌 각 원소는 곱셈 역원을 가집니다. ML-KEM에서 <span class="math">\(q = 3329\)</span>는 소수 → <span class="math">\(\mathbb{Z}_{3329}\)</span>는 체입니다.</p>
+
+                    <h3>환 <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>이것은 환입니다(체가 아닙니다. 모든 다항식이 역원을 가지지는 않기 때문입니다). 하지만 암호화에 유용한 속성을 가집니다:</p>
+                    <ul>
+                        <li>각 다항식은 정확히 256개의 계수를 가집니다;</li>
+                        <li>곱셈은 NTT를 통해 효율적입니다(07 파일 참조);</li>
+                        <li>다항식 <span class="math">\(X^{256}+1\)</span>은 <em>원분 다항식</em>으로, 좋은 보안 속성을 보장합니다.</li>
+                    </ul>
+                    <details>
+                        <summary><span class="math">\(X^{256}+1\)</span>이 원분 다항식이라는 것은 무엇을 의미하나요?</summary>
+                        <p>대수학에서 원분 다항식은 근이 <strong>원시 단위근</strong>(즉, 특정 거듭제곱을 하면 <span class="math">\(1\)</span>이 되는 복소수)인 특수 다항식입니다.</p>
+                        <p><span class="math">\(X^{256}+1\)</span>의 특정한 경우, 이 속성은 암호화(ML-KEM과 같은)에서 세 가지 큰 이점을 보장합니다:</p>
+                        <ul>
+                            <li><strong>기약성</strong>: 다항식은 정수 계수를 가진 더 작은 다항식으로 분해될 수 없습니다. 이는 악의적인 사용자가 수학적 문제를 더 쉽게 풀 수 있는 부분으로 "분할"하는 것을 방지합니다.</li>
+                            <li><strong>초고속 곱셈 (NTT)</strong>: <em>수론적 변환</em>(NTT)을 사용할 수 있게 합니다. 이 알고리즘 덕분에 다항식 간 곱셈은 <span class="math">\(O(n^2)\)</span> 복잡도에서 단 <span class="math">\(O(n \log n)\)</span>으로 줄어들어 양자 내성 암호화가 놀라울 정도로 빠르게 됩니다.</li>
+                            <li><strong>균일한 보안</strong>: 연산 중 오류(잡음)를 256개 계수 모두에 완벽하게 대칭적으로 분산시켜 해커가 악용할 수 있는 구조적 약점을 제거합니다.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 암호학적 해시 함수</h2>
+                    <p>해시 함수 <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span>는 임의 길이의 입력을 고정 길이의 출력으로 매핑합니다.</p>
+                    <p><strong>암호학에서 요구되는 속성:</strong></p>
+                    <ul>
+                        <li><em>역상 저항성:</em> <span class="math">\(H(x)\)</span>로부터 <span class="math">\(x\)</span>를 추론할 수 없음</li>
+                        <li><em>충돌 저항성:</em> <span class="math">\(H(x) = H(y)\)</span>인 <span class="math">\(x \neq y\)</span>를 찾는 것이 계산적으로 불가능함</li>
+                        <li><em>눈사태 효과:</em> 입력의 1비트를 변경하면 출력의 약 50%가 변경됨</li>
+                    </ul>
+
+                    <h3>SHA-3 및 SHAKE</h3>
+                    <p>ML-KEM은 <strong>SHA-3</strong> 계열의 프리미티브만을 사용합니다(NIST에서 2015년 표준화):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>함수</th>
+                                <th>출력</th>
+                                <th>ML-KEM에서의 용도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>고정 256비트</td>
+                                <td>일반 해싱</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>고정 512비트</td>
+                                <td>키 해싱</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>가변 길이</td>
+                                <td><span class="math">\(A\)</span> 생성 (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>가변 길이</td>
+                                <td>키 파생</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE는 <strong>XOF (확장 가능 출력 함수)</strong>입니다: 주어진 입력에서 원하는 만큼의 바이트를 생성합니다. ML-KEM에서 <code>SHAKE128(시드)</code>는 32바이트 시드로부터 전체 공개 행렬 <span class="math">\(A\)</span>를 생성합니다.</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 확률과 잡음 분포</h2>
+
+                    <h3>중심 이항 분포 <span class="math">\(B_\eta\)</span></h3>
+                    <p>ML-KEM에서 잡음은 가우시안이 아닌 <strong>중심 이항 분포</strong>입니다. 샘플링은 다음과 같이 작동합니다:</p>
+                    <ol>
+                        <li><span class="math">\(2\eta\)</span>개의 균일 비트를 샘플링합니다: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li><span class="math">\(\sum a_i - \sum b_i\)</span>를 반환합니다</li>
+                    </ol>
+                    <p>결과는 <span class="math">\([-\eta, +\eta]\)</span> 범위의 정수로, 0을 중심으로 대략 가우시안 분포를 가집니다.</p>
+                    <p><strong>왜 진짜 가우시안이 아닌가?</strong> 이항 분포는 <em>일정 시간</em>에 샘플링하기 더 쉽고(부채널 공격에 강함), 보안은 유사합니다.</p>
+                    <p>ML-KEM-768의 경우: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. 잡음 값은 <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>에 있습니다.</p>
+
+                    <h3>무시 가능성</h3>
+                    <p>함수 <span class="math">\(f(\lambda)\)</span>는 모든 다항식 <span class="math">\(p(\cdot)\)</span>에 대해 <span class="math">\(\lambda_0\)</span>가 존재하여 모든 <span class="math">\(\lambda > \lambda_0\)</span>에 대해 다음이 성립하면 <strong>무시 가능</strong>합니다:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>실제로: 다항식 역수보다 더 빠르게 감소합니다. ML-KEM의 오류 확률은 보안 매개변수 <span class="math">\(\lambda\)</span>에서 무시 가능합니다.</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 계산 복잡도</h2>
+
+                    <h3>표기법</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: 점근적 크기 차수 (상한)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: 하한</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: 조밀한 경계</li>
+                    </ul>
+
+                    <h3>관련 클래스</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>클래스</th>
+                                <th>의미</th>
+                                <th>예제</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>다항식 시간에 해결 가능</td>
+                                <td>곱셈, 정렬</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>다항식 시간에 검증 가능</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-난해</strong></td>
+                                <td>NP 이상으로 어려움</td>
+                                <td>소인수분해 (추정상)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>암호학적 문제와 그 난이도</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>문제</th>
+                                <th>고전적 난이도</th>
+                                <th>양자 난이도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>소인수분해</td>
+                                <td>준지수</td>
+                                <td><strong>다항식</strong> (쇼어)</td>
+                            </tr>
+                            <tr>
+                                <td>이산 로그</td>
+                                <td>준지수</td>
+                                <td><strong>다항식</strong> (쇼어)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (격자)</td>
+                                <td>지수</td>
+                                <td>지수 (알려진 가속 없음)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>지수</td>
+                                <td>지수 (알려진 가속 없음)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>이 표는 양자 내성 암호화의 존재 이유 전체를 설명합니다.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>출처 및 심화 학습</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (1-5장)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (온라인 무료)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">영상: 대수 환</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – 2-3절</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← 이전 장</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">다음 장 →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> 모두를 위한 무료 도서관. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'es';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

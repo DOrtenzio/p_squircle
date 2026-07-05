@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capítulo 6 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax para fórmulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Barra de ferramentas (idêntica ao index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navegação rápida">
+            <a href="index.html#featureSection">Porquê</a>
+            <a href="index.html#learningPath">Percurso</a>
+            <a href="index.html#searchSection">O Guia</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Selecionar idioma">
+                    <span class="lang-current" id="langCurrent">🇵🇹 Português</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 idiomas -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contentor principal com barra lateral -->
+    <div class="container chapter-wrapper">
+        <!-- Barra lateral -->
+        <aside class="chapter-sidebar">
+            <h3>Capítulos</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Pré-requisitos</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Assimétrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li class="active"><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Segurança</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementações</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>06 – Mecanismo de Encapçamento de Chave (KEM)</h1>
+        <p class="subtitle">A ponte entre a matemática do MLWE e o padrão FIPS 203</p>
+
+        <!-- Índice -->
+        <div class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#id-61">6.1 Definição formal de KEM</a></li>
+                <li><a href="#id-62">6.2 Propriedades de segurança</a></li>
+                <li><a href="#id-63">6.3 KEM vs PKE: por que os KEM</a></li>
+                <li><a href="#id-64">6.4 Exemplo intuitivo: KEM a partir de Diffie-Hellman</a></li>
+                <li><a href="#id-65">6.5 A transformação Fujisaki-Okamoto (FO)</a></li>
+                <li><a href="#id-66">6.6 De K-PKE (CPA) a ML-KEM (CCA2)</a></li>
+                <li><a href="#id-67">6.7 KEM num protocolo real: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 Estrutura genérica do fluxo KEM</a></li>
+            </ul>
+        </div>
+
+        <!-- Seção 6.1 -->
+        <section id="id-61">
+            <h2>6.1 Definição formal de KEM</h2>
+
+            <h3>Tripla de algoritmos</h3>
+            <p>Um Mecanismo de Encapçamento de Chave (KEM) é uma tripla de algoritmos probabilísticos polinomiais:</p>
+            <div class="math-block">
+                \[
+                \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
+                \]
+            </div>
+
+            <ul>
+                <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
+                    Algoritmo probabilístico (usa aleatoriedade interna). Não recebe entrada.
+                    <ul>
+                        <li><code>ek</code>: chave de encapçamento (chave pública)</li>
+                        <li><code>dk</code>: chave de desencapçamento (chave privada)</li>
+                    </ul>
+                </li>
+                <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
+                    Dado <code>ek</code>, produz:
+                    <ul>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: chave simétrica secreta (tipicamente 256 bits)</li>
+                        <li><code>c</code>: texto cifrado (a "cápsula")</li>
+                    </ul>
+                </li>
+                <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
+                    Dado <code>dk</code> e <code>c</code>, recupera <span class="math">\(K\)</span>.</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>Nota terminológica FIPS 203:</strong> o padrão usa <code>ek</code> para chave de encapçamento (não <code>pk</code>) e <code>dk</code> para chave de desencapçamento (não <code>sk</code>). A distinção é intencional: sublinha que a chave pública serve para encapçular, não para cifrar mensagens arbitrárias.</p>
+            </div>
+
+            <h3>Correção</h3>
+            <p>Um KEM é correto se para cada par de chaves válido:</p>
+            <div class="math-block">
+                \[
+                \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
+                \]
+            </div>
+            <p>onde <span class="math">\(\delta\)</span> é uma probabilidade de erro negligenciável (tipicamente <span class="math">\(< 2^{-128}\)</span>).<br>
+            Para ML-KEM-768: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+        </section>
+
+        <!-- Seção 6.2 -->
+        <section id="id-62">
+            <h2>6.2 Propriedades de segurança</h2>
+
+            <h3>IND-CPA (Indistinguibilidade sob Ataque de Texto Claro Escolhido)</h3>
+            
+            <div class="security-game">
+                <h4>Jogo de segurança IND-CPA</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Desafiante</th>
+                            <th>Adversário <span class="math">\(\mathcal{A}\)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\(ek \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Escolhe o desafio (implícito no KEM)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((c, K_b) \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Devolve <span class="math">\(b'\)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Vantagem:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>O KEM é IND-CPA se a vantagem for negligenciável para todo adversário polinomial. Intuitivamente: o adversário não consegue distinguir a chave <span class="math">\(K\)</span> real de uma aleatória, mesmo vendo o texto cifrado <code>c</code>.</p>
+
+            <h3>IND-CCA2 (Indistinguibilidade sob Ataque Adaptativo de Texto Cifrado Escolhido)</h3>
+            <p>Como CPA, mas o adversário também tem acesso a um oráculo de desencapçamento:</p>
+
+            <div class="security-game">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Inicialização</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, envia <span class="math">\(ek\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fase 1 (Consultas)</td>
+                            <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Desafio</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. Envia <span class="math">\((c^*, K_b)\)</span>.</td>
+                        </tr>
+                        <tr>
+                            <td>Fase 2 (Consultas)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> com <span class="math">\(c_j \neq c^*\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Palpite</td>
+                            <td>Devolve <span class="math">\(b'\)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>IND-CCA2 é o padrão de segurança exigido para KEM em uso real.</p>
+            
+            <div class="note">
+                <p><strong>Por que o CCA2 é necessário?</strong> Num protocolo real (TLS, SSH), um adversário ativo pode enviar textos cifrados manipulados e observar as respostas do servidor. Mesmo em MLWE, um adversário que conhece o desencapçamento de textos cifrados próximos do texto cifrado desafio pode extrair informações sobre o segredo. ML-KEM é IND-CCA2.</p>
+            </div>
+
+            <h3>Propriedades adicionais desejáveis</h3>
+            <ul>
+                <li><strong>Robustez (Robustness):</strong> difícil construir um texto cifrado que desencapçule para a mesma chave com duas chaves privadas diferentes.</li>
+                <li><strong>Segurança futura (Forward secrecy):</strong> se a chave privada <code>dk</code> for comprometida no futuro, as sessões passadas permanecem seguras (requer chaves efémeras).</li>
+            </ul>
+        </section>
+
+        <!-- Seção 6.3 -->
+        <section id="id-63">
+            <h2>6.3 KEM vs PKE: por que os KEM</h2>
+
+            <h3>PKE (Cifra de Chave Pública)</h3>
+            <p>Um PKE cifra mensagens arbitrárias: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. O problema é que se a mensagem <span class="math">\(m\)</span> tiver estrutura previsível (palavra-passe curta, número de cartão), um adversário pode explorar ataques de baixa entropia ou de oráculo de preenchimento (Bleichenbacher).</p>
+
+            <h3>KEM: separação de papéis</h3>
+            <p>O KEM não cifra mensagens de utilizador. Gera uma chave simétrica de alta entropia e encapçula-a:</p>
+            <div class="math-block">
+                \[
+                \text{Sistema} = \underbrace{\text{KEM}}_{\text{troca } K} + \underbrace{\text{AES-GCM}}_{\text{cifra dados com } K}
+                \]
+            </div>
+            <p><strong>Vantagens:</strong></p>
+            <ul>
+                <li>A chave <span class="math">\(K\)</span> é sempre pseudoaleatória → nenhum ataque de baixa entropia.</li>
+                <li>Não é necessário preenchimento complexo para mensagens de utilizador.</li>
+                <li><span class="math">\(K\)</span> é usada com uma cifra simétrica (DEM) para cifrar os dados reais.</li>
+            </ul>
+        </section>
+
+        <!-- Seção 6.4 -->
+        <section id="id-64">
+            <h2>6.4 Exemplo intuitivo: KEM a partir de Diffie-Hellman</h2>
+            
+            <p>Antes do ML-KEM, o KEM mais usado era construído sobre Diffie-Hellman. Este exemplo ajuda a compreender a estrutura.</p>
+
+            <p><strong>Parâmetros públicos:</strong> primo <span class="math">\(p\)</span>, gerador <span class="math">\(g\)</span> de <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alice</strong>
+                    <ol>
+                        <li>Escolhe <span class="math">\(a\)</span> secreto</li>
+                        <li>Calcula <span class="math">\(A = g^a \bmod p\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Escolhe <span class="math">\(b\)</span> secreto</li>
+                        <li>Calcula <span class="math">\(B = g^b \bmod p\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alice calcula: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{Bob calcula: } & K = A^b \bmod p = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>Exemplo numérico:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
+            <ul>
+                <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
+                <li>Bob escolhe <span class="math">\(b = 7\)</span>: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>Alice desencapçula: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+            </ul>
+        </section>
+
+        <!-- Seção 6.5 -->
+        <section id="id-65">
+            <h2>6.5 A transformação Fujisaki-Okamoto (FO)</h2>
+
+            <h3>O problema: de CPA para CCA2</h3>
+            <p>A partir de um PKE apenas CPA-seguro, como construir um KEM IND-CCA2? A resposta é a transformação FO.</p>
+
+            <h3>Ideia central</h3>
+            <ul>
+                <li><strong>Cifra determinística:</strong> a aleatoriedade usada na cifra é derivada deterministicamente da mensagem via hash. Se o texto cifrado for modificado, a recifra produz algo diferente.</li>
+                <li><strong>Verificação na decifra:</strong> em vez de decifrar diretamente, recifra-se a mensagem decifrada e compara-se com o texto cifrado recebido. Se não corresponderem → rejeição implícita.</li>
+            </ul>
+
+            <h3>Esquema FO simplificado</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
+                \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
+                & \quad \text{return } \begin{cases} K' & \text{se } c' = c \\ K_{\text{reject}} & \text{caso contrário} \end{cases}
+                \end{aligned}
+                \]
+            </div>
+            <p>Onde <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> com <span class="math">\(z\)</span> secreto fixo. Esta "rejeição implícita" impede o adversário de usar os erros como oráculo.</p>
+        </section>
+
+        <!-- Seção 6.6 -->
+        <section id="id-66">
+            <h2>6.6 De K-PKE (CPA) a ML-KEM (CCA2)</h2>
+
+            <p>Em ML-KEM, a estrutura de dois níveis é:</p>
+            <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ML-KEM (IND-CCA2)
+└── K-PKE (IND-CPA) + transformação FO
+    └── problema MLWE</pre>
+
+            <h3>ML-KEM.Encaps(ek)</h3>
+            <div class="code-block">
+                <pre><code>m ← Random(32)                  // mensagem aleatória de 256 bits
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = primeiros 32 bytes, r = últimos 32 bytes
+c = K-PKE.Encrypt(ek, m, r)     // cifra determinística com aleatoriedade r
+K = KDF(K̄ ‖ H(c))              // chave final
+return (K, c)</code></pre>
+            </div>
+
+            <h3>ML-KEM.Decaps(dk, c)</h3>
+            <div class="code-block">
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = segredo de fallback
+m' = K-PKE.Decrypt(dk_PKE, c)   // tentativa de decifra
+(K̄', r') = G(m' ‖ h)           // recalcula
+c' = K-PKE.Encrypt(ek, m', r')  // recifra de verificação
+se c' == c:
+    K = KDF(K̄' ‖ H(c))         // decifra bem-sucedida
+caso contrário:
+    K = KDF(z ‖ H(c))           // fallback: chave pseudoaleatória
+return K</code></pre>
+            </div>
+
+            <div class="note">
+                <p><strong>Detalhes importantes:</strong> A chave privada <code>dk</code> também contém <code>ek</code> para poder fazer a recifra. A comparação <code>c' == c</code> deve ser de tempo constante.</p>
+            </div>
+        </section>
+
+        <!-- Seção 6.7 -->
+        <section id="id-67">
+            <h2>6.7 KEM num protocolo real: TLS 1.3</h2>
+
+            <div class="protocol-flow tls-handshake">
+                <div class="party client">
+                    <strong>Cliente (Bob)</strong>
+                </div>
+                <div class="channel"></div>
+                <div class="party server">
+                    <strong>Servidor (Alice)</strong>
+                </div>
+
+                <div class="step">
+                    <span class="msg-right">ClientHello (suporta ML-KEM-768)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">ServerHello + Certificado + KeyShare (ek)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-right">KeyShare (c) + Finished (MAC com K)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">Finished (MAC com K)</span>
+                </div>
+            </div>
+
+            <h3>Híbrido X25519 + ML-KEM</h3>
+            <p>Na prática, o TLS 1.3 usa uma abordagem híbrida:</p>
+            <div class="math-block">
+                \[
+                K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
+                \]
+            </div>
+            <p>Isto garante segurança se pelo menos um dos dois esquemas se mantiver. O grupo <code>X25519MLKEM768</code> já está implementado no Chrome 131+.</p>
+        </section>
+
+        <!-- Seção 6.8 -->
+        <section id="id-68">
+            <h2>6.8 Estrutura genérica do fluxo KEM</h2>
+
+            <div class="algorithm-steps">
+                <h3>Fluxo completo Alice (Destinatário) / Bob (Remetente)</h3>
+                <ol>
+                    <li><strong>Alice:</strong> <code>KeyGen()</code> gera <span class="math">\((ek, dk)\)</span>. Publica <span class="math">\(ek\)</span>.</li>
+                    <li><strong>Bob:</strong> Recebe <span class="math">\(ek\)</span>. Executa <code>Encaps(ek)</code>:
+                        <ul>
+                            <li>Gera <span class="math">\(m\)</span> aleatório</li>
+                            <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
+                            <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
+                            <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Bob:</strong> Cifra os dados com AES-256-GCM usando <span class="math">\(K\)</span> e um nonce aleatório.</li>
+                    <li><strong>Bob:</strong> Envia <span class="math">\((c, \text{nonce}, \text{ciphertext}, \text{tag})\)</span> para Alice.</li>
+                    <li><strong>Alice:</strong> Executa <code>Decaps(dk, c)</code> para recuperar <span class="math">\(K\)</span>.</li>
+                    <li><strong>Alice:</strong> Decifra os dados com AES-256-GCM. Se a tag falhar, descarta a mensagem.</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Dupla proteção:</strong> Se <code>c</code> for adulterado, Decaps devolve uma chave pseudoaleatória (<span class="math">\(K_{\text{reject}}\)</span>). Mesmo que o adversário adivinhe esta chave, a tag AEAD do AES-GCM falharia, garantindo a integridade.</p>
+            </div>
+        </section>
+
+        <!-- Fontes -->
+        <div class="sources">
+            <h2>Fontes</h2>
+            <ul>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
+                <li>NIST FIPS 203 (2024), Secções 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>IETF draft-ietf-tls-hybrid-design – Troca de chaves híbrida em TLS 1.3</li>
+            </ul>
+        </div>
+
+        <!-- Navegação entre capítulos -->
+        <div class="chapter-nav">
+            <a href="5.html" class="nav-btn">← Capítulo anterior</a>
+            <span class="nav-label">06 / 10</span>
+            <a href="7.html" class="nav-btn">Próximo capítulo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Rodapé do site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pt';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/6.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

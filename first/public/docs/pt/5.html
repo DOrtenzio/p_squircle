@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capítulo 5 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax para fórmulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Barra de ferramentas (idêntica ao index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navegação rápida">
+            <a href="index.html#featureSection">Porquê</a>
+            <a href="index.html#learningPath">Percurso</a>
+            <a href="index.html#searchSection">O Guia</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Selecionar idioma">
+                    <span class="lang-current" id="langCurrent">🇵🇹 Português</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 idiomas -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contentor principal com barra lateral -->
+    <div class="container chapter-wrapper">
+        <!-- Barra lateral -->
+        <aside class="chapter-sidebar">
+            <h3>Capítulos</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Pré-requisitos</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Assimétrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li class="active"><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Segurança</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementações</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>05 – Module-LWE (MLWE)</h1>
+        <p class="subtitle">O fundamento matemático do ML-KEM</p>
+
+        <!-- Índice -->
+        <div class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#id-51">5.1 De LWE a MLWE: a motivação</a></li>
+                <li><a href="#id-52">5.2 Definição formal de MLWE</a></li>
+                <li><a href="#id-53">5.3 A distribuição do ruído em ML-KEM</a></li>
+                <li><a href="#id-54">5.4 Amostragem em ML-KEM</a></li>
+                <li><a href="#id-55">5.5 Dificuldade: por que o MLWE é difícil</a></li>
+                <li><a href="#id-56">5.6 De MLWE a um PKE: a ideia construtiva</a></li>
+                <li><a href="#id-57">5.7 Exemplo numérico completo</a></li>
+                <li><a href="#id-58">5.8 Por que os parâmetros do ML-KEM são os que são</a></li>
+            </ul>
+        </div>
+
+        <!-- Seção 5.1 -->
+        <section id="id-51">
+            <h2>5.1 De LWE a MLWE: a motivação</h2>
+
+            <h3>LWE clássico e o seu custo</h3>
+
+            <p>No ficheiro <a href="4.html">04</a> vimos o LWE padrão: dadas <span class="math">\(m\)</span> amostras <span class="math">\((\mathbf{a}_i, b_i)\)</span> com <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> e <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>, encontrar <span class="math">\(\mathbf{s}\)</span>. O problema é difícil, mas tem um custo prático elevado:</p>
+
+            <ul>
+                <li>A chave pública (a matriz <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) tem um tamanho <span class="math">\(O(n^2)\)</span>: para <span class="math">\(n = 1024\)</span> e <span class="math">\(q = 3329\)</span> seriam mais de 2 MB.</li>
+                <li>A multiplicação matriz-vetor <span class="math">\(A \cdot \mathbf{s}\)</span> custa <span class="math">\(O(n^2)\)</span> multiplicações.</li>
+            </ul>
+
+            <h3>RLWE: demasiado rígido</h3>
+
+            <p>Ring-LWE transfere as operações para o anel <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. Um único polinómio <span class="math">\(a \in R_q\)</span> substitui toda a matriz, reduzindo a chave pública para <span class="math">\(O(n)\)</span>.</p>
+
+            <p>Mas o RLWE tem uma estrutura algébrica muito específica que alguns investigadores consideram potencialmente explorável (embora não se conheça nenhum ataque prático em 2024).</p>
+
+            <h3>MLWE: o compromisso ótimo</h3>
+
+            <p><strong>Module-LWE</strong> generaliza ambos usando uma matriz <span class="math">\(k \times k\)</span> de polinómios em <span class="math">\(R_q\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}
+                \]
+            </div>
+
+            <ul>
+                <li>Para <span class="math">\(k = 1\)</span>: reduz-se a RLWE</li>
+                <li>Para <span class="math">\(k \to \infty\)</span> (polinómios de grau 0): reduz-se a LWE clássico</li>
+            </ul>
+
+            <p>O parâmetro <span class="math">\(k\)</span> permite <strong>calibrar</strong> a segurança e o desempenho de forma independente de <span class="math">\(n\)</span>.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variante</th>
+                        <th>Chave pública</th>
+                        <th>Segurança</th>
+                        <th>Flexibilidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span></td>
+                        <td>alta</td>
+                        <td>baixa</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span></td>
+                        <td>média</td>
+                        <td>baixa</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span></td>
+                        <td>regulável com <span class="math">\(k\)</span></td>
+                        <td><strong>alta</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Seção 5.2 -->
+        <section id="id-52">
+            <h2>5.2 Definição formal de MLWE</h2>
+
+            <h3>Espaço de trabalho</h3>
+
+            <p>Fixados os parâmetros:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span>: grau do polinómio ciclotómico</li>
+                <li><span class="math">\(q = 3329\)</span>: módulo primo</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: dimensão do módulo</li>
+                <li><span class="math">\(\chi\)</span>: distribuição do ruído (distribuição binomial centrada <span class="math">\(B_\eta\)</span>)</li>
+            </ul>
+
+            <p>O anel base é <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+
+            <h3>Distribuição MLWE</h3>
+
+            <p>Seja <span class="math">\(\mathbf{s} \in R_q^k\)</span> um vetor secreto de polinómios, cada um com coeficientes amostrados de <span class="math">\(\chi\)</span>.</p>
+
+            <p>Uma <strong>instância MLWE</strong> é um par:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{A},\; \mathbf{t}) \quad \text{onde} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                \]
+            </div>
+
+            <p>com <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
+
+            <h3>Problema decisionaL MLWE</h3>
+
+            <p><strong>Entrada:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> onde:</p>
+            <ul>
+                <li>seja <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (distribuição MLWE), ou</li>
+                <li>seja <span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> uniforme</li>
+            </ul>
+
+            <p><strong>Objetivo:</strong> distinguir os dois casos com vantagem não negligenciável.</p>
+
+            <h3>Problema de pesquisa MLWE</h3>
+
+            <p><strong>Entrada:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> com <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p><strong>Objetivo:</strong> encontrar <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <blockquote>
+                <p>A redução de Regev (adaptada para MLWE) demonstra que o problema de pesquisa é computacionalmente equivalente ao problema decisionaL, e que ambos são pelo menos tão difíceis como GapSVP em retículos de alta dimensão.</p>
+            </blockquote>
+        </section>
+
+        <!-- Seção 5.3 -->
+        <section id="id-53">
+            <h2>5.3 A distribuição do ruído em ML-KEM</h2>
+
+            <h3>Distribuição binomial centrada <span class="math">\(B_\eta\)</span></h3>
+
+            <p>Em ML-KEM o ruído não é gaussiano mas binomial centrado. Para amostrar um único coeficiente de <span class="math">\(B_\eta\)</span>:</p>
+
+            <ol>
+                <li>Amostrar <span class="math">\(2\eta\)</span> bits uniformes: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li>Devolver <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span></li>
+            </ol>
+
+            <p>O resultado é um inteiro em <span class="math">\([-\eta, \eta]\)</span>.</p>
+
+            <p><strong>Distribuição de probabilidade para η = 2:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Valor</th>
+                        <th>Probabilidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\(-2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(-1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(0\)</span></td>
+                        <td><span class="math">\(6/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Por que não gaussiana verdadeira?</strong></p>
+
+            <p>A gaussiana discreta é teoricamente ótima, mas amostrá-la de forma <em>de tempo constante</em> (resistente a ataques de temporização) é complexo. A binomial centrada:</p>
+
+            <ul>
+                <li>tem suporte finito → sem casos extremos</li>
+                <li>é amostrada apenas com operações sobre bits → trivialmente de tempo constante</li>
+                <li>é estatisticamente indistinguível da gaussiana para os ataques conhecidos</li>
+            </ul>
+        </section>
+
+        <!-- Seção 5.4 -->
+        <section id="id-54">
+            <h2>5.4 Amostragem em ML-KEM</h2>
+
+            <h3>CBD: Distribuição Binomial Centrada</h3>
+            <p>ML-KEM usa uma distribuição binomial centrada <span class="math">\(B_\eta\)</span> para gerar erros pequenos e segredos. Esta distribuição é eficiente e não requer amostragem por rejeição.</p>
+
+            <div class="code-block">
+                <h4>Função SamplePolyCBD(σ, b, η)</h4>
+                <pre><code>Entrada: semente σ ∈ {0,1}^256, nonce b, parâmetro η
+Saída: polinómio f ∈ R_q com coeficientes em [-η, η]
+
+1. bytes = PRF(σ, b)       // SHAKE256, gera 64·η bytes
+2. Para j = 0 a 255:
+     a = sum(bits[2ηj .. 2ηj+η-1])   // conta os 1 no primeiro grupo
+     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // conta os 1 no segundo grupo
+     f[j] = a - b                     // diferença centrada em 0
+3. Devolver f</code></pre>
+            </div>
+
+            <p>Para <span class="math">\(\eta=2\)</span>, os coeficientes estão em <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>. Para <span class="math">\(\eta=3\)</span>, em <span class="math">\(\{-3, \ldots, 3\}\)</span>.</p>
+
+            <h3>SampleNTT: Amostragem Uniforme</h3>
+            <p>Para gerar a matriz pública <span class="math">\(\mathbf{A}\)</span>, são necessários coeficientes uniformes em <span class="math">\(\mathbb{Z}_q\)</span>. Utiliza-se a <em>amostragem por rejeição</em> sobre a saída de SHAKE128.</p>
+
+            <div class="code-block">
+                <h4>Função SampleNTT(stream)</h4>
+                <pre><code>Entrada: fluxo de bytes do XOF (SHAKE128)
+Saída: polinómio com coeficientes uniformes em [0, q-1]
+
+coeficientes = []
+enquanto len(coeficientes) < 256:
+    // Ler 3 bytes para gerar 2 valores candidatos
+    b0, b1, b2 = next_3_bytes(stream)
+
+    // Combinar os bits para formar dois números de 12 bits
+    d1 = b0 + 256 * (b1 mod 16)
+    d2 = floor(b1 / 16) + 16 * b2
+
+    // Aceitar apenas se forem < q (3329)
+    se d1 < q:
+        coeficientes.append(d1)
+    se d2 < q e len(coeficientes) < 256:
+        coeficientes.append(d2)
+
+devolver coeficientes</code></pre>
+            </div>
+
+            <p>Este método garante uma distribuição uniforme perfeita, descartando os valores fora do intervalo.</p>
+        </section>
+
+        <!-- Seção 5.5 -->
+        <section id="id-55">
+            <h2>5.5 Dificuldade: por que o MLWE é difícil</h2>
+
+            <h3>Redução do pior caso para o caso médio</h3>
+
+            <p>A propriedade mais importante do LWE/MLWE é a <strong>redução do pior caso para o caso médio</strong>:</p>
+
+            <blockquote>
+                <p>Se existe um algoritmo eficiente que resolve MLWE para uma fração não negligenciável de instâncias aleatórias, então existe um algoritmo eficiente para resolver GapSVP (a versão aproximada de SVP) em <em>qualquer</em> retículo, no pior caso.</p>
+            </blockquote>
+
+            <p>Esta redução (Regev 2005, adaptada por Peikert 2009 e Brakerski et al. para MLWE) é excecional: a maioria dos problemas criptográficos tem apenas reduções de caso médio para caso médio.</p>
+
+            <p>Na prática: quebrar MLWE em instâncias aleatórias é tão difícil como resolver SVP no pior caso → os pressupostos criptográficos são muito sólidos.</p>
+
+            <h3>Ausência de estrutura explorável por quânticos</h3>
+
+            <p>O algoritmo de Shor explora a estrutura de <strong>grupo abeliano</strong> dos problemas de fatorização e logaritmo discreto: existe uma ação de grupo periódica que a QFT pode detetar.</p>
+
+            <p>MLWE não tem esta estrutura:</p>
+
+            <ul>
+                <li>Não há periodicidade para explorar</li>
+                <li>Não há um grupo abeliano natural sobre o qual aplicar a QFT</li>
+                <li>Os melhores algoritmos quânticos (baseados em quantum walks ou QRAM) oferecem no máximo uma aceleração polinomial, não exponencial</li>
+            </ul>
+        </section>
+
+        <!-- Seção 5.6 -->
+        <section id="id-56">
+            <h2>5.6 De MLWE a um PKE: a ideia construtiva</h2>
+
+            <p>Como se constrói um sistema de cifra a partir do MLWE? A intuição é elegante.</p>
+
+            <h3>Analogia com Diffie-Hellman</h3>
+
+            <p>Em DH, a chave pública é <span class="math">\(g^s\)</span>: fácil de calcular, difícil de inverter.<br />
+            Em MLWE, a chave pública é <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: fácil de calcular, difícil de inverter.</p>
+
+            <h3>Esquema de cifra (tipo Regev)</h3>
+
+            <p><strong>KeyGen:</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p style="text-align: right;">Chave pública: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
+            Chave privada: <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <p><strong>Encrypt</strong> (mensagem <span class="math">\(m \in \{0,1\}\)</span>, codificada como <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{r}, \mathbf{e}_1 \leftarrow \chi^k, \quad e_2 \leftarrow \chi
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{u} = \mathbf{A}^T\mathbf{r} + \mathbf{e}_1 \qquad v = \mathbf{t}^T\mathbf{r} + e_2 + \mu
+                \]
+            </div>
+
+            <p style="text-align: right;">Texto cifrado: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
+
+            <p><strong>Decrypt:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+
+            <p><strong>Análise:</strong></p>
+
+            <div class="math-block">
+                \[
+                w = \mathbf{t}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T\mathbf{u}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = (\mathbf{A}\mathbf{s})^T\mathbf{r} + \mathbf{e}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T(\mathbf{A}^T\mathbf{r} + \mathbf{e}_1)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{ruído pequeno}} + \mu \approx \mu
+                \]
+            </div>
+
+            <p>O ruído é pequeno → arredondando recupera-se <span class="math">\(\mu\)</span> e portanto <span class="math">\(m\)</span>.</p>
+
+            <h3>A versão polinomial (MLWE real)</h3>
+
+            <p>Em ML-KEM, cada escalar torna-se um polinómio em <span class="math">\(R_q\)</span>, e as operações são produtos polinomiais. O mecanismo é idêntico, mas as multiplicações são realizadas no anel:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \circ \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>onde <span class="math">\(\circ\)</span> é a multiplicação em <span class="math">\(R_q\)</span> (polinomial, acelerada por NTT).</p>
+        </section>
+
+        <!-- Seção 5.7 -->
+        <section id="id-57">
+            <h2>5.7 Exemplo numérico completo</h2>
+
+            <p>Usamos parâmetros de brinquedo: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, coeficientes pequenos em <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
+
+            <p>Os polinómios estão em <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>, portanto de grau <span class="math">\(\leq 3\)</span>.</p>
+
+            <h3>Dados de partida</h3>
+
+            <p><strong>Matriz pública</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} = \begin{pmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{pmatrix}
+                \]
+            </div>
+
+            <p>com <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+
+            <p><strong>Segredo</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> com <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
+
+            <p><strong>Erro</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> com <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
+
+            <h3>Cálculo de t = As + e</h3>
+
+            <p><strong>Componente t0 = a00 s0 + a01 s1 + e0:</strong></p>
+
+            <div class="math-block">
+                \[
+                a_{00} \cdot s_0 = (1 + 2X + 3X^2 + 4X^3)(1 - X)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 1 - X + 2X - 2X^2 + 3X^2 - 3X^3 + 4X^3 - 4X^4
+                \]
+            </div>
+
+            <p>Reduzimos <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                = 1 + X + X^2 + X^3 + 4 = 5 + X + X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                a_{01} \cdot s_1 = (5 + X + 2X^2)(X^2) = 5X^2 + X^3 + 2X^4
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \equiv 5X^2 + X^3 - 2 = -2 + 5X^2 + X^3 \equiv 15 + 5X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                t_0 = (5 + X + X^2 + X^3) + (15 + 5X^2 + X^3) + 1
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 21 + X + 6X^2 + 2X^3 \equiv 4 + X + 6X^2 + 2X^3 \pmod{17}
+                \]
+            </div>
+
+            <p><strong>Resultado:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (a segunda componente é calculada de forma análoga).</p>
+
+            <h3>Observação chave</h3>
+
+            <p>Um adversário que vê <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> deve encontrar <span class="math">\((\mathbf{s}, \mathbf{e})\)</span>. Mesmo com estes números pequenos, o problema já não é trivial: não pode usar eliminação gaussiana (o erro quebra a linearidade) e o espaço de pesquisa é exponencial na dimensão real do ML-KEM.</p>
+        </section>
+
+        <!-- Seção 5.8 -->
+        <section id="id-58">
+            <h2>5.8 Por que os parâmetros do ML-KEM são os que são</h2>
+
+            <h3><span class="math">\(n = 256\)</span></h3>
+
+            <ul>
+                <li>Deve ser uma potência de 2 (para NTT eficiente)</li>
+                <li>O polinómio <span class="math">\(X^{256}+1\)</span> deve ser irredutível sobre <span class="math">\(\mathbb{Z}_q\)</span>: é se <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
+                <li><span class="math">\(256\)</span> equilibra segurança e desempenho: <span class="math">\(n = 128\)</span> seria demasiado inseguro, <span class="math">\(n = 512\)</span> demasiado lento</li>
+            </ul>
+
+            <h3><span class="math">\(q = 3329\)</span></h3>
+
+            <ul>
+                <li>Deve ser primo (para que <span class="math">\(\mathbb{Z}_q\)</span> seja um corpo)</li>
+                <li>Deve satisfazer <span class="math">\(q \equiv 1 \pmod{256}\)</span>: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>Deve ser tal que existam raízes 256-ésimas da unidade: garantido pela condição anterior</li>
+                <li>Deve ser o mais pequeno possível (chaves compactas) compatível com o orçamento de ruído</li>
+                <li><span class="math">\(3329\)</span> é o primo que satisfaz todas as condições com margem suficiente para o ruído</li>
+            </ul>
+
+            <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
+
+            <ul>
+                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): nível 1 NIST, equivalente a AES-128 pré-quântico</li>
+                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): nível 3, equivalente a AES-192, recomendado para uso geral</li>
+                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): nível 5, equivalente a AES-256, para sistemas de alta criticidade</li>
+            </ul>
+
+            <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
+
+            <p>O ruído deve ser:</p>
+
+            <ul>
+                <li>suficientemente <strong>grande</strong> para tornar o problema MLWE difícil</li>
+                <li>suficientemente <strong>pequeno</strong> para garantir que a decifra não falhe (orçamento de ruído)</li>
+            </ul>
+
+            <p>Aumentar <span class="math">\(\eta\)</span> aumenta a segurança mas também a probabilidade de erro de decifra. Os valores <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> para ML-KEM-768 são o ponto ótimo.</p>
+        </section>
+
+        <!-- Fontes -->
+        <div class="sources">
+            <h2>Fontes</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
+                STOC 2005. Fundação do LWE.</li>
+                <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
+                Designs, Codes and Cryptography. Fundação do MLWE.</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
+                EUROCRYPT 2010. Fundação do RLWE.</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Secções 1–4 (design racional dos parâmetros)</li>
+                <li>NIST FIPS 203 (2024), Secções 3–4 (notação e primitivas)</li>
+            </ul>
+        </div>
+
+        <!-- Navegação entre capítulos -->
+        <div class="chapter-nav">
+            <a href="4.html" class="nav-btn">← Capítulo anterior</a>
+            <span class="nav-label">05 / 10</span>
+            <a href="6.html" class="nav-btn">Próximo capítulo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Rodapé do site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pt';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/5.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

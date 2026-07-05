@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rozdział 7 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax dla formuł -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Pasek narzędzi (identyczny jak w index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Szybka nawigacja">
+            <a href="index.html#featureSection">Dlaczego</a>
+            <a href="index.html#learningPath">Ścieżka</a>
+            <a href="index.html#searchSection">Przewodnik</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Wybierz język">
+                    <span class="lang-current" id="langCurrent">🇵🇱 Polski</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 języków -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Główny kontener z paskiem bocznym -->
+    <div class="container chapter-wrapper">
+        <!-- Pasek boczny -->
+        <aside class="chapter-sidebar">
+            <h3>Rozdziały</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Wymagania wstępne</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symetryczna</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymetryczna</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kraty</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Bezpieczeństwo</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementacje</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT (Transformata Teoretycznoliczbowa)</h1>
+        <p class="subtitle">Silnik, który czyni ML-KEM praktycznie użytecznym</p>
+
+        <!-- Spis treści -->
+        <div class="toc">
+            <h2>Spis treści</h2>
+            <ul>
+                <li><a href="#id-71">7.1 Problem: mnożenie wielomianów</a></li>
+                <li><a href="#id-72">7.2 Transformata Fouriera i DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT w świecie modularnym</a></li>
+                <li><a href="#id-74">7.4 NTT w ML-KEM</a></li>
+                <li><a href="#id-75">7.5 Uproszczony przykład liczbowy</a></li>
+                <li><a href="#id-76">7.6 Implementacja</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja 7.1 -->
+        <section id="id-71">
+            <h2>7.1 Problem: mnożenie wielomianów</h2>
+
+            <p>W ML-KEM podstawowe operacje obejmują mnożenia wielomianów w pierścieniu <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+
+            <h3>Mnożenie naiwne</h3>
+            <p>Dwa wielomiany stopnia <span class="math">\(n-1\)</span> mnoży się algorytmem szkolnym o złożoności <span class="math">\(O(n^2)\)</span>.</p>
+            
+            <ul>
+                <li>Dla <span class="math">\(n = 256\)</span>: około <span class="math">\(256^2 = 65536\)</span> mnożeń dla pojedynczego iloczynu.</li>
+                <li>W ML-KEM-768 (<span class="math">\(k=3\)</span>), pojedyncza operacja <code>Encaps</code> wymaga dziesiątek mnożeń wielomianowych → miliony mnożeń metodą naiwną.</li>
+            </ul>
+
+            <h3>Z NTT</h3>
+            <p>Złożoność spada do <span class="math">\(O(n \log n)\)</span>:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ operacji na iloczyn}
+                \]
+            </div>
+            <p><strong>Przyspieszenie:</strong> ~32×. Na zoptymalizowanym sprzęcie ML-KEM-768 zajmuje mniej niż 1 ms.</p>
+        </section>
+
+        <!-- Sekcja 7.2 -->
+        <section id="id-72">
+            <h2>7.2 Transformata Fouriera i DFT</h2>
+
+            <h3>Twierdzenie o splocie</h3>
+            <p>Transformata Fouriera przekształca splot (jak mnożenie wielomianów) w mnożenie punktowe:</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>Procedura:</strong></p>
+            <ol>
+                <li>Oblicz <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> i <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>Pomnóż punktowo: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Wykonaj transformację odwrotną: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>Jeśli DFT i DFT<sup>-1</sup> kosztują <span class="math">\(O(n \log n)\)</span> (poprzez FFT), całe mnożenie kosztuje <span class="math">\(O(n \log n)\)</span>.</p>
+
+            <h3>Szybka Transformata Fouriera (FFT)</h3>
+            <p>Algorytm Cooleya-Tukeya (1965) oblicza DFT wykorzystując strukturę rekurencyjną:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{parzyste}}], \; \text{DFT}[f_{\text{nieparzyste}}]\right) \text{ połączone z czynnikami skrętu}
+                \]
+            </div>
+            <p><strong>Problem:</strong> Standardowa FFT używa liczb zespolonych (zmiennoprzecinkowych), co wprowadza błędy zaokrągleń i niestały czas, czyniąc je nieodpowiednimi dla kryptografii.</p>
+        </section>
+
+        <!-- Sekcja 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: DFT w świecie modularnym</h2>
+
+            <h3>Idea</h3>
+            <p>NTT (Transformata Teoretycznoliczbowa) to DFT zastosowana do <span class="math">\(\mathbb{Z}_q\)</span> zamiast <span class="math">\(\mathbb{C}\)</span>. Zamiast zespolonych pierwiastków z jedności <span class="math">\(e^{2\pi i k/n}\)</span> używa się pierwotnych pierwiastków z jedności w <span class="math">\(\mathbb{Z}_q\)</span>.</p>
+
+            <h3>Pierwotne pierwiastki z jedności modulo q</h3>
+            <p>Element <span class="math">\(\omega \in \mathbb{Z}_q\)</span> jest pierwotnym pierwiastkiem <span class="math">\(n\)</span>-tego stopnia z jedności, jeśli:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{i} \quad \omega^k \not\equiv 1 \pmod{q} \text{ dla } 0 < k < n
+                \]
+            </div>
+            <p>Warunek konieczny: <span class="math">\(n \mid (q-1)\)</span> (czyli <span class="math">\(n\)</span> dzieli <span class="math">\(q-1\)</span>).</p>
+
+            <p><strong>W ML-KEM:</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>Sprawdzenie: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Istnieją zatem pierwiastki 256-go stopnia z jedności modulo 3329.</li>
+                <li>Pierwotny pierwiastek używany w FIPS 203: <span class="math">\(\omega = 17\)</span> (ponieważ <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, pierwiastek używany dla NTT negacyklicznej to <span class="math">\(\zeta = 17\)</span>).</li>
+            </ul>
+
+            <h3>Definicja NTT</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>Odwrotna NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>gdzie <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
+
+            <h3>Kluczowe właściwości</h3>
+            <ul>
+                <li><strong>Dokładna:</strong> brak błędów zaokrągleń, wszystko w <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>Wydajna:</strong> <span class="math">\(O(n \log n)\)</span> jak FFT</li>
+                <li><strong>Stałoczasowa:</strong> możliwa do implementacji bez rozgałęzień na tajnych danych (bezpieczeństwo przed atakami bocznokanałowymi)</li>
+            </ul>
+        </section>
+
+        <!-- Sekcja 7.4 -->
+        <section id="id-74">
+            <h2>7.4 NTT w ML-KEM</h2>
+
+            <h3>NTT negacykliczna</h3>
+            <p>W ML-KEM redukcja nie jest modulo <span class="math">\(X^n - 1\)</span> (cykliczna), ale modulo <span class="math">\(X^n + 1\)</span> (negacykliczna). W splocie negacyklicznym "zawinięte" wyrazy zmieniają znak. Wymaga to wariantu klasycznej NTT z dostosowanymi czynnikami skrętu.</p>
+
+            <p>NTT w FIPS 203 stosuje wstępne skręcenie z potęgami <span class="math">\(\zeta = 17\)</span>:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{przed klasyczną NTT}
+                \]
+            </div>
+
+            <h3>Operacje ML-KEM w domenie NTT</h3>
+            <p>Po przekształceniu wielomiany znajdują się w domenie NTT. Operacje stają się elementarne:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operacja</th>
+                        <th>W domenie NTT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mnożenie <span class="math">\(f \cdot g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> dla każdego <span class="math">\(i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Dodawanie <span class="math">\(f + g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> dla każdego <span class="math">\(i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Mnożenie macierz-wektor <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> mnożeń i <span class="math">\(k^2\)</span> sum punktowych</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Klucz publiczny <span class="math">\(A\)</span> jest generowany i przechowywany już w domenie NTT, unikając ponownego obliczania NTT za każdym razem.</p>
+
+            <h3>Pełny przepływ KeyGen</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ziarno 
+  │
+  ├──► SHAKE128 ──► A_hat (już w NTT)
+  │
+  └──► Próbkowanie dwumianowe ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          Klucz publiczny (t_hat)
+                </pre>
+            </div>
+            <p>Wyjście <code>t_hat</code> to klucz publiczny (już w NTT). Unika się NTT<sup>-1</sup> dla <span class="math">\(t\)</span>.</p>
+        </section>
+
+        <!-- Sekcja 7.5 -->
+        <section id="id-75">
+            <h2>7.5 Uproszczony przykład liczbowy</h2>
+
+            <p>Używamy <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (pierwiastek 4-go stopnia z 1 modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+
+            <p><strong>Wielomiany:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>NTT f:</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>NTT g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. Dla <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; dla <span class="math">\(i \neq 0\)</span>: suma pierwiastków <span class="math">\(= 0\)</span>.</p>
+
+            <p><strong>Mnożenie punktowe:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>INTT <span class="math">\(\hat{h}\)</span>:</strong> daje iloczyn <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
+
+            <blockquote>
+                <p><strong>Uwaga:</strong> ten przykład używa redukcji modulo <span class="math">\(X^4-1\)</span> (cyklicznej). ML-KEM używa <span class="math">\(X^n+1\)</span> (negacyklicznej) z wariantem opisanym w sekcji 7.4.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sekcja 7.6 -->
+        <section id="id-76">
+            <h2>7.6 Implementacja</h2>
+
+            <h3>Pseudokod Cooleya-Tukeya dla NTT</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    Iteracyjna NTT in-place (Cooley-Tukey).
+    f: lista n współczynników w Z_q
+    q: moduł pierwszy
+    omega: pierwotny pierwiastek n-tego stopnia z jedności mod q
+    """
+    n = len(f)
+    # Permutacja bit-reversal
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # Operacje motylkowe
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>Implementacja referencyjna</h3>
+            <p>FIPS 203 określa dokładną implementację NTT oraz prekomputowaną tablicę pierwiastków <span class="math">\(\zeta^{br(i)}\)</span> (gdzie <span class="math">\(br\)</span> to permutacja bit-reversal).</p>
+            
+            <p>Zoptymalizowane implementacje w asemblerze/SIMD są dostępne w:</p>
+            <ul>
+                <li><code>liboqs</code> (C z AVX2)</li>
+                <li><code>pqclean</code> (przenośny C)</li>
+                <li><code>kyber</code> referencyjna implementacja (C)</li>
+            </ul>
+        </section>
+
+        <!-- Źródła -->
+        <div class="sources">
+            <h2>Źródła</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), Sekcje 4.3 i 5 – definicja NTT i operacje w <span class="math">\(R_q\)</span></li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Sekcja 6 (implementacja NTT)</li>
+            </ul>
+        </div>
+
+        <!-- Nawigacja między rozdziałami -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← Poprzedni rozdział</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">Następny rozdział →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Stopka -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

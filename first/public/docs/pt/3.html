@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capítulo 3 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax para fórmulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Barra de ferramentas (idêntica ao index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navegação rápida">
+            <a href="index.html#featureSection">Porquê</a>
+            <a href="index.html#learningPath">Percurso</a>
+            <a href="index.html#searchSection">O Guia</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Selecionar idioma">
+                    <span class="lang-current" id="langCurrent">🇵🇹 Português</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 idiomas -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contentor principal com barra lateral -->
+    <div class="container chapter-wrapper">
+        <!-- Barra lateral -->
+        <aside class="chapter-sidebar">
+            <h3>Capítulos</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Pré-requisitos</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Assimétrica</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Segurança</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementações</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – O Algoritmo de Shor</h1>
+        <p class="subtitle">Porque o RSA e a ECC são vulneráveis aos computadores quânticos</p>
+
+        <!-- Índice -->
+        <div class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#id-31">3.1 Computadores quânticos: o essencial</a></li>
+                <li><a href="#id-32">3.2 O algoritmo de Shor</a></li>
+                <li><a href="#id-33">3.3 Impacto no RSA, DH, ECC</a></li>
+                <li><a href="#id-34">3.4 Grover: a ameaça à criptografia simétrica</a></li>
+                <li><a href="#id-35">3.5 Estado da arte dos computadores quânticos (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 Colher agora, decifrar depois</a></li>
+            </ul>
+        </div>
+
+        <!-- Seção 3.1 -->
+        <section id="id-31">
+            <h2>3.1 Computadores quânticos: o essencial</h2>
+
+            <h3>Qubit vs. bit clássico</h3>
+
+            <p>Um bit clássico é 0 ou 1. Um <strong>qubit</strong> pode estar em <strong>sobreposição</strong>: uma combinação linear de <span class="math">\(|0\rangle\)</span> e <span class="math">\(|1\rangle\)</span>.</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>Antes da medição, o qubit é "simultaneamente 0 e 1". Após a medição, colapsa em 0 (com probabilidade <span class="math">\(|\alpha|^2\)</span>) ou 1 (com probabilidade <span class="math">\(|\beta|^2\)</span>).</p>
+
+            <blockquote>
+                <p><strong>Analogia:</strong> imagine lançar uma moeda que, enquanto está no ar, representa simultaneamente cara e coroa. Só quando a observa é que se torna uma das duas.</p>
+            </blockquote>
+
+            <h3>Emaranhamento e interferência</h3>
+
+            <ul>
+                <li><strong>Emaranhamento:</strong> dois qubits podem estar correlacionados de tal forma que medir um determina instantaneamente o outro.</li>
+                <li><strong>Interferência quântica:</strong> os caminhos de cálculo "errados" cancelam-se construtivamente (como ondas que se anulam), enquanto os caminhos "certos" são amplificados.</li>
+            </ul>
+
+            <p>Os algoritmos quânticos exploram a interferência para amplificar as respostas corretas e suprimir as erradas.</p>
+
+            <h3>Paralelismo quântico</h3>
+
+            <p>Com <span class="math">\(n\)</span> qubits, pode-se representar uma sobreposição de <span class="math">\(2^n\)</span> estados simultaneamente. Mas a medição devolve apenas um estado → o truque é construir algoritmos onde as interferências deixam sobreviver apenas a resposta certa.</p>
+        </section>
+
+        <!-- Seção Esquema do Algoritmo -->
+        <section id="id-32">
+            <h2>3.2 O algoritmo de Shor</h2>
+            
+            <h3>Esquema do algoritmo para fatorizar \(n\)</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>Entrada:</strong> inteiro composto <span class="math">\(n\)</span></li>
+                    <li><strong>Inicialização:</strong> Escolher <span class="math">\(a\)</span> aleatório tal que <span class="math">\(1 < a < n\)</span> e <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>Preparação Quântica:</strong> Preparar um registo em sobreposição uniforme de <span class="math">\(0\)</span> a <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>Oracle:</strong> Calcular <span class="math">\(f(x) = a^x \bmod n\)</span> em paralelo (sobreposição)</li>
+                    <li><strong>QFT:</strong> Aplicar a Transformada de Fourier Quântica ao primeiro registo</li>
+                    <li><strong>Medição:</strong> Medir o registo para obter um valor correlacionado com o período <span class="math">\(r\)</span></li>
+                    <li><strong>Clássico:</strong> Usar o algoritmo das frações contínuas para estimar <span class="math">\(r\)</span></li>
+                    <li><strong>Verificação:</strong> Se <span class="math">\(r\)</span> for par e <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li>Calcular <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> e <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>Estes são fatores não triviais de <span class="math">\(n\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Loop:</strong> Se falhar, voltar ao passo 2 com um novo <span class="math">\(a\)</span></li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Nota:</strong> O núcleo quântico (passos 3-5) encontra o período <span class="math">\(r\)</span> da função <span class="math">\(f(x)\)</span> em tempo polinomial, explorando a interferência construtiva/destrutiva da QFT.</p>
+            </div>
+        </section>
+
+        <!-- Seção 3.3 -->
+        <section id="id-33">
+            <h2>3.3 Impacto no RSA, DH, ECC</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Esquema</th>
+                        <th>Baseia a segurança em</th>
+                        <th>Vulnerável a Shor?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>Fatorização</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sim</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (mod <span class="math">\(p\)</span>)</td>
+                        <td>Logaritmo discreto em <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sim</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (logaritmo discreto em EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Sim</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>Problemas de retículos</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">Nenhum algoritmo eficiente conhecido</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>Permutações pseudoaleatórias</td>
+                        <td>Apenas Grover (ver abaixo)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Shor resolve qualquer problema estruturado como a procura de periodicidade num grupo abeliano. Fatorização e logaritmo discreto (incluindo em EC) têm exatamente esta estrutura. Os problemas de retículos não.</p>
+        </section>
+
+        <!-- Seção 3.4 -->
+        <section id="id-34">
+            <h2>3.4 Grover: a ameaça à criptografia simétrica</h2>
+
+            <p>O algoritmo de Grover (1996) oferece uma aceleração <strong>quadrática</strong> na pesquisa não estruturada:</p>
+            <ul>
+                <li>Encontrar uma chave entre <span class="math">\(2^k\)</span> possibilidades classicamente: <span class="math">\(O(2^k)\)</span> tentativas</li>
+                <li>Com Grover: <span class="math">\(O(2^{k/2})\)</span> tentativas</li>
+            </ul>
+
+            <p><strong>Consequências práticas:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Chave</th>
+                        <th>Segurança clássica</th>
+                        <th>Segurança pós-quântica (Grover)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 bits</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → insuficiente</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 bits</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → ainda seguro</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 bits</td>
+                        <td>128 bits → seguro</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 bits</td>
+                        <td>128 bits → seguro</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Por esta razão, o NIST recomenda AES-256 (não AES-128) no contexto pós-quântico.</p>
+        </section>
+
+        <!-- Seção 3.5 -->
+        <section id="id-35">
+            <h2>3.5 Estado da arte dos computadores quânticos (2024–2025)</h2>
+
+            <p>Os computadores quânticos atuais são <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: têm dezenas-centenas de qubits físicos, mas com alta taxa de erro.</p>
+
+            <p>Para quebrar RSA-2048 com Shor, são necessários:</p>
+            <ul>
+                <li>~4000 qubits lógicos perfeitos</li>
+                <li>ou ~4 milhões de qubits físicos com correção de erros quânticos</li>
+            </ul>
+
+            <p>Os melhores sistemas atuais (Google Willow, IBM Heron, etc.) têm ~100-1000 qubits físicos de alta fidelidade, mas ainda estamos longe da escala necessária.</p>
+
+            <blockquote>
+                <p><strong>Estimativa do NIST:</strong> computadores quânticos criptograficamente relevantes podem existir dentro de 10–15 anos, com incerteza significativa em ambas as direções.</p>
+            </blockquote>
+        </section>
+
+        <!-- Seção 3.6 -->
+        <section id="id-36">
+            <h2>3.6 Colher agora, decifrar depois</h2>
+
+            <p>Mesmo que os computadores quânticos não existam <em>ainda</em> de forma criptograficamente relevante, existe uma ameaça concreta <strong>hoje</strong>:</p>
+
+            <blockquote>
+                <p>Um adversário pode <strong>colher agora</strong> comunicações cifradas (mesmo que não as possa decifrar), e <strong>decifrá-las no futuro</strong> quando tiver um computador quântico suficientemente potente.</p>
+            </blockquote>
+
+            <p>Este ataque é conhecido como <strong>"Colher agora, decifrar depois" (Harvest Now, Decrypt Later - HNDL)</strong> ou <em>store-now-decrypt-later</em>.</p>
+
+            <h4>Quem está em risco:</h4>
+            <ul>
+                <li>Comunicações diplomáticas e militares com longa vida secreta</li>
+                <li>Dados médicos, financeiros, legais com requisitos de confidencialidade decenal</li>
+                <li>Segredos industriais e propriedade intelectual</li>
+            </ul>
+
+            <h4>Quando migrar?</h4>
+
+            <p>Se os seus dados têm de permanecer secretos por mais anos do que faltam para computadores quânticos suficientemente potentes, tem de migrar <em>agora</em>.</p>
+
+            <p>Esta é a principal razão pela qual o NIST padronizou o ML-KEM (FIPS 203) em 2024, e porque organizações como a NSA, ENISA e ANSSI recomendam a migração imediata para sistemas de alta criticidade.</p>
+        </section>
+
+        <!-- Fontes -->
+        <div class="sources">
+            <h2>Fontes</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Navegação entre capítulos -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← Capítulo anterior</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">Próximo capítulo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Rodapé do site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pt';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

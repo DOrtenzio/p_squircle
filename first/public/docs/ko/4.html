@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4장 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="빠른 탐색">
+            <a href="index.html#featureSection">이유</a>
+            <a href="index.html#learningPath">학습 경로</a>
+            <a href="index.html#searchSection">가이드</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="언어 선택">
+                    <span class="lang-current" id="langCurrent">🇰🇷 한국어</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>차례</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 사전 지식</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 대칭키</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 비대칭키</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> 쇼어</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> 격자</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 보안</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 구현</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – 격자 (Lattices)</h1>
+        <p class="subtitle">양자 내성 암호화의 기반이 되는 수학적 구조</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>목차</h2>
+            <ul>
+                <li><a href="#id-41">4.1 격자의 정의</a></li>
+                <li><a href="#id-42">4.2 격자 상의 어려운 문제</a></li>
+                <li><a href="#id-43">4.3 SVP에서 LWE로</a></li>
+                <li><a href="#id-44">4.4 LWE: 오류와 함께 학습하기</a></li>
+                <li><a href="#id-45">4.5 RLWE: 환 기반 변형</a></li>
+                <li><a href="#id-46">4.6 MLWE: ML-KEM의 기반</a></li>
+                <li><a href="#id-47">4.7 격자의 양자 내성 보안</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 격자의 정의</h2>
+
+            <h3>형식적 정의</h3>
+
+            <p><span class="math">\(\mathbb{R}^m\)</span>에서의 <strong>격자</strong> <span class="math">\(\mathcal{L}\)</span>은 선형 독립인 <span class="math">\(n\)</span>개의 벡터 <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>의 모든 정수 선형 결합의 집합입니다:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>벡터 <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span>은 격자의 <strong>기저</strong>를 형성합니다.</p>
+
+            <h3>기하학적 직관</h3>
+
+            <p>2차원에서 무한한 점 격자를 상상해보세요. 각 점은 두 기저 벡터의 정수(실수가 아닌) 결합으로 도달할 수 있습니다:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>이것은 표준 정수 격자 <span class="math">\(\mathbb{Z}^2\)</span>입니다.</p>
+
+            <p>하지만 동일한 격자는 무한히 많은 다른 기저를 가질 수 있습니다:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>이것은 동일한 격자를 생성합니다. 어떤 기저는 "좋고"(짧고 거의 직교하는 벡터), 다른 기저는 "나쁩니다"(길고 거의 평행한 벡터).</p>
+
+            <h3>차원과 계수</h3>
+
+            <ul>
+                <li><strong>환경 차원</strong> <span class="math">\(m\)</span>: 각 벡터의 좌표 수</li>
+                <li><strong>계수</strong> <span class="math">\(n\)</span>: 기저의 벡터 수</li>
+            </ul>
+
+            <p><span class="math">\(n = m\)</span>인 경우: 완전 계수 격자 (<em>full-rank lattice</em>)</p>
+
+            <p>암호화에서는 일반적으로 <span class="math">\(n = m\)</span>이고 매우 큰(256–4096) 격자를 사용합니다.</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 격자 상의 어려운 문제</h2>
+
+            <h3>SVP – 최단 벡터 문제</h3>
+
+            <p><strong>입력:</strong> 격자 <span class="math">\(\mathcal{L}\)</span>의 기저 <span class="math">\(B\)</span><br />
+            <strong>출력:</strong> <span class="math">\(\mathcal{L}\)</span>에서 0이 아닌 가장 짧은 벡터</p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{찾기 } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ such that } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>2차원에서는 쉽습니다(가우스 알고리즘). 고차원(수백)에서는 <strong>NP-난해</strong>이며, 알려진 최고 알고리즘은 지수 시간이 필요합니다.</p>
+
+            <h3>CVP – 최근접 벡터 문제</h3>
+
+            <p><strong>입력:</strong> <span class="math">\(\mathcal{L}\)</span>의 기저 <span class="math">\(B\)</span>와 목표 점 <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (격자에 없음)<br />
+            <strong>출력:</strong> <span class="math">\(\mathbf{t}\)</span>에 가장 가까운 격자 점</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{찾기 } \mathbf{v} \in \mathcal{L} \text{ such that } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP는 SVP보다 최소한 어렵습니다. ML-KEM의 역캡슐화의 핵심에 있습니다: 비밀 <span class="math">\(\mathbf{s}\)</span>를 아는 사람은 해당 "쉬운" CVP를 풀 수 있고, 모르는 사람은 풀 수 없습니다.</p>
+
+            <h3>GapSVP와 SIS</h3>
+
+            <p>근사 변형(GapSVP)과 관련 문제(SIS – 짧은 정수 해)가 있으며, 이들은 격자 기반 암호화의 보안 증명의 기초를 형성합니다. 이 문서의 목적상, 이들은 모두 서로에게 환원되어 어려운 문제들의 군을 형성한다는 것을 알면 충분합니다.</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 SVP에서 LWE로</h2>
+
+            <p>SVP로부터 암호화 시스템을 어떻게 구성할까요?</p>
+
+            <p>Regev(2005)의 아이디어: SVP(기하학적으로 직관적이지만 사용하기 불편함)를 직접 사용하는 대신, 동등한 통계적 문제인 <strong>오류와 함께 학습하기(LWE)</strong>를 정의합니다.</p>
+
+            <p>보안 환원은 다음을 증명합니다:</p>
+
+            <blockquote>
+                <p>LWE가 깨지면 ⇒ GapSVP가 해결됩니다</p>
+            </blockquote>
+
+            <p>따라서 LWE는 고차원에서의 GapSVP보다 <strong>최소한 어렵습니다</strong>.</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: 오류와 함께 학습하기</h2>
+
+            <h3>정의</h3>
+
+            <p>매개변수 <span class="math">\(n\)</span>(차원), <span class="math">\(q\)</span>(모듈로), <span class="math">\(\chi\)</span>(잡음 분포)가 주어졌을 때:</p>
+
+            <p><strong>LWE 분포:</strong> 비밀 <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>을 선택합니다. 다음 샘플을 생성합니다:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>여기서 <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span>은 균일, <span class="math">\(e \leftarrow \chi\)</span>는 작습니다.</p>
+
+            <p><strong>결정적 LWE 문제:</strong> 샘플 <span class="math">\((\mathbf{a}, b)\)</span>를 균일 무작위 쌍 <span class="math">\((\mathbf{a}, u)\)</span> (<span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>)와 구별합니다.</p>
+
+            <p><strong>탐색 LWE 문제:</strong> 샘플 집합 <span class="math">\((\mathbf{a}_i, b_i)\)</span>이 주어졌을 때, <span class="math">\(\mathbf{s}\)</span>를 찾습니다.</p>
+
+            <h3>LWE 매개변수</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>매개변수</th>
+                        <th>기호</th>
+                        <th>역할</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>차원</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>보안은 <span class="math">\(n\)</span>에 대해 지수적으로 증가</td>
+                    </tr>
+                    <tr>
+                        <td>모듈로</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>잡음을 포함할 수 있을 만큼 충분히 커야 함</td>
+                    </tr>
+                    <tr>
+                        <td>오류 분포</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>이산 가우시안 또는 중심 이항</td>
+                    </tr>
+                    <tr>
+                        <td>잡음/신호 비율</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>작아야 하지만 너무 작지 않아야 함</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>n=2, q=7 예제</h3>
+
+            <p>비밀: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p><span class="math">\(\{-1, 0, 1\}\)</span>의 작은 오류를 가진 LWE 샘플:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>벡터 a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>오류가 있는 시스템이 주어졌을 때 <span class="math">\(\mathbf{s}\)</span>를 찾는 것은 어렵습니다: <span class="math">\(b_i\)</span> 값이 정확하지 않기 때문에 가우스 소거법을 사용할 수 없습니다.</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: 환 기반 변형</h2>
+
+            <p>표준 LWE는 벡터를 사용합니다. <strong>환-LWE (RLWE)</strong>는 연산을 다항식 환으로 옮깁니다:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>RLWE에서:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (정수 벡터가 아닌 다항식)</li>
+                <li><span class="math">\(a \in R_q\)</span> (균일하게 샘플링)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>LWE 대비 RLWE의 장점:</strong></p>
+            <ul>
+                <li>키 크기: <span class="math">\(O(n)\)</span> 대신 <span class="math">\(O(n^2)\)</span></li>
+                <li>속도: NTT를 사용한 다항식 곱셈은 <span class="math">\(O(n \log n)\)</span> 대신 <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>단점:</strong> 추가 대수 구조 → 잠재적으로 더 취약함; 보안 증명이 약간 더 약함.</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: ML-KEM의 기반</h2>
+
+            <p><strong>모듈-LWE (MLWE)</strong>는 LWE와 RLWE 사이의 절충안입니다: 다항식 모듈(<span class="math">\(R_q\)</span>의 다항식 행렬)을 사용합니다.</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>매개변수 <span class="math">\(k\)</span>는 <strong>모듈 차원</strong>입니다:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> for ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> for ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> for ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>왜 MLWE인가?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>방식</th>
+                        <th>키 크기</th>
+                        <th>속도</th>
+                        <th>보안</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → 큼</td>
+                        <td>느림</td>
+                        <td>더 보수적</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → 작음</td>
+                        <td>빠름</td>
+                        <td>추가 구조</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → 중간</td>
+                        <td>빠름</td>
+                        <td>균형 잡힘</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE는 <span class="math">\(n\)</span>을 변경하지 않고 <span class="math">\(k\)</span>를 변경하여 보안을 조정할 수 있게 해주며, 환 구조의 최적화를 유지합니다.</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 격자의 양자 내성 보안</h2>
+
+            <h3>최고의 고전 알고리즘: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>BKZ 알고리즘과 그 변형(BKZ 2.0, G6K)은 격자를 공격하는 최고의 고전 알고리즘입니다. ML-KEM-768에 대한 복잡도는 <span class="math">\(> 2^{178}\)</span> 연산으로 추정됩니다.</p>
+
+            <h3>양자 컴퓨터의 영향</h3>
+
+            <p>MLWE를 공격하기 위한 최고의 양자 알고리즘(QRAM을 포함한 접근법)은 겸손한 가속만을 제공합니다 — 기껏해야 제곱근 정도이며, 문제의 난이도를 지수 영역에 유지합니다.</p>
+
+            <p>이는 소인수분해와 DLP에 대해 지수적 가속을 제공하는 쇼어와 강한 대조를 이룹니다.</p>
+
+            <h3>MLWE에 "쇼어 알고리즘"이 없는 이유</h3>
+
+            <p>MLWE는 쇼어가 활용하는 아벨 군 구조를 가지지 않습니다. 이 문제는 근본적으로 다릅니다: 함수에서 주기성을 찾는 것이 아니라, 고차원 격자에서 짧은 벡터를 찾는 것입니다 — 이는 지수적 가속을 제공하는 양자 기법이 알려지지 않은 기하학적 문제입니다.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>출처</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, 17장</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← 이전 장</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">다음 장 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> 모두를 위한 무료 도서관. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'es';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

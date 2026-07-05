@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 9 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>09 – Veiligheid en Parameters</h1>
+        <p class="subtitle">Waarom ML-KEM veilig is en hoe de getallen zijn gekozen</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-91">9.1 Veiligheidsmodellen</a></li>
+                <li><a href="#id-92">9.2 De moeilijkheid van MLWE meten</a></li>
+                <li><a href="#id-93">9.3 Belangrijkste aanvallen op roosters</a></li>
+                <li><a href="#id-94">9.4 NIST-veiligheidsniveaus</a></li>
+                <li><a href="#id-95">9.5 Vergelijking met andere PQC-schema's</a></li>
+                <li><a href="#id-96">9.6 Nevenkanalen en veilige implementaties</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 9.1 -->
+        <section id="id-91">
+            <h2>9.1 Veiligheidsmodellen</h2>
+
+            <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
+            <p>In dit model kan een aanvaller:</p>
+            <ol>
+                <li>De publieke sleutel <span class="math">\(ek\)</span> ontvangen</li>
+                <li>Twee berichten <span class="math">\(m_0, m_1\)</span> kiezen</li>
+                <li>De versleuteling van een van beide ontvangen (willekeurig gekozen)</li>
+                <li>Moet raden welk bericht is versleuteld</li>
+            </ol>
+            <p>Het schema is veilig als: <span class="math">\(\Pr[\text{raadt}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (het basisversleutelingscomponent) is IND-CPA onder de MLWE-aanname.</p>
+
+            <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
+            <p>Zoals CPA, maar de aanvaller kan ook een ontsleutelingsorakel raadplegen over elke versleutelde tekst (behalve de uitdaging). Dit model vangt echte aanvallen (zoals Bleichenbacher) waarbij een actieve aanvaller speciaal geconstrueerde berichten stuurt en de antwoorden observeert.</p>
+            <p><strong>ML-KEM is IND-CCA2.</strong> Dit is het vereiste niveau voor een veilige KEM in echte protocollen zoals TLS of SSH.</p>
+
+            <h3>ROM vs. QROM</h3>
+            <p>Veiligheidsbewijzen gebruiken geïdealiseerde modellen voor hashfuncties:</p>
+            <ul>
+                <li><strong>ROM (Random Oracle Model):</strong> hashes zijn perfecte willekeurige orakels.</li>
+                <li><strong>QROM (Quantum Random Oracle Model):</strong> de kwantumaanvaller kan het orakel in superpositie raadplegen.</li>
+            </ul>
+            <p>Moderne bewijzen voor de FO-transformatie (Fujisaki-Okamoto) die in ML-KEM wordt gebruikt, garanderen veiligheid in het QROM, essentieel tegen kwantumaanvallers.</p>
+        </section>
+
+        <!-- Sectie 9.2 -->
+        <section id="id-92">
+            <h2>9.2 Hoe de moeilijkheid van MLWE wordt gemeten</h2>
+
+            <h3>Veiligheid als kosten van de aanval</h3>
+            <p>Er is geen absoluut bewijs dat MLWE moeilijk is. De veiligheid wordt geschat door de kosten van het beste bekende aanvalsalgoritme te berekenen. Een veiligheid van <span class="math">\(\lambda\)</span> bits betekent dat de aanval ongeveer <span class="math">\(2^\lambda\)</span> bewerkingen vereist.</p>
+
+            <h3>De parameters</h3>
+            <p>De moeilijkheid hangt af van:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span> (polynoomgrootte, vast)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (module-dimensie)</li>
+                <li><span class="math">\(q = 3329\)</span> (priemmodulus)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (ruisamplitude)</li>
+            </ul>
+
+            <h3>Lattice Estimator</h3>
+            <p>Het standaardhulpmiddel is de <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> van Albrecht et al. Voor ML-KEM-768:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aanval</th>
+                        <th>Geschatte kosten (bits)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primal attack (BKZ)</td>
+                        <td>~178 bits</td>
+                    </tr>
+                    <tr>
+                        <td>Dual attack</td>
+                        <td>~175 bits</td>
+                    </tr>
+                    <tr>
+                        <td>Combinatorisch</td>
+                        <td>&gt; 200 bits</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>De veiligheidsmarge is ruim in vergelijking met het doel van 128 bits klassiek/kwantum.</p>
+        </section>
+
+        <!-- Sectie 9.3 -->
+        <section id="id-93">
+            <h2>9.3 Belangrijkste aanvallen op roosters</h2>
+
+            <h3>BKZ (Block Korkine-Zolotarev)</h3>
+            <p>Dit is het beste algemene algoritme voor het vinden van korte vectoren. Het verdeelt het rooster in blokken van grootte <span class="math">\(\beta\)</span> en lost lokaal SVP op. Complexiteit: <span class="math">\(2^{O(\beta \log \beta)}\)</span>. Voor ML-KEM-768 is <span class="math">\(\beta \approx 430\)</span>.</p>
+
+            <h3>Primal attack (uSVP)</h3>
+            <p>Reduceert MLWE tot een kort-vectorprobleem in een uitgebreid rooster dat de publieke sleutel en de versleutelde tekst bevat. De geheime vector <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> wordt een korte vector die BKZ probeert te vinden.</p>
+
+            <h3>Dual attack</h3>
+            <p>Maakt gebruik van het duale rooster om MLWE-monsters te onderscheiden van uniforme monsters via statistieken. Het construeert veel korte vectoren in het duale rooster om de onderscheider uit te voeren.</p>
+
+            <h3>Keuze van q = 3329</h3>
+            <p>Omdat het priem is en geen speciale algebraïsche structuur heeft, voorkomt het specifieke algebraïsche aanvallen. Er zijn geen kleine factoren of eenvoudige relaties die kunnen worden misbruikt.</p>
+        </section>
+
+        <!-- Sectie 9.4 -->
+        <section id="id-94">
+            <h2>9.4 NIST-veiligheidsniveaus</h2>
+
+            <p>NIST heeft 5 niveaus gedefinieerd. ML-KEM bestrijkt de niveaus 1, 3 en 5:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>NIST-niveau</th>
+                        <th>Klassieke veiligheid</th>
+                        <th>Kwantumveiligheid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1 (AES-128)</td>
+                        <td>~118 bits</td>
+                        <td>~100 bits</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3 (AES-192)</td>
+                        <td><strong>~178 bits</strong></td>
+                        <td><strong>~164 bits</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM-1024</td>
+                        <td>5 (AES-256)</td>
+                        <td>~230 bits</td>
+                        <td>~218 bits</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p><strong>Aanbeveling:</strong> ML-KEM-768 biedt de optimale balans tussen veiligheid en prestaties voor de meeste toepassingen. ML-KEM-1024 is gereserveerd voor systemen met een zeer hoge kritikaliteit.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sectie 9.5 -->
+        <section id="id-95">
+            <h2>9.5 Vergelijking met andere PQC-schema's</h2>
+
+            <h3>Gestandaardiseerde Post-Kwantum KEM's (NIST 2024)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Wiskundige basis</th>
+                        <th>Publieke sleutel</th>
+                        <th>Versleutelde tekst</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE (Roosters)</td>
+                        <td>1184 B</td>
+                        <td>1088 B</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>Foutcorrigerende codes</td>
+                        <td>~1541 B</td>
+                        <td>~1573 B</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>Foutcorrigerende codes</td>
+                        <td>~2249 B</td>
+                        <td>~4522 B</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>Goppa-codes</td>
+                        <td>~261 KB</td>
+                        <td>128 B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Vergelijking met Klassieke Cryptografie</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Publieke sleutel</th>
+                        <th>Kwantumveiligheid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 B</td>
+                        <td>❌ Kwetsbaar</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 B</td>
+                        <td>❌ Kwetsbaar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 B</td>
+                        <td>✅ 164+ bits</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>De belangrijkste kostenpost is de grotere omvang (~37× vergeleken met ECDH), maar dit blijft aanvaardbaar voor moderne TLS-handshakes.</p>
+        </section>
+
+        <!-- Sectie 9.6 -->
+        <section id="id-96">
+            <h2>9.6 Nevenkanalen en veilige implementaties</h2>
+
+            <p>Een correcte implementatie kan kwetsbaar zijn als deze informatie lekt via de uitvoeringstijd (timingaanvallen) of het energieverbruik.</p>
+
+            <h3>Tijdconstant (CT)</h3>
+            <p>Alle bewerkingen moeten een constante tijd hebben, onafhankelijk van de geheime gegevens. Kritiek voorbeeld in Decaps:</p>
+
+            <pre><code class="language-c">// ONVEILIG (variabele tijd):
+if (memcmp(c, c_prime, len) == 0) {
+    K = K_good;
+} else {
+    K = K_reject;
+}
+
+// Veilig (constante tijd):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF als gelijk, 0x00 als verschillend
+K = ct_select(mask, K_good, K_reject);     // CT-selectie zonder vertakkingen</code></pre>
+
+            <h3>Kritieke gebieden voor CT in ML-KEM</h3>
+            <ul>
+                <li><strong><span class="math">\(B_\eta\)</span>-bemonstering:</strong> sommen van bits zonder conditionele vertakkingen.</li>
+                <li><strong>NTT:</strong> vlinderoperaties moeten altijd worden uitgevoerd, zelfs als het resultaat niet verandert.</li>
+                <li><strong>Verificatie van versleutelde tekst:</strong> gebruik van <code>ct_memcmp</code>.</li>
+            </ul>
+
+            <h3>Referentie-implementaties</h3>
+            <ul>
+                <li><code>pqclean</code>: draagbare CT-implementaties.</li>
+                <li><code>liboqs</code>: AVX2-optimalisaties met geverifieerde CT-eigenschappen.</li>
+            </ul>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="8.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

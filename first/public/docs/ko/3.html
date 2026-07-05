@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3장 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="빠른 탐색">
+            <a href="index.html#featureSection">이유</a>
+            <a href="index.html#learningPath">학습 경로</a>
+            <a href="index.html#searchSection">가이드</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="언어 선택">
+                    <span class="lang-current" id="langCurrent">🇰🇷 한국어</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>차례</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 사전 지식</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 대칭키</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 비대칭키</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> 쇼어</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 격자</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 보안</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 구현</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – 쇼어 알고리즘</h1>
+        <p class="subtitle">RSA와 ECC가 양자 컴퓨터에 취약한 이유</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>목차</h2>
+            <ul>
+                <li><a href="#id-31">3.1 양자 컴퓨터: 기본 개념</a></li>
+                <li><a href="#id-32">3.2 쇼어 알고리즘</a></li>
+                <li><a href="#id-33">3.3 RSA, DH, ECC에 미치는 영향</a></li>
+                <li><a href="#id-34">3.4 그로버: 대칭키 암호화에 대한 위협</a></li>
+                <li><a href="#id-35">3.5 양자 컴퓨터의 최신 기술 현황 (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 지금 수집하고 나중에 복호화</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 3.1 -->
+        <section id="id-31">
+            <h2>3.1 양자 컴퓨터: 기본 개념</h2>
+
+            <h3>큐비트 vs. 고전 비트</h3>
+
+            <p>고전 비트는 0 또는 1입니다. <strong>큐비트</strong>는 <strong>중첩</strong> 상태에 있을 수 있습니다: <span class="math">\(|0\rangle\)</span>과 <span class="math">\(|1\rangle\)</span>의 선형 결합입니다.</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>측정 전에 큐비트는 "0이면서 1"입니다. 측정 후에는 0(확률 <span class="math">\(|\alpha|^2\)</span>) 또는 1(확률 <span class="math">\(|\beta|^2\)</span>)로 붕괴됩니다.</p>
+
+            <blockquote>
+                <p><strong>비유:</strong> 공중에 던져진 동전이 앞면과 뒷면을 동시에 나타내는 것과 같습니다. 당신이 볼 때만 둘 중 하나로 결정됩니다.</p>
+            </blockquote>
+
+            <h3>얽힘과 간섭</h3>
+
+            <ul>
+                <li><strong>얽힘:</strong> 두 큐비트는 서로 상관관계를 가질 수 있어, 하나를 측정하면 다른 하나가 즉시 결정됩니다.</li>
+                <li><strong>양자 간섭:</strong> "잘못된" 계산 경로는 상쇄되고(파동이 소멸하는 것처럼), "올바른" 경로는 증폭됩니다.</li>
+            </ul>
+
+            <p>양자 알고리즘은 간섭을 활용하여 올바른 답을 증폭하고 잘못된 답을 억제합니다.</p>
+
+            <h3>양자 병렬성</h3>
+
+            <p><span class="math">\(n\)</span>개의 큐비트로 <span class="math">\(2^n\)</span>개의 상태를 동시에 표현할 수 있습니다. 하지만 측정은 단일 상태만 반환합니다 → 요령은 간섭이 오직 올바른 답만 살아남도록 하는 알고리즘을 구성하는 것입니다.</p>
+        </section>
+
+        <!-- Section Algorithm Overview -->
+        <section id="id-32">
+            <h2>3.2 쇼어 알고리즘</h2>
+
+            <h3><span class="math">\(n\)</span>을 인수분해하기 위한 알고리즘 개요</h3>
+
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>입력:</strong> 합성수 <span class="math">\(n\)</span></li>
+                    <li><strong>초기화:</strong> <span class="math">\(1 < a < n\)</span>이고 <span class="math">\(\gcd(a,n)=1\)</span>인 무작위 <span class="math">\(a\)</span> 선택</li>
+                    <li><strong>양자 준비:</strong> <span class="math">\(0\)</span>부터 <span class="math">\(2^k-1\)</span>까지의 균일 중첩 레지스터 준비</li>
+                    <li><strong>오라클:</strong> <span class="math">\(f(x) = a^x \bmod n\)</span>을 병렬로 계산 (중첩)</li>
+                    <li><strong>QFT:</strong> 첫 번째 레지스터에 양자 푸리에 변환 적용</li>
+                    <li><strong>측정:</strong> 레지스터를 측정하여 주기 <span class="math">\(r\)</span>과 상관된 값 획득</li>
+                    <li><strong>고전:</strong> 연분수 알고리즘을 사용하여 <span class="math">\(r\)</span> 추정</li>
+                    <li><strong>검증:</strong> <span class="math">\(r\)</span>이 짝수이고 <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>인 경우:
+                        <ul>
+                            <li><span class="math">\(\gcd(a^{r/2} - 1, n)\)</span>과 <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span> 계산</li>
+                            <li>이들은 <span class="math">\(n\)</span>의 자명하지 않은 인수입니다</li>
+                        </ul>
+                    </li>
+                    <li><strong>반복:</strong> 실패하면 새로운 <span class="math">\(a\)</span>로 2단계로 돌아갑니다</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>참고:</strong> 양자 핵심(3-5단계)은 QFT의 구성적/파괴적 간섭을 활용하여 함수 <span class="math">\(f(x)\)</span>의 주기 <span class="math">\(r\)</span>을 다항식 시간에 찾습니다.</p>
+            </div>
+        </section>
+
+        <!-- Section 3.3 -->
+        <section id="id-33">
+            <h2>3.3 RSA, DH, ECC에 미치는 영향</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>방식</th>
+                        <th>보안 기반</th>
+                        <th>쇼어에 취약?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>소인수분해</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">예</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (mod <span class="math">\(p\)</span>)</td>
+                        <td><span class="math">\(\mathbb{Z}_p^*\)</span>의 이산 로그</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">예</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (타원곡선 이산 로그)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">예</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>격자 기반 문제</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">알려진 효율적 알고리즘 없음</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>의사 난수 치환</td>
+                        <td>그로버만 (아래 참조)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>쇼어는 아벨 군에서 주기성을 찾는 것과 같은 구조화된 문제를 해결합니다. 소인수분해와 이산 로그(타원곡선 포함)는 정확히 이 구조를 가집니다. 격자 기반 문제는 그렇지 않습니다.</p>
+        </section>
+
+        <!-- Section 3.4 -->
+        <section id="id-34">
+            <h2>3.4 그로버: 대칭키 암호화에 대한 위협</h2>
+
+            <p>그로버 알고리즘(1996)은 비구조화 검색에서 <strong>제곱근</strong> 가속을 제공합니다:</p>
+            <ul>
+                <li><span class="math">\(2^k\)</span>개의 가능성 중 키 찾기 (고전): <span class="math">\(O(2^k)\)</span> 시도</li>
+                <li>그로버 사용 시: <span class="math">\(O(2^{k/2})\)</span> 시도</li>
+            </ul>
+
+            <p><strong>실제 영향:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>키</th>
+                        <th>고전적 보안</th>
+                        <th>양자 내성 보안 (그로버)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128비트</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64비트 → 불충분</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256비트</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128비트 → 여전히 안전</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256비트</td>
+                        <td>128비트 → 안전</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256비트</td>
+                        <td>128비트 → 안전</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>이 때문에 NIST는 양자 내성 맥락에서 AES-128이 아닌 AES-256을 권장합니다.</p>
+        </section>
+
+        <!-- Section 3.5 -->
+        <section id="id-35">
+            <h2>3.5 양자 컴퓨터의 최신 기술 현황 (2024–2025)</h2>
+
+            <p>현재 양자 컴퓨터는 <strong>NISQ (잡음이 있는 중간 규모 양자)</strong>입니다: 수십에서 수백 개의 물리적 큐비트를 가지지만 오류율이 높습니다.</p>
+
+            <p>쇼어로 RSA-2048을 깨는 데 필요한 것:</p>
+            <ul>
+                <li>~4000개의 완벽한 논리적 큐비트</li>
+                <li>또는 양자 오류 수정을 포함한 ~400만 개의 물리적 큐비트</li>
+            </ul>
+
+            <p>현재 최고 시스템(Google Willow, IBM Heron 등)은 ~100-1000개의 고충실도 물리적 큐비트를 가지지만, 필요한 규모에는 아직 멀었습니다.</p>
+
+            <blockquote>
+                <p><strong>NIST 추정:</strong> 암호학적으로 유의미한 양자 컴퓨터는 10~15년 내에 등장할 수 있으며, 양방향으로 상당한 불확실성이 있습니다.</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 3.6 -->
+        <section id="id-36">
+            <h2>3.6 지금 수집하고 나중에 복호화</h2>
+
+            <p>암호학적으로 유의미한 양자 컴퓨터가 <em>아직</em> 존재하지 않더라도, <strong>오늘</strong> 존재하는 구체적인 위협이 있습니다:</p>
+
+            <blockquote>
+                <p>공격자는 지금 암호화된 통신을 <strong>수집</strong>하고(복호화할 수 없더라도), 충분히 강력한 양자 컴퓨터를 가지게 되면 <strong>미래에 복호화</strong>할 수 있습니다.</p>
+            </blockquote>
+
+            <p>이 공격은 <strong>"지금 수집, 나중에 복호화"(HNDL)</strong> 또는 <em>저장-지금-나중에-복호화</em>로 알려져 있습니다.</p>
+
+            <h4>위험에 처한 대상:</h4>
+            <ul>
+                <li>긴 비밀 수명을 가진 외교 및 군사 통신</li>
+                <li>수십 년간의 기밀 요구사항이 있는 의료, 금융, 법률 데이터</li>
+                <li>산업 기밀 및 지적 재산권</li>
+            </ul>
+
+            <h4>언제 전환해야 할까?</h4>
+
+            <p>데이터가 충분히 강력한 양자 컴퓨터가 등장하기까지 남은 년수보다 더 오래 비밀로 유지되어야 한다면, <em>지금</em> 전환해야 합니다.</p>
+
+            <p>이것이 NIST가 2024년에 ML-KEM(FIPS 203)을 표준화한 주요 이유이며, NSA, ENISA, ANSSI와 같은 기관들이 높은 중요성 시스템에 대해 즉각적인 전환을 권장하는 이유입니다.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>출처</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← 이전 장</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">다음 장 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> 모두를 위한 무료 도서관. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'es';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

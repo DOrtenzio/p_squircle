@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <!-- Hoofdstukinhoud -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Roosters (Lattices)</h1>
+        <p class="subtitle">De wiskundige structuur die ten grondslag ligt aan post-kwantumcryptografie</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Definitie van een rooster</a></li>
+                <li><a href="#id-42">4.2 Moeilijke problemen op roosters</a></li>
+                <li><a href="#id-43">4.3 Van SVP naar LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: variant over ringen</a></li>
+                <li><a href="#id-46">4.6 MLWE: de basis van ML‑KEM</a></li>
+                <li><a href="#id-47">4.7 Post-kwantum veiligheid van roosters</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Definitie van een rooster</h2>
+
+            <h3>Formele definitie</h3>
+
+            <p>Een <strong>rooster</strong> <span class="math">\(\mathcal{L}\)</span> in <span class="math">\(\mathbb{R}^m\)</span> is de verzameling van alle gehele lineaire combinaties van <span class="math">\(n\)</span> lineair onafhankelijke vectoren <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>De vectoren <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> vormen een <strong>basis</strong> van het rooster.</p>
+
+            <h3>Meetkundige intuïtie</h3>
+
+            <p>In 2D: stel je een oneindig rooster van punten voor. Elk punt is bereikbaar via een gehele (niet reële) combinatie van twee basisvectoren:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Dit is het standaard gehele rooster <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>Maar hetzelfde rooster heeft oneindig veel verschillende basissen:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>genereert hetzelfde rooster. Sommige basissen zijn "goed" (korte vectoren en bijna orthogonaal), andere zijn "slecht" (lange vectoren en bijna parallel).</p>
+
+            <h3>Dimensie en rang</h3>
+
+            <ul>
+                <li><strong>Omgevingsdimensie</strong> <span class="math">\(m\)</span>: aantal coördinaten van elke vector</li>
+                <li><strong>Rang</strong> <span class="math">\(n\)</span>: aantal vectoren in de basis</li>
+            </ul>
+
+            <p>Als <span class="math">\(n = m\)</span>: rooster van volledige rang (<em>full-rank lattice</em>)</p>
+
+            <p>In cryptografie gebruiken we typisch roosters met <span class="math">\(n = m\)</span> zeer groot (256–4096).</p>
+        </section>
+
+        <!-- Sectie 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Moeilijke problemen op roosters</h2>
+
+            <h3>SVP – Shortest Vector Problem</h3>
+
+            <p><strong>Gegeven:</strong> een basis <span class="math">\(B\)</span> van een rooster <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Vind:</strong> de kortste niet-nul vector in <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{vind } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ zodat } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>In 2D is het eenvoudig (algoritme van Gauss). In hoge dimensie (honderden) is het <strong>NP-moeilijk</strong> onder bepaalde aannames, en het beste bekende algoritme vereist exponentiële tijd.</p>
+
+            <h3>CVP – Closest Vector Problem</h3>
+
+            <p><strong>Gegeven:</strong> een basis <span class="math">\(B\)</span> van <span class="math">\(\mathcal{L}\)</span> en een doelwit <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (niet in het rooster)<br />
+            <strong>Vind:</strong> het roosterpunt dat het dichtst bij <span class="math">\(\mathbf{t}\)</span> ligt</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{vind } \mathbf{v} \in \mathcal{L} \text{ zodat } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP is minstens zo moeilijk als SVP. Het ligt aan de basis van het decapsuleren in ML-KEM: wie het geheim <span class="math">\(\mathbf{s}\)</span> kent, kan het bijbehorende "eenvoudige" CVP oplossen, wie het niet kent, kan dat niet.</p>
+
+            <h3>GapSVP en SIS</h3>
+
+            <p>Er bestaan benaderende varianten (GapSVP) en verwante problemen (SIS – Short Integer Solution) die de basis vormen van de veiligheidsbewijzen van roostercryptografie. Voor dit document volstaat het te weten dat ze allemaal op elkaar herleidbaar zijn en een familie van moeilijke problemen vormen.</p>
+        </section>
+
+        <!-- Sectie 4.3 -->
+        <section id="id-43">
+            <h2>4.3 Van SVP naar LWE</h2>
+
+            <p>Hoe bouw je een cryptografisch systeem op basis van SVP?</p>
+
+            <p>Het idee van Regev (2005): in plaats van direct met SVP te werken (meetkundig intuïtief maar onhandig in gebruik), definieert men een equivalent statistisch probleem: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>De veiligheidsreductie toont aan dat:</p>
+
+            <blockquote>
+                <p>Als LWE wordt gebroken ⇒ dan wordt GapSVP opgelost</p>
+            </blockquote>
+
+            <p>LWE is dus <strong>minstens zo moeilijk</strong> als GapSVP in hoge dimensie.</p>
+        </section>
+
+        <!-- Sectie 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Definitie</h3>
+
+            <p>Gegeven parameters <span class="math">\(n\)</span> (dimensie), <span class="math">\(q\)</span> (modulus), <span class="math">\(\chi\)</span> (ruisverdeling):</p>
+
+            <p><strong>LWE-verdeling:</strong> kies geheim <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Genereer monsters:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>waarbij <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniform, <span class="math">\(e \leftarrow \chi\)</span> klein.</p>
+
+            <p><strong>Beslissings-LWE probleem:</strong> onderscheid de monsters <span class="math">\((\mathbf{a}, b)\)</span> van uniform willekeurige paren <span class="math">\((\mathbf{a}, u)\)</span> met <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Zoek-LWE probleem:</strong> gegeven een verzameling monsters <span class="math">\((\mathbf{a}_i, b_i)\)</span>, vind <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>Parameters van LWE</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Symbool</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dimensie</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Veiligheid groeit exponentieel in <span class="math">\(n\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Modulus</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Moet groot genoeg zijn om de ruis te bevatten</td>
+                    </tr>
+                    <tr>
+                        <td>Foutverdeling</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Discrete Gaussische of gecentreerde binomiale</td>
+                    </tr>
+                    <tr>
+                        <td>Ruis/signaal verhouding</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Moet klein zijn maar niet te klein</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Voorbeeld met n=2, q=7</h3>
+
+            <p>Geheim: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>LWE-monsters met kleine fouten in <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vector a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Gegeven het stelsel met fouten, is het vinden van <span class="math">\(\mathbf{s}\)</span> moeilijk: Gauss-eliminatie kan niet worden gebruikt omdat de <span class="math">\(b_i\)</span>-waarden niet exact zijn.</p>
+        </section>
+
+        <!-- Sectie 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: variant over ringen</h2>
+
+            <p>Standaard LWE gebruikt vectoren. <strong>Ring-LWE (RLWE)</strong> verplaatst de bewerkingen naar de polynoomring:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>In RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (een polynoom, geen vector van gehele getallen)</li>
+                <li><span class="math">\(a \in R_q\)</span> (uniform bemonsterd)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Voordelen van RLWE ten opzichte van LWE:</strong></p>
+            <ul>
+                <li>Sleutelgrootte: <span class="math">\(O(n)\)</span> in plaats van <span class="math">\(O(n^2)\)</span></li>
+                <li>Snelheid: polynoomvermenigvuldiging met NTT is <span class="math">\(O(n \log n)\)</span> in plaats van <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Nadeel:</strong> extra algebraïsche structuur → mogelijk kwetsbaarder; het veiligheidsbewijs is iets zwakker.</p>
+        </section>
+
+        <!-- Sectie 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: de basis van ML‑KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> is een compromis tussen LWE en RLWE: het gebruikt modules van polynomen (matrices van polynomen in <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>De parameter <span class="math">\(k\)</span> is de <strong>module-dimensie</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> voor ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> voor ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> voor ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Waarom MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Sleutelgrootte</th>
+                        <th>Snelheid</th>
+                        <th>Veiligheid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → groot</td>
+                        <td>traag</td>
+                        <td>conservatiever</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → klein</td>
+                        <td>snel</td>
+                        <td>extra structuur</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → gemiddeld</td>
+                        <td>snel</td>
+                        <td>evenwichtig</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE maakt het mogelijk om de veiligheid te schalen door <span class="math">\(k\)</span> te variëren zonder <span class="math">\(n\)</span> te veranderen, terwijl de optimalisaties van de ringstructuur behouden blijven.</p>
+        </section>
+
+        <!-- Sectie 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Post-kwantum veiligheid van roosters</h2>
+
+            <h3>Beste klassieke algoritme: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>Het BKZ-algoritme en zijn varianten (BKZ 2.0, G6K) zijn de beste klassieke algoritmen om roosters aan te vallen. Hun complexiteit voor ML-KEM-768 wordt geschat op <span class="math">\(> 2^{178}\)</span> bewerkingen.</p>
+
+            <h3>Impact van kwantumcomputers</h3>
+
+            <p>De beste kwantumalgoritmen voor het aanvallen van MLWE (inclusief benaderingen met QRAM) bieden een bescheiden versnelling — hooguit kwadratisch, waardoor de moeilijkheid van het probleem exponentieel blijft.</p>
+
+            <p>Dit staat in schril contrast met Shor, die een exponentiële versnelling biedt voor factorisatie en DLP.</p>
+
+            <h3>Waarom MLWE geen "Shor-algoritme" heeft</h3>
+
+            <p>MLWE heeft niet de abelse groepsstructuur die Shor uitbuit. Het probleem is fundamenteel anders: het gaat niet om het vinden van periodiciteit in een functie, maar om het vinden van een korte vector in een rooster van hoge dimensie — een meetkundig probleem waarvoor geen enkele kwantumtechniek met exponentiële versnelling bekend is.</p>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Hoofdstuk 17</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

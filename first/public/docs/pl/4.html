@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rozdział 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax dla formuł -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Pasek narzędzi (identyczny jak w index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Szybka nawigacja">
+            <a href="index.html#featureSection">Dlaczego</a>
+            <a href="index.html#learningPath">Ścieżka</a>
+            <a href="index.html#searchSection">Przewodnik</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Wybierz język">
+                    <span class="lang-current" id="langCurrent">🇵🇱 Polski</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 języków -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Główny kontener z paskiem bocznym -->
+    <div class="container chapter-wrapper">
+        <!-- Pasek boczny -->
+        <aside class="chapter-sidebar">
+            <h3>Rozdziały</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Wymagania wstępne</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symetryczna</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymetryczna</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Kraty</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Bezpieczeństwo</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementacje</a></li>
+            </ul>
+        </aside>
+
+        <!-- Treść rozdziału -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Kraty (Lattices)</h1>
+        <p class="subtitle">Struktura matematyczna leżąca u podstaw kryptografii post-kwantowej</p>
+
+        <!-- Spis treści -->
+        <div class="toc">
+            <h2>Spis treści</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Definicja kraty</a></li>
+                <li><a href="#id-42">4.2 Trudne problemy na kratach</a></li>
+                <li><a href="#id-43">4.3 Od SVP do LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: wariant na pierścieniach</a></li>
+                <li><a href="#id-46">4.6 MLWE: podstawa ML-KEM</a></li>
+                <li><a href="#id-47">4.7 Bezpieczeństwo post-kwantowe krat</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Definicja kraty</h2>
+
+            <h3>Definicja formalna</h3>
+
+            <p><strong>Krata</strong> <span class="math">\(\mathcal{L}\)</span> w <span class="math">\(\mathbb{R}^m\)</span> to zbiór wszystkich kombinacji liniowych o współczynnikach całkowitych <span class="math">\(n\)</span> liniowo niezależnych wektorów <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Wektory <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> tworzą <strong>bazę</strong> kraty.</p>
+
+            <h3>Intuicja geometryczna</h3>
+
+            <p>W 2D wyobraź sobie nieskończoną siatkę punktów. Każdy punkt jest osiągalny przez całkowitą (nie rzeczywistą) kombinację dwóch wektorów bazowych:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>To standardowa siatka liczb całkowitych <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>Ale ta sama krata ma nieskończenie wiele różnych baz:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>generuje tę samą kratę. Niektóre bazy są "dobre" (krótkie i prawie ortogonalne wektory), inne są "złe" (długie i prawie równoległe wektory).</p>
+
+            <h3>Wymiar i rząd</h3>
+
+            <ul>
+                <li><strong>Wymiar otoczenia</strong> <span class="math">\(m\)</span>: liczba współrzędnych każdego wektora</li>
+                <li><strong>Rząd</strong> <span class="math">\(n\)</span>: liczba wektorów w bazie</li>
+            </ul>
+
+            <p>Jeśli <span class="math">\(n = m\)</span>: krata pełnego rzędu (<em>full-rank lattice</em>)</p>
+
+            <p>W kryptografii używamy zazwyczaj krat o <span class="math">\(n = m\)</span> bardzo dużych (256–4096).</p>
+        </section>
+
+        <!-- Sekcja 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Trudne problemy na kratach</h2>
+
+            <h3>SVP – Problem najkrótszego wektora (Shortest Vector Problem)</h3>
+
+            <p><strong>Dane:</strong> baza <span class="math">\(B\)</span> kraty <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Znaleźć:</strong> najkrótszy niezerowy wektor w <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{znaleźć } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ takie, że } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>W 2D jest łatwy (algorytm Gaussa). W wysokim wymiarze (setki) jest <strong>NP-trudny</strong> przy pewnych założeniach, a najlepszy znany algorytm wymaga czasu wykładniczego.</p>
+
+            <h3>CVP – Problem najbliższego wektora (Closest Vector Problem)</h3>
+
+            <p><strong>Dane:</strong> baza <span class="math">\(B\)</span> kraty <span class="math">\(\mathcal{L}\)</span> i punkt docelowy <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (nie w kracie)<br />
+            <strong>Znaleźć:</strong> punkt kraty najbliższy <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{znaleźć } \mathbf{v} \in \mathcal{L} \text{ takie, że } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP jest co najmniej tak trudny jak SVP. Leży u podstaw dekapsulacji w ML-KEM: kto zna sekret <span class="math">\(\mathbf{s}\)</span> może rozwiązać odpowiadające mu "łatwe" CVP, kto nie zna, nie może.</p>
+
+            <h3>GapSVP i SIS</h3>
+
+            <p>Istnieją warianty aproksymacyjne (GapSVP) i problemy pokrewne (SIS – Short Integer Solution), które stanowią podstawę dowodów bezpieczeństwa kryptografii kratowej. Na tym etapie wystarczy wiedzieć, że wszystkie one sprowadzają się do siebie nawzajem, tworząc rodzinę trudnych problemów.</p>
+        </section>
+
+        <!-- Sekcja 4.3 -->
+        <section id="id-43">
+            <h2>4.3 Od SVP do LWE</h2>
+
+            <p>Jak zbudować system kryptograficzny z SVP?</p>
+
+            <p>Pomysł Regeva (2005): zamiast pracować bezpośrednio z SVP (geometrycznie intuicyjnym, ale niewygodnym w użyciu), definiuje się równoważny problem statystyczny: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>Redukcja bezpieczeństwa pokazuje, że:</p>
+
+            <blockquote>
+                <p>Jeśli złamie się LWE ⇒ Rozwiąże się GapSVP</p>
+            </blockquote>
+
+            <p>Zatem LWE jest <strong>co najmniej tak trudny</strong> jak GapSVP w wysokim wymiarze.</p>
+        </section>
+
+        <!-- Sekcja 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Definicja</h3>
+
+            <p>Ustal parametry <span class="math">\(n\)</span> (wymiar), <span class="math">\(q\)</span> (moduł), <span class="math">\(\chi\)</span> (rozkład szumu):</p>
+
+            <p><strong>Rozkład LWE:</strong> wybierz sekret <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Generuj próbki:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>gdzie <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> jednorodne, <span class="math">\(e \leftarrow \chi\)</span> małe.</p>
+
+            <p><strong>Decyzyjny problem LWE:</strong> odróżnić próbki <span class="math">\((\mathbf{a}, b)\)</span> od losowych par jednorodnych <span class="math">\((\mathbf{a}, u)\)</span> z <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Problem wyszukiwania LWE:</strong> mając zbiór próbek <span class="math">\((\mathbf{a}_i, b_i)\)</span>, znaleźć <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>Parametry LWE</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametr</th>
+                        <th>Symbol</th>
+                        <th>Rola</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wymiar</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Bezpieczeństwo rośnie wykładniczo z <span class="math">\(n\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Moduł</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Musi być wystarczająco duży, aby pomieścić szum</td>
+                    </tr>
+                    <tr>
+                        <td>Rozkład błędu</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Dyskretny gaussowski lub scentrowany dwumianowy</td>
+                    </tr>
+                    <tr>
+                        <td>Stosunek szum/sygnał</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Musi być mały, ale nie za mały</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Przykład z n=2, q=7</h3>
+
+            <p>Sekret: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>Próbki LWE z małymi błędami w <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Wektor a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Mając układ z błędami, znalezienie <span class="math">\(\mathbf{s}\)</span> jest trudne: nie można użyć eliminacji Gaussa, ponieważ wartości <span class="math">\(b_i\)</span> nie są dokładne.</p>
+        </section>
+
+        <!-- Sekcja 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: wariant na pierścieniach</h2>
+
+            <p>Standardowe LWE używa wektorów. <strong>Ring-LWE (RLWE)</strong> przenosi operacje do pierścienia wielomianów:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>W RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (wielomian, a nie wektor liczb całkowitych)</li>
+                <li><span class="math">\(a \in R_q\)</span> (losowane jednorodnie)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Zalety RLWE w porównaniu z LWE:</strong></p>
+            <ul>
+                <li>Rozmiar kluczy: <span class="math">\(O(n)\)</span> zamiast <span class="math">\(O(n^2)\)</span></li>
+                <li>Szybkość: mnożenie wielomianów z NTT to <span class="math">\(O(n \log n)\)</span> zamiast <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Wada:</strong> dodatkowa struktura algebraiczna → potencjalnie bardziej podatna; dowód bezpieczeństwa jest nieco słabszy.</p>
+        </section>
+
+        <!-- Sekcja 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: podstawa ML-KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> to kompromis między LWE a RLWE: używa modułów wielomianów (macierzy wielomianów w <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>Parametr <span class="math">\(k\)</span> to <strong>wymiar modułu</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> dla ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> dla ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> dla ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Dlaczego MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schemat</th>
+                        <th>Rozmiar kluczy</th>
+                        <th>Szybkość</th>
+                        <th>Bezpieczeństwo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → duży</td>
+                        <td>wolny</td>
+                        <td>bardziej konserwatywny</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → mały</td>
+                        <td>szybki</td>
+                        <td>dodatkowa struktura</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → średni</td>
+                        <td>szybki</td>
+                        <td>zrównoważony</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE pozwala skalować bezpieczeństwo poprzez zmianę <span class="math">\(k\)</span> bez zmiany <span class="math">\(n\)</span>, zachowując optymalizacje struktury pierścieniowej.</p>
+        </section>
+
+        <!-- Sekcja 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Bezpieczeństwo post-kwantowe krat</h2>
+
+            <h3>Najlepszy algorytm klasyczny: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>Algorytm BKZ i jego warianty (BKZ 2.0, G6K) to najlepsze klasyczne algorytmy do atakowania krat. Ich złożoność dla ML-KEM-768 szacuje się na <span class="math">\(> 2^{178}\)</span> operacji.</p>
+
+            <h3>Wpływ komputerów kwantowych</h3>
+
+            <p>Najlepsze znane algorytmy kwantowe do atakowania MLWE (w tym podejścia z QRAM) oferują skromne przyspieszenie — co najwyżej kwadratowe, utrzymując trudność problemu w reżimie wykładniczym.</p>
+
+            <p>Kontrastuje to wyraźnie z Shorem, który oferuje wykładnicze przyspieszenie na faktoryzacji i DLP.</p>
+
+            <h3>Dlaczego MLWE nie ma "algorytmu Shora"</h3>
+
+            <p>MLWE nie ma struktury grupy abelowej, którą Shor wykorzystuje. Problem jest zasadniczo inny: to nie kwestia znajdowania okresowości w funkcji, ale znajdowania krótkiego wektora w kracie wysokiego wymiaru — problem geometryczny, dla którego nie jest znana żadna kwantowa technika dająca wykładnicze przyspieszenie.</p>
+        </section>
+
+        <!-- Źródła -->
+        <div class="sources">
+            <h2>Źródła</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Rozdział 17</li>
+            </ul>
+        </div>
+
+        <!-- Nawigacja między rozdziałami -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Poprzedni rozdział</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Następny rozdział →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Stopka -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

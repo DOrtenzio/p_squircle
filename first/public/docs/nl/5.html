@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 5 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li class="active"><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>05 – Module-LWE (MLWE)</h1>
+        <p class="subtitle">Het wiskundige fundament van ML-KEM</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-51">5.1 Van LWE naar MLWE: de motivatie</a></li>
+                <li><a href="#id-52">5.2 Formele definitie van MLWE</a></li>
+                <li><a href="#id-53">5.3 De ruisverdeling in ML-KEM</a></li>
+                <li><a href="#id-54">5.4 Generatie van de publieke matrix A</a></li>
+                <li><a href="#id-55">5.5 Hardheid: waarom MLWE moeilijk is</a></li>
+                <li><a href="#id-56">5.6 Van MLWE naar een PKE: het constructieve idee</a></li>
+                <li><a href="#id-57">5.7 Volledig numeriek voorbeeld</a></li>
+                <li><a href="#id-58">5.8 Waarom de parameters van ML-KEM zo zijn als ze zijn</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 5.1 -->
+        <section id="id-51">
+            <h2>5.1 Van LWE naar MLWE: de motivatie</h2>
+
+            <h3>Klassieke LWE en zijn kosten</h3>
+
+            <p>In bestand <a href="4.html">04</a> zagen we standaard LWE: gegeven <span class="math">\(m\)</span> monsters <span class="math">\((\mathbf{a}_i, b_i)\)</span> met <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> en <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>, vind <span class="math">\(\mathbf{s}\)</span>. Het probleem is moeilijk, maar heeft een hoge praktische kost:</p>
+
+            <ul>
+                <li>De publieke sleutel (de matrix <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>) heeft een grootte <span class="math">\(O(n^2)\)</span>: voor <span class="math">\(n = 1024\)</span> en <span class="math">\(q = 3329\)</span> zou dat meer dan 2 MB zijn.</li>
+                <li>De matrix-vector vermenigvuldiging <span class="math">\(A \cdot \mathbf{s}\)</span> kost <span class="math">\(O(n^2)\)</span> vermenigvuldigingen.</li>
+            </ul>
+
+            <h3>RLWE: te rigide</h3>
+
+            <p>Ring-LWE verplaatst de bewerkingen naar de ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span>. Een enkel polynoom <span class="math">\(a \in R_q\)</span> vervangt de hele matrix, waardoor de publieke sleutel wordt gereduceerd tot <span class="math">\(O(n)\)</span>.</p>
+
+            <p>Maar RLWE heeft een zeer specifieke algebraïsche structuur die sommige onderzoekers potentieel exploiteerbaar achten (hoewel er in 2024 geen praktische aanval bekend is).</p>
+
+            <h3>MLWE: het optimale compromis</h3>
+
+            <p><strong>Module-LWE</strong> generaliseert beide door een <span class="math">\(k \times k\)</span> matrix van polynomen in <span class="math">\(R_q\)</span> te gebruiken:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}
+                \]
+            </div>
+
+            <ul>
+                <li>Voor <span class="math">\(k = 1\)</span>: reduceert tot RLWE</li>
+                <li>Voor <span class="math">\(k \to \infty\)</span> (polynomen van graad 0): reduceert tot klassieke LWE</li>
+            </ul>
+
+            <p>De parameter <span class="math">\(k\)</span> maakt het mogelijk om de veiligheid en prestaties <strong>aan te passen</strong> onafhankelijk van <span class="math">\(n\)</span>.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variant</th>
+                        <th>Publieke sleutel</th>
+                        <th>Veiligheid</th>
+                        <th>Flexibiliteit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span></td>
+                        <td>hoog</td>
+                        <td>laag</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span></td>
+                        <td>gemiddeld</td>
+                        <td>laag</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span></td>
+                        <td>instelbaar met <span class="math">\(k\)</span></td>
+                        <td><strong>hoog</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sectie 5.2 -->
+        <section id="id-52">
+            <h2>5.2 Formele definitie van MLWE</h2>
+
+            <h3>Werklocatie</h3>
+
+            <p>Vastgestelde parameters:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span>: graad van het cyclotomische polynoom</li>
+                <li><span class="math">\(q = 3329\)</span>: priemmodulus</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: module-dimensie</li>
+                <li><span class="math">\(\chi\)</span>: ruisverdeling (gecentreerde binomiale verdeling <span class="math">\(B_\eta\)</span>)</li>
+            </ul>
+
+            <p>De basisring is <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+
+            <h3>MLWE-verdeling</h3>
+
+            <p>Zij <span class="math">\(\mathbf{s} \in R_q^k\)</span> een geheime vector van polynomen, elk met coëfficiënten bemonsterd uit <span class="math">\(\chi\)</span>.</p>
+
+            <p>Een <strong>MLWE-instantie</strong> is een paar:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{A},\; \mathbf{t}) \quad \text{waarbij} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                \]
+            </div>
+
+            <p>met <span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span>.</p>
+
+            <h3>Beslissings-MLWE probleem</h3>
+
+            <p><strong>Invoer:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> waarbij:</p>
+            <ul>
+                <li>hetzij <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (MLWE-verdeling), of</li>
+                <li>hetzij <span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> uniform</li>
+            </ul>
+
+            <p><strong>Doel:</strong> onderscheid de twee gevallen met niet-verwaarloosbaar voordeel.</p>
+
+            <h3>Zoek-MLWE probleem</h3>
+
+            <p><strong>Invoer:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> met <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p><strong>Doel:</strong> vind <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <blockquote>
+                <p>De reductie van Regev (aangepast aan MLWE) toont aan dat het zoekprobleem rekenkundig equivalent is aan het beslissingsprobleem, en dat beide minstens zo moeilijk zijn als GapSVP in roosters van hoge dimensie.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sectie 5.3 -->
+        <section id="id-53">
+            <h2>5.3 De ruisverdeling in ML-KEM</h2>
+
+            <h3>Gecentreerde binomiale verdeling <span class="math">\(B_\eta\)</span></h3>
+
+            <p>In ML-KEM is de ruis niet Gaussisch maar gecentreerd binomiaal. Om één enkele coëfficiënt van <span class="math">\(B_\eta\)</span> te bemonsteren:</p>
+
+            <ol>
+                <li>Bemonster <span class="math">\(2\eta\)</span> uniforme bits: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li>Geef <span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span> terug</li>
+            </ol>
+
+            <p>Het resultaat is een geheel getal in <span class="math">\([-\eta, \eta]\)</span>.</p>
+
+            <p><strong>Kansverdeling voor η = 2:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Waarde</th>
+                        <th>Kans</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\(-2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(-1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(0\)</span></td>
+                        <td><span class="math">\(6/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Waarom geen echte Gaussische?</strong></p>
+
+            <p>De discrete Gaussische is theoretisch optimaal, maar het bemonsteren ervan op een <em>tijdconstante</em> manier (bestand tegen timingaanvallen) is complex. De gecentreerde binomiale verdeling:</p>
+
+            <ul>
+                <li>heeft eindige ondersteuning → geen extreme gevallen</li>
+                <li>wordt bemonsterd met alleen bitbewerkingen → triviaal tijdconstant</li>
+                <li>is statistisch niet te onderscheiden van de Gaussische voor bekende aanvallen</li>
+            </ul>
+
+            <h3>Bemonstering in ML-KEM (functie <code>SamplePolyCBD</code>)</h3>
+
+            <div class="sequence-diagram">
+CBD_η(σ, b):
+    Invoer: seed σ ∈ {0,1}^256, nonce b ∈ {0,1}^8
+    Uitvoer: polynoom f ∈ R_q met coëfficiënten in [-η, η]
+
+    bytes = PRF(σ, b)   // SHAKE256, genereert 64η bytes
+    voor j = 0..255:
+        a = som van de bits van bytes op posities [2ηj .. 2ηj+η-1]
+        b = som van de bits van bytes op posities [2ηj+η .. 2ηj+2η-1]
+        f[j] = a - b
+    geef f terug
+            </div>
+
+            <p>Elk polynoom <span class="math">\(\mathbf{s}[i]\)</span> en <span class="math">\(\mathbf{e}[i]\)</span> wordt bemonsterd met een andere nonce, wat statistische onafhankelijkheid garandeert.</p>
+        </section>
+
+        <!-- Sectie 5.4 -->
+        <section id="id-54">
+            <h2>5.4 Generatie van de publieke matrix A</h2>
+
+            <p>De matrix <span class="math">\(\mathbf{A} \in R_q^{k \times k}\)</span> wordt deterministisch gegenereerd uit een publieke seed <span class="math">\(\rho \in \{0,1\}^{256}\)</span> met behulp van <code>SHAKE128</code> (een XOF).</p>
+
+            <div class="sequence-diagram">
+                voor i = 0..k-1, j = 0..k-1:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
+            </div>
+
+            <p><code>SampleNTT</code> leest bytes van de XOF en bouwt coëfficiënten uniform in <span class="math">\(\{0, \ldots, q-1\}\)</span> (waarden <span class="math">\(\geq q\)</span> worden weggegooid).</p>
+
+            <h3>Waarom <span class="math">\(A\)</span> deterministisch is</h3>
+
+            <p>De matrix <span class="math">\(A\)</span> is publiek en hoeft niet willekeurig te zijn in de zin van geheimhouding. Door hem deterministisch te genereren uit een seed:</p>
+            <ul>
+                <li>hoeft <span class="math">\(A\)</span> niet te worden opgeslagen (alleen de seed <span class="math">\(\rho\)</span> wordt opgeslagen in de publieke sleutel)</li>
+                <li>kan elke partij <span class="math">\(A\)</span> opnieuw berekenen wanneer nodig</li>
+                <li>wordt de sleutelgrootte aanzienlijk verkleind</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 5.5 -->
+        <section id="id-55">
+            <h2>5.5 Hardheid: waarom MLWE moeilijk is</h2>
+
+            <h3>Reductie van worst-case naar average-case</h3>
+
+            <p>De belangrijkste eigenschap van LWE/MLWE is de <strong>reductie van worst-case naar average-case</strong>:</p>
+
+            <blockquote>
+                <p>Als er een efficiënt algoritme bestaat dat MLWE oplost voor een niet-verwaarloosbare fractie van willekeurige instanties, dan bestaat er een efficiënt algoritme voor het oplossen van GapSVP (de benaderde versie van SVP) op <em>elk</em> rooster, in het worst-case geval.</p>
+            </blockquote>
+
+            <p>Deze reductie (Regev 2005, aangepast door Peikert 2009 en Brakerski et al. voor MLWE) is uitzonderlijk: de meeste cryptografische problemen hebben alleen average-case naar average-case reducties.</p>
+
+            <p>In de praktijk: het breken van MLWE op willekeurige instanties is net zo moeilijk als het oplossen van SVP in het worst-case geval → de cryptografische aannames zijn zeer sterk.</p>
+
+            <h3>Afwezigheid van door kwantum te exploiteren structuur</h3>
+
+            <p>Het algoritme van Shor exploiteert de structuur van <strong>abelse groepen</strong> van factorisatie- en discrete-logaritme problemen: er bestaat een periodieke groepsactie die de QFT kan detecteren.</p>
+
+            <p>MLWE heeft deze structuur niet:</p>
+
+            <ul>
+                <li>Er is geen periodiciteit om te exploiteren</li>
+                <li>Er is geen natuurlijke abelse groep waarop de QFT kan worden toegepast</li>
+                <li>De beste kwantumalgoritmen (gebaseerd op quantum walks of QRAM) bieden hooguit een polynomiale versnelling, geen exponentiële</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 5.6 -->
+        <section id="id-56">
+            <h2>5.6 Van MLWE naar een PKE: het constructieve idee</h2>
+
+            <p>Hoe bouw je een versleutelingssysteem op basis van MLWE? Het idee is elegant.</p>
+
+            <h3>Analogie met Diffie-Hellman</h3>
+
+            <p>In DH is de publieke sleutel <span class="math">\(g^s\)</span>: gemakkelijk te berekenen, moeilijk te inverteren.<br />
+            In MLWE is de publieke sleutel <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>: gemakkelijk te berekenen, moeilijk te inverteren.</p>
+
+            <h3>Versleutelingsschema (type Regev)</h3>
+
+            <p><strong>KeyGen:</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p style="text-align: right;">Publieke sleutel: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
+            Private sleutel: <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <p><strong>Encrypt</strong> (bericht <span class="math">\(m \in \{0,1\}\)</span>, gecodeerd als <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span>):</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{r}, \mathbf{e}_1 \leftarrow \chi^k, \quad e_2 \leftarrow \chi
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{u} = \mathbf{A}^T\mathbf{r} + \mathbf{e}_1 \qquad v = \mathbf{t}^T\mathbf{r} + e_2 + \mu
+                \]
+            </div>
+
+            <p style="text-align: right;">Versleutelde tekst: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
+
+            <p><strong>Decrypt:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+
+            <p><strong>Analyse:</strong></p>
+
+            <div class="math-block">
+                \[
+                w = \mathbf{t}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T\mathbf{u}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = (\mathbf{A}\mathbf{s})^T\mathbf{r} + \mathbf{e}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T(\mathbf{A}^T\mathbf{r} + \mathbf{e}_1)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{kleine ruis}} + \mu \approx \mu
+                \]
+            </div>
+
+            <p>De ruis is klein → door afronding wordt <span class="math">\(\mu\)</span> en dus <span class="math">\(m\)</span> hersteld.</p>
+
+            <h3>De polynomiale versie (echte MLWE)</h3>
+
+            <p>In ML-KEM wordt elke scalair een polynoom in <span class="math">\(R_q\)</span>, en de bewerkingen zijn polynoomproducten. Het mechanisme is identiek, maar de vermenigvuldigingen worden in de ring uitgevoerd:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \circ \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>waarbij <span class="math">\(\circ\)</span> de vermenigvuldiging in <span class="math">\(R_q\)</span> is (polynomiaal, versneld door NTT).</p>
+        </section>
+
+        <!-- Sectie 5.7 -->
+        <section id="id-57">
+            <h2>5.7 Volledig numeriek voorbeeld</h2>
+
+            <p>We gebruiken speelgoedparameters: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, kleine coëfficiënten in <span class="math">\(\{-1, 0, 1\}\)</span>.</p>
+
+            <p>De polynomen bevinden zich in <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span>, dus van graad <span class="math">\(\leq 3\)</span>.</p>
+
+            <h3>Startgegevens</h3>
+
+            <p><strong>Publieke matrix</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} = \begin{pmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{pmatrix}
+                \]
+            </div>
+
+            <p>met <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+
+            <p><strong>Geheim</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> met <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
+
+            <p><strong>Fout</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> met <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
+
+            <h3>Berekening van t = As + e</h3>
+
+            <p><strong>Component t0 = a00 s0 + a01 s1 + e0:</strong></p>
+
+            <div class="math-block">
+                \[
+                a_{00} \cdot s_0 = (1 + 2X + 3X^2 + 4X^3)(1 - X)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 1 - X + 2X - 2X^2 + 3X^2 - 3X^3 + 4X^3 - 4X^4
+                \]
+            </div>
+
+            <p>We reduceren <span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                = 1 + X + X^2 + X^3 + 4 = 5 + X + X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                a_{01} \cdot s_1 = (5 + X + 2X^2)(X^2) = 5X^2 + X^3 + 2X^4
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \equiv 5X^2 + X^3 - 2 = -2 + 5X^2 + X^3 \equiv 15 + 5X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                t_0 = (5 + X + X^2 + X^3) + (15 + 5X^2 + X^3) + 1
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 21 + X + 6X^2 + 2X^3 \equiv 4 + X + 6X^2 + 2X^3 \pmod{17}
+                \]
+            </div>
+
+            <p><strong>Resultaat:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (de tweede component wordt op dezelfde manier berekend).</p>
+
+            <h3>Belangrijke observatie</h3>
+
+            <p>Een tegenstander die <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> ziet, moet <span class="math">\((\mathbf{s}, \mathbf{e})\)</span> vinden. Zelfs met deze kleine getallen is het probleem niet langer triviaal: Gauss-eliminatie kan niet worden gebruikt (de fout doorbreekt de lineariteit) en de zoekruimte is exponentieel in de werkelijke dimensie van ML-KEM.</p>
+        </section>
+
+        <!-- Sectie 5.8 -->
+        <section id="id-58">
+            <h2>5.8 Waarom de parameters van ML-KEM zo zijn als ze zijn</h2>
+
+            <h3><span class="math">\(n = 256\)</span></h3>
+
+            <ul>
+                <li>Moet een macht van 2 zijn (voor efficiënte NTT)</li>
+                <li>Het polynoom <span class="math">\(X^{256}+1\)</span> moet irreducibel zijn over <span class="math">\(\mathbb{Z}_q\)</span>: het is irreducibel als <span class="math">\(q \equiv 1 \pmod{512}\)</span></li>
+                <li><span class="math">\(256\)</span> balanceert veiligheid en prestaties: <span class="math">\(n = 128\)</span> zou te onveilig zijn, <span class="math">\(n = 512\)</span> te traag</li>
+            </ul>
+
+            <h3><span class="math">\(q = 3329\)</span></h3>
+
+            <ul>
+                <li>Moet priem zijn (zodat <span class="math">\(\mathbb{Z}_q\)</span> een lichaam is)</li>
+                <li>Moet voldoen aan <span class="math">\(q \equiv 1 \pmod{256}\)</span>: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>Moet zodanig zijn dat er 256e eenheidswortels bestaan: gegarandeerd door de vorige voorwaarde</li>
+                <li>Moet zo klein mogelijk zijn (compacte sleutels) maar verenigbaar met het ruisbudget</li>
+                <li><span class="math">\(3329\)</span> is het priemgetal dat aan alle voorwaarden voldoet met voldoende marge voor de ruis</li>
+            </ul>
+
+            <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
+
+            <ul>
+                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): NIST-niveau 1, equivalent aan pre-kwantum AES-128</li>
+                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): Niveau 3, equivalent aan AES-192, aanbevolen voor algemeen gebruik</li>
+                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): Niveau 5, equivalent aan AES-256, voor systemen met hoge kritikaliteit</li>
+            </ul>
+
+            <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
+
+            <p>De ruis moet:</p>
+
+            <ul>
+                <li><strong>groot</strong> genoeg zijn om het MLWE-probleem moeilijk te maken</li>
+                <li><strong>klein</strong> genoeg om te garanderen dat de ontsleuteling niet faalt (ruisbudget)</li>
+            </ul>
+
+            <p>Het verhogen van <span class="math">\(\eta\)</span> verhoogt de veiligheid maar ook de kans op een ontsleutelingsfout. De waarden <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> voor ML-KEM-768 zijn het optimum.</p>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
+                STOC 2005. Grondslag van LWE.</li>
+                <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
+                Designs, Codes and Cryptography. Grondslag van MLWE.</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
+                EUROCRYPT 2010. Grondslag van RLWE.</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Secties 1–4 (rationeel ontwerp van de parameters)</li>
+                <li>NIST FIPS 203 (2024), Secties 3–4 (notatie en primitieven)</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="4.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">05 / 10</span>
+            <a href="6.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/5.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

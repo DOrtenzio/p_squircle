@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 2 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li class="active"><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>02 – Asymmetrische Cryptografie</h1>
+        <p class="subtitle">De basis van klassieke veiligheid en zijn kwantumlimiet</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-21">2.1 Het probleem van sleuteluitwisseling</a></li>
+                <li><a href="#id-22">2.2 RSA</a></li>
+                <li><a href="#id-23">2.3 Diffie-Hellman</a></li>
+                <li><a href="#id-24">2.4 Cryptografie over elliptische krommen (ECC)</a></li>
+                <li><a href="#id-25">2.5 Klassieke veiligheid en kwantumlimieten</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 2.1 -->
+        <section id="id-21">
+            <h2>2.1 Het probleem van sleuteluitwisseling</h2>
+
+            <p>Alice wil veilig communiceren met Bob via een openbaar kanaal. Om AES te gebruiken is een gedeelde sleutel nodig. Hoe wordt die vastgesteld zonder dat Eva (die alles afluistert) hem ontdekt?</p>
+
+            <p>Dit probleem had eeuwenlang geen oplossing. Het antwoord kwam in 1976 met <strong>Diffie en Hellman</strong>, en in 1977 met <strong>Rivest, Shamir en Adleman (RSA)</strong>.</p>
+
+            <p>Het sleutelidee: er bestaan wiskundige bewerkingen die <strong>in de ene richting gemakkelijk zijn, in de andere moeilijk</strong>.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gemakkelijke bewerking</th>
+                        <th>Moeilijke bewerking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Twee grote priemgetallen vermenigvuldigen: <span class="math">\(p \cdot q = n\)</span></td>
+                        <td><span class="math">\(n\)</span> ontbinden om <span class="math">\(p\)</span> en <span class="math">\(q\)</span> te vinden</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(g^x \bmod p\)</span> berekenen</td>
+                        <td><span class="math">\(x\)</span> vinden gegeven <span class="math">\(g^x \bmod p\)</span> (discrete logaritme)</td>
+                    </tr>
+                    <tr>
+                        <td>Een punt op een elliptische kromme <span class="math">\(k\)</span> keer optellen: <span class="math">\(kP\)</span></td>
+                        <td><span class="math">\(k\)</span> vinden gegeven <span class="math">\(kP\)</span> (ECDLP)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sectie 2.2 -->
+        <section id="id-22">
+            <h2>2.2 RSA</h2>
+
+            <h3>Sleutelgeneratie</h3>
+            <ol>
+                <li>Kies twee grote priemgetallen <span class="math">\(p\)</span> en <span class="math">\(q\)</span> (doorgaans 2048+ bits elk)</li>
+                <li>Bereken <span class="math">\(n = p \cdot q\)</span></li>
+                <li>Bereken <span class="math">\(\phi(n) = (p-1)(q-1)\)</span></li>
+                <li>Kies <span class="math">\(e\)</span> zodat <span class="math">\(\gcd(e, \phi(n)) = 1\)</span> (doorgaans <span class="math">\(e = 65537\)</span>)</li>
+                <li>Bereken <span class="math">\(d = e^{-1} \bmod \phi(n)\)</span></li>
+            </ol>
+
+            <p><strong>Publieke sleutel:</strong> <span class="math">\((n, e)\)</span><br />
+            <strong>Private sleutel:</strong> <span class="math">\((n, d)\)</span><br />
+            <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, <span class="math">\(\phi(n)\)</span> moeten worden vernietigd.</p>
+
+            <h3>Versleuteling en ontsleuteling</h3>
+            <div class="math-block">
+                \[
+                C = M^e \bmod n
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                M = C^d \bmod n
+                \]
+            </div>
+            <p><strong>Waarom het werkt:</strong> volgens de stelling van Euler geldt <span class="math">\(M^{\phi(n)} \equiv 1 \pmod{n}\)</span>, dus <span class="math">\(M^{ed} = M^{1 + k\phi(n)} \equiv M \pmod{n}\)</span>.</p>
+
+            <h3>Numeriek voorbeeld (met kleine getallen, alleen ter illustratie)</h3>
+            <p><span class="math">\(p = 61, \quad q = 53, \quad n = 3233\)</span></p>
+            <p><span class="math">\(\phi(n) = 60 \cdot 52 = 3120\)</span></p>
+            <p><span class="math">\(e = 17, \quad d = 2753 \quad \text{(omdat } 17 \cdot 2753 \equiv 1 \pmod{3120}\text{)}\)</span></p>
+            <p>We versleutelen <span class="math">\(M = 65\)</span>:</p>
+            <p><span class="math">\(C = 65^{17} \bmod 3233 = 2790\)</span></p>
+            <p>We ontsleutelen:</p>
+            <p><span class="math">\(M = 2790^{2753} \bmod 3233 = 65 \quad \checkmark\)</span></p>
+
+            <h3>RSA als KEM</h3>
+            <p>RSA-KEM (vereenvoudigd):</p>
+            <ol>
+                <li>Bob genereert willekeurig <span class="math">\(r \leftarrow \{1, \ldots, n-1\}\)</span></li>
+                <li><span class="math">\(C = r^e \bmod n\)</span></li>
+                <li><span class="math">\(K = H(r)\)</span> (symmetrische sleutel)</li>
+                <li>Stuurt <span class="math">\(C\)</span> naar Alice</li>
+                <li>Alice berekent <span class="math">\(r = C^d \bmod n\)</span>, daarna <span class="math">\(K = H(r)\)</span></li>
+            </ol>
+        </section>
+
+        <!-- Sectie 2.3 -->
+        <section id="id-23">
+            <h2>2.3 Diffie-Hellman (DH)</h2>
+
+            <h3>Het protocol</h3>
+            <p>Publieke parameters: een groot priemgetal <span class="math">\(p\)</span> en een generator <span class="math">\(g\)</span> van <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alice</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(a\)</span></li>
+                        <li>Berekent <span class="math">\(A = g^a \bmod p\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(b\)</span></li>
+                        <li>Berekent <span class="math">\(B = g^b \bmod p\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alice berekent: } & K = B^a \bmod p = (g^b)^a = g^{ab} \bmod p \\
+                \text{Bob berekent: } & K = A^b \bmod p = (g^a)^b = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>Resultaat:</strong> Beiden delen dezelfde geheime sleutel <span class="math">\(K\)</span>. Eva, die alleen <span class="math">\(A\)</span> en <span class="math">\(B\)</span> ziet, kan <span class="math">\(K\)</span> niet berekenen zonder het discrete logaritme probleem op te lossen.</p>
+        </section>
+
+        <!-- Sectie 2.4 -->
+        <section id="id-24">
+            <h2>2.4 Cryptografie over elliptische krommen (ECDH)</h2>
+
+            <p>ECDH is het analogon van DH over elliptische krommen. Het wordt gebruikt in TLS 1.3 met de kromme <strong>X25519</strong>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alice</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(a\)</span></li>
+                        <li>Berekent <span class="math">\(A = a \cdot G\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(b\)</span></li>
+                        <li>Berekent <span class="math">\(B = b \cdot G\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alice berekent: } & K = a \cdot B = a(b \cdot G) = ab \cdot G \\
+                \text{Bob berekent: } & K = b \cdot A = b(a \cdot G) = ba \cdot G
+                \end{aligned}
+                \]
+            </div>
+
+            <p>Waarbij <span class="math">\(G\)</span> het generatiepunt van de kromme is. De veiligheid is gebaseerd op de moeilijkheid van ECDLP (Elliptic Curve Discrete Logarithm Problem).</p>
+
+            <h3>Wat zijn elliptische krommen</h3>
+            <p>Een <strong>elliptische kromme</strong> over <span class="math">\(\mathbb{Z}_p\)</span> is de verzameling punten <span class="math">\((x, y)\)</span> die voldoen aan:</p>
+            <div class="math-block">
+                \[
+                y^2 \equiv x^3 + ax + b \pmod{p}
+                \]
+            </div>
+            <p>plus een speciaal punt <span class="math">\(\mathcal{O}\)</span> dat het <em>punt op oneindig</em> wordt genoemd.</p>
+            <p>Op deze punten is een <em>optelling</em> gedefinieerd met groeps eigenschappen.</p>
+
+            <h3>Scalair vermenigvuldiging</h3>
+            <p>Gegeven de puntoptelling, wordt <strong>scalaire vermenigvuldiging</strong> gedefinieerd:</p>
+            <p><span class="math">\(kP = P + P + \cdots + P \quad (k \text{ keer})\)</span></p>
+            <p><span class="math">\(kP\)</span> berekenen uit <span class="math">\(P\)</span> en <span class="math">\(k\)</span> is gemakkelijk (<span class="math">\(O(\log k)\)</span> bewerkingen). Het omgekeerde probleem – <span class="math">\(k\)</span> vinden uit <span class="math">\(P\)</span> en <span class="math">\(kP\)</span> – is het <strong>Elliptic Curve Discrete Logarithm Problem (ECDLP)</strong>, rekenkundig moeilijk.</p>
+
+            <h3>Voordelen van ECC ten opzichte van DH/RSA</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gelijkwaardige veiligheid</th>
+                        <th>RSA/DH (bits van n/p)</th>
+                        <th>ECC (bits van de sleutel)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>80 bits</td>
+                        <td>1024</td>
+                        <td>160</td>
+                    </tr>
+                    <tr>
+                        <td>128 bits</td>
+                        <td>3072</td>
+                        <td>256</td>
+                    </tr>
+                    <tr>
+                        <td>256 bits</td>
+                        <td>15360</td>
+                        <td>512</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ECC biedt <strong>veel kleinere sleutels</strong> met dezelfde veiligheid → efficiënter.</p>
+        </section>
+
+        <!-- Sectie 2.5 -->
+        <section id="id-25">
+            <h2>2.5 Klassieke veiligheid en kwantumlimieten</h2>
+
+            <h3>Tegen klassieke computers</h3>
+            <p>De problemen waarop RSA en ECC zijn gebaseerd, zijn <strong>subexponentieel</strong> (niet puur exponentieel) voor klassieke computers.</p>
+            <p>Het beste klassieke algoritme voor factorisatie is de <strong>General Number Field Sieve (GNFS)</strong>:</p>
+            <div class="math-block">
+                \[
+                O\!\left(\exp\!\left(\left(\frac{64}{9}\right)^{1/3} (\ln n)^{1/3} (\ln \ln n)^{2/3}\right)\right)
+                \]
+            </div>
+            <p>Voor <span class="math">\(n\)</span> van 2048 bits vergt dit een astronomisch lange tijd → in de praktijk veilig.</p>
+
+            <h3>Tegen kwantumcomputers: het algoritme van Shor</h3>
+            <p>In 1994 toonde Peter Shor aan dat een kwantumcomputer:</p>
+            <ul>
+                <li><strong><span class="math">\(n\)</span> kan ontbinden</strong> in tijd <span class="math">\(O((\log n)^3)\)</span></li>
+                <li><strong>Het DLP kan oplossen</strong> in tijd <span class="math">\(O((\log p)^3)\)</span></li>
+                <li><strong>Het ECDLP kan oplossen</strong> in tijd <span class="math">\(O((\log p)^3)\)</span></li>
+            </ul>
+            <p>Een kwantumcomputer met voldoende qubits zou RSA-2048 in <strong>uren of dagen</strong> kunnen breken.</p>
+            <blockquote>
+                <p>De gedetailleerde analyse van het algoritme van Shor staat in bestand <a href="3.html">03 – Het algoritme van Shor</a>.</p>
+            </blockquote>
+
+            <h3>Het antwoord: post-kwantumcryptografie</h3>
+            <p>Om ook in het kwantumtijdperk veilige asymmetrische cryptografie te hebben, zijn wiskundige problemen nodig waarvoor <strong>geen</strong> efficiënte kwantumalgoritmen bekend zijn.</p>
+            <p>Roosterproblemen, waarop ML-KEM is gebaseerd, voldoen hieraan: de beste bekende kwantumalgoritmen bieden hooguit een bescheiden versnelling ten opzichte van klassieke algoritmen.</p>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Rivest, R., Shamir, A., Adleman, L. (1978) – <em>A Method for Obtaining Digital Signatures and Public-Key Cryptosystems</em></li>
+                <li>Diffie, W., Hellman, M. (1976) – <em>New Directions in Cryptography</em></li>
+                <li>Miller, V. (1985) – <em>Use of Elliptic Curves in Cryptography</em></li>
+                <li>Bernstein, D.J. (2006) – <em>Curve25519: new Diffie-Hellman speed records</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Hoofdstukken 10–12)</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="1.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">02 / 10</span>
+            <a href="3.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/2.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

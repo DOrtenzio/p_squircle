@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="hi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capítulo 0 – MONEOO.</title>
+    <title>अध्याय 10 – MONEOO.</title>
     <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
@@ -24,14 +24,14 @@
     <div id="chapterToolbar" class="page-toolbar visible">
         <div class="toolbar-brand">MONEOO.</div>
         <nav class="toolbar-nav" aria-label="Navegación rápida">
-            <a href="index.html#featureSection">Por qué</a>
-            <a href="index.html#learningPath">Recorrido</a>
-            <a href="index.html#searchSection">La Guía</a>
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">यात्रा</a>
+            <a href="index.html#searchSection">गाइड</a>
         </nav>
         <div class="toolbar-lang">
             <div class="lang-selector" id="langSelector">
-                <button class="lang-toggle" id="langToggle" aria-label="Seleccionar idioma">
-                    <span class="lang-current" id="langCurrent">🇪🇸 Español</span>
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
                     <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -63,419 +63,566 @@
     <div class="container chapter-wrapper">
         <!-- Barra lateral -->
         <aside class="chapter-sidebar">
-            <h3>Capítulos</h3>
+            <h3>अध्याय</h3>
             <ul>
-                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Prerrequisitos</a></li>
-                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
-                <li><a href="2.html"><span class="chapter-number">02</span> Asimétrica</a></li>
-                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
-                <li><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (Lattices)</a></li>
                 <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
                 <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
                 <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
                 <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
-                <li><a href="9.html"><span class="chapter-number">09</span> Seguridad</a></li>
-                <li><a href="10.html"><span class="chapter-number">10</span> Implementaciones</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
             </ul>
         </aside>
 
-        <!-- Contenido del capítulo -->
         <main class="chapter-content">
-            <article>
-                <h1>00 – Prerrequisitos Matemáticos</h1>
-                <p class="subtitle">Las herramientas esenciales para comprender la criptografía post‑cuántica</p>
+    <article>
+        <h1>10 – व्यावहारिक कार्यान्वयन</h1>
+        <p class="subtitle">सिद्धांत से व्यवहार तक: लाइब्रेरी, TLS एकीकरण और माइग्रेशन</p>
 
-                <!-- Índice -->
-                <div class="toc">
-                    <h2>Índice</h2>
-                    <ul>
-                        <li><a href="#id-01">0.1 Aritmética modular</a></li>
-                        <li><a href="#id-02">0.2 Álgebra lineal: vectores y matrices</a></li>
-                        <li><a href="#id-03">0.3 Polinomios</a></li>
-                        <li><a href="#id-04">0.4 Estructuras algebraicas: grupos, anillos, cuerpos</a></li>
-                        <li><a href="#id-05">0.5 Funciones hash criptográficas</a></li>
-                        <li><a href="#id-06">0.6 Probabilidad y distribución del ruido</a></li>
-                        <li><a href="#id-07">0.7 Complejidad computacional</a></li>
-                    </ul>
-                </div>
+        <!-- Índice -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-101">10.1 liboqs: संदर्भ C लाइब्रेरी</a></li>
+                <li><a href="#id-102">10.2 पूर्ण उदाहरण: C में ML-KEM-768 के साथ KEM</a></li>
+                <li><a href="#id-103">10.3 प्राप्त कुंजी को AES-256-GCM के साथ उपयोग करना</a></li>
+                <li><a href="#id-104">10.4 Python: liboqs बाइंडिंग</a></li>
+                <li><a href="#id-105">10.5 Python: kyber-py (केवल शैक्षणिक)</a></li>
+                <li><a href="#id-106">10.6 प्रदर्शन बेंचमार्क</a></li>
+                <li><a href="#id-107">10.7 OpenSSL: OQS प्रोवाइडर की स्थापना</a></li>
+                <li><a href="#id-108">10.8 OpenSSL CLI के साथ ML-KEM कुंजी उत्पादन</a></li>
+                <li><a href="#id-109">10.9 ML-KEM-768 के साथ TLS 1.3</a></li>
+                <li><a href="#id-1010">10.10 हाइब्रिड रणनीति: X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 TLS 1.3 में हाइब्रिड साइफर सूट</a></li>
+                <li><a href="#id-1012">10.12 OpenSSL के साथ C अनुप्रयोगों में एकीकरण</a></li>
+                <li><a href="#id-1013">10.13 माइग्रेशन के लिए जाँच-सूची</a></li>
+                <li><a href="#id-1014">10.14 परिदृश्य: एक REST API का माइग्रेशन</a></li>
+            </ul>
+        </div>
 
-                <!-- Sección 0.1 -->
-                <section id="id-01">
-                    <h2>0.1 Aritmética modular</h2>
+        <!-- Sección 10.1 -->
+        <section id="id-101">
+            <h2>10.1 liboqs: संदर्भ C लाइब्रेरी</h2>
 
-                    <h3>¿Qué es el módulo?</h3>
-                    <p>La operación <span class="math">\(a \bmod m\)</span> devuelve el <strong>resto</strong> de la división entera de <span class="math">\(a\)</span> por <span class="math">\(m\)</span>.</p>
-                    <div class="example">
-                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{porque } 17 = 3 \cdot 5 + 2\)</span></p>
-                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{porque } -3 + 13 = 10\)</span></p>
-                    </div>
-                    <blockquote>
-                        <p><strong>Convención:</strong> en criptografía, los resultados módulo <span class="math">\(q\)</span> están siempre en el intervalo <span class="math">\([0, q-1]\)</span>.</p>
-                    </blockquote>
+            <p><strong>liboqs</strong>, पोस्ट-क्वांटम क्रिप्टोग्राफी के लिए संदर्भ C लाइब्रेरी है, जिसे Open Quantum Safe (OQS) प्रोजेक्ट द्वारा विकसित किया गया है। यह ML-KEM और NIST द्वारा मानकीकृत अन्य PQC एल्गोरिदम के अनुकूलित और स्थिर-समय (constant-time) कार्यान्वयन प्रदान करता है।</p>
 
-                    <h3>Aritmética en <span class="math">\(\mathbb{Z}_q\)</span></h3>
-                    <p>Denotamos con <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> el conjunto de los enteros módulo <span class="math">\(q\)</span>. En este conjunto, suma, resta y multiplicación siempre se reducen módulo <span class="math">\(q\)</span>:</p>
-                    <div class="example">
-                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
-                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
-                    </div>
+            <h3>स्रोतों से स्थापना</h3>
+            <div class="code-block">
+                <pre><code># निर्भरताएँ (Ubuntu/Debian)
+sudo apt-get install cmake gcc libssl-dev
 
-                    <h3>Inverso multiplicativo</h3>
-                    <p>En la matemática común, el inverso de un número sirve para obtener <span class="math">\(1\)</span> mediante una multiplicación (ej. el inverso de <span class="math">\(5\)</span> es <span class="math">\(\frac{1}{5}\)</span>, porque <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). En la aritmética modular no existen las fracciones. El inverso de un número <span class="math">\(a\)</span> debe ser, por tanto, otro número entero <span class="math">\(b\)</span> que, multiplicado por <span class="math">\(a\)</span>, dé como resto 1 módulo <span class="math">\(q\)</span>:</p>
-                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+# क्लोन और कंपाइल करें
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+sudo make install</code></pre>
+            </div>
+        </section>
 
-                    <h4>La regla de existencia</h4>
-                    <p>El inverso de <span class="math">\(a\)</span> no siempre existe. Se puede encontrar si y solo si <span class="math">\(a\)</span> y <span class="math">\(q\)</span> no tienen divisores en común (es decir, si su Máximo Común Divisor es 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
-                    <ul>
-                        <li><strong>Propiedad clave:</strong> Si el módulo <span class="math">\(q\)</span> es un número primo, todos los números del conjunto (excepto el cero) tienen siempre un inverso garantizado.</li>
-                    </ul>
+        <!-- Sección 10.2 -->
+        <section id="id-102">
+            <h2>10.2 पूर्ण उदाहरण: C में ML-KEM-768 के साथ KEM</h2>
 
-                    <h4>Ejemplo práctico: Calcular <span class="math">\(5^{-1} \bmod 13\)</span></h4>
-                    <p>La notación <span class="math">\(5^{-1}\)</span> significa: "Encuentra el inverso de 5 módulo 13". Buscamos un número <span class="math">\(b\)</span> tal que <span class="math">\(5 \cdot b\)</span> dé resto <span class="math">\(1\)</span> al dividirlo por <span class="math">\(13\)</span>:</p>
-                    <ol>
-                        <li>Probamos a multiplicar <span class="math">\(5\)</span> por varios números enteros.</li>
-                        <li>Eligiendo <span class="math">\(b = 8\)</span>, obtenemos: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
-                        <li>Dividimos <span class="math">\(40\)</span> por <span class="math">\(13\)</span>: el 13 cabe 3 veces (<span class="math">\(13 \cdot 3 = 39\)</span>) con resto 1.</li>
-                    </ol>
-                    <p><strong>La respuesta es 8</strong>, porque <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;oqs/oqs.h&gt;
 
-                    <h3>Exponenciación modular</h3>
-                    <p>La exponenciación modular consiste en calcular el resto de la división de una potencia: <span class="math">\(a^k \pmod m\)</span>. Esta operación es la columna vertebral de la criptografía moderna (como el algoritmo RSA). Se usa porque es un "reloj de sentido único": es facilísimo calcular el resultado, pero es casi imposible hacer el camino inverso (descubrir el exponente <span class="math">\(k\)</span> partiendo del resultado).</p>
+int main() {
+    OQS_STATUS rc;
+    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
 
-                    <h4>El problema de los números grandes</h4>
-                    <p>Si tenemos que calcular <span class="math">\(5^{11} \pmod{13}\)</span>, el cálculo directo es imposible para un ordenador si el exponente tiene cientos de dígitos. El número <span class="math">\(5^{11}\)</span> sería demasiado grande para la memoria.</p>
+    // एल्गोरिदम को इनिशियलाइज़ करें
+    OQS_KEM *kem = OQS_KEM_new(kem_alg);
+    if (kem == NULL) {
+        fprintf(stderr, "KEM समर्थित नहीं है\n");
+        return 1;
+    }
 
-                    <h4>La solución: El algoritmo Square-and-Multiply</h4>
-                    <p>Este algoritmo permite calcular el resultado en muy pocos pasos (<span class="math">\(O(\log k)\)</span> multiplicaciones), trabajando siempre con números pequeños y evitando que la potencia crezca indefinidamente.</p>
+    printf("एल्गोरिदम: %s\n", kem-&gt;method_name);
+    printf("सार्वजनिक कुंजी: %zu बाइट\n", kem-&gt;length_public_key);
+    printf("निजी कुंजी: %zu बाइट\n", kem-&gt;length_secret_key);
+    printf("सिफर टेक्स्ट: %zu बाइट\n", kem-&gt;length_ciphertext);
+    printf("साझा गुप्त कुंजी: %zu बाइट\n\n", kem-&gt;length_shared_secret);
 
-                    <details>
-                        <summary><strong>Cómo funciona en la práctica (Ejemplo: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
-                        <p>Convertimos el exponente a binario: <span class="math">\(11 = 8 + 2 + 1\)</span>. En lugar de multiplicar <span class="math">\(5\)</span> por sí mismo <span class="math">\(11\)</span> veces, calculamos las potencias al cuadrado paso a paso reduciendo inmediatamente el resultado módulo <span class="math">\(13\)</span>:</p>
-                        <div class="math-block">
-                            \[
-                            \begin{aligned}
-                            \text{Base: } & 5^1 \equiv 5 \pmod{13} \\
-                            \text{Cuadrado: } & 5^2 = 25 \equiv 12 \pmod{13} \\
-                            \text{Cuadrado del cuadrado: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
-                            \text{Cuadrado siguiente: } & 5^8 = 1^2 = 1 \pmod{13}
-                            \end{aligned}
-                            \]
-                        </div>
-                        <p>Ahora combinamos solo las piezas que componen nuestro exponente <span class="math">\(11\)</span> (es decir, <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
-                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
-                        <p>Dividimos <span class="math">\(60\)</span> por <span class="math">\(13\)</span>: el <span class="math">\(13\)</span> cabe <span class="math">\(4\)</span> veces (<span class="math">\(52\)</span>) con resto <span class="math">\(8\)</span>.</p>
-                        <p><strong>Resultado final:</strong> <span class="math">\(8\)</span> (hemos hecho solo 4 pasos en lugar de 11).</p>
-                    </details>
-                </section>
+    // मेमोरी आवंटन
+    uint8_t *pk = malloc(kem-&gt;length_public_key);
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
 
-                <!-- Sección 0.2 -->
-                <section id="id-02">
-                    <h2>0.2 Álgebra lineal: vectores y matrices</h2>
+    // 1. KeyGen (Alice)
+    rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen विफल\n"); return 1; }
+    printf("✓ KeyGen पूर्ण\n");
 
-                    <h3>Vectores</h3>
-                    <p>Un vector <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> es una lista ordenada de <span class="math">\(n\)</span> números enteros calculados módulo <span class="math">\(q\)</span>:</p>
-                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
-                    <p>En las operaciones entre vectores, cada resultado se reduce módulo <span class="math">\(q\)</span>.</p>
+    // 2. Encaps (Bob: केवल pk जानता है)
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps विफल\n"); return 1; }
+    printf("✓ Encaps पूर्ण\n");
 
-                    <h4>Ejemplo práctico</h4>
-                    <p>Con <span class="math">\(q = 13\)</span>:</p>
-                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+    // 3. Decaps (Alice: ct खोलने के लिए sk का उपयोग करता है)
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps विफल\n"); return 1; }
+    printf("✓ Decaps पूर्ण\n\n");
 
-                    <h4>Suma de vectores</h4>
-                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
-                    <ul>
-                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
-                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
-                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
-                    </ul>
+    // 4. सत्यापन
+    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
+        printf("✅ साझा गुप्त कुंजियाँ मेल खाती हैं!\n");
+        printf("   पहले बाइट: ");
+        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
+        printf("...\n");
+    } else {
+        printf("❌ त्रुटि: साझा गुप्त कुंजियाँ अलग हैं!\n");
+    }
 
-                    <h4>Producto escalar</h4>
-                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
-                    <p>Cálculo:</p>
-                    <ul>
-                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
-                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
-                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
-                    </ul>
-                    <p>Suma: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
-                    <p>Reducción módulo 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+    // सुरक्षित मेमोरी सफाई
+    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
+    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
+    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
+    free(pk); free(ct);
+    OQS_KEM_free(kem);
 
-                    <h3>Matrices</h3>
-                    <p>Una matriz <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> es un array de filas y columnas.</p>
-                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Ejemplo de matriz" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
-                    <p><em>(En la práctica, la matriz <span class="math">\(A\)</span> en ML-KEM tiene dimensiones <span class="math">\(k \times k\)</span> con <span class="math">\(k = 3, 4\)</span> o <span class="math">\(5\)</span> y se genera a partir de una semilla aleatoria mediante SHAKE.)</em></p>
+    return 0;
+}</code></pre>
+            </div>
 
-                    <h4>Producto matriz-vector</h4>
-                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+            <p><strong>कंपाइलेशन:</strong></p>
+            <div class="code-block">
+                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
+./kem_example</code></pre>
+            </div>
+        </section>
 
-                    <h4>Ejemplo</h4>
-                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
-                    <details>
-                        <summary>Pasos detallados</summary>
-                        <p>Primera fila: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
-                        <p>Segunda fila: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
-                        <p>Reducción módulo 13: <span class="math">\(-7 + 13 = 6\)</span></p>
-                        <p>Por tanto: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
-                    </details>
+        <!-- Sección 10.3 -->
+        <section id="id-103">
+            <h2>10.3 प्राप्त कुंजी को AES-256-GCM के साथ उपयोग करना</h2>
 
-                    <h3>Norma infinito</h3>
-                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
-                    <p>Esta norma mide la componente con valor absoluto máximo. En el contexto de MLWE, los vectores de error deben tener una norma muy pequeña.</p>
-                    <details>
-                        <summary>Ejemplos prácticos</summary>
-                        <p><strong>Caso válido:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
-                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
-                        <p><strong>Caso no válido:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
-                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
-                    </details>
-                </section>
+            <p>ML-KEM से साझा गुप्त कुंजी प्राप्त करने के बाद, इसे एक सममित सिफर के लिए कुंजी के रूप में उपयोग किया जा सकता है। उत्पादन में, अलग कुंजियाँ प्राप्त करने के लिए HKDF का उपयोग करने की सलाह दी जाती है।</p>
 
-                <!-- Sección 0.3 -->
-                <section id="id-03">
-                    <h2>0.3 Polinomios</h2>
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
+#include &lt;oqs/oqs.h&gt;
 
-                    <h3>Polinomios con coeficientes en <span class="math">\(\mathbb{Z}_q\)</span></h3>
-                    <p>Un polinomio en <span class="math">\(\mathbb{Z}_q[X]\)</span> tiene la forma:</p>
-                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
-                    <p>donde cada <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+// ML-KEM से ss (32 बाइट) प्राप्त करने के बाद:
+void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
+                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
+                           const uint8_t *nonce) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
 
-                    <h4>Suma de polinomios</h4>
-                    <p>Se suman los coeficientes homólogos módulo <span class="math">\(q\)</span>:</p>
-                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+    // AES-256-GCM को इनिशियलाइज़ करें
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
 
-                    <h4>Producto de polinomios y reducción</h4>
-                    <p>El producto de dos polinomios de grado <span class="math">\(\leq n-1\)</span> puede tener grado hasta <span class="math">\(2n-2\)</span>. Para mantenerlos compactos, se reduce módulo un polinomio especial.</p>
-                    <p>En ML-KEM se usa <span class="math">\(X^n + 1\)</span> con <span class="math">\(n = 256\)</span>. La regla de reducción es:</p>
-                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
-                    <p>Por tanto, cada vez que aparece <span class="math">\(X^{256}\)</span> en el producto, se sustituye por <span class="math">\(-1\)</span>.</p>
+    // साझा गुप्त कुंजी को कुंजी के रूप में उपयोग करें
+    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
 
-                    <h4>Ejemplo sencillo</h4>
-                    <p>Con <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, módulo <span class="math">\(X^4+1\)</span>:</p>
-                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
-                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
-                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
-                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
-                </section>
+    // एन्क्रिप्शन
+    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
 
-                <!-- Sección 0.4 -->
-                <section id="id-04">
-                    <h2>0.4 Estructuras algebraicas: grupos, anillos, cuerpos</h2>
+    // प्रमाणीकरण टैग प्राप्त करें
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Estructura</th>
-                                <th>Operaciones</th>
-                                <th>Propiedades clave</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Grupo</strong></td>
-                                <td>una (+)</td>
-                                <td>cerradura, asociatividad, neutro, inverso</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Anillo</strong></td>
-                                <td>dos (+, ×)</td>
-                                <td>grupo abeliano para +, semigrupo para ×</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Cuerpo</strong></td>
-                                <td>dos (+, ×)</td>
-                                <td>anillo con inverso multiplicativo para todos los ≠ 0</td>
-                            </tr>
-                        </tbody>
-                    </table>
+    EVP_CIPHER_CTX_free(ctx);
+}</code></pre>
+            </div>
+        </section>
 
-                    <h3><span class="math">\(\mathbb{Z}_q\)</span> como cuerpo</h3>
-                    <p>Si <span class="math">\(q\)</span> es primo, <span class="math">\(\mathbb{Z}_q\)</span> <strong>es un cuerpo</strong>: cada elemento no nulo tiene inverso multiplicativo. En ML-KEM, <span class="math">\(q = 3329\)</span> es primo → <span class="math">\(\mathbb{Z}_{3329}\)</span> es un cuerpo.</p>
+        <!-- Sección 10.4 -->
+        <section id="id-104">
+            <h2>10.4 Python: liboqs बाइंडिंग</h2>
 
-                    <h3>El anillo <span class="math">\(R_q\)</span></h3>
-                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
-                    <p>Es un anillo (no un cuerpo, porque no todos los polinomios tienen inverso), pero tiene propiedades útiles para la criptografía:</p>
-                    <ul>
-                        <li>cada polinomio tiene exactamente 256 coeficientes;</li>
-                        <li>la multiplicación es eficiente mediante NTT (ver archivo 07);</li>
-                        <li>el polinomio <span class="math">\(X^{256}+1\)</span> es <em>ciclotómico</em>, lo que garantiza buenas propiedades de seguridad.</li>
-                    </ul>
-                    <details>
-                        <summary>¿Qué significa que <span class="math">\(X^{256}+1\)</span> sea ciclotómico?</summary>
-                        <p>En álgebra, un polinomio ciclotómico es un polinomio especial cuyas raíces son las <strong>raíces primitivas de la unidad</strong> (es decir, los números complejos que elevados a una cierta potencia dan <span class="math">\(1\)</span>).</p>
-                        <p>En el caso específico de <span class="math">\(X^{256}+1\)</span>, esta propiedad garantiza tres enormes ventajas en criptografía (como en ML-KEM):</p>
-                        <ul>
-                            <li><strong>Irreducibilidad</strong>: El polinomio no se puede descomponer en polinomios más pequeños con coeficientes enteros. Esto evita que un usuario malintencionado pueda "romper" el problema matemático en partes más fáciles de resolver.</li>
-                            <li><strong>Multiplicación ultrarrápida (NTT)</strong>: Permite usar la <em>Number Theoretic Transform</em> (NTT). Gracias a este algoritmo, la multiplicación entre polinomios pasa de una complejidad de <span class="math">\(O(n^2)\)</span> a solo <span class="math">\(O(n \log n)\)</span>, haciendo la criptografía post-cuántica increíblemente rápida.</li>
-                            <li><strong>Seguridad uniforme</strong>: Distribuye el error (el ruido) de forma perfectamente simétrica sobre todos los 256 coeficientes durante las operaciones, eliminando puntos débiles estructurales que los hackers podrían explotar.</li>
-                        </ul>
-                    </details>
-                </section>
+            <p>Liboqs, त्वरित परीक्षण और प्रोटोटाइपिंग के लिए Python में आधिकारिक बाइंडिंग प्रदान करता है।</p>
 
-                <!-- Sección 0.5 -->
-                <section id="id-05">
-                    <h2>0.5 Funciones hash criptográficas</h2>
-                    <p>Una función hash <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> mapea entradas de longitud arbitraria a salidas de longitud fija.</p>
-                    <p><strong>Propiedades requeridas en criptografía:</strong></p>
-                    <ul>
-                        <li><em>Resistencia a preimágenes:</em> a partir de <span class="math">\(H(x)\)</span> no se puede deducir <span class="math">\(x\)</span></li>
-                        <li><em>Resistencia a colisiones:</em> encontrar <span class="math">\(x \neq y\)</span> con <span class="math">\(H(x) = H(y)\)</span> es computacionalmente imposible</li>
-                        <li><em>Efecto avalancha:</em> cambiar un bit de entrada cambia ~50% de la salida</li>
-                    </ul>
+            <div class="code-block">
+                <pre><code>pip install liboqs-python</code></pre>
+            </div>
 
-                    <h3>SHA-3 y SHAKE</h3>
-                    <p>ML-KEM usa exclusivamente primitivas de la familia <strong>SHA-3</strong> (estandarizadas por el NIST en 2015):</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Función</th>
-                                <th>Salida</th>
-                                <th>Uso en ML-KEM</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>SHA3-256</code></td>
-                                <td>256 bits fijos</td>
-                                <td>hashing general</td>
-                            </tr>
-                            <tr>
-                                <td><code>SHA3-512</code></td>
-                                <td>512 bits fijos</td>
-                                <td>hashing de claves</td>
-                            </tr>
-                            <tr>
-                                <td><code>SHAKE128</code></td>
-                                <td>longitud variable</td>
-                                <td>generación de <span class="math">\(A\)</span> (XOF)</td>
-                            </tr>
-                            <tr>
-                                <td><code>SHAKE256</code></td>
-                                <td>longitud variable</td>
-                                <td>derivación de claves</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>SHAKE es una <strong>XOF (eXtendable Output Function)</strong>: produce tantos bytes como se quiera a partir de una entrada dada. En ML-KEM, <code>SHAKE128(semilla)</code> genera toda la matriz pública <span class="math">\(A\)</span> a partir de una semilla de 32 bytes.</p>
-                </section>
+            <div class="code-block">
+                <pre><code class="language-python">import oqs
 
-                <!-- Sección 0.6 -->
-                <section id="id-06">
-                    <h2>0.6 Probabilidad y distribución del ruido</h2>
+# उपलब्ध एल्गोरिदम
+kem = oqs.KeyEncapsulation("ML-KEM-768")
 
-                    <h3>Distribución binomial centrada <span class="math">\(B_\eta\)</span></h3>
-                    <p>En ML-KEM, el ruido no es gaussiano sino <strong>binomial centrado</strong>. El muestreo funciona así:</p>
-                    <ol>
-                        <li>Muestrear <span class="math">\(2\eta\)</span> bits uniformes: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
-                        <li>Devolver <span class="math">\(\sum a_i - \sum b_i\)</span></li>
-                    </ol>
-                    <p>El resultado es un entero en <span class="math">\([-\eta, +\eta]\)</span> con distribución aproximadamente gaussiana alrededor de 0.</p>
-                    <p><strong>¿Por qué no gaussiana verdadera?</strong> La distribución binomial es más sencilla de muestrear de forma <em>constante en el tiempo</em> (resistente a canales laterales), y la seguridad es similar.</p>
-                    <p>Para ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Los valores de ruido estarán en <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+# KeyGen
+public_key = kem.generate_keypair()
 
-                    <h3>Despreciabilidad</h3>
-                    <p>Una función <span class="math">\(f(\lambda)\)</span> es <strong>despreciable</strong> si para todo polinomio <span class="math">\(p(\cdot)\)</span> existe <span class="math">\(\lambda_0\)</span> tal que para todo <span class="math">\(\lambda > \lambda_0\)</span>:</p>
-                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
-                    <p>En la práctica: decrece más rápido que cualquier inverso polinómico. Las probabilidades de error en ML-KEM son despreciables en el parámetro de seguridad <span class="math">\(\lambda\)</span>.</p>
-                </section>
+# Encaps (Bob का पक्ष)
+kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
+ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
 
-                <!-- Sección 0.7 -->
-                <section id="id-07">
-                    <h2>0.7 Complejidad computacional</h2>
+# Decaps (Alice का पक्ष)
+shared_secret_dec = kem.decap_secret(ciphertext)
 
-                    <h3>Notaciones</h3>
-                    <ul>
-                        <li><span class="math">\(O(f(n))\)</span>: orden de magnitud asintótico (cota superior)</li>
-                        <li><span class="math">\(\Omega(f(n))\)</span>: cota inferior</li>
-                        <li><span class="math">\(\Theta(f(n))\)</span>: cota ajustada</li>
-                    </ul>
+assert shared_secret_enc == shared_secret_dec
+print(f"✓ साझा गुप्त कुंजी: {shared_secret_enc.hex()[:16]}...")
 
-                    <h3>Clases relevantes</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Clase</th>
-                                <th>Significado</th>
-                                <th>Ejemplos</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>P</strong></td>
-                                <td>Resoluble en tiempo polinomial</td>
-                                <td>multiplicación, ordenación</td>
-                            </tr>
-                            <tr>
-                                <td><strong>NP</strong></td>
-                                <td>Verificable en tiempo polinomial</td>
-                                <td>SAT, TSP</td>
-                            </tr>
-                            <tr>
-                                <td><strong>NP-hard</strong></td>
-                                <td>Al menos tan difícil como NP</td>
-                                <td>factorización (presuntamente)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+kem.free()
+kem_bob.free()</code></pre>
+            </div>
+        </section>
 
-                    <h3>Problemas criptográficos y su dificultad</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Problema</th>
-                                <th>Dificultad clásica</th>
-                                <th>Dificultad cuántica</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Factorización</td>
-                                <td>subexponencial</td>
-                                <td><strong>polinomial</strong> (Shor)</td>
-                            </tr>
-                            <tr>
-                                <td>Logaritmo discreto</td>
-                                <td>subexponencial</td>
-                                <td><strong>polinomial</strong> (Shor)</td>
-                            </tr>
-                            <tr>
-                                <td>SVP (retículo)</td>
-                                <td>exponencial</td>
-                                <td>exponencial (sin aceleración conocida)</td>
-                            </tr>
-                            <tr>
-                                <td>LWE / MLWE</td>
-                                <td>exponencial</td>
-                                <td>exponencial (sin aceleración conocida)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <blockquote>
-                        <p>Esta tabla motiva toda la existencia de la criptografía post-cuántica.</p>
-                    </blockquote>
-                </section>
+        <!-- Sección 10.5 -->
+        <section id="id-105">
+            <h2>10.5 Python: kyber-py (केवल शैक्षणिक)</h2>
 
-                <!-- Fuentes -->
-                <div class="sources">
-                    <h2>Fuentes y profundización</h2>
-                    <ul>
-                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Capítulos 1–5)</li>
-                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (libre en línea)</li>
-                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Video: Anelli Algebrici</a></li>
-                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – secciones 2–3</li>
-                    </ul>
-                </div>
+            <p>पूर्णतः शैक्षणिक उद्देश्यों के लिए, एक शुद्ध Python कार्यान्वयन मौजूद है जिसे बाहरी C लाइब्रेरी की आवश्यकता नहीं होती।</p>
 
-                <!-- Navegación de capítulos -->
-                <div class="chapter-nav">
-                    <a href="#" class="nav-btn disabled">← Capítulo anterior</a>
-                    <span class="nav-label">00 / 10</span>
-                    <a href="1.html" class="nav-btn">Capítulo siguiente →</a>
-                </div>
-            </article>
-        </main>
+            <div class="note warning">
+                <p><strong>ध्यान दें:</strong> <code>kyber-py</code> स्थिर-समय (constant-time) नहीं है और इसे उत्पादन में उपयोग नहीं किया जाना चाहिए।</p>
+            </div>
+
+            <div class="code-block">
+                <pre>
+                    <code class="language-python">
+                        from kyber import Kyber768
+                        kem = Kyber768()
+                        pk, sk = kem.keygen()
+                        key, ciphertext = kem.enc(pk)
+                        _key = kem.dec(sk, ciphertext)
+                        assert key == _key
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.6 -->
+        <section id="id-106">
+            <h2>10.6 प्रदर्शन बेंचमार्क</h2>
+
+            <p>Intel Core i7-12700K पर बेंचमार्क (एक कोर, बिना SIMD निर्देशों के):</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>संक्रिया</th>
+                        <th>ML-KEM-512</th>
+                        <th>ML-KEM-768</th>
+                        <th>ML-KEM-1024</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>24 µs</td>
+                        <td>37 µs</td>
+                        <td>54 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>28 µs</td>
+                        <td>43 µs</td>
+                        <td>62 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>32 µs</td>
+                        <td>48 µs</td>
+                        <td>70 µs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>AVX2 अनुकूलन के साथ</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>संक्रिया</th>
+                        <th>ML-KEM-768 (बिना SIMD)</th>
+                        <th>ML-KEM-768 (AVX2)</th>
+                        <th>स्पीडअप</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>37 µs</td>
+                        <td>~10 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>43 µs</td>
+                        <td>~12 µs</td>
+                        <td>~3.6×</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>48 µs</td>
+                        <td>~13 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ECDH X25519 से तुलना</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>X25519</th>
+                        <th>ML-KEM-768</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>~14 µs</td>
+                        <td>~37 µs</td>
+                    </tr>
+                    <tr>
+                        <td>विनिमय</td>
+                        <td>~30 µs</td>
+                        <td>~48 µs</td>
+                    </tr>
+                    <tr>
+                        <td>सार्वजनिक कुंजी</td>
+                        <td>32 B</td>
+                        <td>1184 B</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ML-KEM, X25519 से लगभग 2 गुना धीमा है, लेकिन अधिकांश वास्तविक कनेक्शनों में TLS हैंडशेक की विलंबता पर इसका प्रभाव नगण्य होता है (&lt; 1 ms)।</p>
+        </section>
+
+        <!-- Sección 10.7 -->
+        <section id="id-107">
+            <h2>10.7 OpenSSL: OQS प्रोवाइडर की स्थापना</h2>
+
+            <p>OpenSSL 3.x, <code>oqsprovider</code> प्रोवाइडर के माध्यम से ML-KEM का समर्थन करता है। संस्करण 3.4 से, समर्थन देशी या आसानी से एकीकृत करने योग्य है।</p>
+
+            <div class="code-block">
+                <pre><code># oqs-provider को कंपाइल करें
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
+make
+sudo make install
+
+# सत्यापित करें
+openssl list -providers
+# दिखना चाहिए: oqsprovider</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.8 -->
+        <section id="id-108">
+            <h2>10.8 OpenSSL CLI के साथ ML-KEM कुंजी उत्पादन</h2>
+
+            <div class="code-block">
+                <pre><code># ML-KEM-768 कुंजी जोड़ी उत्पन्न करें
+openssl genpkey -algorithm mlkem768 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+
+# कुंजी का विवरण देखें
+openssl pkey -in private.pem -text -noout</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.9 -->
+        <section id="id-109">
+            <h2>10.9 ML-KEM-768 के साथ TLS 1.3</h2>
+
+            <h3>स्थानीय परीक्षण (सर्वर + क्लाइंट)</h3>
+            <div class="code-block">
+                <pre><code># सर्वर
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups mlkem768
+
+# क्लाइंट (दूसरे टर्मिनल में)
+openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
+            </div>
+
+            <h3>समर्थित समूहों की जाँच करें</h3>
+            <div class="code-block">
+                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
+            </div>
+        </section>
+
+       <!-- अनुभाग 10.10 -->
+        <section id="id-1010">
+            <h2>10.10 हाइब्रिड रणनीति: X25519 + ML-KEM-768</h2>
+
+            <p>माइग्रेशन के लिए अनुशंसित दृष्टिकोण <strong>हाइब्रिडाइजेशन</strong> है: ECDH (X25519) को ML-KEM-768 के साथ जोड़ना। अंतिम कुंजी दोनों से प्राप्त की जाती है:</p>
+
+            <div class="math-block">
+                \[
+                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \]
+            </div>
+
+            <p><strong>लाभ:</strong> यदि दोनों में से कम से कम एक योजना सुरक्षित रहती है, तो यह सुरक्षित है। यदि क्वांटम कंप्यूटर X25519 को तोड़ देता है, तो ML-KEM सुरक्षा प्रदान करता है। यदि ML-KEM में कोई अज्ञात दोष निकलता है, तो X25519 सुरक्षा प्रदान करता है।</p>
+        </section>
+
+        <!-- अनुभाग 10.11 -->
+        <section id="id-1011">
+            <h2>10.11 TLS 1.3 में हाइब्रिड सिफर सुइट्स</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ग्रुप का नाम</th>
+                        <th>संयोजन</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>X25519MLKEM768</code></td>
+                        <td>X25519 + ML-KEM-768</td>
+                    </tr>
+                    <tr>
+                        <td><code>SecP256r1MLKEM768</code></td>
+                        <td>P-256 + ML-KEM-768</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Chrome 131 (2024 के अंत) से, <code>X25519MLKEM768</code> डिफ़ॉल्ट ग्रुप है। Firefox 128+ भी इसी ग्रुप का समर्थन करता है।</p>
+
+            <h3>OpenSSL कॉन्फ़िगरेशन</h3>
+            <div class="code-block">
+                <pre><code># सर्वर जो क्लासिक X25519 और हाइब्रिड ग्रुप दोनों को स्वीकार करता है
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups X25519MLKEM768:x25519:P-256
+
+# क्लाइंट जो हाइब्रिड ग्रुप को प्राथमिकता देता है
+openssl s_client -connect localhost:4433 \
+    -groups X25519MLKEM768:x25519</code></pre>
+            </div>
+        </section>
+
+        <!-- अनुभाग 10.12 -->
+        <section id="id-1012">
+            <h2>10.12 OpenSSL के साथ C ऐप्स में एकीकरण</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
+#include &lt;openssl/err.h&gt;
+
+SSL_CTX *create_pqc_context(void) {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return NULL;
+    }
+
+    // पसंदीदा ग्रुप सेट करें: पहले हाइब्रिड, फिर क्लासिक फॉलबैक के रूप में
+    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
+        fprintf(stderr, "ग्रुप कॉन्फ़िगरेशन में त्रुटि\n");
+        SSL_CTX_free(ctx);
+        return NULL;
+    }
+
+    return ctx;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- अनुभाग 10.13 -->
+        <section id="id-1013">
+            <h2>10.13 माइग्रेशन के लिए चेकलिस्ट</h2>
+
+            <h3>एप्लिकेशन डेवलपर्स के लिए</h3>
+            <ul>
+                <li>इन्वेंट्री बनाएं कि असममित क्रिप्टोग्राफी (की एक्सचेंज, सिग्नेचर, KEM) का उपयोग कहाँ किया जा रहा है।</li>
+                <li>पहचानें कि कौन सा डेटा 5 वर्षों से अधिक समय तक गुप्त रहना चाहिए।</li>
+                <li>डिपेंडेंसी अपडेट करें: OpenSSL ≥ 3.2, liboqs ≥ 0.10।</li>
+                <li>हाइब्रिड दृष्टिकोण अपनाएं: TLS के लिए <code>X25519 + ML-KEM-768</code>।</li>
+                <li>डिजिटल सिग्नेचर के लिए: ML-DSA (FIPS 204) या SLH-DSA (FIPS 205) पर माइग्रेट करें।</li>
+                <li>प्रोटोकॉल में कुंजियों और सिफरटेक्स्ट के बढ़े हुए आकार का परीक्षण करें।</li>
+                <li>जांचें कि टाइमआउट और बफर साइज छोटी कुंजियों का अनुमान तो नहीं लगा रहे हैं।</li>
+            </ul>
+
+            <h3>इन्फ्रास्ट्रक्चर मैनेजरों के लिए</h3>
+            <ul>
+                <li>TLS स्टैक को ML-KEM समर्थन वाले वर्जनों में अपडेट करें।</li>
+                <li>TLS सर्वर पर <code>X25519MLKEM768</code> सक्षम करें।</li>
+                <li>क्लाइंट संगतता की निगरानी करें (Chrome 131+, Firefox 128+ हाइब्रिड PQC का समर्थन करते हैं)।</li>
+                <li>दीर्घकालिक कुंजी रोटेशन की योजना बनाएं।</li>
+            </ul>
+
+            <h3>संदर्भ मानक</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>मानक</th>
+                        <th>सामग्री</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIPS 203</td>
+                        <td>ML-KEM (Key Encapsulation)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 204</td>
+                        <td>ML-DSA (लैटिस-आधारित डिजिटल सिग्नेचर)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 205</td>
+                        <td>SLH-DSA (हैश-आधारित सिग्नेचर, रूढ़िवादी)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- अनुभाग 10.14 -->
+        <section id="id-1014">
+            <h2>10.14 परिदृश्य: REST API का माइग्रेशन</h2>
+
+            <h3>वर्तमान स्थिति (माइग्रेशन से पहले)</h3>
+            <p>क्लाइंट → X25519 के साथ TLS 1.3 → API सर्वर</p>
+
+            <h3>चरण 1: हाइब्रिड (आज, अनुशंसित)</h3>
+            <p>क्लाइंट → X25519MLKEM768 के साथ TLS 1.3 → API सर्वर</p>
+
+            <div class="code-block">
+                <pre><code># nginx कॉन्फ़िगरेशन
+ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
+
+# Apache कॉन्फ़िगरेशन
+SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            </div>
+
+            <h3>चरण 2: विशुद्ध रूप से पोस्ट-क्वांटम (भविष्य)</h3>
+            <p>क्लाइंट → ML-KEM-768 + ML-DSA के साथ TLS 1.3 → API सर्वर</p>
+            <p>इसे तब अपनाएं जब अधिकांश क्लाइंट मूल रूप से ML-KEM का समर्थन करें और सर्वर प्रमाणपत्र सिग्नेचर के लिए ML-DSA का उपयोग करें।</p>
+        </section>
+
+        <!-- स्रोत -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>Open Quantum Safe प्रोजेक्ट — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
+                <li>liboqs दस्तावेज़ीकरण — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
+                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
+                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
+                <li>IETF ड्राफ्ट — Hybrid key exchange in TLS 1.3</li>
+                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+            </ul>
+        </div>
+
+        <!-- अध्याय नेविगेशन -->
+        <div class="chapter-nav">
+            <a href="9.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">10 / 10</span>
+            <a href="#" class="nav-btn disabled">गाइड का अंत →</a>
+        </div>
+    </article>
+</main>
     </div>
 
-    <!-- Pie de página del sitio -->
+    <!-- साइट फुटर -->
     <footer class="site-footer">
         <div class="container">
             <div class="brand-footer">MONEOO.</div>
@@ -531,7 +678,7 @@
                 e.stopPropagation();
                 const lang = option.dataset.lang;
                 if (lang && langMap[lang]) {
-                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/10.html`;
                 }
             });
         });

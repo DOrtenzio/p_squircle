@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 6 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li class="active"><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>06 – Key Encapsulation Mechanism (KEM)</h1>
+        <p class="subtitle">De brug tussen de wiskunde van MLWE en de standaard FIPS 203</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-61">6.1 Formele definitie van KEM</a></li>
+                <li><a href="#id-62">6.2 Veiligheidseigenschappen</a></li>
+                <li><a href="#id-63">6.3 KEM vs PKE: waarom KEM's</a></li>
+                <li><a href="#id-64">6.4 Intuïtief voorbeeld: KEM van Diffie-Hellman</a></li>
+                <li><a href="#id-65">6.5 De Fujisaki-Okamoto (FO) transformatie</a></li>
+                <li><a href="#id-66">6.6 Van K-PKE (CPA) naar ML-KEM (CCA2)</a></li>
+                <li><a href="#id-67">6.7 KEM in een echt protocol: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 Generieke structuur van de KEM-stroom</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 6.1 -->
+        <section id="id-61">
+            <h2>6.1 Formele definitie van KEM</h2>
+
+            <h3>Drietal algoritmen</h3>
+            <p>Een Key Encapsulation Mechanism (KEM) is een drietal probabilistische polynomiale algoritmen:</p>
+            <div class="math-block">
+                \[
+                \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
+                \]
+            </div>
+
+            <ul>
+                <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
+                    Probabilistisch algoritme (gebruikt interne willekeur). Geen invoer.
+                    <ul>
+                        <li><code>ek</code>: encapsulation key (publieke sleutel)</li>
+                        <li><code>dk</code>: decapsulation key (private sleutel)</li>
+                    </ul>
+                </li>
+                <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
+                    Gegeven <code>ek</code>, produceert:
+                    <ul>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: geheime symmetrische sleutel (doorgaans 256 bits)</li>
+                        <li><code>c</code>: versleutelde tekst (de "capsule")</li>
+                    </ul>
+                </li>
+                <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
+                    Gegeven <code>dk</code> en <code>c</code>, herstelt <span class="math">\(K\)</span>.</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>Terminologische opmerking FIPS 203:</strong> de standaard gebruikt <code>ek</code> voor encapsulation key (niet <code>pk</code>) en <code>dk</code> voor decapsulation key (niet <code>sk</code>). Het onderscheid is intentioneel: het benadrukt dat de publieke sleutel dient om te encapsuleren, niet om willekeurige berichten te versleutelen.</p>
+            </div>
+
+            <h3>Correctheid</h3>
+            <p>Een KEM is correct als voor elk geldig sleutelpaar:</p>
+            <div class="math-block">
+                \[
+                \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
+                \]
+            </div>
+            <p>waarbij <span class="math">\(\delta\)</span> een verwaarloosbare foutkans is (doorgaans <span class="math">\(< 2^{-128}\)</span>).<br />
+            Voor ML-KEM-768: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+        </section>
+
+        <!-- Sectie 6.2 -->
+        <section id="id-62">
+            <h2>6.2 Veiligheidseigenschappen</h2>
+
+            <h3>IND-CPA (Indistinguishability under Chosen Plaintext Attack)</h3>
+
+            <div class="security-game">
+                <h4>Veiligheidsspel IND-CPA</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Uitdager</th>
+                            <th>Aanvaller <span class="math">\(\mathcal{A}\)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\(ek \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Kiest de uitdaging (impliciet in de KEM)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((c, K_b) \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Geeft <span class="math">\(b'\)</span> terug</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Voordeel:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>De KEM is IND-CPA als het voordeel verwaarloosbaar is voor elke polynomiale aanvaller. Intuïtief: de aanvaller kan de echte sleutel <span class="math">\(K\)</span> niet onderscheiden van een willekeurige, zelfs niet met de versleutelde tekst <code>c</code>.</p>
+
+            <h3>IND-CCA2 (Indistinguishability under Adaptive Chosen Ciphertext Attack)</h3>
+            <p>Zoals CPA, maar de aanvaller heeft ook toegang tot een decapsulatie-orakel:</p>
+
+            <div class="security-game">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Actie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Initialisatie</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, stuurt <span class="math">\(ek\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fase 1 (Query)</td>
+                            <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Uitdaging</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. Stuurt <span class="math">\((c^*, K_b)\)</span>.</td>
+                        </tr>
+                        <tr>
+                            <td>Fase 2 (Query)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> met <span class="math">\(c_j \neq c^*\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gissing</td>
+                            <td>Geeft <span class="math">\(b'\)</span> terug</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>IND-CCA2 is de veiligheidsstandaard die vereist is voor KEM's in reëel gebruik.</p>
+
+            <div class="note">
+                <p><strong>Waarom is CCA2 nodig?</strong> In een echt protocol (TLS, SSH) kan een actieve aanvaller gemanipuleerde versleutelde teksten sturen en de reacties van de server observeren. Zelfs in MLWE zou een aanvaller die de decapsulatie van nabijgelegen versleutelde teksten kent, informatie over het geheim kunnen extraheren. ML-KEM is IND-CCA2.</p>
+            </div>
+
+            <h3>Extra wenselijke eigenschappen</h3>
+            <ul>
+                <li><strong>Robuustheid (Robustness):</strong> moeilijk om versleutelde teksten te construeren die met twee verschillende private sleutels naar dezelfde sleutel decapsuleren.</li>
+                <li><strong>Forward secrecy:</strong> als de private sleutel <code>dk</code> in de toekomst wordt gecompromitteerd, blijven eerdere sessies veilig (vereist efemere sleutels).</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 6.3 -->
+        <section id="id-63">
+            <h2>6.3 KEM vs PKE: waarom KEM's</h2>
+
+            <h3>PKE (Public Key Encryption)</h3>
+            <p>Een PKE versleutelt willekeurige berichten: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. Het probleem is dat als het bericht <span class="math">\(m\)</span> een voorspelbare structuur heeft (kort wachtwoord, creditcardnummer), een aanvaller aanvallen met lage entropie of padding-orakel (Bleichenbacher) kan misbruiken.</p>
+
+            <h3>KEM: scheiding van rollen</h3>
+            <p>De KEM versleutelt geen gebruikersberichten. Het genereert een symmetrische sleutel met hoge entropie en encapsuleert deze:</p>
+            <div class="math-block">
+                \[
+                \text{Systeem} = \underbrace{\text{KEM}}_{\text{wisselt } K \text{ uit}} + \underbrace{\text{AES-GCM}}_{\text{versleutelt gegevens met } K}
+                \]
+            </div>
+            <p><strong>Voordelen:</strong></p>
+            <ul>
+                <li>De sleutel <span class="math">\(K\)</span> is altijd pseudo-willekeurig → geen aanvallen met lage entropie.</li>
+                <li>Er is geen complexe padding nodig voor gebruikersberichten.</li>
+                <li><span class="math">\(K\)</span> wordt gebruikt met een symmetrische versleuteling (DEM) om de werkelijke gegevens te versleutelen.</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 6.4 -->
+        <section id="id-64">
+            <h2>6.4 Intuïtief voorbeeld: KEM van Diffie-Hellman</h2>
+
+            <p>Voordat ML-KEM bestond, werd de meest gebruikte KEM gebouwd op Diffie-Hellman. Dit voorbeeld helpt de structuur te begrijpen.</p>
+
+            <p><strong>Publieke parameters:</strong> priemgetal <span class="math">\(p\)</span>, generator <span class="math">\(g\)</span> van <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alice</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(a\)</span></li>
+                        <li>Berekent <span class="math">\(A = g^a \bmod p\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Kiest geheime <span class="math">\(b\)</span></li>
+                        <li>Berekent <span class="math">\(B = g^b \bmod p\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alice berekent: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{Bob berekent: } & K = A^b \bmod p = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>Numeriek voorbeeld:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
+            <ul>
+                <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
+                <li>Bob kiest <span class="math">\(b = 7\)</span>: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>Alice decapsuleert: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 6.5 -->
+        <section id="id-65">
+            <h2>6.5 De Fujisaki-Okamoto (FO) transformatie</h2>
+
+            <h3>Het probleem: van CPA naar CCA2</h3>
+            <p>Uitgaande van een PKE die alleen CPA-veilig is, hoe bouw je een IND-CCA2 KEM? Het antwoord is de FO-transformatie.</p>
+
+            <h3>Centraal idee</h3>
+            <ul>
+                <li><strong>Deterministische versleuteling:</strong> de willekeur die bij de versleuteling wordt gebruikt, wordt deterministisch afgeleid uit het bericht via een hash. Als de versleutelde tekst wordt gewijzigd, produceert de herversleuteling iets anders.</li>
+                <li><strong>Verificatie bij ontsleuteling:</strong> in plaats van direct te ontsleutelen, wordt het ontsleutelde bericht opnieuw versleuteld en vergeleken met de ontvangen versleutelde tekst. Als ze niet overeenkomen → impliciete afwijzing.</li>
+            </ul>
+
+            <h3>Vereenvoudigd FO-schema</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
+                \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
+                & \quad \text{return } \begin{cases} K' & \text{als } c' = c \\ K_{\text{reject}} & \text{anders} \end{cases}
+                \end{aligned}
+                \]
+            </div>
+            <p>Waarbij <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> met <span class="math">\(z\)</span> een vast geheim. Deze "impliciete afwijzing" voorkomt dat de aanvaller de fouten als orakel kan gebruiken.</p>
+        </section>
+
+        <!-- Sectie 6.6 -->
+        <section id="id-66">
+            <h2>6.6 Van K-PKE (CPA) naar ML-KEM (CCA2)</h2>
+
+            <p>In ML-KEM is de tweeledige structuur:</p>
+            <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ML-KEM (IND-CCA2)
+└── K-PKE (IND-CPA) + FO-transformatie
+    └── MLWE-probleem</pre>
+
+            <h3>ML-KEM.Encaps(ek)</h3>
+            <div class="code-block">
+                <pre><code>m ← Random(32)                  // willekeurig bericht van 256 bits
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = eerste 32 bytes, r = laatste 32 bytes
+c = K-PKE.Encrypt(ek, m, r)     // deterministische versleuteling met willekeur r
+K = KDF(K̄ ‖ H(c))              // definitieve sleutel
+return (K, c)</code></pre>
+            </div>
+
+            <h3>ML-KEM.Decaps(dk, c)</h3>
+            <div class="code-block">
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = back-up geheim
+m' = K-PKE.Decrypt(dk_PKE, c)   // ontsleutelingspoging
+(K̄', r') = G(m' ‖ h)           // herberekenen
+c' = K-PKE.Encrypt(ek, m', r')  // herversleuteling ter verificatie
+als c' == c:
+    K = KDF(K̄' ‖ H(c))         // succesvolle ontsleuteling
+anders:
+    K = KDF(z ‖ H(c))           // back-up: pseudo-willekeurige sleutel
+return K</code></pre>
+            </div>
+
+            <div class="note">
+                <p><strong>Belangrijke details:</strong> De private sleutel <code>dk</code> bevat ook <code>ek</code> om de herversleuteling mogelijk te maken. De vergelijking <code>c' == c</code> moet tijdconstant worden uitgevoerd.</p>
+            </div>
+        </section>
+
+        <!-- Sectie 6.7 -->
+        <section id="id-67">
+            <h2>6.7 KEM in een echt protocol: TLS 1.3</h2>
+
+            <div class="protocol-flow tls-handshake">
+                <div class="party client">
+                    <strong>Client (Bob)</strong>
+                </div>
+                <div class="channel"></div>
+                <div class="party server">
+                    <strong>Server (Alice)</strong>
+                </div>
+
+                <div class="step">
+                    <span class="msg-right">ClientHello (ondersteunt ML-KEM-768)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">ServerHello + Certificaat + KeyShare (ek)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-right">KeyShare (c) + Finished (MAC met K)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">Finished (MAC met K)</span>
+                </div>
+            </div>
+
+            <h3>Hybride X25519 + ML-KEM</h3>
+            <p>In de praktijk gebruikt TLS 1.3 een hybride benadering:</p>
+            <div class="math-block">
+                \[
+                K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
+                \]
+            </div>
+            <p>Dit garandeert veiligheid als ten minste één van de twee schema's standhoudt. De groep <code>X25519MLKEM768</code> is al uitgerold in Chrome 131+.</p>
+        </section>
+
+        <!-- Sectie 6.8 -->
+        <section id="id-68">
+            <h2>6.8 Generieke structuur van de KEM-stroom</h2>
+
+            <div class="algorithm-steps">
+                <h3>Volledige stroom Alice (Ontvanger) / Bob (Verzender)</h3>
+                <ol>
+                    <li><strong>Alice:</strong> <code>KeyGen()</code> genereert <span class="math">\((ek, dk)\)</span>. Publiceert <span class="math">\(ek\)</span>.</li>
+                    <li><strong>Bob:</strong> Ontvangt <span class="math">\(ek\)</span>. Voert <code>Encaps(ek)</code> uit:
+                        <ul>
+                            <li>Genereert <span class="math">\(m\)</span> willekeurig</li>
+                            <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
+                            <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
+                            <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Bob:</strong> Versleutelt de gegevens met AES-256-GCM met <span class="math">\(K\)</span> en een willekeurige nonce.</li>
+                    <li><strong>Bob:</strong> Stuurt <span class="math">\((c, \text{nonce}, \text{versleutelde tekst}, \text{tag})\)</span> naar Alice.</li>
+                    <li><strong>Alice:</strong> Voert <code>Decaps(dk, c)</code> uit om <span class="math">\(K\)</span> te herstellen.</li>
+                    <li><strong>Alice:</strong> Ontsleutelt de gegevens met AES-256-GCM. Als de tag faalt, verwerpt ze het bericht.</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Dubbele bescherming:</strong> Als <code>c</code> wordt gemanipuleerd, geeft Decaps een pseudo-willekeurige sleutel terug (<span class="math">\(K_{\text{reject}}\)</span>). Zelfs als de aanvaller deze sleutel zou raden, zou de AEAD-tag van AES-GCM falen, wat de integriteit garandeert.</p>
+            </div>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
+                <li>NIST FIPS 203 (2024), Secties 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>IETF draft-ietf-tls-hybrid-design – Hybrid key exchange in TLS 1.3</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="5.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">06 / 10</span>
+            <a href="7.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/6.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rozdział 1 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax dla formuł -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Pasek narzędzi (identyczny jak w indeksie) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Szybka nawigacja">
+            <a href="index.html#featureSection">Dlaczego</a>
+            <a href="index.html#learningPath">Ścieżka nauki</a>
+            <a href="index.html#searchSection">Przewodnik</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Wybierz język">
+                    <span class="lang-current" id="langCurrent">🇵🇱 Polski</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 języków -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Włoski</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Angielski</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Francuski</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Niemiecki</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Hiszpański</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugalski</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Niderlandzki</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Rosyjski</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chiński</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japoński</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreański</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabski</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turecki</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Ukraiński</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Główny kontener z paskiem bocznym -->
+    <div class="container chapter-wrapper">
+        <!-- Pasek boczny -->
+        <aside class="chapter-sidebar">
+            <h3>Rozdziały</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Wymagania wstępne</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Symetryczna</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymetryczna</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kraty</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Bezpieczeństwo</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementacje</a></li>
+            </ul>
+        </aside>
+
+        <!-- Treść rozdziału -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – Kryptografia Symetryczna</h1>
+        <p class="subtitle">Praktyczny punkt docelowy całej ścieżki PQC</p>
+
+        <!-- Spis treści -->
+        <div class="toc">
+            <h2>Spis treści</h2>
+            <ul>
+                <li><a href="#id-11">1.1 Czym jest kryptografia symetryczna?</a></li>
+                <li><a href="#id-12">1.2 AES: Advanced Encryption Standard</a></li>
+                <li><a href="#id-13">1.3 Tryby działania</a></li>
+                <li><a href="#id-14">1.4 Uwierzytelnianie i AEAD</a></li>
+                <li><a href="#id-15">1.5 Rola w kontekście PQC</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja 1.1 -->
+        <section id="id-11">
+            <h2>1.1 Czym jest kryptografia symetryczna?</h2>
+
+            <p>W systemie kryptografii <strong>symetrycznej</strong> nadawca i odbiorca używają tego samego <strong>klucza</strong> <span class="math">\(K\)</span> do szyfrowania i deszyfrowania.</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Nadawca: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{Odbiorca: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>Główna zaleta:</strong> wydajność. AES-256 na nowoczesnym sprzęcie osiąga dziesiątki GB/s.</p>
+
+            <p><strong>Wada:</strong> potrzebny jest bezpieczny kanał do wymiany <span class="math">\(K\)</span> <em>przed</em> rozpoczęciem komunikacji. To jest dokładnie problem, który rozwiązują KEM.</p>
+
+            <h3>Bezpieczeństwo kryptografii symetrycznej vs. kwantowa</h3>
+
+            <p>Komputery kwantowe nie łamią AES. Algorytm Grovera oferuje <em>kwadratyczne</em> przyspieszenie w wyszukiwaniu klucza, ale:</p>
+            <ul>
+                <li><strong>AES-128:</strong> efektywne bezpieczeństwo 128 bitów spada do ~64 bitów → niewystarczające</li>
+                <li><strong>AES-256:</strong> efektywne bezpieczeństwo 256 bitów spada do ~128 bitów → nadal bezpieczne</li>
+            </ul>
+
+            <p>Dlatego FIPS 203 (ML-KEM) produkuje klucze o długości 256 bitów, przeznaczone do użycia z AES-256.</p>
+        </section>
+
+        <!-- Sekcja 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES: Advanced Encryption Standard</h2>
+
+            <p>AES jest <strong>szyfrem blokowym</strong>: pobiera blok 128 bitów i klucz (<span class="math">\(K\)</span>), a następnie produkuje 128 bitów zaszyfrowanego tekstu.</p>
+
+            <h3>Struktura wewnętrzna</h3>
+
+            <p>AES organizuje 128 bitów wejściowych jako macierz <span class="math">\(4 \times 4\)</span> bajtów. Następnie stosuje <span class="math">\(r\)</span> <em>rund</em> (10, 12 lub 14 w zależności od rozmiaru klucza), każda składająca się z czterech transformacji:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transformacja</th>
+                        <th>Cel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>Nieliniowa substytucja za pomocą S-Box (odporność na kryptoanalizę różnicową)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>Cykliczne przesunięcie wierszy (dyfuzja)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>Kombinacja liniowa kolumn (dyfuzja)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>XOR z podkluczem bieżącej rundy</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key schedule</h3>
+
+            <p>Oryginalny klucz (<span class="math">\(K\)</span> o długości 128, 192 lub 256 bitów) jest rozszerzany na <span class="math">\(r+1\)</span> podkluczy, po jednym dla każdej rundy.</p>
+
+            <div class="example">
+                <p>AES-128: klucz 128 bitów, 10 rund</p>
+                <p>AES-192: klucz 192 bity, 12 rund</p>
+                <p>AES-256: klucz 256 bitów, 14 rund</p>
+            </div>
+
+            <h3>Bezpieczeństwo</h3>
+
+            <p>Najlepszy znany atak na AES-128 wymaga <span class="math">\(2^{126.1}\)</span> operacji (Biryukov &amp; Khovratovich, 2009) – zasadniczo brute force.</p>
+        </section>
+
+        <!-- Sekcja 1.3 -->
+        <section id="id-13">
+            <h2>1.3 Tryby działania</h2>
+
+            <p>AES szyfruje blok 128 bitów. Ale rzeczywiste wiadomości są dłuższe. <strong>Tryby działania</strong> określają, jak AES jest stosowany wielokrotnie.</p>
+
+            <h3>ECB (Electronic Codebook) – nie używać</h3>
+
+            <p>Każdy blok jest szyfrowany niezależnie. Identyczne bloki dają identyczny tekst zaszyfrowany → traci się strukturę tekstu jawnego.</p>
+
+            <h3>CBC (Cipher Block Chaining)</h3>
+
+            <p>Każdy blok tekstu jawnego jest XOR-owany z zaszyfrowanym tekstem poprzedniego bloku przed zaszyfrowaniem. Wymaga losowego IV (Initialization Vector).</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>Bezpieczniejszy niż ECB, ale nie można go równoleglić przy szyfrowaniu.</p>
+
+            <h3>CTR (Counter Mode) – zalecany</h3>
+
+            <p>Generuje strumień klucza poprzez szyfrowanie licznika. Tekst jawny jest XOR-owany ze strumieniem klucza.</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>Można go równoleglić zarówno przy szyfrowaniu, jak i deszyfrowaniu. Przekształca AES w szyfr strumieniowy.</p>
+
+            <h3>GCM (Galois/Counter Mode) – używany w TLS 1.3</h3>
+
+            <p>Łączy CTR z MAC opartym na ciałach Galois. Zapewnia zarówno poufność <strong>jak i</strong> autentyczność.</p>
+        </section>
+
+        <!-- Sekcja 1.4 -->
+        <section id="id-14">
+            <h2>1.4 Uwierzytelnianie i AEAD</h2>
+
+            <p>Poufność nie wystarczy: atakujący mógłby zmodyfikować zaszyfrowany tekst bez wiedzy odbiorcy. Potrzebna jest <strong>autentyczność</strong>.</p>
+
+            <h3>MAC (Message Authentication Code)</h3>
+
+            <p>MAC to funkcja <span class="math">\(\text{MAC}(K, M) \to \tau\)</span>, gdzie <span class="math">\(\tau\)</span> to <em>tag autentyczności</em>. Tylko osoba znająca <span class="math">\(K\)</span> może wygenerować i zweryfikować <span class="math">\(\tau\)</span>.</p>
+
+            <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
+
+            <p>Łączy szyfrowanie i uwierzytelnianie w jednym prymitywie:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> lub <span class="math">\(\perp\)</span> (jeśli tag jest nieprawidłowy)</p>
+            </div>
+
+            <p><code>AAD</code> (Additional Authenticated Data) to dane uwierzytelniane, ale nie szyfrowane (np. nagłówki pakietów).</p>
+
+            <p><strong>AES-256-GCM</strong> to standardowy schemat AEAD używany w TLS 1.3 i jako szyfr symetryczny po KEM.</p>
+        </section>
+
+        <!-- Sekcja 1.5 -->
+        <section id="id-15">
+            <h2>1.5 Rola w kontekście PQC</h2>
+
+            <p>Kompletny ML-KEM w rzeczywistym użyciu działa w następujący sposób:</p>
+
+            <div class="sequence-diagram">
+Alicja                                Bob
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, Wiadomość) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  Wiadomość = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ Bezpieczna komunikacja         |
+            </div>
+
+            <p>Klucz <span class="math">\(K\)</span> wyprodukowany przez ML-KEM (32 bajty) nie jest używany bezpośrednio jako klucz AES, ale jest wyprowadzany za pomocą <strong>KDF (Key Derivation Function)</strong> takiej jak HKDF, aby oddzielić różne konteksty.</p>
+
+            <h3>Wymiary praktyczne (ML-KEM-768 + AES-256-GCM)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Komponent</th>
+                        <th>Rozmiar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Klucz publiczny ML-KEM</td>
+                        <td>1184 bajty</td>
+                    </tr>
+                    <tr>
+                        <td>Tekst zaszyfrowany ML-KEM</td>
+                        <td>1088 bajtów</td>
+                    </tr>
+                    <tr>
+                        <td>Wspólny sekret → klucz AES</td>
+                        <td>32 bajty</td>
+                    </tr>
+                    <tr>
+                        <td>Narzut AEAD (tag GCM)</td>
+                        <td>16 bajtów</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Źródła -->
+        <div class="sources">
+            <h2>Źródła</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Rozdziały 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Nawigacja między rozdziałami -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← Poprzedni rozdział</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">Następny rozdział →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Stopka witryny -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Darmowa biblioteka dla wszystkich. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Włoski',
+            'en': '🇬🇧 Angielski',
+            'fr': '🇫🇷 Francuski',
+            'de': '🇩🇪 Niemiecki',
+            'es': '🇪🇸 Hiszpański',
+            'pt': '🇵🇹 Portugalski',
+            'nl': '🇳🇱 Niderlandzki',
+            'ru': '🇷🇺 Rosyjski',
+            'zh': '🇨🇳 Chiński',
+            'ja': '🇯🇵 Japoński',
+            'ko': '🇰🇷 Koreański',
+            'ar': '🇸🇦 Arabski',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turecki',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Ukraiński'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

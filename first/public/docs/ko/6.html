@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>6장 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="빠른 탐색">
+            <a href="index.html#featureSection">이유</a>
+            <a href="index.html#learningPath">학습 경로</a>
+            <a href="index.html#searchSection">가이드</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="언어 선택">
+                    <span class="lang-current" id="langCurrent">🇰🇷 한국어</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>차례</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 사전 지식</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 대칭키</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 비대칭키</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> 쇼어</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 격자</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li class="active"><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 보안</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 구현</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>06 – 키 캡슐화 메커니즘 (KEM)</h1>
+        <p class="subtitle">MLWE 수학과 FIPS 203 표준 사이의 다리</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>목차</h2>
+            <ul>
+                <li><a href="#id-61">6.1 KEM의 형식적 정의</a></li>
+                <li><a href="#id-62">6.2 보안 속성</a></li>
+                <li><a href="#id-63">6.3 KEM vs PKE: KEM의 이유</a></li>
+                <li><a href="#id-64">6.4 직관적 예제: 디피-헬만으로부터의 KEM</a></li>
+                <li><a href="#id-65">6.5 후지사키-오카모토 변환 (FO)</a></li>
+                <li><a href="#id-66">6.6 K-PKE (CPA)에서 ML-KEM (CCA2)으로</a></li>
+                <li><a href="#id-67">6.7 실제 프로토콜에서의 KEM: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 KEM 흐름의 일반적 구조</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 6.1 -->
+        <section id="id-61">
+            <h2>6.1 KEM의 형식적 정의</h2>
+
+            <h3>알고리즘 삼중항</h3>
+            <p>키 캡슐화 메커니즘(KEM)은 확률적 다항식 알고리즘의 삼중항입니다:</p>
+            <div class="math-block">
+                \[
+                \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
+                \]
+            </div>
+
+            <ul>
+                <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
+                    확률적 알고리즘(내부 난수성 사용). 입력을 받지 않습니다.
+                    <ul>
+                        <li><code>ek</code>: 캡슐화 키 (공개 키)</li>
+                        <li><code>dk</code>: 역캡슐화 키 (개인 키)</li>
+                    </ul>
+                </li>
+                <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
+                    <code>ek</code>가 주어지면 다음을 생성합니다:
+                    <ul>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: 비밀 대칭 키 (일반적으로 256비트)</li>
+                        <li><code>c</code>: 암호문 ("캡슐")</li>
+                    </ul>
+                </li>
+                <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
+                    <code>dk</code>와 <code>c</code>가 주어지면 <span class="math">\(K\)</span>를 복구합니다.</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>FIPS 203 용어 참고:</strong> 표준은 <code>pk</code> 대신 <code>ek</code>(캡슐화 키), <code>sk</code> 대신 <code>dk</code>(역캡슐화 키)를 사용합니다. 이 구분은 의도적입니다: 공개 키가 임의의 메시지를 암호화하는 것이 아니라 캡슐화하는 역할임을 강조합니다.</p>
+            </div>
+
+            <h3>정확성</h3>
+            <p>KEM은 유효한 각 키 쌍에 대해 다음이 성립하면 정확합니다:</p>
+            <div class="math-block">
+                \[
+                \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
+                \]
+            </div>
+            <p>여기서 <span class="math">\(\delta\)</span>는 무시할 수 있는 오류 확률입니다(일반적으로 <span class="math">\(< 2^{-128}\)</span>).<br />
+            ML-KEM-768의 경우: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+        </section>
+
+        <!-- Section 6.2 -->
+        <section id="id-62">
+            <h2>6.2 보안 속성</h2>
+
+            <h3>IND-CPA (선택 평문 공격 아래 구별 불가능성)</h3>
+
+            <div class="security-game">
+                <h4>IND-CPA 보안 게임</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>도전자</th>
+                            <th>공격자 <span class="math">\(\mathcal{A}\)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\(ek \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>도전 선택 (KEM에서 암시적)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((c, K_b) \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><span class="math">\(b'\)</span> 반환</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>이점:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>KEM은 모든 다항식 시간 공격자에 대해 이점이 무시할 수 있으면 IND-CPA입니다. 직관적으로: 공격자는 암호문 <code>c</code>를 보더라도 실제 키 <span class="math">\(K\)</span>와 무작위 키를 구별할 수 없습니다.</p>
+
+            <h3>IND-CCA2 (적응적 선택 암호문 공격 아래 구별 불가능성)</h3>
+            <p>CPA와 같지만, 공격자는 역캡슐화 오라클에 접근할 수 있습니다:</p>
+
+            <div class="security-game">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>단계</th>
+                            <th>동작</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>초기화</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, <span class="math">\(ek\)</span> 전송</td>
+                        </tr>
+                        <tr>
+                            <td>1단계 (질의)</td>
+                            <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>도전</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>. <span class="math">\((c^*, K_b)\)</span> 전송.</td>
+                        </tr>
+                        <tr>
+                            <td>2단계 (질의)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> (단, <span class="math">\(c_j \neq c^*\)</span>)</td>
+                        </tr>
+                        <tr>
+                            <td>추측</td>
+                            <td><span class="math">\(b'\)</span> 반환</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>IND-CCA2는 실제 사용되는 KEM에 요구되는 보안 표준입니다.</p>
+
+            <div class="note">
+                <p><strong>CCA2가 필요한 이유는?</strong> 실제 프로토콜(TLS, SSH)에서 능동적 공격자는 조작된 암호문을 전송하고 서버의 응답을 관찰할 수 있습니다. MLWE에서도, 도전 암호문에 가까운 암호문의 역캡슐화를 아는 공격자는 비밀에 대한 정보를 추출할 수 있습니다. ML-KEM은 IND-CCA2입니다.</p>
+            </div>
+
+            <h3>추가 바람직한 속성</h3>
+            <ul>
+                <li><strong>강건성 (Robustness):</strong> 두 개의 다른 개인 키로 동일한 키로 역캡슐화되는 암호문을 구성하기 어려움.</li>
+                <li><strong>순방향 비밀성 (Forward secrecy):</strong> 개인 키 <code>dk</code>가 미래에 손상되더라도 과거 세션은 안전함(임시 키 필요).</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.3 -->
+        <section id="id-63">
+            <h2>6.3 KEM vs PKE: KEM의 이유</h2>
+
+            <h3>PKE (공개 키 암호화)</h3>
+            <p>PKE는 임의의 메시지를 암호화합니다: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>. 문제는 메시지 <span class="math">\(m\)</span>이 예측 가능한 구조를 가지면(짧은 암호, 카드 번호), 공격자가 낮은 엔트로피 공격이나 패딩 오라클 공격(Bleichenbacher)을 악용할 수 있다는 것입니다.</p>
+
+            <h3>KEM: 역할 분리</h3>
+            <p>KEM은 사용자 메시지를 암호화하지 않습니다. 높은 엔트로피의 대칭 키를 생성하고 캡슐화합니다:</p>
+            <div class="math-block">
+                \[
+                \text{시스템} = \underbrace{\text{KEM}}_{K \text{ 교환}} + \underbrace{\text{AES-GCM}}_{K \text{로 데이터 암호화}}
+                \]
+            </div>
+            <p><strong>장점:</strong></p>
+            <ul>
+                <li>키 <span class="math">\(K\)</span>는 항상 의사 난수 → 낮은 엔트로피 공격 없음.</li>
+                <li>사용자 메시지에 대한 복잡한 패딩이 필요 없음.</li>
+                <li><span class="math">\(K\)</span>는 실제 데이터를 암호화하기 위해 대칭 암호(DEM)와 함께 사용됨.</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.4 -->
+        <section id="id-64">
+            <h2>6.4 직관적 예제: 디피-헬만으로부터의 KEM</h2>
+
+            <p>ML-KEM 이전에 가장 많이 사용된 KEM은 디피-헬만 위에 구축되었습니다. 이 예제는 구조를 이해하는 데 도움이 됩니다.</p>
+
+            <p><strong>공개 매개변수:</strong> 소수 <span class="math">\(p\)</span>, <span class="math">\(\mathbb{Z}_p^*\)</span>의 생성자 <span class="math">\(g\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>앨리스</strong>
+                    <ol>
+                        <li>비밀 <span class="math">\(a\)</span> 선택</li>
+                        <li><span class="math">\(A = g^a \bmod p\)</span> 계산</li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>밥</strong>
+                    <ol>
+                        <li>비밀 <span class="math">\(b\)</span> 선택</li>
+                        <li><span class="math">\(B = g^b \bmod p\)</span> 계산</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{앨리스 계산: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{밥 계산: } & K = A^b \bmod p = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>수치 예제:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>.</p>
+            <ul>
+                <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
+                <li>밥이 <span class="math">\(b = 7\)</span> 선택: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>앨리스 역캡슐화: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.5 -->
+        <section id="id-65">
+            <h2>6.5 후지사키-오카모토 변환 (FO)</h2>
+
+            <h3>문제: CPA에서 CCA2로</h3>
+            <p>CPA-안전한 PKE만으로부터 IND-CCA2 KEM을 어떻게 구축할까요? 답은 FO 변환입니다.</p>
+
+            <h3>핵심 아이디어</h3>
+            <ul>
+                <li><strong>결정론적 암호화:</strong> 암호화에 사용되는 난수성은 해시를 통해 메시지에서 결정론적으로 파생됩니다. 암호문이 수정되면 재암호화 결과가 달라집니다.</li>
+                <li><strong>복호화 시 검증:</strong> 직접 복호화하는 대신, 복호화된 메시지를 재암호화하고 받은 암호문과 비교합니다. 일치하지 않으면 → 암시적 거부.</li>
+            </ul>
+
+            <h3>간략화된 FO 방식</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
+                \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
+                & \quad \text{return } \begin{cases} K' & \text{if } c' = c \\ K_{\text{reject}} & \text{otherwise} \end{cases}
+                \end{aligned}
+                \]
+            </div>
+            <p>여기서 <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> (<span class="math">\(z\)</span>는 고정 비밀). 이 "암시적 거부"는 공격자가 오류를 오라클로 사용하는 것을 방지합니다.</p>
+        </section>
+
+        <!-- Section 6.6 -->
+        <section id="id-66">
+            <h2>6.6 K-PKE (CPA)에서 ML-KEM (CCA2)으로</h2>
+
+            <p>ML-KEM에서 2단계 구조는 다음과 같습니다:</p>
+            <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ML-KEM (IND-CCA2)
+└── K-PKE (IND-CPA) + FO 변환
+    └── MLWE 문제</pre>
+
+            <h3>ML-KEM.Encaps(ek)</h3>
+            <div class="code-block">
+                <pre><code>m ← Random(32)                  // 256비트 무작위 메시지
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = 처음 32바이트, r = 마지막 32바이트
+c = K-PKE.Encrypt(ek, m, r)     // 난수성 r로 결정론적 암호화
+K = KDF(K̄ ‖ H(c))              // 최종 키
+return (K, c)</code></pre>
+            </div>
+
+            <h3>ML-KEM.Decaps(dk, c)</h3>
+            <div class="code-block">
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = 백업 비밀
+m' = K-PKE.Decrypt(dk_PKE, c)   // 복호화 시도
+(K̄', r') = G(m' ‖ h)           // 재계산
+c' = K-PKE.Encrypt(ek, m', r')  // 검증 재암호화
+if c' == c:
+    K = KDF(K̄' ‖ H(c))         // 복호화 성공
+else:
+    K = KDF(z ‖ H(c))           // 백업: 의사 난수 키
+return K</code></pre>
+            </div>
+
+            <div class="note">
+                <p><strong>중요 세부사항:</strong> 개인 키 <code>dk</code>는 재암호화를 위해 <code>ek</code>도 포함합니다. 비교 <code>c' == c</code>는 일정 시간에 실행되어야 합니다.</p>
+            </div>
+        </section>
+
+        <!-- Section 6.7 -->
+        <section id="id-67">
+            <h2>6.7 실제 프로토콜에서의 KEM: TLS 1.3</h2>
+
+            <div class="protocol-flow tls-handshake">
+                <div class="party client">
+                    <strong>클라이언트 (밥)</strong>
+                </div>
+                <div class="channel"></div>
+                <div class="party server">
+                    <strong>서버 (앨리스)</strong>
+                </div>
+
+                <div class="step">
+                    <span class="msg-right">ClientHello (ML-KEM-768 지원)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">ServerHello + 인증서 + KeyShare (ek)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-right">KeyShare (c) + Finished (K로 MAC)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">Finished (K로 MAC)</span>
+                </div>
+            </div>
+
+            <h3>하이브리드 X25519 + ML-KEM</h3>
+            <p>실제로 TLS 1.3은 하이브리드 접근법을 사용합니다:</p>
+            <div class="math-block">
+                \[
+                K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
+                \]
+            </div>
+            <p>이는 두 방식 중 적어도 하나가 안전하게 유지되면 보안을 보장합니다. <code>X25519MLKEM768</code> 그룹은 이미 Chrome 131+에 배포되었습니다.</p>
+        </section>
+
+        <!-- Section 6.8 -->
+        <section id="id-68">
+            <h2>6.8 KEM 흐름의 일반적 구조</h2>
+
+            <div class="algorithm-steps">
+                <h3>전체 흐름: 앨리스 (수신자) / 밥 (송신자)</h3>
+                <ol>
+                    <li><strong>앨리스:</strong> <code>KeyGen()</code>으로 <span class="math">\((ek, dk)\)</span> 생성. <span class="math">\(ek\)</span> 공개.</li>
+                    <li><strong>밥:</strong> <span class="math">\(ek\)</span> 수신. <code>Encaps(ek)</code> 실행:
+                        <ul>
+                            <li>무작위 <span class="math">\(m\)</span> 생성</li>
+                            <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
+                            <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
+                            <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>밥:</strong> <span class="math">\(K\)</span>와 무작위 논스로 AES-256-GCM을 사용하여 데이터 암호화.</li>
+                    <li><strong>밥:</strong> <span class="math">\((c, \text{논스}, \text{암호문}, \text{태그})\)</span>를 앨리스에게 전송.</li>
+                    <li><strong>앨리스:</strong> <code>Decaps(dk, c)</code> 실행하여 <span class="math">\(K\)</span> 복구.</li>
+                    <li><strong>앨리스:</strong> AES-256-GCM으로 데이터 복호화. 태그가 실패하면 메시지 폐기.</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>이중 보호:</strong> <code>c</code>가 조작되면 Decaps는 의사 난수 키(<span class="math">\(K_{\text{reject}}\)</span>)를 반환합니다. 공격자가 이 키를 추측하더라도 AES-GCM의 AEAD 태그가 실패하여 무결성을 보장합니다.</p>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>출처</h2>
+            <ul>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
+                <li>NIST FIPS 203 (2024), 6-7절 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>IETF draft-ietf-tls-hybrid-design – TLS 1.3의 하이브리드 키 교환</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="5.html" class="nav-btn">← 이전 장</a>
+            <span class="nav-label">06 / 10</span>
+            <a href="7.html" class="nav-btn">다음 장 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> 모두를 위한 무료 도서관. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'es';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/6.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

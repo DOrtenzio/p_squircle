@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capítulo 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax para fórmulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Barra de ferramentas (idêntica ao index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navegação rápida">
+            <a href="index.html#featureSection">Porquê</a>
+            <a href="index.html#learningPath">Percurso</a>
+            <a href="index.html#searchSection">O Guia</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Selecionar idioma">
+                    <span class="lang-current" id="langCurrent">🇵🇹 Português</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 idiomas -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contentor principal com barra lateral -->
+    <div class="container chapter-wrapper">
+        <!-- Barra lateral -->
+        <aside class="chapter-sidebar">
+            <h3>Capítulos</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Pré-requisitos</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Assimétrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Segurança</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementações</a></li>
+            </ul>
+        </aside>
+
+        <!-- Conteúdo do capítulo -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Retículos (Lattices)</h1>
+        <p class="subtitle">A estrutura matemática subjacente à criptografia pós‑quântica</p>
+
+        <!-- Índice -->
+        <div class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Definição de retículo</a></li>
+                <li><a href="#id-42">4.2 Problemas difíceis em retículos</a></li>
+                <li><a href="#id-43">4.3 De SVP a LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: variante em anéis</a></li>
+                <li><a href="#id-46">4.6 MLWE: a base do ML‑KEM</a></li>
+                <li><a href="#id-47">4.7 Segurança pós‑quântica dos retículos</a></li>
+            </ul>
+        </div>
+
+        <!-- Seção 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Definição de retículo</h2>
+
+            <h3>Definição formal</h3>
+
+            <p>Um <strong>retículo</strong> <span class="math">\(\mathcal{L}\)</span> em <span class="math">\(\mathbb{R}^m\)</span> é o conjunto de todas as combinações lineares inteiras de <span class="math">\(n\)</span> vetores linearmente independentes <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Os vetores <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> formam uma <strong>base</strong> do retículo.</p>
+
+            <h3>Intuição geométrica</h3>
+
+            <p>Em 2D, imagine uma grelha infinita de pontos. Cada ponto é alcançável pela combinação inteira (não real) de dois vetores base:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Esta é a grelha dos inteiros padrão <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>Mas a mesma grelha tem infinitas bases diferentes:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>gera o mesmo retículo. Algumas bases são "boas" (vetores curtos e quase ortogonais), outras são "más" (vetores longos e quase paralelos).</p>
+
+            <h3>Dimensão e posto</h3>
+
+            <ul>
+                <li><strong>Dimensão ambiente</strong> <span class="math">\(m\)</span>: número de coordenadas de cada vetor</li>
+                <li><strong>Posto</strong> <span class="math">\(n\)</span>: número de vetores na base</li>
+            </ul>
+
+            <p>Se <span class="math">\(n = m\)</span>: retículo de posto completo (<em>full-rank lattice</em>)</p>
+
+            <p>Em criptografia, usamos tipicamente retículos com <span class="math">\(n = m\)</span> muito grandes (256–4096).</p>
+        </section>
+
+        <!-- Seção 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Problemas difíceis em retículos</h2>
+
+            <h3>SVP – Problema do Vetor Mais Curto (Shortest Vector Problem)</h3>
+
+            <p><strong>Dado:</strong> uma base <span class="math">\(B\)</span> de um retículo <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Encontrar:</strong> o vetor não nulo mais curto em <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{encontrar } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ tal que } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>Em 2D é fácil (algoritmo de Gauss). Em alta dimensão (centenas), é <strong>NP-difícil</strong> sob certas suposições, e o melhor algoritmo conhecido requer tempo exponencial.</p>
+
+            <h3>CVP – Problema do Vetor Mais Próximo (Closest Vector Problem)</h3>
+
+            <p><strong>Dado:</strong> uma base <span class="math">\(B\)</span> de <span class="math">\(\mathcal{L}\)</span> e um ponto alvo <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (não no retículo)<br />
+            <strong>Encontrar:</strong> o ponto do retículo mais próximo de <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{encontrar } \mathbf{v} \in \mathcal{L} \text{ tal que } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP é pelo menos tão difícil quanto SVP. Está no centro da decapsulação em ML-KEM: quem conhece o segredo <span class="math">\(\mathbf{s}\)</span> pode resolver o CVP "fácil" correspondente, quem não conhece não pode.</p>
+
+            <h3>GapSVP e SIS</h3>
+
+            <p>Existem variantes aproximadas (GapSVP) e problemas relacionados (SIS – Short Integer Solution) que formam a base das provas de segurança da criptografia em retículos. Para este fim, basta saber que todos se reduzem uns aos outros, formando uma família de problemas difíceis.</p>
+        </section>
+
+        <!-- Seção 4.3 -->
+        <section id="id-43">
+            <h2>4.3 De SVP a LWE</h2>
+
+            <p>Como construir um sistema criptográfico a partir do SVP?</p>
+
+            <p>A ideia de Regev (2005): em vez de trabalhar diretamente com SVP (geometricamente intuitivo, mas incómodo de usar), define-se um problema estatístico equivalente: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>A redução de segurança demonstra que:</p>
+
+            <blockquote>
+                <p>Se se quebrar o LWE ⇒ Resolve-se o GapSVP</p>
+            </blockquote>
+
+            <p>Portanto, o LWE é <strong>pelo menos tão difícil</strong> quanto o GapSVP em alta dimensão.</p>
+        </section>
+
+        <!-- Seção 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Definição</h3>
+
+            <p>Fixados os parâmetros <span class="math">\(n\)</span> (dimensão), <span class="math">\(q\)</span> (módulo), <span class="math">\(\chi\)</span> (distribuição do ruído):</p>
+
+            <p><strong>Distribuição LWE:</strong> escolher <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> secreto. Gerar amostras:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>onde <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> uniforme, <span class="math">\(e \leftarrow \chi\)</span> pequeno.</p>
+
+            <p><strong>Problema decisionaL LWE:</strong> distinguir as amostras <span class="math">\((\mathbf{a}, b)\)</span> de pares uniformes aleatórios <span class="math">\((\mathbf{a}, u)\)</span> com <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Problema de pesquisa LWE:</strong> dado um conjunto de amostras <span class="math">\((\mathbf{a}_i, b_i)\)</span>, encontrar <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>Parâmetros do LWE</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parâmetro</th>
+                        <th>Símbolo</th>
+                        <th>Função</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dimensão</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>A segurança cresce exponencialmente com <span class="math">\(n\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Módulo</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Deve ser suficientemente grande para conter o ruído</td>
+                    </tr>
+                    <tr>
+                        <td>Distribuição do erro</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Gaussiana discreta ou binomial centrada</td>
+                    </tr>
+                    <tr>
+                        <td>Razão ruído/sinal</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Deve ser pequena, mas não demasiado</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Exemplo com n=2, q=7</h3>
+
+            <p>Segredo: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>Amostras LWE com erros pequenos em <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>O vetor a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Dado o sistema com erros, encontrar <span class="math">\(\mathbf{s}\)</span> é difícil: não se pode usar eliminação gaussiana porque os valores <span class="math">\(b_i\)</span> não são exatos.</p>
+        </section>
+
+        <!-- Seção 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: variante em anéis</h2>
+
+            <p>O LWE padrão usa vetores. <strong>Ring-LWE (RLWE)</strong> transfere as operações para o anel polinomial:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>Em RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (um polinómio, não um vetor de inteiros)</li>
+                <li><span class="math">\(a \in R_q\)</span> (amostrado uniformemente)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Vantagens do RLWE em relação ao LWE:</strong></p>
+            <ul>
+                <li>Dimensão das chaves: <span class="math">\(O(n)\)</span> em vez de <span class="math">\(O(n^2)\)</span></li>
+                <li>Velocidade: a multiplicação polinomial com NTT é <span class="math">\(O(n \log n)\)</span> em vez de <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Desvantagem:</strong> estrutura algébrica adicional → potencialmente mais vulnerável; a prova de segurança é ligeiramente mais fraca.</p>
+        </section>
+
+        <!-- Seção 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: a base do ML‑KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> é um compromisso entre LWE e RLWE: usa módulos de polinómios (matrizes de polinómios em <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>O parâmetro <span class="math">\(k\)</span> é a <strong>dimensão do módulo</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> para ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> para ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> para ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Porquê MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Esquema</th>
+                        <th>Dimensão das chaves</th>
+                        <th>Velocidade</th>
+                        <th>Segurança</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → grande</td>
+                        <td>lento</td>
+                        <td>mais conservadora</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → pequena</td>
+                        <td>rápido</td>
+                        <td>estrutura extra</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → média</td>
+                        <td>rápido</td>
+                        <td>equilibrada</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>O MLWE permite escalar a segurança variando <span class="math">\(k\)</span> sem alterar <span class="math">\(n\)</span>, mantendo as otimizações da estrutura do anel.</p>
+        </section>
+
+        <!-- Seção 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Segurança pós‑quântica dos retículos</h2>
+
+            <h3>Melhor algoritmo clássico: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>O algoritmo BKZ e as suas variantes (BKZ 2.0, G6K) são os melhores algoritmos clássicos para atacar retículos. A sua complexidade para ML-KEM-768 é estimada em <span class="math">\(> 2^{178}\)</span> operações.</p>
+
+            <h3>Impacto dos computadores quânticos</h3>
+
+            <p>Os melhores algoritmos quânticos para atacar MLWE (incluindo abordagens com QRAM) oferecem uma aceleração modesta — no máximo quadrática, mantendo a dificuldade do problema em regime exponencial.</p>
+
+            <p>Isto contrasta fortemente com Shor, que oferece uma aceleração exponencial na fatorização e no DLP.</p>
+
+            <h3>Porque é que o MLWE não tem um "algoritmo de Shor"</h3>
+
+            <p>O MLWE não tem a estrutura de grupo abeliano que Shor explora. O problema é fundamentalmente diferente: não é uma questão de encontrar periodicidade numa função, mas de encontrar um vetor curto num retículo de alta dimensão — um problema geométrico para o qual não é conhecida nenhuma técnica quântica de aceleração exponencial.</p>
+        </section>
+
+        <!-- Fontes -->
+        <div class="sources">
+            <h2>Fontes</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Capítulo 17</li>
+            </ul>
+        </div>
+
+        <!-- Navegação entre capítulos -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Capítulo anterior</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Próximo capítulo →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Rodapé do site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pt';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

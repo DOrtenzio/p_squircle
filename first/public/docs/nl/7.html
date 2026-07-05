@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 7 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT (Number Theoretic Transform)</h1>
+        <p class="subtitle">De motor die ML-KEM praktisch bruikbaar maakt</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-71">7.1 Het probleem: polynomen vermenigvuldigen</a></li>
+                <li><a href="#id-72">7.2 Fourier-transformaties en DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT in de modulaire wereld</a></li>
+                <li><a href="#id-74">7.4 NTT in ML-KEM</a></li>
+                <li><a href="#id-75">7.5 Vereenvoudigd numeriek voorbeeld</a></li>
+                <li><a href="#id-76">7.6 Implementatie</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 7.1 -->
+        <section id="id-71">
+            <h2>7.1 Het probleem: polynomen vermenigvuldigen</h2>
+
+            <p>In ML-KEM betreffen de fundamentele bewerkingen vermenigvuldigingen van polynomen in de ring <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+
+            <h3>Naïeve vermenigvuldiging</h3>
+            <p>Twee polynomen van graad <span class="math">\(n-1\)</span> worden vermenigvuldigd met het schoolalgoritme in complexiteit <span class="math">\(O(n^2)\)</span>.</p>
+
+            <ul>
+                <li>Voor <span class="math">\(n = 256\)</span>: ongeveer <span class="math">\(256^2 = 65536\)</span> vermenigvuldigingen per product.</li>
+                <li>In ML-KEM-768 (<span class="math">\(k=3\)</span>) vereist één enkele <code>Encaps</code>-bewerking tientallen polynoomproducten → miljoenen vermenigvuldigingen met de naïeve methode.</li>
+            </ul>
+
+            <h3>Met NTT</h3>
+            <p>De complexiteit daalt naar <span class="math">\(O(n \log n)\)</span>:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ bewerkingen per product}
+                \]
+            </div>
+            <p><strong>Versnelling:</strong> ~32×. In geoptimaliseerde hardware duurt ML-KEM-768 minder dan 1 ms.</p>
+        </section>
+
+        <!-- Sectie 7.2 -->
+        <section id="id-72">
+            <h2>7.2 Fourier-transformaties en DFT</h2>
+
+            <h3>De convolutiestelling</h3>
+            <p>De Fourier-transformatie zet een convolutie (zoals polynoomvermenigvuldiging) om in een puntsgewijs product:</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>Procedure:</strong></p>
+            <ol>
+                <li>Bereken <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> en <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>Vermenigvuldig puntsgewijs: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Voer de inverse transformatie uit: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>Als DFT en DFT<sup>-1</sup> <span class="math">\(O(n \log n)\)</span> kosten (via FFT), dan kost de hele vermenigvuldiging <span class="math">\(O(n \log n)\)</span>.</p>
+
+            <h3>Fast Fourier Transform (FFT)</h3>
+            <p>Het Cooley-Tukey-algoritme (1965) berekent de DFT door gebruik te maken van de recursieve structuur:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{even}}], \; \text{DFT}[f_{\text{oneven}}]\right) \text{ gecombineerd met twiddle-factoren}
+                \]
+            </div>
+            <p><strong>Het probleem:</strong> De standaard FFT gebruikt complexe getallen (drijvende komma), wat afrondingsfouten en niet-constante tijden introduceert, waardoor het ongeschikt is voor cryptografie.</p>
+        </section>
+
+        <!-- Sectie 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: DFT in de modulaire wereld</h2>
+
+            <h3>Het idee</h3>
+            <p>De NTT (Number Theoretic Transform) is de DFT toegepast op <span class="math">\(\mathbb{Z}_q\)</span> in plaats van <span class="math">\(\mathbb{C}\)</span>. In plaats van complexe eenheidswortels <span class="math">\(e^{2\pi i k/n}\)</span> worden primitieve eenheidswortels in <span class="math">\(\mathbb{Z}_q\)</span> gebruikt.</p>
+
+            <h3>Primitieve eenheidswortels modulo q</h3>
+            <p>Een element <span class="math">\(\omega \in \mathbb{Z}_q\)</span> is een primitieve <span class="math">\(n\)</span>-de eenheidswortel als:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{en} \quad \omega^k \not\equiv 1 \pmod{q} \text{ voor } 0 < k < n
+                \]
+            </div>
+            <p>Voorwaarde: <span class="math">\(n \mid (q-1)\)</span> (d.w.z. <span class="math">\(n\)</span> moet <span class="math">\(q-1\)</span> delen).</p>
+
+            <p><strong>In ML-KEM:</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>Controle: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Er bestaan dus 256e eenheidswortels modulo 3329.</li>
+                <li>De in FIPS 203 gebruikte primitieve wortel: <span class="math">\(\omega = 17\)</span> (aangezien <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, is de voor negacyclische NTT gebruikte wortel <span class="math">\(\zeta = 17\)</span>).</li>
+            </ul>
+
+            <h3>Definitie NTT</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>Inverse NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>waarbij <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
+
+            <h3>Belangrijke eigenschap</h3>
+            <ul>
+                <li><strong>Exact:</strong> geen afrondingsfouten, alles in <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>Efficiënt:</strong> <span class="math">\(O(n \log n)\)</span> zoals FFT</li>
+                <li><strong>Tijdconstant:</strong> implementeerbaar zonder vertakkingen op geheime gegevens (bestand tegen nevenkanaalaanvallen)</li>
+            </ul>
+        </section>
+
+        <!-- Sectie 7.4 -->
+        <section id="id-74">
+            <h2>7.4 NTT in ML-KEM</h2>
+
+            <h3>Negacyclische NTT</h3>
+            <p>In ML-KEM is de reductie niet modulo <span class="math">\(X^n - 1\)</span> (cyclisch), maar modulo <span class="math">\(X^n + 1\)</span> (negacyclisch). Bij de negacyclische convolutie veranderen de "ingepakte" termen van teken. Dit vereist een variant van de klassieke NTT met aangepaste twiddle-factoren.</p>
+
+            <p>De NTT in FIPS 203 past een preventieve pre-twisting toe met machten van <span class="math">\(\zeta = 17\)</span>:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{vóór de klassieke NTT}
+                \]
+            </div>
+
+            <h3>ML-KEM-bewerkingen in het NTT-domein</h3>
+            <p>Eenmaal getransformeerd, bevinden de polynomen zich in het NTT-domein. De bewerkingen worden elementair:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bewerking</th>
+                        <th>In het NTT-domein</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vermenigvuldiging <span class="math">\(f \cdot g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span> voor elke <span class="math">\(i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Optelling <span class="math">\(f + g\)</span></td>
+                        <td><span class="math">\(\hat{f}_i + \hat{g}_i\)</span> voor elke <span class="math">\(i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Matrix-vector product <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> producten en <span class="math">\(k^2\)</span> puntsgewijze optellingen</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>De publieke sleutel <span class="math">\(A\)</span> wordt gegenereerd en opgeslagen in het NTT-domein, waardoor de NTT niet opnieuw hoeft te worden berekend.</p>
+
+            <h3>Volledige KeyGen-stroom</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+seed
+  │
+  ├──► SHAKE128 ──► A_hat (al in NTT)
+  │
+  └──► Binomiale bemonstering ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          Publieke sleutel (t_hat)
+                </pre>
+            </div>
+            <p>De uitvoer <code>t_hat</code> is de publieke sleutel (al in NTT). De inverse NTT voor <span class="math">\(t\)</span> wordt vermeden.</p>
+        </section>
+
+        <!-- Sectie 7.5 -->
+        <section id="id-75">
+            <h2>7.5 Vereenvoudigd numeriek voorbeeld</h2>
+
+            <p>We gebruiken <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (4e eenheidswortel modulo 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+
+            <p><strong>Polynomen:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>NTT van f:</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>NTT van g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. Voor <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; voor <span class="math">\(i \neq 0\)</span>: som van wortels <span class="math">\(= 0\)</span>.</p>
+
+            <p><strong>Puntsgewijs product:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>INTT van <span class="math">\(\hat{h}\)</span>:</strong> geeft het product <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
+
+            <blockquote>
+                <p><strong>Opmerking:</strong> dit voorbeeld gebruikt reductie modulo <span class="math">\(X^4-1\)</span> (cyclisch). ML-KEM gebruikt <span class="math">\(X^n+1\)</span> (negacyclisch) met de in sectie 7.4 beschreven variant.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sectie 7.6 -->
+        <section id="id-76">
+            <h2>7.6 Implementatie</h2>
+
+            <h3>Pseudocode Cooley-Tukey voor NTT</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    Iteratieve NTT in-place (Cooley-Tukey).
+    f: lijst van n coëfficiënten in Z_q
+    q: priemmodulus
+    omega: primitieve n-de eenheidswortel mod q
+    """
+    n = len(f)
+    # bit-reversal permutatie
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # vlinderoperaties (butterfly)
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>Referentie-implementatie</h3>
+            <p>FIPS 203 specificeert de exacte implementatie van NTT en de tabel met vooraf berekende wortels <span class="math">\(\zeta^{br(i)}\)</span> (waarbij <span class="math">\(br\)</span> de bit-reversal permutatie is).</p>
+
+            <p>Geoptimaliseerde implementaties in assembler/SIMD zijn beschikbaar in:</p>
+            <ul>
+                <li><code>liboqs</code> (C met AVX2)</li>
+                <li><code>pqclean</code> (draagbare C)</li>
+                <li><code>kyber</code> referentie-implementatie (C)</li>
+            </ul>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), Secties 4.3 en 5 – definitie NTT en bewerkingen in <span class="math">\(R_q\)</span></li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Sectie 6 (NTT-implementatie)</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

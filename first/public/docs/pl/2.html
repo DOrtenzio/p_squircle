@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rozdział 2 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax dla formuł -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Pasek narzędzi (identyczny jak w indeksie) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Szybka nawigacja">
+            <a href="index.html#featureSection">Dlaczego</a>
+            <a href="index.html#learningPath">Ścieżka nauki</a>
+            <a href="index.html#searchSection">Przewodnik</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Wybierz język">
+                    <span class="lang-current" id="langCurrent">🇵🇱 Polski</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 języków -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Włoski</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Angielski</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Francuski</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Niemiecki</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Hiszpański</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugalski</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Niderlandzki</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Rosyjski</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chiński</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japoński</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreański</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabski</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turecki</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Ukraiński</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Główny kontener z paskiem bocznym -->
+    <div class="container chapter-wrapper">
+        <!-- Pasek boczny -->
+        <aside class="chapter-sidebar">
+            <h3>Rozdziały</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Wymagania wstępne</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symetryczna</a></li>
+                <li class="active"><a href="2.html"><span class="chapter-number">02</span> Asymetryczna</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kraty</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Bezpieczeństwo</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementacje</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>02 – Kryptografia Asymetryczna</h1>
+        <p class="subtitle">Podstawa bezpieczeństwa klasycznego i jego granica kwantowa</p>
+
+        <!-- Spis treści -->
+        <div class="toc">
+            <h2>Spis treści</h2>
+            <ul>
+                <li><a href="#id-21">2.1 Problem wymiany kluczy</a></li>
+                <li><a href="#id-22">2.2 RSA</a></li>
+                <li><a href="#id-23">2.3 Diffie-Hellman</a></li>
+                <li><a href="#id-24">2.4 Kryptografia na krzywych eliptycznych (ECC)</a></li>
+                <li><a href="#id-25">2.5 Bezpieczeństwo klasyczne i ograniczenia kwantowe</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja 2.1 -->
+        <section id="id-21">
+            <h2>2.1 Problem wymiany kluczy</h2>
+
+            <p>Alicja chce bezpiecznie komunikować się z Bobem przez kanał publiczny. Aby użyć AES, potrzebny jest wspólny klucz. Jak go ustalić bez wiedzy Ewy (która wszystko podsłuchuje)?</p>
+
+            <p>Problem ten nie miał rozwiązania przez wieki. Odpowiedź nadeszła w 1976 roku wraz z <strong>Diffiem i Hellmanem</strong>, a w 1977 roku z <strong>Rivestem, Shamirem i Adlemanem (RSA)</strong>.</p>
+
+            <p>Kluczowa idea: istnieją operacje matematyczne, które są <strong>łatwe w jednym kierunku, a trudne w drugim</strong>.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Łatwa operacja</th>
+                        <th>Trudna operacja</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mnożenie dwóch dużych liczb pierwszych: <span class="math">\(p \cdot q = n\)</span></td>
+                        <td>Rozkład <span class="math">\(n\)</span> na czynniki w celu znalezienia <span class="math">\(p\)</span> i <span class="math">\(q\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Obliczenie <span class="math">\(g^x \bmod p\)</span></td>
+                        <td>Znalezienie <span class="math">\(x\)</span> mając <span class="math">\(g^x \bmod p\)</span> (logarytm dyskretny)</td>
+                    </tr>
+                    <tr>
+                        <td>Dodawanie punktu na krzywej eliptycznej <span class="math">\(k\)</span> razy: <span class="math">\(kP\)</span></td>
+                        <td>Znalezienie <span class="math">\(k\)</span> mając <span class="math">\(kP\)</span> (ECDLP)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sekcja 2.2 -->
+        <section id="id-22">
+            <h2>2.2 RSA</h2>
+
+            <h3>Generowanie kluczy</h3>
+            <ol>
+                <li>Wybierz dwie duże liczby pierwsze <span class="math">\(p\)</span> i <span class="math">\(q\)</span> (zazwyczaj po 2048+ bitów każda)</li>
+                <li>Oblicz <span class="math">\(n = p \cdot q\)</span></li>
+                <li>Oblicz <span class="math">\(\phi(n) = (p-1)(q-1)\)</span></li>
+                <li>Wybierz <span class="math">\(e\)</span> takie, że <span class="math">\(\gcd(e, \phi(n)) = 1\)</span> (zazwyczaj <span class="math">\(e = 65537\)</span>)</li>
+                <li>Oblicz <span class="math">\(d = e^{-1} \bmod \phi(n)\)</span></li>
+            </ol>
+
+            <p><strong>Klucz publiczny:</strong> <span class="math">\((n, e)\)</span><br />
+            <strong>Klucz prywatny:</strong> <span class="math">\((n, d)\)</span><br />
+            <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, <span class="math">\(\phi(n)\)</span> muszą zostać zniszczone.</p>
+
+            <h3>Szyfrowanie i deszyfrowanie</h3>
+            <div class="math-block">
+                \[
+                C = M^e \bmod n
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                M = C^d \bmod n
+                \]
+            </div>
+            <p><strong>Dlaczego to działa:</strong> z twierdzenia Eulera, <span class="math">\(M^{\phi(n)} \equiv 1 \pmod{n}\)</span>, zatem <span class="math">\(M^{ed} = M^{1 + k\phi(n)} \equiv M \pmod{n}\)</span>.</p>
+
+            <h3>Przykład liczbowy (z małymi liczbami, tylko dla celów dydaktycznych)</h3>
+            <p><span class="math">\(p = 61, \quad q = 53, \quad n = 3233\)</span></p>
+            <p><span class="math">\(\phi(n) = 60 \cdot 52 = 3120\)</span></p>
+            <p><span class="math">\(e = 17, \quad d = 2753 \quad \text{(ponieważ } 17 \cdot 2753 \equiv 1 \pmod{3120}\text{)}\)</span></p>
+            <p>Szyfrujemy <span class="math">\(M = 65\)</span>:</p>
+            <p><span class="math">\(C = 65^{17} \bmod 3233 = 2790\)</span></p>
+            <p>Deszyfrujemy:</p>
+            <p><span class="math">\(M = 2790^{2753} \bmod 3233 = 65 \quad \checkmark\)</span></p>
+
+            <h3>RSA jako KEM</h3>
+            <p>RSA-KEM (uproszczony):</p>
+            <ol>
+                <li>Bob generuje losowe <span class="math">\(r \leftarrow \{1, \ldots, n-1\}\)</span></li>
+                <li><span class="math">\(C = r^e \bmod n\)</span></li>
+                <li><span class="math">\(K = H(r)\)</span> (klucz symetryczny)</li>
+                <li>Wysyła <span class="math">\(C\)</span> do Alicji</li>
+                <li>Alicja oblicza <span class="math">\(r = C^d \bmod n\)</span>, a następnie <span class="math">\(K = H(r)\)</span></li>
+            </ol>
+        </section>
+
+        <!-- Sekcja 2.3 -->
+        <section id="id-23">
+            <h2>2.3 Diffie-Hellman (DH)</h2>
+
+            <h3>Protokół</h3>
+            <p>Parametry publiczne: duża liczba pierwsza <span class="math">\(p\)</span> i generator <span class="math">\(g\)</span> grupy <span class="math">\(\mathbb{Z}_p^*\)</span>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alicja</strong>
+                    <ol>
+                        <li>Wybiera tajne <span class="math">\(a\)</span></li>
+                        <li>Oblicza <span class="math">\(A = g^a \bmod p\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Wybiera tajne <span class="math">\(b\)</span></li>
+                        <li>Oblicza <span class="math">\(B = g^b \bmod p\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alicja oblicza: } & K = B^a \bmod p = (g^b)^a = g^{ab} \bmod p \\
+                \text{Bob oblicza: } & K = A^b \bmod p = (g^a)^b = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>Wynik:</strong> Obie strony dzielą ten sam tajny klucz <span class="math">\(K\)</span>. Ewa, która widzi tylko <span class="math">\(A\)</span> i <span class="math">\(B\)</span>, nie może obliczyć <span class="math">\(K\)</span> bez rozwiązania problemu logarytmu dyskretnego.</p>
+        </section>
+
+        <!-- Sekcja 2.4 -->
+        <section id="id-24">
+            <h2>2.4 Kryptografia na krzywych eliptycznych (ECDH)</h2>
+
+            <p>ECDH jest odpowiednikiem DH na krzywych eliptycznych. Jest używany w TLS 1.3 z krzywą <strong>X25519</strong>.</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>Alicja</strong>
+                    <ol>
+                        <li>Wybiera tajne <span class="math">\(a\)</span></li>
+                        <li>Oblicza <span class="math">\(A = a \cdot G\)</span></li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>Bob</strong>
+                    <ol>
+                        <li>Wybiera tajne <span class="math">\(b\)</span></li>
+                        <li>Oblicza <span class="math">\(B = b \cdot G\)</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Alicja oblicza: } & K = a \cdot B = a(b \cdot G) = ab \cdot G \\
+                \text{Bob oblicza: } & K = b \cdot A = b(a \cdot G) = ba \cdot G
+                \end{aligned}
+                \]
+            </div>
+
+            <p>Gdzie <span class="math">\(G\)</span> jest punktem generatora krzywej. Bezpieczeństwo opiera się na trudności ECDLP (Elliptic Curve Discrete Logarithm Problem).</p>
+
+            <h3>Czym są krzywe eliptyczne</h3>
+            <p><strong>Krzywa eliptyczna</strong> nad <span class="math">\(\mathbb{Z}_p\)</span> to zbiór punktów <span class="math">\((x, y)\)</span> spełniających:</p>
+            <div class="math-block">
+                \[
+                y^2 \equiv x^3 + ax + b \pmod{p}
+                \]
+            </div>
+            <p>plus specjalny punkt <span class="math">\(\mathcal{O}\)</span> zwany <em>punktem w nieskończoności</em>.</p>
+            <p>Na tych punktach zdefiniowano operację <em>dodawania</em> z własnościami grupy.</p>
+
+            <h3>Mnożenie skalarne</h3>
+            <p>Mając dodawanie punktów, definiuje się <strong>mnożenie skalarne</strong>:</p>
+            <p><span class="math">\(kP = P + P + \cdots + P \quad (k \text{ razy})\)</span></p>
+            <p>Obliczenie <span class="math">\(kP\)</span> z <span class="math">\(P\)</span> i <span class="math">\(k\)</span> jest łatwe (<span class="math">\(O(\log k)\)</span> operacji). Problem odwrotny – znalezienie <span class="math">\(k\)</span> mając <span class="math">\(P\)</span> i <span class="math">\(kP\)</span> – to <strong>Problem Logarytmu Dyskretnego na Krzywych Eliptycznych (ECDLP)</strong>, który jest obliczeniowo trudny.</p>
+
+            <h3>Zalety ECC w porównaniu z DH/RSA</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Równoważne bezpieczeństwo</th>
+                        <th>RSA/DH (bity n/p)</th>
+                        <th>ECC (bity klucza)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>80 bitów</td>
+                        <td>1024</td>
+                        <td>160</td>
+                    </tr>
+                    <tr>
+                        <td>128 bitów</td>
+                        <td>3072</td>
+                        <td>256</td>
+                    </tr>
+                    <tr>
+                        <td>256 bitów</td>
+                        <td>15360</td>
+                        <td>512</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ECC oferuje <strong>znacznie mniejsze klucze</strong> przy tym samym poziomie bezpieczeństwa → bardziej wydajny.</p>
+        </section>
+
+        <!-- Sekcja 2.5 -->
+        <section id="id-25">
+            <h2>2.5 Bezpieczeństwo klasyczne i ograniczenia kwantowe</h2>
+
+            <h3>Przeciw komputerom klasycznym</h3>
+            <p>Problemy, na których opierają się RSA i ECC, są <strong>subwykładnicze</strong> (nie czysto wykładnicze) dla komputerów klasycznych.</p>
+            <p>Najlepszym klasycznym algorytmem faktoryzacji jest <strong>General Number Field Sieve (GNFS)</strong>:</p>
+            <div class="math-block">
+                \[
+                O\!\left(\exp\!\left(\left(\frac{64}{9}\right)^{1/3} (\ln n)^{1/3} (\ln \ln n)^{2/3}\right)\right)
+                \]
+            </div>
+            <p>Dla <span class="math">\(n\)</span> o długości 2048 bitów wymaga to astronomicznie długiego czasu → w praktyce bezpieczne.</p>
+
+            <h3>Przeciw komputerom kwantowym: algorytm Shora</h3>
+            <p>W 1994 roku Peter Shor wykazał, że komputer kwantowy może:</p>
+            <ul>
+                <li><strong>Rozłożyć na czynniki</strong> <span class="math">\(n\)</span> w czasie <span class="math">\(O((\log n)^3)\)</span></li>
+                <li><strong>Rozwiązać DLP</strong> w czasie <span class="math">\(O((\log p)^3)\)</span></li>
+                <li><strong>Rozwiązać ECDLP</strong> w czasie <span class="math">\(O((\log p)^3)\)</span></li>
+            </ul>
+            <p>Komputer kwantowy z wystarczającą liczbą kubitów złamałby RSA-2048 w <strong>godziny lub dni</strong>.</p>
+            <blockquote>
+                <p>Szczegółowa analiza algorytmu Shora znajduje się w pliku <a href="3.html">03 – Algorytm Shora</a>.</p>
+            </blockquote>
+
+            <h3>Odpowiedź: kryptografia post-kwantowa</h3>
+            <p>Aby nadal mieć bezpieczną kryptografię asymetryczną w erze kwantowej, potrzebne są problemy matematyczne, dla których <strong>nie są znane</strong> wydajne algorytmy kwantowe.</p>
+            <p>Problemy na kratach (ang. lattices), na których opiera się ML-KEM, spełniają to wymaganie: najlepsze znane algorytmy kwantowe oferują co najwyżej skromne przyspieszenie w porównaniu z algorytmami klasycznymi.</p>
+        </section>
+
+        <!-- Źródła -->
+        <div class="sources">
+            <h2>Źródła</h2>
+            <ul>
+                <li>Rivest, R., Shamir, A., Adleman, L. (1978) – <em>A Method for Obtaining Digital Signatures and Public-Key Cryptosystems</em></li>
+                <li>Diffie, W., Hellman, M. (1976) – <em>New Directions in Cryptography</em></li>
+                <li>Miller, V. (1985) – <em>Use of Elliptic Curves in Cryptography</em></li>
+                <li>Bernstein, D.J. (2006) – <em>Curve25519: new Diffie-Hellman speed records</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Rozdziały 10–12)</li>
+            </ul>
+        </div>
+
+        <!-- Nawigacja między rozdziałami -->
+        <div class="chapter-nav">
+            <a href="1.html" class="nav-btn">← Poprzedni rozdział</a>
+            <span class="nav-label">02 / 10</span>
+            <a href="3.html" class="nav-btn">Następny rozdział →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Stopka witryny -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Darmowa biblioteka dla wszystkich. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Włoski',
+            'en': '🇬🇧 Angielski',
+            'fr': '🇫🇷 Francuski',
+            'de': '🇩🇪 Niemiecki',
+            'es': '🇪🇸 Hiszpański',
+            'pt': '🇵🇹 Portugalski',
+            'nl': '🇳🇱 Niderlandzki',
+            'ru': '🇷🇺 Rosyjski',
+            'zh': '🇨🇳 Chiński',
+            'ja': '🇯🇵 Japoński',
+            'ko': '🇰🇷 Koreański',
+            'ar': '🇸🇦 Arabski',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turecki',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Ukraiński'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'pl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/2.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

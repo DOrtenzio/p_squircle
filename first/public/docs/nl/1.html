@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 1 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <!-- Hoofdstukinhoud -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – Symmetrische Cryptografie</h1>
+        <p class="subtitle">Het praktische eindpunt van de volledige PQC-reis</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-11">1.1 Wat is symmetrische cryptografie?</a></li>
+                <li><a href="#id-12">1.2 AES: Advanced Encryption Standard</a></li>
+                <li><a href="#id-13">1.3 Modussen van operatie</a></li>
+                <li><a href="#id-14">1.4 Authenticatie en AEAD</a></li>
+                <li><a href="#id-15">1.5 Rol in de PQC-context</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 1.1 -->
+        <section id="id-11">
+            <h2>1.1 Wat is symmetrische cryptografie?</h2>
+
+            <p>In een <strong>symmetrisch</strong> cryptosysteem gebruiken de zender en de ontvanger de <strong>zelfde sleutel</strong> <span class="math">\(K\)</span> om te versleutelen en te ontsleutelen.</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Zender: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{Ontvanger: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>Belangrijkste voordeel:</strong> efficiëntie. AES-256 op moderne hardware haalt tientallen GB/s.</p>
+
+            <p><strong>Nadeel:</strong> er is een veilig kanaal nodig om <span class="math">\(K\)</span> <em>vooraf</em> uit te wisselen. Dit is precies het probleem dat KEM's oplossen.</p>
+
+            <h3>Veiligheid van symmetrische cryptografie versus kwantum</h3>
+
+            <p>Kwantumcomputers breken AES niet. Het algoritme van Grover biedt een <em>kwadratische</em> versnelling bij het zoeken naar de sleutel, maar:</p>
+            <ul>
+                <li><strong>AES-128:</strong> effectieve veiligheid van 128 bits daalt naar ~64 bits → onvoldoende</li>
+                <li><strong>AES-256:</strong> effectieve veiligheid van 256 bits daalt naar ~128 bits → nog steeds veilig</li>
+            </ul>
+
+            <p>Daarom produceert FIPS 203 (ML-KEM) sleutels van 256 bits, bedoeld voor gebruik met AES-256.</p>
+        </section>
+
+        <!-- Sectie 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES: Advanced Encryption Standard</h2>
+
+            <p>AES is een <strong>blokversleuteling</strong>: het neemt een blok van 128 bits en een sleutel (<span class="math">\(K\)</span>), en produceert 128 bits aan versleutelde tekst.</p>
+
+            <h3>Interne structuur</h3>
+
+            <p>AES organiseert de 128 ingangsbits als een <span class="math">\(4 \times 4\)</span> matrix van bytes. Vervolgens past het <span class="math">\(r\)</span> <em>rondes</em> toe (10, 12 of 14, afhankelijk van de sleutelgrootte), elk bestaande uit vier transformaties:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transformatie</th>
+                        <th>Doel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>Niet-lineaire substitutie via S-Box (bestand tegen differentiële cryptanalyse)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>Cyclische rotatie van rijen (diffusie)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>Lineaire combinatie van kolommen (diffusie)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>XOR met de subsleutel van de huidige ronde</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key schedule</h3>
+
+            <p>De oorspronkelijke sleutel (<span class="math">\(K\)</span> van 128, 192 of 256 bits) wordt uitgebreid tot <span class="math">\(r+1\)</span> subsleutels, één voor elke ronde.</p>
+
+            <div class="example">
+                <p>AES-128: sleutel 128 bits, 10 rondes</p>
+                <p>AES-192: sleutel 192 bits, 12 rondes</p>
+                <p>AES-256: sleutel 256 bits, 14 rondes</p>
+            </div>
+
+            <h3>Veiligheid</h3>
+
+            <p>De beste bekende aanval op AES-128 vereist <span class="math">\(2^{126.1}\)</span> bewerkingen (Biryukov &amp; Khovratovich, 2009) – in wezen brute kracht.</p>
+        </section>
+
+        <!-- Sectie 1.3 -->
+        <section id="id-13">
+            <h2>1.3 Modussen van operatie</h2>
+
+            <p>AES versleutelt een blok van 128 bits. Maar echte berichten zijn langer. De <strong>modussen van operatie</strong> bepalen hoe AES herhaaldelijk wordt toegepast.</p>
+
+            <h3>ECB (Electronic Codebook) – niet gebruiken</h3>
+
+            <p>Elk blok wordt onafhankelijk versleuteld. Identieke blokken produceren identieke versleutelde tekst → de structuur van de platte tekst gaat verloren.</p>
+
+            <h3>CBC (Cipher Block Chaining)</h3>
+
+            <p>Elk platte-tekstblok wordt ge-XORd met de versleutelde tekst van het vorige blok voordat het wordt versleuteld. Vereist een willekeurige IV (Initialization Vector).</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>Veiliger dan ECB, maar niet paralleliseerbaar bij versleuteling.</p>
+
+            <h3>CTR (Counter Mode) – aanbevolen</h3>
+
+            <p>Genereert een sleutelstroom door een oplopende teller te versleutelen. De platte tekst wordt ge-XORd met de sleutelstroom.</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>Paralleliseerbaar bij zowel versleuteling als ontsleuteling. Maakt van AES een stroomversleuteling.</p>
+
+            <h3>GCM (Galois/Counter Mode) – gebruikt in TLS 1.3</h3>
+
+            <p>Combineert CTR met een MAC gebaseerd op Galois-velden. Biedt zowel vertrouwelijkheid <strong>als</strong> authenticiteit.</p>
+        </section>
+
+        <!-- Sectie 1.4 -->
+        <section id="id-14">
+            <h2>1.4 Authenticatie en AEAD</h2>
+
+            <p>Vertrouwelijkheid is niet voldoende: een aanvaller zou de versleutelde tekst kunnen wijzigen zonder dat de ontvanger het merkt. Er is <strong>authenticiteit</strong> nodig.</p>
+
+            <h3>MAC (Message Authentication Code)</h3>
+
+            <p>Een MAC is een functie <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> waarbij <span class="math">\(\tau\)</span> de <em>authenticiteitstag</em> is. Alleen wie <span class="math">\(K\)</span> kent, kan <span class="math">\(\tau\)</span> genereren en verifiëren.</p>
+
+            <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
+
+            <p>Combineert versleuteling en authenticatie in één primitief:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> of <span class="math">\(\perp\)</span> (als de tag ongeldig is)</p>
+            </div>
+
+            <p><code>AAD</code> (Additional Authenticated Data) zijn gegevens die worden geverifieerd maar niet versleuteld (bijv. pakketheaders).</p>
+
+            <p><strong>AES-256-GCM</strong> is de standaard AEAD-versleuteling die wordt gebruikt in TLS 1.3 en als symmetrische versleuteling na een KEM.</p>
+        </section>
+
+        <!-- Sectie 1.5 -->
+        <section id="id-15">
+            <h2>1.5 Rol in de PQC-context</h2>
+
+            <p>Een volledige ML-KEM in de praktijk werkt als volgt:</p>
+
+            <div class="sequence-diagram">
+Alice                                Bob
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, Bericht) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  Bericht = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ Veilige communicatie           |
+            </div>
+
+            <p>De door ML-KEM geproduceerde sleutel <span class="math">\(K\)</span> (32 bytes) wordt niet rechtstreeks als AES-sleutel gebruikt, maar wordt afgeleid met een <strong>KDF (Key Derivation Function)</strong> zoals HKDF om verschillende contexten te scheiden.</p>
+
+            <h3>Praktische afmetingen (ML-KEM-768 + AES-256-GCM)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Grootte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM publieke sleutel</td>
+                        <td>1184 bytes</td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM versleutelde tekst</td>
+                        <td>1088 bytes</td>
+                    </tr>
+                    <tr>
+                        <td>Gedeeld geheim → AES-sleutel</td>
+                        <td>32 bytes</td>
+                    </tr>
+                    <tr>
+                        <td>AEAD-overhead (GCM-tag)</td>
+                        <td>16 bytes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (Hoofdstukken 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

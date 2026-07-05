@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoofdstuk 3 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax voor formules -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Werkbalk (identiek aan de index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Snelle navigatie">
+            <a href="index.html#featureSection">Waarom</a>
+            <a href="index.html#learningPath">Leerpad</a>
+            <a href="index.html#searchSection">De Gids</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Taal selecteren">
+                    <span class="lang-current" id="langCurrent">🇳🇱 Nederlands</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 talen -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiaans</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 Engels</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Frans</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Duits</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Spaans</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Portugees</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Russisch</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 Chinees</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 Japans</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 Koreaans</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 Arabisch</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 Hindi</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Turks</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Pools</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Oekraïens</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoofdcontainer met zijbalk -->
+    <div class="container chapter-wrapper">
+        <!-- Zijbalk -->
+        <aside class="chapter-sidebar">
+            <h3>Hoofdstukken</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Vereisten</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Symmetrisch</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asymmetrisch</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Roosters</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Veiligheid</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Implementaties</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – Het Algoritme van Shor</h1>
+        <p class="subtitle">Waarom RSA en ECC kwetsbaar zijn voor kwantumcomputers</p>
+
+        <!-- Inhoudsopgave -->
+        <div class="toc">
+            <h2>Inhoudsopgave</h2>
+            <ul>
+                <li><a href="#id-31">3.1 Kwantumcomputers: de essentie</a></li>
+                <li><a href="#id-32">3.2 Het algoritme van Shor</a></li>
+                <li><a href="#id-33">3.3 Impact op RSA, DH, ECC</a></li>
+                <li><a href="#id-34">3.4 Grover: de bedreiging voor symmetrische cryptografie</a></li>
+                <li><a href="#id-35">3.5 Stand van zaken van kwantumcomputers (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 Harvest Now, Decrypt Later</a></li>
+            </ul>
+        </div>
+
+        <!-- Sectie 3.1 -->
+        <section id="id-31">
+            <h2>3.1 Kwantumcomputers: de essentie</h2>
+
+            <h3>Qubit vs. klassieke bits</h3>
+
+            <p>Een klassieke bit is 0 of 1. Een <strong>qubit</strong> kan in <strong>superpositie</strong> verkeren: een lineaire combinatie van <span class="math">\(|0\rangle\)</span> en <span class="math">\(|1\rangle\)</span>.</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>Vóór de meting is de qubit "zowel 0 als 1". Na de meting stort hij in op 0 (met kans <span class="math">\(|\alpha|^2\)</span>) of 1 (met kans <span class="math">\(|\beta|^2\)</span>).</p>
+
+            <blockquote>
+                <p><strong>Analogie:</strong> stel je voor dat je een munt opgooit die, terwijl hij in de lucht is, tegelijkertijd kop en munt voorstelt. Pas als je ernaar kijkt, wordt het een van de twee.</p>
+            </blockquote>
+
+            <h3>Verstrengeling en interferentie</h3>
+
+            <ul>
+                <li><strong>Verstrengeling:</strong> twee qubits kunnen zo gecorreleerd zijn dat het meten van de ene de andere onmiddellijk bepaalt.</li>
+                <li><strong>Kwantuminterferentie:</strong> de "verkeerde" rekenpaden heffen elkaar constructief op (zoals golven die elkaar uitdoven), terwijl de "juiste" paden worden versterkt.</li>
+            </ul>
+
+            <p>Kwantumalgoritmen maken gebruik van interferentie om de juiste antwoorden te versterken en de onjuiste te onderdrukken.</p>
+
+            <h3>Kwantumparallelisme</h3>
+
+            <p>Met <span class="math">\(n\)</span> qubits kan men een superpositie van <span class="math">\(2^n\)</span> toestanden tegelijk vertegenwoordigen. Maar de meting levert slechts één toestand op → de truc is om algoritmen te bouwen waarbij de interferenties alleen het juiste antwoord laten overleven.</p>
+        </section>
+
+        <!-- Sectie 3.2 -->
+        <section id="id-32">
+            <h2>3.2 Het algoritme van Shor</h2>
+
+            <h3>Schema van het algoritme voor het ontbinden van \(n\)</h3>
+
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>Invoer:</strong> samengesteld geheel getal <span class="math">\(n\)</span></li>
+                    <li><strong>Initialisatie:</strong> Kies willekeurig <span class="math">\(a\)</span> zodat <span class="math">\(1 < a < n\)</span> en <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>Kwantumvoorbereiding:</strong> Bereid een register voor in een uniforme superpositie van <span class="math">\(0\)</span> tot <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>Oracle:</strong> Bereken <span class="math">\(f(x) = a^x \bmod n\)</span> parallel (superpositie)</li>
+                    <li><strong>QFT:</strong> Pas de Quantum Fourier Transform toe op het eerste register</li>
+                    <li><strong>Meting:</strong> Meet het register om een waarde te verkrijgen die gecorreleerd is met de periode <span class="math">\(r\)</span></li>
+                    <li><strong>Klassiek:</strong> Gebruik het kettingbreuken algoritme om <span class="math">\(r\)</span> te schatten</li>
+                    <li><strong>Verificatie:</strong> Als <span class="math">\(r\)</span> even is en <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li>Bereken <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> en <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>Dit zijn niet-triviale factoren van <span class="math">\(n\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Herhaling:</strong> Bij mislukking, ga terug naar stap 2 met een nieuwe <span class="math">\(a\)</span></li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Opmerking:</strong> De kwantumkern (stappen 3-5) vindt de periode <span class="math">\(r\)</span> van de functie <span class="math">\(f(x)\)</span> in polynomiale tijd, gebruikmakend van constructieve/destructieve interferentie van de QFT.</p>
+            </div>
+        </section>
+
+        <!-- Sectie 3.3 -->
+        <section id="id-33">
+            <h2>3.3 Impact op RSA, DH, ECC</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema</th>
+                        <th>Baseert veiligheid op</th>
+                        <th>Kwetsbaar voor Shor?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>Factorisatie</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Ja</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (mod <span class="math">\(p\)</span>)</td>
+                        <td>Discrete logaritme in <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Ja</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (discrete logaritme over EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Ja</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>Roosterproblemen</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">Geen bekend efficiënt algoritme</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>Pseudo-willekeurige permutaties</td>
+                        <td>Alleen Grover (zie hieronder)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Shor lost elk gestructureerd probleem op dat neerkomt op het vinden van periodiciteit in een abelse groep. Factorisatie en discrete logaritme (inclusief over EC) hebben exact deze structuur. Roosterproblemen hebben die niet.</p>
+        </section>
+
+        <!-- Sectie 3.4 -->
+        <section id="id-34">
+            <h2>3.4 Grover: de bedreiging voor symmetrische cryptografie</h2>
+
+            <p>Het algoritme van Grover (1996) biedt een <strong>kwadratische</strong> versnelling bij ongeordend zoeken:</p>
+            <ul>
+                <li>Een sleutel vinden tussen <span class="math">\(2^k\)</span> mogelijkheden klassiek: <span class="math">\(O(2^k)\)</span> pogingen</li>
+                <li>Met Grover: <span class="math">\(O(2^{k/2})\)</span> pogingen</li>
+            </ul>
+
+            <p><strong>Praktische gevolgen:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sleutel</th>
+                        <th>Klassieke veiligheid</th>
+                        <th>Post-kwantum veiligheid (Grover)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 bits</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 bits → onvoldoende</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 bits</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 bits → nog steeds veilig</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 bits</td>
+                        <td>128 bits → veilig</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 bits</td>
+                        <td>128 bits → veilig</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Daarom beveelt NIST AES-256 aan (en niet AES-128) in de post-kwantumcontext.</p>
+        </section>
+
+        <!-- Sectie 3.5 -->
+        <section id="id-35">
+            <h2>3.5 Stand van zaken van kwantumcomputers (2024–2025)</h2>
+
+            <p>Huidige kwantumcomputers zijn <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: ze hebben tientallen-honderden fysieke qubits, maar met een hoge foutenfrequentie.</p>
+
+            <p>Om RSA-2048 te breken met Shor zijn nodig:</p>
+            <ul>
+                <li>~4000 perfecte logische qubits</li>
+                <li>of ~4 miljoen fysieke qubits met kwantumfoutcorrectie</li>
+            </ul>
+
+            <p>De beste huidige systemen (Google Willow, IBM Heron, enz.) hebben ~100-1000 fysieke qubits met hoge betrouwbaarheid, maar we zijn nog ver verwijderd van de benodigde schaal.</p>
+
+            <blockquote>
+                <p><strong>Schatting van NIST:</strong> cryptografisch relevante kwantumcomputers zouden over 10–15 jaar kunnen bestaan, met aanzienlijke onzekerheid in beide richtingen.</p>
+            </blockquote>
+        </section>
+
+        <!-- Sectie 3.6 -->
+        <section id="id-36">
+            <h2>3.6 Harvest Now, Decrypt Later</h2>
+
+            <p>Zelfs als kwantumcomputers <em>nog</em> niet bestaan in cryptografisch relevante vorm, is er <strong>vandaag</strong> al een concrete dreiging:</p>
+
+            <blockquote>
+                <p>Een aanvaller kan <strong>nu</strong> versleutelde communicatie verzamelen (ook al kan hij die nog niet ontcijferen) en deze <strong>in de toekomst</strong> ontcijferen wanneer hij een voldoende krachtige kwantumcomputer heeft.</p>
+            </blockquote>
+
+            <p>Deze aanval staat bekend als <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> of <em>store-now-decrypt-later</em>.</p>
+
+            <h4>Wie loopt er risico:</h4>
+            <ul>
+                <li>Diplomatieke en militaire communicatie met een lange geheime levensduur</li>
+                <li>Medische, financiële en juridische gegevens met decennialange vertrouwelijkheidsvereisten</li>
+                <li>Industriële geheimen en intellectueel eigendom</li>
+            </ul>
+
+            <h4>Wanneer migreren?</h4>
+
+            <p>Als uw gegevens langer geheim moeten blijven dan het aantal jaren dat nodig is voordat er voldoende krachtige kwantumcomputers bestaan, moet u <em>nu</em> migreren.</p>
+
+            <p>Dit is de belangrijkste reden waarom NIST ML-KEM (FIPS 203) in 2024 heeft gestandaardiseerd, en waarom organisaties zoals de NSA, ENISA en ANSSI onmiddellijke migratie aanbevelen voor systemen met een hoge kritikaliteit.</p>
+        </section>
+
+        <!-- Bronnen -->
+        <div class="sources">
+            <h2>Bronnen</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Hoofdstuknavigatie -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← Vorig hoofdstuk</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">Volgend hoofdstuk →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Voettekst van de site -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Gratis bibliotheek voor iedereen. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiaans',
+            'en': '🇬🇧 Engels',
+            'fr': '🇫🇷 Frans',
+            'de': '🇩🇪 Duits',
+            'es': '🇪🇸 Spaans',
+            'pt': '🇵🇹 Portugees',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Russisch',
+            'zh': '🇨🇳 Chinees',
+            'ja': '🇯🇵 Japans',
+            'ko': '🇰🇷 Koreaans',
+            'ar': '🇸🇦 Arabisch',
+            'hi': '🇮🇳 Hindi',
+            'tr': '🇹🇷 Turks',
+            'pl': '🇵🇱 Pools',
+            'uk': '🇺🇦 Oekraïens'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'nl';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
