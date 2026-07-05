@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 1 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – सममित क्रिप्टोग्राफी</h1>
+        <p class="subtitle">संपूर्ण PQC पाठ्यक्रम का व्यावहारिक अंतिम बिंदु</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-11">1.1 सममित क्रिप्टोग्राफी क्या है</a></li>
+                <li><a href="#id-12">1.2 AES: उन्नत एन्क्रिप्शन मानक</a></li>
+                <li><a href="#id-13">1.3 ऑपरेटिंग मोड</a></li>
+                <li><a href="#id-14">1.4 प्रमाणीकरण और AEAD</a></li>
+                <li><a href="#id-15">1.5 PQC संदर्भ में भूमिका</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1.1 -->
+        <section id="id-11">
+            <h2>1.1 सममित क्रिप्टोग्राफी क्या है</h2>
+
+            <p>एक <strong>सममित</strong> क्रिप्टोग्राफी प्रणाली में, प्रेषक और प्राप्तकर्ता एन्क्रिप्ट और डिक्रिप्ट करने के लिए <strong>एक ही कुंजी</strong> <span class="math">\(K\)</span> का उपयोग करते हैं।</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{प्रेषक: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{प्राप्तकर्ता: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>मुख्य लाभ:</strong> दक्षता। आधुनिक हार्डवेयर पर AES-256 दसियों GB/s की गति प्राप्त करता है।</p>
+
+            <p><strong>नुकसान:</strong> संचार करने से <em>पहले</em> <span class="math">\(K\)</span> का सुरक्षित आदान-प्रदान करने के लिए एक सुरक्षित चैनल की आवश्यकता होती है। यह ठीक वही समस्या है जिसे KEM हल करते हैं।</p>
+
+            <h3>सममित क्रिप्टोग्राफी की सुरक्षा बनाम क्वांटम</h3>
+
+            <p>क्वांटम कंप्यूटर AES को नहीं तोड़ते। ग्रोवर का एल्गोरिथ्म कुंजी खोज में <em>द्विघात</em> त्वरण प्रदान करता है, लेकिन:</p>
+            <ul>
+                <li><strong>AES-128:</strong> 128 बिट से प्रभावी सुरक्षा घटकर ~64 बिट हो जाती है → अपर्याप्त</li>
+                <li><strong>AES-256:</strong> 256 बिट से प्रभावी सुरक्षा घटकर ~128 बिट हो जाती है → अभी भी सुरक्षित</li>
+            </ul>
+
+            <p>इसीलिए FIPS 203 (ML-KEM) 256-बिट कुंजियाँ उत्पन्न करता है, जिनका उपयोग AES-256 के साथ करने का इरादा है।</p>
+        </section>
+
+        <!-- Section 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES: उन्नत एन्क्रिप्शन मानक</h2>
+
+            <p>AES एक <strong>ब्लॉक सिफर</strong> है: यह 128-बिट ब्लॉक और एक कुंजी (<span class="math">\(K\)</span>) लेता है, और 128-बिट एन्क्रिप्टेड आउटपुट उत्पन्न करता है।</p>
+
+            <h3>आंतरिक संरचना</h3>
+
+            <p>AES इनपुट के 128 बिट्स को बाइट्स की <span class="math">\(4 \times 4\)</span> मैट्रिक्स के रूप में व्यवस्थित करता है। फिर यह कुंजी के आकार के आधार पर <span class="math">\(r\)</span> <em>राउंड</em> (10, 12 या 14) लागू करता है, प्रत्येक राउंड चार परिवर्तनों से बना होता है:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>परिवर्तन</th>
+                        <th>उद्देश्य</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>S-बॉक्स के माध्यम से अरेखीय प्रतिस्थापन (विभेदक क्रिप्टो-विश्लेषण के प्रति प्रतिरोध)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>पंक्तियों का चक्रीय घुमाव (प्रसार)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>स्तंभों का रैखिक संयोजन (प्रसार)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>वर्तमान राउंड की सब-कुंजी के साथ XOR</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>कुंजी अनुसूची (Key Schedule)</h3>
+
+            <p>मूल कुंजी (<span class="math">\(K\)</span> 128, 192 या 256 बिट की) को प्रत्येक राउंड के लिए <span class="math">\(r+1\)</span> सब-कुंजियों में विस्तारित किया जाता है।</p>
+
+            <div class="example">
+                <p>AES-128: 128-बिट कुंजी, 10 राउंड</p>
+                <p>AES-192: 192-बिट कुंजी, 12 राउंड</p>
+                <p>AES-256: 256-बिट कुंजी, 14 राउंड</p>
+            </div>
+
+            <h3>सुरक्षा</h3>
+
+            <p>AES-128 पर सबसे अच्छा ज्ञात हमला <span class="math">\(2^{126.1}\)</span> ऑपरेशन की आवश्यकता है (Biryukov &amp; Khovratovich, 2009) – अनिवार्य रूप से ब्रूट-फोर्स।</p>
+        </section>
+
+        <!-- Section 1.3 -->
+        <section id="id-13">
+            <h2>1.3 ऑपरेटिंग मोड</h2>
+
+            <p>AES 128-बिट के एक ब्लॉक को एन्क्रिप्ट करता है। लेकिन वास्तविक संदेश लंबे होते हैं। <strong>ऑपरेटिंग मोड</strong> परिभाषित करते हैं कि AES को बार-बार कैसे लागू किया जाए।</p>
+
+            <h3>ECB (Electronic Codebook) – उपयोग न करें</h3>
+
+            <p>प्रत्येक ब्लॉक स्वतंत्र रूप से एन्क्रिप्ट किया जाता है। समान ब्लॉक समान सिफरटेक्स्ट उत्पन्न करते हैं → प्लेनटेक्स्ट की संरचना खो जाती है।</p>
+
+            <h3>CBC (Cipher Block Chaining)</h3>
+
+            <p>प्रत्येक प्लेनटेक्स्ट ब्लॉक को एन्क्रिप्ट करने से पहले पिछले ब्लॉक के सिफरटेक्स्ट के साथ XOR किया जाता है। एक यादृच्छिक IV (Initialization Vector) की आवश्यकता होती है।</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>ECB से अधिक सुरक्षित, लेकिन एन्क्रिप्शन में समानांतरीकरण योग्य नहीं।</p>
+
+            <h3>CTR (Counter Mode) – अनुशंसित</h3>
+
+            <p>एक वृद्धिशील काउंटर को एन्क्रिप्ट करके कीस्ट्रीम उत्पन्न करता है। प्लेनटेक्स्ट को कीस्ट्रीम के साथ XOR किया जाता है।</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>एन्क्रिप्शन और डिक्रिप्शन दोनों में समानांतरीकरण योग्य। AES को स्ट्रीम सिफर में बदल देता है।</p>
+
+            <h3>GCM (Galois/Counter Mode) – TLS 1.3 में उपयोग किया जाता है</h3>
+
+            <p>CTR को गैलोइस फ़ील्ड पर आधारित MAC के साथ जोड़ता है। गोपनीयता <strong>और</strong> प्रामाणिकता प्रदान करता है।</p>
+        </section>
+
+        <!-- Section 1.4 -->
+        <section id="id-14">
+            <h2>1.4 प्रमाणीकरण और AEAD</h2>
+
+            <p>गोपनीयता पर्याप्त नहीं है: एक हमलावर सिफरटेक्स्ट को इस तरह संशोधित कर सकता है कि प्राप्तकर्ता को पता न चले। <strong>प्रामाणिकता</strong> की आवश्यकता है।</p>
+
+            <h3>MAC (Message Authentication Code)</h3>
+
+            <p>MAC एक फलन है <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> जहाँ <span class="math">\(\tau\)</span> <em>प्रामाणिकता टैग</em> है। केवल <span class="math">\(K\)</span> जानने वाला ही <span class="math">\(\tau\)</span> उत्पन्न और सत्यापित कर सकता है।</p>
+
+            <h3>AEAD (Authenticated Encryption with Associated Data)</h3>
+
+            <p>एक ही प्राइमिटिव में एन्क्रिप्शन और प्रमाणीकरण को जोड़ता है:</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> या <span class="math">\(\perp\)</span> (यदि टैग अमान्य हो)</p>
+            </div>
+
+            <p><code>AAD</code> (Additional Authenticated Data) वह डेटा है जो प्रमाणित तो होता है लेकिन एन्क्रिप्ट नहीं होता (जैसे पैकेट हेडर)।</p>
+
+            <p><strong>AES-256-GCM</strong> TLS 1.3 में उपयोग किया जाने वाला मानक AEAD स्कीम है और KEM के बाद सममित सिफर के रूप में भी।</p>
+        </section>
+
+        <!-- Section 1.5 -->
+        <section id="id-15">
+            <h2>1.5 PQC संदर्भ में भूमिका</h2>
+
+            <p>वास्तविक उपयोग में एक पूर्ण ML-KEM इस प्रकार काम करता है:</p>
+
+            <div class="sequence-diagram">
+                ऐलिस                                बॉब
+                  |                                   |
+                  |  KeyGen() → (pk, sk)              |
+                  |                                   |
+                  |  ------------ pk ----------------->|
+                  |                                   |
+                  |            Encaps(pk) → (K, C)    |
+                  |                                   |
+                  |        K_enc = HKDF(K, "enc")     |
+                  |        K_mac = HKDF(K, "mac")     |
+                  |        C_data = AES-256-GCM(K_enc, संदेश) |
+                  |                                   |
+                  |  <----- (C, C_data, nonce, tag) --|
+                  |                                   |
+                  |  Decaps(sk, C) → K                |
+                  |  K_enc = HKDF(K, "enc")           |
+                  |  संदेश = AES-256-GCM-Dec(K_enc, C_data) |
+                  |                                   |
+                  |  ✓ सुरक्षित संचार                 |
+            </div>
+
+            <p>ML-KEM (32 बाइट) द्वारा उत्पादित कुंजी <span class="math">\(K\)</span> का उपयोग सीधे AES कुंजी के रूप में नहीं किया जाता है, बल्कि विभिन्न संदर्भों को अलग करने के लिए HKDF जैसे <strong>KDF (Key Derivation Function)</strong> के साथ व्युत्पन्न किया जाता है।</p>
+
+            <h3>व्यावहारिक आकार (ML-KEM-768 + AES-256-GCM)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>घटक</th>
+                        <th>आकार</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM सार्वजनिक कुंजी</td>
+                        <td>1184 बाइट</td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM सिफरटेक्स्ट</td>
+                        <td>1088 बाइट</td>
+                    </tr>
+                    <tr>
+                        <td>साझा रहस्य → AES कुंजी</td>
+                        <td>32 बाइट</td>
+                    </tr>
+                    <tr>
+                        <td>AEAD ओवरहेड (GCM टैग)</td>
+                        <td>16 बाइट</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em> (अध्याय 4–5)<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

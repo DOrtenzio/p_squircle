@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 6 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li class="active"><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>06 – कुंजी एनकैप्सुलेशन तंत्र (KEM)</h1>
+        <p class="subtitle">MLWE के गणित और FIPS 203 मानक के बीच का पुल</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-61">6.1 KEM की औपचारिक परिभाषा</a></li>
+                <li><a href="#id-62">6.2 सुरक्षा गुण</a></li>
+                <li><a href="#id-63">6.3 KEM बनाम PKE: KEM क्यों?</a></li>
+                <li><a href="#id-64">6.4 सहज उदाहरण: डिफी-हेलमैन से KEM</a></li>
+                <li><a href="#id-65">6.5 फुजिसाकी-ओकामोटो (FO) रूपांतरण</a></li>
+                <li><a href="#id-66">6.6 K-PKE (CPA) से ML-KEM (CCA2) तक</a></li>
+                <li><a href="#id-67">6.7 वास्तविक प्रोटोकॉल में KEM: TLS 1.3</a></li>
+                <li><a href="#id-68">6.8 KEM प्रवाह की सामान्य संरचना</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 6.1 -->
+        <section id="id-61">
+            <h2>6.1 KEM की औपचारिक परिभाषा</h2>
+
+            <h3>एल्गोरिथ्मों की त्रिपिटक</h3>
+            <p>एक कुंजी एनकैप्सुलेशन तंत्र (KEM) संभाव्य बहुपदीय एल्गोरिथ्मों की एक त्रिपिटक है:</p>
+            <div class="math-block">
+                \[
+                \text{KEM} = (\text{KeyGen},\ \text{Encaps},\ \text{Decaps})
+                \]
+            </div>
+
+            <ul>
+                <li><strong><code>KeyGen()</code> &rarr; <code>(ek, dk)</code></strong><br>
+                    संभाव्य एल्गोरिथ्म (आंतरिक यादृच्छिकता का उपयोग करता है)। कोई इनपुट नहीं लेता।
+                    <ul>
+                        <li><code>ek</code>: एनकैप्सुलेशन कुंजी (सार्वजनिक कुंजी)</li>
+                        <li><code>dk</code>: डिकैप्सुलेशन कुंजी (निजी कुंजी)</li>
+                    </ul>
+                </li>
+                <li><strong><code>Encaps(ek)</code> &rarr; <code>(K, c)</code></strong><br>
+                    <code>ek</code> दिया गया हो, उत्पन्न करता है:
+                    <ul>
+                        <li><span class="math">\(K \in \{0,1\}^\ell\)</span>: गोपनीय सममित कुंजी (आमतौर पर 256 बिट)</li>
+                        <li><code>c</code>: सिफरटेक्स्ट (वह "कैप्सूल")</li>
+                    </ul>
+                </li>
+                <li><strong><code>Decaps(dk, c)</code> &rarr; <code>K</code></strong><br>
+                    <code>dk</code> और <code>c</code> दिया गया हो, <span class="math">\(K\)</span> पुनः प्राप्त करता है।</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>FIPS 203 शब्दावली नोट:</strong> मानक <code>ek</code> का उपयोग एनकैप्सुलेशन कुंजी के लिए करता है (<code>pk</code> नहीं) और <code>dk</code> का उपयोग डिकैप्सुलेशन कुंजी के लिए करता है (<code>sk</code> नहीं)। यह अंतर जानबूझकर है: यह रेखांकित करता है कि सार्वजनिक कुंजी मनमाने संदेशों को एन्क्रिप्ट करने के लिए नहीं, बल्कि एनकैप्सुलेट करने के लिए है।</p>
+            </div>
+
+            <h3>शुद्धता (Correctness)</h3>
+            <p>एक KEM शुद्ध है यदि प्रत्येक वैध कुंजी युग्म के लिए:</p>
+            <div class="math-block">
+                \[
+                \Pr\bigl[\text{Decaps}(dk,\, c) = K \mid (K, c) \leftarrow \text{Encaps}(ek)\bigr] \geq 1 - \delta
+                \]
+            </div>
+            <p>जहाँ <span class="math">\(\delta\)</span> एक तुच्छ त्रुटि प्रायिकता है (आमतौर पर <span class="math">\(< 2^{-128}\)</span>).<br>
+            ML-KEM-768 के लिए: <span class="math">\(\delta < 2^{-142}\)</span>.</p>
+        </section>
+
+        <!-- Section 6.2 -->
+        <section id="id-62">
+            <h2>6.2 सुरक्षा गुण</h2>
+
+            <h3>IND-CPA (चुने हुए प्लेनटेक्स्ट हमले के तहत अप्रभेद्यता)</h3>
+            
+            <div class="security-game">
+                <h4>IND-CPA सुरक्षा खेल</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>चैलेंजर</th>
+                            <th>विरोधी <span class="math">\(\mathcal{A}\)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\(ek \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>चुनौती चुनता है (KEM में निहित)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((K_0, c) \leftarrow \text{Encaps}(ek)\)</span><br>
+                                <span class="math">\(K_1 \leftarrow \text{Random}\)</span><br>
+                                <span class="math">\(b \leftarrow \{0, 1\}\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="math">\((c, K_b) \longrightarrow\)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><span class="math">\(b'\)</span> लौटाता है</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>लाभ:</strong> <span class="math">\(\text{Adv}^{\text{IND-CPA}}_{\text{KEM}}(\mathcal{A}) = \left| \Pr[b' = b] - \frac{1}{2} \right|\)</span></p>
+            <p>KEM IND-CPA है यदि लाभ प्रत्येक बहुपदीय विरोधी के लिए तुच्छ है। सहज रूप से: विरोधी सिफरटेक्स्ट <code>c</code> को देखकर भी वास्तविक कुंजी <span class="math">\(K\)</span> को यादृच्छिक से अलग नहीं कर सकता।</p>
+
+            <h3>IND-CCA2 (अनुकूली चुने हुए सिफरटेक्स्ट हमले के तहत अप्रभेद्यता)</h3>
+            <p>CPA की तरह, लेकिन विरोधी के पास डिकैप्सुलेशन ओरेकल तक पहुँच भी है:</p>
+
+            <div class="security-game">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>चरण</th>
+                            <th>क्रिया</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>आरंभीकरण</td>
+                            <td><span class="math">\((ek, dk) \leftarrow \text{KeyGen}()\)</span>, <span class="math">\(ek\)</span> भेजें</td>
+                        </tr>
+                        <tr>
+                            <td>चरण 1 (प्रश्न)</td>
+                            <td><span class="math">\(c_i \to K_i = \text{Decaps}(dk, c_i)\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>चुनौती</td>
+                            <td><span class="math">\((K_0, c^*) \leftarrow \text{Encaps}(ek)\)</span>, <span class="math">\(K_1 \leftarrow \text{Random}\)</span>, <span class="math">\(b \leftarrow \{0,1\}\)</span>। <span class="math">\((c^*, K_b)\)</span> भेजें।</td>
+                        </tr>
+                        <tr>
+                            <td>चरण 2 (प्रश्न)</td>
+                            <td><span class="math">\(c_j \to K_j = \text{Decaps}(dk, c_j)\)</span> जहाँ <span class="math">\(c_j \neq c^*\)</span></td>
+                        </tr>
+                        <tr>
+                            <td>अनुमान</td>
+                            <td><span class="math">\(b'\)</span> लौटाता है</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>IND-CCA2 वास्तविक उपयोग में KEM के लिए आवश्यक सुरक्षा मानक है।</p>
+            
+            <div class="note">
+                <p><strong>CCA2 की आवश्यकता क्यों है?</strong> एक वास्तविक प्रोटोकॉल (TLS, SSH) में, एक सक्रिय विरोधी हेरफेर किए गए सिफरटेक्स्ट भेज सकता है और सर्वर की प्रतिक्रियाओं का निरीक्षण कर सकता है। MLWE में भी, एक विरोधी जो चुनौती सिफरटेक्स्ट के निकट के सिफरटेक्स्ट की डिकैप्सुलेशन जानता है, वह गोपनीय के बारे में जानकारी निकाल सकता है। ML-KEM IND-CCA2 है।</p>
+            </div>
+
+            <h3>अतिरिक्त वांछनीय गुण</h3>
+            <ul>
+                <li><strong>मजबूती (Robustness):</strong> दो भिन्न निजी कुंजियों के साथ एक ही कुंजी में डिकैप्सुलेट होने वाले सिफरटेक्स्ट का निर्माण करना कठिन है।</li>
+                <li><strong>फॉरवर्ड सीक्रेसी (Forward secrecy):</strong> यदि <code>dk</code> निजी कुंजी भविष्य में समझौता हो जाती है, तो पिछले सत्र सुरक्षित रहते हैं (इफेमरल कुंजियों की आवश्यकता होती है)।</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.3 -->
+        <section id="id-63">
+            <h2>6.3 KEM बनाम PKE: KEM क्यों?</h2>
+
+            <h3>PKE (सार्वजनिक कुंजी एन्क्रिप्शन)</h3>
+            <p>एक PKE मनमाने संदेशों को एन्क्रिप्ट करता है: <span class="math">\(\text{Enc}(ek, m) \to c\)</span>। समस्या यह है कि यदि संदेश <span class="math">\(m\)</span> में पूर्वानुमानित संरचना है (छोटा पासवर्ड, कार्ड नंबर), तो एक विरोधी कम-एंट्रोपी या पैडिंग ओरेकल (ब्लीचेनबैचर) हमलों का फायदा उठा सकता है।</p>
+
+            <h3>KEM: भूमिकाओं का पृथक्करण</h3>
+            <p>KEM उपयोगकर्ता संदेशों को एन्क्रिप्ट नहीं करता है। यह उच्च-एंट्रोपी की एक सममित कुंजी उत्पन्न करता है और उसे एनकैप्सुलेट करता है:</p>
+            <div class="math-block">
+                \[
+                \text{प्रणाली} = \underbrace{\text{KEM}}_{\text{\(K\) का आदान-प्रदान}} + \underbrace{\text{AES-GCM}}_{\text{\(K\) से डेटा एन्क्रिप्ट करें}}
+                \]
+            </div>
+            <p><strong>लाभ:</strong></p>
+            <ul>
+                <li>कुंजी <span class="math">\(K\)</span> हमेशा छद्म-यादृच्छिक होती है → कोई कम-एंट्रोपी हमला नहीं।</li>
+                <li>उपयोगकर्ता संदेशों के लिए जटिल पैडिंग की आवश्यकता नहीं है।</li>
+                <li><span class="math">\(K\)</span> का उपयोग वास्तविक डेटा एन्क्रिप्ट करने के लिए एक सममित सिफर (DEM) के साथ किया जाता है।</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.4 -->
+        <section id="id-64">
+            <h2>6.4 सहज उदाहरण: डिफी-हेलमैन से KEM</h2>
+            
+            <p>ML-KEM से पहले, सबसे अधिक उपयोग किया जाने वाला KEM डिफी-हेलमैन पर बनाया गया था। यह उदाहरण संरचना को समझने में मदद करता है।</p>
+
+            <p><strong>सार्वजनिक पैरामीटर:</strong> अभाज्य <span class="math">\(p\)</span>, <span class="math">\(\mathbb{Z}_p^*\)</span> का जनरेटर <span class="math">\(g\)</span>।</p>
+
+            <div class="protocol-flow">
+                <div class="party alice">
+                    <strong>ऐलिस</strong>
+                    <ol>
+                        <li>गोपनीय <span class="math">\(a\)</span> चुनती है</li>
+                        <li><span class="math">\(A = g^a \bmod p\)</span> की गणना करती है</li>
+                    </ol>
+                </div>
+                <div class="channel">
+                    <span class="arrow-right">A →</span>
+                    <span class="arrow-left">← B</span>
+                </div>
+                <div class="party bob">
+                    <strong>बॉब</strong>
+                    <ol>
+                        <li>गोपनीय <span class="math">\(b\)</span> चुनता है</li>
+                        <li><span class="math">\(B = g^b \bmod p\)</span> की गणना करता है</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{ऐलिस गणना करती है: } & K = B^a \bmod p = g^{ab} \bmod p \\
+                \text{बॉब गणना करता है: } & K = A^b \bmod p = g^{ab} \bmod p
+                \end{aligned}
+                \]
+            </div>
+
+            <p><strong>संख्यात्मक उदाहरण:</strong> <span class="math">\(p = 17\)</span>, <span class="math">\(g = 3\)</span>, <span class="math">\(a = 5\)</span>।</p>
+            <ul>
+                <li><span class="math">\(ek = 3^5 \bmod 17 = 5\)</span></li>
+                <li>बॉब <span class="math">\(b = 7\)</span> चुनता है: <span class="math">\(c = 3^7 \bmod 17 = 11\)</span>, <span class="math">\(K = H(5^7 \bmod 17) = H(10)\)</span></li>
+                <li>ऐलिस डिकैप्सुलेट करती है: <span class="math">\(K = H(11^5 \bmod 17) = H(10)\)</span> ✓</li>
+            </ul>
+        </section>
+
+        <!-- Section 6.5 -->
+        <section id="id-65">
+            <h2>6.5 फुजिसाकी-ओकामोटो (FO) रूपांतरण</h2>
+
+            <h3>समस्या: CPA से CCA2 तक</h3>
+            <p>केवल CPA-सुरक्षित PKE से शुरू करके, IND-CCA2 KEM कैसे बनाया जाए? उत्तर FO रूपांतरण है।</p>
+
+            <h3>केंद्रीय विचार</h3>
+            <ul>
+                <li><strong>नियतात्मक एन्क्रिप्शन:</strong> एन्क्रिप्शन में उपयोग की जाने वाली यादृच्छिकता हैश के माध्यम से संदेश से नियतात्मक रूप से व्युत्पन्न होती है। यदि सिफरटेक्स्ट संशोधित किया जाता है, तो पुनः एन्क्रिप्शन कुछ अलग उत्पन्न करता है।</li>
+                <li><strong>डिक्रिप्शन में सत्यापन:</strong> सीधे डिक्रिप्ट करने के बजाय, डिक्रिप्ट किए गए संदेश को पुनः एन्क्रिप्ट किया जाता है और प्राप्त सिफरटेक्स्ट के साथ तुलना की जाती है। यदि मेल नहीं खाता → अंतर्निहित अस्वीकृति।</li>
+            </ul>
+
+            <h3>सरलीकृत FO योजना</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                \text{Encaps}(ek): & \quad m \leftarrow \{0,1\}^\ell, \ (K, r) = G(m), \ c = \text{Enc}(ek, m; r) \\
+                \text{Decaps}(dk, c): & \quad m' = \text{Dec}(dk, c), \ (K', r') = G(m'), \ c' = \text{Enc}(ek, m'; r') \\
+                & \quad \text{return } \begin{cases} K' & \text{यदि } c' = c \\ K_{\text{reject}} & \text{अन्यथा} \end{cases}
+                \end{aligned}
+                \]
+            </div>
+            <p>जहाँ <span class="math">\(K_{\text{reject}} = H(z \| c)\)</span> है जिसमें <span class="math">\(z\)</span> एक नियत गोपनीय है। यह "अंतर्निहित अस्वीकृति" विरोधी को त्रुटियों को ओरेकल के रूप में उपयोग करने से रोकती है।</p>
+        </section>
+
+        <!-- Section 6.6 -->
+        <section id="id-66">
+            <h2>6.6 K-PKE (CPA) से ML-KEM (CCA2) तक</h2>
+
+            <p>ML-KEM में, दो-स्तरीय संरचना है:</p>
+            <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+ML-KEM (IND-CCA2)
+└── K-PKE (IND-CPA) + FO रूपांतरण
+    └── MLWE समस्या</pre>
+
+            <h3>ML-KEM.Encaps(ek)</h3>
+            <div class="code-block">
+                <pre><code>m ← Random(32)                  // 256-बिट यादृच्छिक संदेश
+(K̄, r) = G(m ‖ H(ek))          // SHA3-512: K̄ = पहले 32 बाइट, r = अंतिम 32 बाइट
+c = K-PKE.Encrypt(ek, m, r)     // यादृच्छिकता r के साथ नियतात्मक एन्क्रिप्शन
+K = KDF(K̄ ‖ H(c))              // अंतिम कुंजी
+return (K, c)</code></pre>
+            </div>
+
+            <h3>ML-KEM.Decaps(dk, c)</h3>
+            <div class="code-block">
+                <pre><code>(dk_PKE, ek, h, z) = dk         // h = H(ek), z = फॉलबैक गोपनीय
+m' = K-PKE.Decrypt(dk_PKE, c)   // डिक्रिप्शन का प्रयास
+(K̄', r') = G(m' ‖ h)           // पुनः परिकलन
+c' = K-PKE.Encrypt(ek, m', r')  // सत्यापन पुनः एन्क्रिप्शन
+यदि c' == c:
+    K = KDF(K̄' ‖ H(c))         // डिक्रिप्शन सफल
+अन्यथा:
+    K = KDF(z ‖ H(c))           // फॉलबैक: छद्म-यादृच्छिक कुंजी
+return K</code></pre>
+            </div>
+
+            <div class="note">
+                <p><strong>महत्वपूर्ण विवरण:</strong> निजी कुंजी <code>dk</code> में पुनः एन्क्रिप्शन करने में सक्षम होने के लिए <code>ek</code> भी शामिल है। तुलना <code>c' == c</code> नियत-समय (constant-time) होनी चाहिए।</p>
+            </div>
+        </section>
+
+        <!-- Section 6.7 -->
+        <section id="id-67">
+            <h2>6.7 वास्तविक प्रोटोकॉल में KEM: TLS 1.3</h2>
+
+            <div class="protocol-flow tls-handshake">
+                <div class="party client">
+                    <strong>क्लाइंट (बॉब)</strong>
+                </div>
+                <div class="channel"></div>
+                <div class="party server">
+                    <strong>सर्वर (ऐलिस)</strong>
+                </div>
+
+                <div class="step">
+                    <span class="msg-right">ClientHello (ML-KEM-768 समर्थन)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">ServerHello + प्रमाणपत्र + KeyShare (ek)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-right">KeyShare (c) + Finished (K के साथ MAC)</span>
+                </div>
+                <div class="step">
+                    <span class="msg-left">Finished (K के साथ MAC)</span>
+                </div>
+            </div>
+
+            <h3>X25519 + ML-KEM संकर</h3>
+            <p>व्यवहार में, TLS 1.3 एक संकर दृष्टिकोण का उपयोग करता है:</p>
+            <div class="math-block">
+                \[
+                K_{\text{TLS}} = \text{HKDF}(K_{\text{X25519}} \,\|\, K_{\text{ML-KEM}})
+                \]
+            </div>
+            <p>यह सुरक्षा की गारंटी देता है यदि दोनों योजनाओं में से कम से कम एक बरकरार रहे। समूह <code>X25519MLKEM768</code> पहले से ही Chrome 131+ में तैनात है।</p>
+        </section>
+
+        <!-- Section 6.8 -->
+        <section id="id-68">
+            <h2>6.8 KEM प्रवाह की सामान्य संरचना</h2>
+
+            <div class="algorithm-steps">
+                <h3>पूर्ण प्रवाह ऐलिस (प्राप्तकर्ता) / बॉब (प्रेषक)</h3>
+                <ol>
+                    <li><strong>ऐलिस:</strong> <code>KeyGen()</code> <span class="math">\((ek, dk)\)</span> उत्पन्न करता है। <span class="math">\(ek\)</span> प्रकाशित करता है।</li>
+                    <li><strong>बॉब:</strong> <span class="math">\(ek\)</span> प्राप्त करता है। <code>Encaps(ek)</code> निष्पादित करता है:
+                        <ul>
+                            <li>यादृच्छिक <span class="math">\(m\)</span> उत्पन्न करता है</li>
+                            <li><span class="math">\((\bar{K}, r) = G(m \| H(ek))\)</span></li>
+                            <li><span class="math">\(c = \text{K-PKE.Encrypt}(ek, m, r)\)</span></li>
+                            <li><span class="math">\(K = \text{KDF}(\bar{K} \| H(c))\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>बॉब:</strong> <span class="math">\(K\)</span> और एक यादृच्छिक नॉन्स का उपयोग करके AES-256-GCM से डेटा एन्क्रिप्ट करता है।</li>
+                    <li><strong>बॉब:</strong> <span class="math">\((c, \text{nonce}, \text{ciphertext}, \text{tag})\)</span> ऐलिस को भेजता है।</li>
+                    <li><strong>ऐलिस:</strong> <span class="math">\(K\)</span> पुनः प्राप्त करने के लिए <code>Decaps(dk, c)</code> निष्पादित करता है।</li>
+                    <li><strong>ऐलिस:</strong> AES-256-GCM से डेटा डिक्रिप्ट करता है। यदि टैग विफल होता है, तो संदेश को त्याग देता है।</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>दोहरी सुरक्षा:</strong> यदि <code>c</code> के साथ छेड़छाड़ की जाती है, तो Decaps एक छद्म-यादृच्छिक कुंजी (<span class="math">\(K_{\text{reject}}\)</span>) लौटाता है। भले ही विरोधी इस कुंजी का अनुमान लगा ले, AES-GCM का AEAD टैग विफल हो जाता है, जिससे अखंडता सुनिश्चित होती है।</p>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em> – CRYPTO 1999</li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em> – TCC 2017</li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter Proofs of CCA Security in the Quantum Random Oracle Model</em> – ASIACRYPT 2019</li>
+                <li>NIST FIPS 203 (2024), खंड 6–7 (ML-KEM KeyGen, Encaps, Decaps)</li>
+                <li>IETF draft-ietf-tls-hybrid-design – TLS 1.3 में संकर कुंजी विनिमय</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="5.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">06 / 10</span>
+            <a href="7.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/6.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第9章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>09 – セキュリティとパラメータ</h1>
+        <p class="subtitle">なぜ ML-KEM が安全で、数値がどのように選ばれたのか</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-91">9.1 セキュリティモデル</a></li>
+                <li><a href="#id-92">9.2 MLWE の困難性の測定</a></li>
+                <li><a href="#id-93">9.3 格子に対する主要な攻撃</a></li>
+                <li><a href="#id-94">9.4 NIST セキュリティレベル</a></li>
+                <li><a href="#id-95">9.5 他の PQC スキームとの比較</a></li>
+                <li><a href="#id-96">9.6 サイドチャネルと安全な実装</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 9.1 -->
+        <section id="id-91">
+            <h2>9.1 セキュリティモデル</h2>
+
+            <h3>IND-CPA（選択平文攻撃に対する識別不可能性）</h3>
+            <p>このモデルでは、攻撃者は：</p>
+            <ol>
+                <li>公開鍵 <span class="math">\(ek\)</span> を受け取る</li>
+                <li>2つのメッセージ <span class="math">\(m_0, m_1\)</span> を選択する</li>
+                <li>そのうちの1つ（ランダムに選択）の暗号文を受け取る</li>
+                <li>どちらのメッセージが暗号化されたかを推測する</li>
+            </ol>
+            <p>スキームは次の場合に安全です：<span class="math">\(\Pr[\text{推測成功}] \leq 1/2 + \text{negl}(\lambda)\)</span>。</p>
+            <p>K-PKE（基本暗号化コンポーネント）は MLWE 仮定の下で IND-CPA です。</p>
+
+            <h3>IND-CCA2（適応的選択暗号文攻撃に対する識別不可能性）</h3>
+            <p>CPA と同様ですが、攻撃者はチャレンジ暗号文以外の任意の暗号文に対する復号オラクルに問い合わせることができます。このモデルは、攻撃者がアドホックに構築したメッセージを送信し、応答を観察する実際の攻撃（Bleichenbacher など）を捉えます。</p>
+            <p><strong>ML-KEM は IND-CCA2 です。</strong> これは、TLS や SSH などの実際のプロトコルで安全な KEM に要求されるレベルです。</p>
+
+            <h3>ROM vs. QROM</h3>
+            <p>セキュリティ証明はハッシュ関数に理想化されたモデルを使用します。</p>
+            <ul>
+                <li><strong>ROM（ランダムオラクルモデル）：</strong> ハッシュは完全にランダムなオラクルです。</li>
+                <li><strong>QROM（量子ランダムオラクルモデル）：</strong> 量子攻撃者はオラクルを重ね合わせで問い合わせることができます。</li>
+            </ul>
+            <p>ML-KEM で使用される FO（Fujisaki-Okamoto）変換の現代的な証明は QROM でのセキュリティを保証し、量子攻撃者に対して不可欠です。</p>
+        </section>
+
+        <!-- Section 9.2 -->
+        <section id="id-92">
+            <h2>9.2 MLWE の困難性の測定</h2>
+
+            <h3>攻撃コストとしてのセキュリティ</h3>
+            <p>MLWE が困難であるという絶対的な証明は存在しません。セキュリティは、既知の最良の攻撃アルゴリズムのコストを見積もることによって評価されます。<span class="math">\(\lambda\)</span> ビットのセキュリティは、攻撃に約 <span class="math">\(2^\lambda\)</span> 回の演算が必要であることを意味します。</p>
+
+            <h3>パラメータ</h3>
+            <p>困難性は以下に依存します。</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span>（多項式次元、固定）</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>（モジュール次元）</li>
+                <li><span class="math">\(q = 3329\)</span>（素数法）</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span>（ノイズ振幅）</li>
+            </ul>
+
+            <h3>格子推定器（Lattice Estimator）</h3>
+            <p>標準的なツールは Albrecht らの <a href="https://github.com/malb/lattice-estimator" target="_blank">Lattice Estimator</a> です。ML-KEM-768 の場合：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>攻撃</th>
+                        <th>推定コスト（ビット）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primal attack（BKZ）</td>
+                        <td>~178 ビット</td>
+                    </tr>
+                    <tr>
+                        <td>Dual attack</td>
+                        <td>~175 ビット</td>
+                    </tr>
+                    <tr>
+                        <td>Combinatorial</td>
+                        <td>&gt; 200 ビット</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>セキュリティマージンは、古典的/量子的な 128 ビットのターゲットに対して大きく余裕があります。</p>
+        </section>
+
+        <!-- Section 9.3 -->
+        <section id="id-93">
+            <h2>9.3 格子に対する主要な攻撃</h2>
+
+            <h3>BKZ（Block Korkine-Zolotarev）</h3>
+            <p>これは短いベクトルを見つけるための最良の汎用アルゴリズムです。格子をブロックサイズ <span class="math">\(\beta\)</span> のブロックに分割し、局所的に SVP を解きます。複雑さ：<span class="math">\(2^{O(\beta \log \beta)}\)</span>。ML-KEM-768 の場合、<span class="math">\(\beta \approx 430\)</span> です。</p>
+
+            <h3>Primal attack（uSVP）</h3>
+            <p>MLWE を、公開鍵と暗号文を含む拡張格子における短ベクトル問題に帰着させます。秘密ベクトル <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> は BKZ が探す短ベクトルになります。</p>
+
+            <h3>Dual attack</h3>
+            <p>双対格子を利用して、MLWE サンプルを一様サンプルから統計的に区別します。双対格子内の多くの短ベクトルを構築して識別器を実行します。</p>
+
+            <h3><span class="math">\(q = 3329\)</span> の選択</h3>
+            <p>素数であり、特殊な代数構造を持たないため、特定の代数攻撃を防ぎます。悪用可能な小さな因数や単純な関係は存在しません。</p>
+        </section>
+
+        <!-- Section 9.4 -->
+        <section id="id-94">
+            <h2>9.4 NIST セキュリティレベル</h2>
+
+            <p>NIST は 5 つのレベルを定義しています。ML-KEM はレベル 1、3、5 をカバーします。</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>スキーム</th>
+                        <th>NIST レベル</th>
+                        <th>古典的セキュリティ</th>
+                        <th>量子的セキュリティ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1（AES-128）</td>
+                        <td>~118 ビット</td>
+                        <td>~100 ビット</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3（AES-192）</td>
+                        <td><strong>~178 ビット</strong></td>
+                        <td><strong>~164 ビット</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM-1024</td>
+                        <td>5（AES-256）</td>
+                        <td>~230 ビット</td>
+                        <td>~218 ビット</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p><strong>推奨：</strong> ML-KEM-768 は、ほとんどの用途においてセキュリティとパフォーマンスの最適なバランスを提供します。ML-KEM-1024 は非常に高重要度のシステムのために予約されています。</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 9.5 -->
+        <section id="id-95">
+            <h2>9.5 他の PQC スキームとの比較</h2>
+
+            <h3>標準化された耐量子 KEM（NIST 2024）</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>スキーム</th>
+                        <th>数学的基盤</th>
+                        <th>公開鍵</th>
+                        <th>暗号文</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE（格子）</td>
+                        <td>1184 B</td>
+                        <td>1088 B</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>誤り訂正符号</td>
+                        <td>~1541 B</td>
+                        <td>~1573 B</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>誤り訂正符号</td>
+                        <td>~2249 B</td>
+                        <td>~4522 B</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>Goppa 符号</td>
+                        <td>~261 KB</td>
+                        <td>128 B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>古典的暗号との比較</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>スキーム</th>
+                        <th>公開鍵</th>
+                        <th>耐量子セキュリティ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 B</td>
+                        <td>❌ 脆弱</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 B</td>
+                        <td>❌ 脆弱</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 B</td>
+                        <td>✅ 164+ ビット</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>主なコストはサイズの増加（ECDH の約 37 倍）ですが、現代の TLS ハンドシェイクには許容範囲です。</p>
+        </section>
+
+        <!-- Section 9.6 -->
+        <section id="id-96">
+            <h2>9.6 サイドチャネルと安全な実装</h2>
+
+            <p>正しい実装でも、実行時間や消費電力などの情報が漏洩する場合、脆弱になる可能性があります。</p>
+
+            <h3>定数時間（CT）</h3>
+            <p>すべての演算は、秘密データに関係なく一定の時間で実行されなければなりません。Decaps での重要な例：</p>
+
+            <pre><code class="language-c">// 安全でない（変動時間）：
+if (memcmp(c, c_prime, len) == 0) { 
+    K = K_good; 
+} else { 
+    K = K_reject; 
+}
+
+// 安全（定数時間）：
+uint8_t mask = ct_memcmp(c, c_prime, len); // 一致なら 0xFF、不一致なら 0x00
+K = ct_select(mask, K_good, K_reject);     // 分岐なしの CT 選択</code></pre>
+
+            <h3>ML-KEM における CT の重要領域</h3>
+            <ul>
+                <li><strong><span class="math">\(B_\eta\)</span> サンプリング：</strong> 条件分岐なしのビット加算。</li>
+                <li><strong>NTT：</strong> バタフライ演算は、結果が変わらない場合でも常に実行されなければなりません。</li>
+                <li><strong>暗号文検証：</strong> <code>ct_memcmp</code> の使用。</li>
+            </ul>
+
+            <h3>リファレンス実装</h3>
+            <ul>
+                <li><code>pqclean</code>：ポータブルな CT 実装。</li>
+                <li><code>liboqs</code>：CT 特性が検証された AVX2 最適化。</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="8.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">次の章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

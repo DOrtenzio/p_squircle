@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – जालक (लैटिस)</h1>
+        <p class="subtitle">क्वांटम-पश्चात क्रिप्टोग्राफी के आधार पर गणितीय संरचना</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-41">4.1 जालक की परिभाषा</a></li>
+                <li><a href="#id-42">4.2 जालकों पर कठिन समस्याएँ</a></li>
+                <li><a href="#id-43">4.3 SVP से LWE तक</a></li>
+                <li><a href="#id-44">4.4 LWE: त्रुटियों के साथ अधिगम</a></li>
+                <li><a href="#id-45">4.5 RLWE: वलय पर भिन्नता</a></li>
+                <li><a href="#id-46">4.6 MLWE: ML-KEM का आधार</a></li>
+                <li><a href="#id-47">4.7 जालकों की क्वांटम-पश्चात सुरक्षा</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 जालक की परिभाषा</h2>
+
+            <h3>औपचारिक परिभाषा</h3>
+
+            <p><span class="math">\(\mathbb{R}^m\)</span> में एक <strong>जालक (लैटिस)</strong> <span class="math">\(\mathcal{L}\)</span>, <span class="math">\(n\)</span> रैखिकतः स्वतंत्र सदिशों <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span> के सभी पूर्णांक रैखिक संयोजनों का समुच्चय है:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>सदिश <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> जालक का एक <strong>आधार (basis)</strong> बनाते हैं।</p>
+
+            <h3>ज्यामितीय अंतर्ज्ञान</h3>
+
+            <p>2D में, बिंदुओं की एक अनंत ग्रिड की कल्पना करें। प्रत्येक बिंदु दो आधार सदिशों के पूर्णांक (वास्तविक नहीं) संयोजन से पहुँचा जा सकता है:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>यह मानक पूर्णांक ग्रिड <span class="math">\(\mathbb{Z}^2\)</span> है।</p>
+
+            <p>लेकिन एक ही ग्रिड के अनंत आधार हो सकते हैं:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>एक ही जालक उत्पन्न करते हैं। कुछ आधार "अच्छे" होते हैं (छोटे और लगभग लंबकोणीय सदिश), अन्य "बुरे" होते हैं (लंबे और लगभग समानांतर सदिश)।</p>
+
+            <h3>आयाम और रैंक</h3>
+
+            <ul>
+                <li><strong>परिवेशीय आयाम (Ambient dimension)</strong> <span class="math">\(m\)</span>: प्रत्येक सदिश के निर्देशांकों की संख्या</li>
+                <li><strong>रैंक</strong> <span class="math">\(n\)</span>: आधार में सदिशों की संख्या</li>
+            </ul>
+
+            <p>यदि <span class="math">\(n = m\)</span>: पूर्ण-रैंक जालक (<em>full-rank lattice</em>)</p>
+
+            <p>क्रिप्टोग्राफी में हम आमतौर पर <span class="math">\(n = m\)</span> वाले बहुत बड़े जालकों (256–4096) का उपयोग करते हैं।</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 जालकों पर कठिन समस्याएँ</h2>
+
+            <h3>SVP – लघुतम सदिश समस्या (Shortest Vector Problem)</h3>
+
+            <p><strong>दिया गया है:</strong> एक जालक <span class="math">\(\mathcal{L}\)</span> का आधार <span class="math">\(B\)</span><br />
+            <strong>खोजें:</strong> <span class="math">\(\mathcal{L}\)</span> में सबसे छोटा गैर-शून्य सदिश</p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{ऐसा } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ खोजें कि } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>2D में यह आसान है (गॉस एल्गोरिथ्म)। उच्च आयाम (सैकड़ों) में, यह कुछ मान्यताओं के तहत <strong>NP-hard</strong> है, और ज्ञात सर्वोत्तम एल्गोरिथ्म को घातांकीय समय की आवश्यकता होती है।</p>
+
+            <h3>CVP – निकटतम सदिश समस्या (Closest Vector Problem)</h3>
+
+            <p><strong>दिया गया है:</strong> <span class="math">\(\mathcal{L}\)</span> का आधार <span class="math">\(B\)</span> और एक लक्ष्य बिंदु <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (जालक में नहीं)<br />
+            <strong>खोजें:</strong> <span class="math">\(\mathbf{t}\)</span> के सबसे निकट का जालक बिंदु</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{ऐसा } \mathbf{v} \in \mathcal{L} \text{ खोजें कि } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP कम से कम SVP जितना कठिन है। यह ML-KEM में डिकैप्सुलेशन के केंद्र में है: जो गोपनीय <span class="math">\(\mathbf{s}\)</span> जानता है वह संबंधित "आसान" CVP को हल कर सकता है, जो नहीं जानता वह नहीं कर सकता।</p>
+
+            <h3>GapSVP और SIS</h3>
+
+            <p>अनुमानित भिन्नताएँ (GapSVP) और संबंधित समस्याएँ (SIS – Short Integer Solution) मौजूद हैं जो जालक-आधारित क्रिप्टोग्राफी की सुरक्षा प्रमाणों का आधार बनती हैं। यहाँ यह जानना पर्याप्त है कि ये सभी एक-दूसरे से संबंधित हैं, जो कठिन समस्याओं का एक परिवार बनाती हैं।</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 SVP से LWE तक</h2>
+
+            <p>SVP से क्रिप्टोग्राफ़िक प्रणाली कैसे बनाई जाती है?</p>
+
+            <p>रेगेव (2005) का विचार: SVP के साथ सीधे काम करने के बजाय (ज्यामितीय रूप से सहज लेकिन उपयोग में असुविधाजनक), एक समतुल्य सांख्यिकीय समस्या परिभाषित की जाती है: <strong>Learning With Errors (LWE)</strong>।</p>
+
+            <p>सुरक्षा कटौती दर्शाती है कि:</p>
+
+            <blockquote>
+                <p>यदि LWE तोड़ा जाता है ⇒ GapSVP हल हो जाता है</p>
+            </blockquote>
+
+            <p>इसलिए LWE उच्च आयाम में GapSVP से <strong>कम से कम उतना ही कठिन</strong> है।</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: त्रुटियों के साथ अधिगम</h2>
+
+            <h3>परिभाषा</h3>
+
+            <p>पैरामीटर <span class="math">\(n\)</span> (आयाम), <span class="math">\(q\)</span> (मॉड्यूलस), <span class="math">\(\chi\)</span> (शोर वितरण) निर्धारित करें:</p>
+
+            <p><strong>LWE वितरण:</strong> गोपनीय <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> चुनें। नमूने उत्पन्न करें:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>जहाँ <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> एकसमान है, <span class="math">\(e \leftarrow \chi\)</span> छोटा है।</p>
+
+            <p><strong>निर्णयात्मक LWE समस्या:</strong> नमूनों <span class="math">\((\mathbf{a}, b)\)</span> को यादृच्छिक एकसमान युग्मों <span class="math">\((\mathbf{a}, u)\)</span> से अलग करना, जहाँ <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>।</p>
+
+            <p><strong>खोज LWE समस्या:</strong> नमूनों <span class="math">\((\mathbf{a}_i, b_i)\)</span> के समुच्चय से <span class="math">\(\mathbf{s}\)</span> खोजना।</p>
+
+            <h3>LWE के पैरामीटर</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>पैरामीटर</th>
+                        <th>प्रतीक</th>
+                        <th>भूमिका</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>आयाम</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>सुरक्षा <span class="math">\(n\)</span> में घातांकीय रूप से बढ़ती है</td>
+                    </tr>
+                    <tr>
+                        <td>मॉड्यूलस</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>शोर को समाहित करने के लिए पर्याप्त बड़ा होना चाहिए</td>
+                    </tr>
+                    <tr>
+                        <td>त्रुटि वितरण</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>विविक्त गाउसियन या केंद्रित द्विपद</td>
+                    </tr>
+                    <tr>
+                        <td>शोर/संकेत अनुपात</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>छोटा होना चाहिए लेकिन बहुत छोटा नहीं</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>n=2, q=7 के साथ उदाहरण</h3>
+
+            <p>गोपनीय: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>छोटी त्रुटियों <span class="math">\(\{-1, 0, 1\}\)</span> के साथ LWE नमूने:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>सदिश a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>त्रुटियों वाली प्रणाली को देखते हुए, <span class="math">\(\mathbf{s}\)</span> खोजना कठिन है: आप गॉसियन विलोपन का उपयोग नहीं कर सकते क्योंकि <span class="math">\(b_i\)</span> मान सटीक नहीं हैं।</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: वलय पर भिन्नता</h2>
+
+            <p>मानक LWE सदिशों का उपयोग करता है। <strong>Ring-LWE (RLWE)</strong> संक्रियाओं को बहुपदीय वलय में स्थानांतरित करता है:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>RLWE में:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (एक बहुपद, पूर्णांकों का सदिश नहीं)</li>
+                <li><span class="math">\(a \in R_q\)</span> (एकसमान रूप से प्रतिचयित)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>RLWE के LWE की तुलना में लाभ:</strong></p>
+            <ul>
+                <li>कुंजी का आकार: <span class="math">\(O(n^2)\)</span> के बजाय <span class="math">\(O(n)\)</span></li>
+                <li>गति: NTT के साथ बहुपदीय गुणन <span class="math">\(O(n^2)\)</span> के बजाय <span class="math">\(O(n \log n)\)</span> है</li>
+            </ul>
+
+            <p><strong>नुकसान:</strong> अतिरिक्त बीजगणितीय संरचना → संभावित रूप से अधिक संवेदनशील; सुरक्षा प्रमाण थोड़ा कमजोर है।</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: ML-KEM का आधार</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> LWE और RLWE के बीच एक समझौता है: यह बहुपदों के मॉड्यूल (R_q में बहुपदों की मैट्रिक्स) का उपयोग करता है।</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>पैरामीटर <span class="math">\(k\)</span> <strong>मॉड्यूल आयाम</strong> है:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> ML-KEM-512 के लिए</li>
+                <li><span class="math">\(k = 3\)</span> ML-KEM-768 के लिए</li>
+                <li><span class="math">\(k = 4\)</span> ML-KEM-1024 के लिए</li>
+            </ul>
+
+            <p><strong>MLWE क्यों?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>योजना</th>
+                        <th>कुंजी का आकार</th>
+                        <th>गति</th>
+                        <th>सुरक्षा</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → बड़ा</td>
+                        <td>धीमा</td>
+                        <td>अधिक रूढ़िवादी</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → छोटा</td>
+                        <td>तेज़</td>
+                        <td>अतिरिक्त संरचना</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → मध्यम</td>
+                        <td>तेज़</td>
+                        <td>संतुलित</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE <span class="math">\(n\)</span> को बदले बिना <span class="math">\(k\)</span> को भिन्न करके सुरक्षा को स्केल करने की अनुमति देता है, जबकि वलय संरचना की अनुकूलन क्षमता को बनाए रखता है।</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 जालकों की क्वांटम-पश्चात सुरक्षा</h2>
+
+            <h3>सर्वोत्तम शास्त्रीय एल्गोरिथ्म: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>BKZ एल्गोरिथ्म और इसकी भिन्नताएँ (BKZ 2.0, G6K) जालकों पर हमला करने के लिए सर्वोत्तम शास्त्रीय एल्गोरिथ्म हैं। ML-KEM-768 के लिए उनकी जटिलता <span class="math">\(> 2^{178}\)</span> ऑपरेशन अनुमानित है।</p>
+
+            <h3>क्वांटम कंप्यूटरों का प्रभाव</h3>
+
+            <p>MLWE पर हमला करने के लिए सर्वोत्तम ज्ञात क्वांटम एल्गोरिथ्म (QRAM वाले दृष्टिकोणों सहित) मामूली त्वरण प्रदान करते हैं — अधिकतम द्विघात, समस्या की कठिनाई को घातांकीय शासन में बनाए रखते हैं।</p>
+
+            <p>यह शोर के साथ तीव्र विरोधाभास है, जो गुणनखंडन और DLP पर घातांकीय त्वरण प्रदान करता है।</p>
+
+            <h3>MLWE के पास "शोर का एल्गोरिथ्म" क्यों नहीं है</h3>
+
+            <p>MLWE में वह एबेलियन समूह संरचना नहीं है जिसका शोर फायदा उठाता है। समस्या मौलिक रूप से भिन्न है: यह किसी फलन में आवर्तता खोजने का मामला नहीं है, बल्कि उच्च-आयामी जालक में एक छोटा सदिश खोजने का — एक ज्यामितीय समस्या जिसके लिए कोई ज्ञात घातांकीय त्वरण वाली क्वांटम तकनीक नहीं है।</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, अध्याय 17</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

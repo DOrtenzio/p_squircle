@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第4章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – 格子（ラティス）</h1>
+        <p class="subtitle">耐量子暗号の基礎となる数学的構造</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-41">4.1 格子の定義</a></li>
+                <li><a href="#id-42">4.2 格子上の困難な問題</a></li>
+                <li><a href="#id-43">4.3 SVP から LWE へ</a></li>
+                <li><a href="#id-44">4.4 LWE：Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE：環上の変種</a></li>
+                <li><a href="#id-46">4.6 MLWE：ML‑KEM の基盤</a></li>
+                <li><a href="#id-47">4.7 格子の耐量子セキュリティ</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 格子の定義</h2>
+
+            <h3>形式的定義</h3>
+
+            <p><span class="math">\(\mathbb{R}^m\)</span> における<strong>格子</strong> <span class="math">\(\mathcal{L}\)</span> は、<span class="math">\(n\)</span> 個の線形独立なベクトル <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span> の整数係数線形結合すべての集合です。</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>ベクトル <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> は格子の<strong>基底</strong>を形成します。</p>
+
+            <h3>幾何学的直感</h3>
+
+            <p>2次元では、無限に広がる点のグリッドを想像してください。各点は、2つの基底ベクトルの整数（実数ではない）組み合わせで到達可能です。</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>これは標準的な整数格子 <span class="math">\(\mathbb{Z}^2\)</span> です。</p>
+
+            <p>しかし、同じ格子には無限に多くの異なる基底が存在します。</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>これらは同じ格子を生成します。ある基底は「良い」（短く、ほぼ直交）であり、他の基底は「悪い」（長く、ほぼ平行）です。</p>
+
+            <h3>次元とランク</h3>
+
+            <ul>
+                <li><strong>空間次元</strong> <span class="math">\(m\)</span>：各ベクトルの座標数</li>
+                <li><strong>ランク</strong> <span class="math">\(n\)</span>：基底内のベクトル数</li>
+            </ul>
+
+            <p><span class="math">\(n = m\)</span> の場合：完全ランク格子（<em>full-rank lattice</em>）</p>
+
+            <p>暗号では通常、<span class="math">\(n = m\)</span> が非常に大きい（256～4096）格子を使用します。</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 格子上の困難な問題</h2>
+
+            <h3>SVP – 最短ベクトル問題</h3>
+
+            <p><strong>入力：</strong> 格子 <span class="math">\(\mathcal{L}\)</span> の基底 <span class="math">\(B\)</span><br />
+            <strong>目的：</strong> <span class="math">\(\mathcal{L}\)</span> 内の非ゼロで最も短いベクトルを見つける</p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{すべての } \mathbf{u} \in \mathcal{L} \setminus \{0\} に対して \|\mathbf{v}\| \leq \|\mathbf{u}\| となる \mathbf{v} \in \mathcal{L} \setminus \{0\} を見つける
+                \]
+            </div>
+
+            <p>2次元では簡単です（Gauss のアルゴリズム）。高次元（数百）では、ある仮定の下で <strong>NP困難</strong> であり、既知の最良アルゴリズムは指数時間を要します。</p>
+
+            <h3>CVP – 最近接ベクトル問題</h3>
+
+            <p><strong>入力：</strong> <span class="math">\(\mathcal{L}\)</span> の基底 <span class="math">\(B\)</span> とターゲット点 <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span>（格子点上ではない）<br />
+            <strong>目的：</strong> <span class="math">\(\mathbf{t}\)</span> に最も近い格子点を見つける</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{すべての } \mathbf{u} \in \mathcal{L} に対して \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| となる \mathbf{v} \in \mathcal{L} を見つける
+                \]
+            </div>
+
+            <p>CVP は SVP と少なくとも同程度に困難です。これは ML-KEM のカプセル化解除の中核にあります。秘密 <span class="math">\(\mathbf{s}\)</span> を知っている者は対応する「簡単な」CVP を解くことができ、知らない者は解けません。</p>
+
+            <h3>GapSVP と SIS</h3>
+
+            <p>近似版（GapSVP）や関連問題（SIS – 短整数解問題）が存在し、これらが格子ベース暗号のセキュリティ証明の基礎を形成します。ここでは、これらすべてが相互に還元可能であり、困難な問題のファミリーを形成することを知っていれば十分です。</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 SVP から LWE へ</h2>
+
+            <p>SVP から暗号システムをどのように構築するのでしょうか？</p>
+
+            <p>Regev（2005）のアイデア：SVP（幾何学的には直感的だが使用が面倒）を直接扱う代わりに、等価な統計的問題を定義します。<strong>Learning With Errors（LWE）</strong> です。</p>
+
+            <p>セキュリティの還元は以下を示します。</p>
+
+            <blockquote>
+                <p>LWE が破られる ⇒ GapSVP が解ける</p>
+            </blockquote>
+
+            <p>したがって、LWE は高次元の GapSVP と<strong>少なくとも同程度に困難</strong>です。</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE：Learning With Errors</h2>
+
+            <h3>定義</h3>
+
+            <p>パラメータ <span class="math">\(n\)</span>（次元）、<span class="math">\(q\)</span>（法）、<span class="math">\(\chi\)</span>（誤差分布）を固定します。</p>
+
+            <p><strong>LWE 分布：</strong> 秘密 <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> を選択。以下のサンプルを生成します。</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>ここで <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> は一様、<span class="math">\(e \leftarrow \chi\)</span> は小さい値です。</p>
+
+            <p><strong>判定型 LWE 問題：</strong> サンプル <span class="math">\((\mathbf{a}, b)\)</span> を、一様ランダムなペア <span class="math">\((\mathbf{a}, u)\)</span>（<span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>）と区別すること。</p>
+
+            <p><strong>探索型 LWE 問題：</strong> サンプルの集合 <span class="math">\((\mathbf{a}_i, b_i)\)</span> が与えられたとき、<span class="math">\(\mathbf{s}\)</span> を見つけること。</p>
+
+            <h3>LWE のパラメータ</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>パラメータ</th>
+                        <th>記号</th>
+                        <th>役割</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>次元</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>セキュリティは <span class="math">\(n\)</span> に対して指数関数的に増加</td>
+                    </tr>
+                    <tr>
+                        <td>法</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>誤差を収容できる十分な大きさが必要</td>
+                    </tr>
+                    <tr>
+                        <td>誤差分布</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>離散ガウス分布または中心二項分布</td>
+                    </tr>
+                    <tr>
+                        <td>信号対雑音比</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>小さすぎず大きすぎない値が必要</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>n=2, q=7 の例</h3>
+
+            <p>秘密：<span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p><span class="math">\(\{-1, 0, 1\}\)</span> の小さい誤差を持つ LWE サンプル：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ベクトル a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>誤差を含むこの系が与えられたとき、<span class="math">\(\mathbf{s}\)</span> を見つけることは困難です。なぜなら <span class="math">\(b_i\)</span> の値が正確ではないため、Gauss の消去法を使用できないからです。</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE：環上の変種</h2>
+
+            <p>標準的な LWE はベクトルを使用します。<strong>Ring-LWE（RLWE）</strong> は演算を多項式環に移します。</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>RLWE では：</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span>（整数のベクトルではなく多項式）</li>
+                <li><span class="math">\(a \in R_q\)</span>（一様にサンプリング）</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>RLWE の LWE に対する利点：</strong></p>
+            <ul>
+                <li>鍵サイズ：<span class="math">\(O(n^2)\)</span> ではなく <span class="math">\(O(n)\)</span></li>
+                <li>速度：NTT による多項式乗算は <span class="math">\(O(n^2)\)</span> ではなく <span class="math">\(O(n \log n)\)</span></li>
+            </ul>
+
+            <p><strong>欠点：</strong> 追加の代数構造 → 潜在的に脆弱性が高まる。セキュリティ証明はやや弱い。</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE：ML‑KEM の基盤</h2>
+
+            <p><strong>Module-LWE（MLWE）</strong> は LWE と RLWE の妥協案です。多項式のモジュール（<span class="math">\(R_q\)</span> 上の多項式行列）を使用します。</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>パラメータ <span class="math">\(k\)</span> は<strong>モジュール次元</strong>です。</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span>（ML-KEM-512 用）</li>
+                <li><span class="math">\(k = 3\)</span>（ML-KEM-768 用）</li>
+                <li><span class="math">\(k = 4\)</span>（ML-KEM-1024 用）</li>
+            </ul>
+
+            <p><strong>なぜ MLWE なのか？</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>スキーム</th>
+                        <th>鍵サイズ</th>
+                        <th>速度</th>
+                        <th>セキュリティ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → 大きい</td>
+                        <td>遅い</td>
+                        <td>より保守的</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → 小さい</td>
+                        <td>速い</td>
+                        <td>追加構造あり</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → 中程度</td>
+                        <td>速い</td>
+                        <td>バランスが良い</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE は <span class="math">\(n\)</span> を変更せずに <span class="math">\(k\)</span> を変えることでセキュリティをスケール可能にし、環構造の最適化を維持します。</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 格子の耐量子セキュリティ</h2>
+
+            <h3>最良の古典的アルゴリズム：BKZ（Block Korkine-Zolotarev）</h3>
+
+            <p>BKZ およびその変種（BKZ 2.0、G6K）は、格子を攻撃するための最良の古典的アルゴリズムです。ML-KEM-768 に対するそれらの複雑性は <span class="math">\(> 2^{178}\)</span> 回の演算と見積もられています。</p>
+
+            <h3>量子コンピュータの影響</h3>
+
+            <p>MLWE を攻撃するための最良の量子アルゴリズム（QRAM を用いたアプローチを含む）は、せいぜい二次の高速化しか提供せず、問題の困難性を指数関数的領域に維持します。</p>
+
+            <p>これは、因数分解と DLP に対して指数関数的な高速化を提供する Shor のアルゴリズムとは対照的です。</p>
+
+            <h3>なぜ MLWE には「Shor のアルゴリズム」が存在しないのか</h3>
+
+            <p>MLWE は Shor が利用するアーベル群構造を持ちません。問題は根本的に異なります。関数の周期性を見つける問題ではなく、高次元格子内の短いベクトルを見つける幾何学的問題であり、これに対して指数関数的な高速化をもたらす量子技術は知られていません。</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, 第17章</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">次の章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

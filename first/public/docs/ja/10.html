@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第10章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>10 – 実践的な実装</h1>
+        <p class="subtitle">理論から実践へ：ライブラリ、TLS統合、移行</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-101">10.1 liboqs：C言語リファレンスライブラリ</a></li>
+                <li><a href="#id-102">10.2 完全な例：C言語でのML-KEM-768によるKEM</a></li>
+                <li><a href="#id-103">10.3 導出鍵をAES-256-GCMで使用する</a></li>
+                <li><a href="#id-104">10.4 Python：liboqsバインディング</a></li>
+                <li><a href="#id-105">10.5 Python：kyber-py（教育目的のみ）</a></li>
+                <li><a href="#id-106">10.6 パフォーマンスベンチマーク</a></li>
+                <li><a href="#id-107">10.7 OpenSSL：OQSプロバイダのインストール</a></li>
+                <li><a href="#id-108">10.8 OpenSSL CLIでのML-KEM鍵生成</a></li>
+                <li><a href="#id-109">10.9 ML-KEM-768を使用したTLS 1.3</a></li>
+                <li><a href="#id-1010">10.10 ハイブリッド戦略：X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 TLS 1.3におけるハイブリッド暗号スイート</a></li>
+                <li><a href="#id-1012">10.12 OpenSSLを使用したCアプリケーションへの統合</a></li>
+                <li><a href="#id-1013">10.13 移行のためのチェックリスト</a></li>
+                <li><a href="#id-1014">10.14 シナリオ：REST APIの移行</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 10.1 -->
+        <section id="id-101">
+            <h2>10.1 liboqs：C言語リファレンスライブラリ</h2>
+
+            <p><strong>liboqs</strong> は、Open Quantum Safe（OQS）プロジェクトによって開発された、耐量子暗号のためのC言語リファレンスライブラリです。ML-KEMおよびNISTによって標準化された他のPQCアルゴリズムの最適化された定数時間実装を提供します。</p>
+
+            <h3>ソースからのインストール</h3>
+            <div class="code-block">
+                <pre><code># 依存関係（Ubuntu/Debian）
+sudo apt-get install cmake gcc libssl-dev
+
+# クローンとコンパイル
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+sudo make install</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.2 -->
+        <section id="id-102">
+            <h2>10.2 完全な例：C言語でのML-KEM-768によるKEM</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+int main() {
+    OQS_STATUS rc;
+    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
+
+    // アルゴリズムの初期化
+    OQS_KEM *kem = OQS_KEM_new(kem_alg);
+    if (kem == NULL) {
+        fprintf(stderr, "KEMがサポートされていません\n");
+        return 1;
+    }
+
+    printf("アルゴリズム: %s\n", kem-&gt;method_name);
+    printf("公開鍵: %zu バイト\n", kem-&gt;length_public_key);
+    printf("秘密鍵: %zu バイト\n", kem-&gt;length_secret_key);
+    printf("暗号文: %zu バイト\n", kem-&gt;length_ciphertext);
+    printf("共有秘密: %zu バイト\n\n", kem-&gt;length_shared_secret);
+
+    // メモリ割り当て
+    uint8_t *pk = malloc(kem-&gt;length_public_key);
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
+
+    // 1. KeyGen（アリス）
+    rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen失敗\n"); return 1; }
+    printf("✓ KeyGen完了\n");
+
+    // 2. Encaps（ボブ：pkのみを知っている）
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps失敗\n"); return 1; }
+    printf("✓ Encaps完了\n");
+
+    // 3. Decaps（アリス：skを使用してctを開く）
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps失敗\n"); return 1; }
+    printf("✓ Decaps完了\n\n");
+
+    // 4. 検証
+    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
+        printf("✅ 共有秘密が一致しました！\n");
+        printf("   最初のバイト: ");
+        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
+        printf("...\n");
+    } else {
+        printf("❌ エラー：共有秘密が異なります！\n");
+    }
+
+    // 安全なメモリ消去
+    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
+    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
+    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
+    free(pk); free(ct);
+    OQS_KEM_free(kem);
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <p><strong>コンパイル：</strong></p>
+            <div class="code-block">
+                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
+./kem_example</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.3 -->
+        <section id="id-103">
+            <h2>10.3 導出鍵をAES-256-GCMで使用する</h2>
+
+            <p>ML-KEMから共有秘密を取得した後、それを対称暗号の鍵として使用できます。本番環境では、HKDFを使用して個別の鍵を導出することを推奨します。</p>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+// ML-KEMからss（32バイト）を取得した後：
+void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
+                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
+                           const uint8_t *nonce) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
+
+    // AES-256-GCMの初期化
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
+
+    // 共有秘密を鍵として使用
+    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
+
+    // 暗号化
+    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
+
+    // 認証タグを取得
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
+
+    EVP_CIPHER_CTX_free(ctx);
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.4 -->
+        <section id="id-104">
+            <h2>10.4 Python：liboqsバインディング</h2>
+
+            <p>Liboqsは、迅速なテストとプロトタイピングのための公式Pythonバインディングを提供しています。</p>
+
+            <div class="code-block">
+                <pre><code>pip install liboqs-python</code></pre>
+            </div>
+
+            <div class="code-block">
+                <pre><code class="language-python">import oqs
+
+# 利用可能なアルゴリズム
+kem = oqs.KeyEncapsulation("ML-KEM-768")
+
+# KeyGen
+public_key = kem.generate_keypair()
+
+# Encaps（ボブ側）
+kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
+ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
+
+# Decaps（アリス側）
+shared_secret_dec = kem.decap_secret(ciphertext)
+
+assert shared_secret_enc == shared_secret_dec
+print(f"✓ 共有秘密: {shared_secret_enc.hex()[:16]}...")
+
+kem.free()
+kem_bob.free()</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.5 -->
+        <section id="id-105">
+            <h2>10.5 Python：kyber-py（教育目的のみ）</h2>
+
+            <p>純粋に教育目的のために、外部Cライブラリを必要としないPythonのみの実装が存在します。</p>
+
+            <div class="note warning">
+                <p><strong>注意：</strong> <code>kyber-py</code> は定数時間ではなく、本番環境で使用してはいけません。</p>
+            </div>
+
+            <div class="code-block">
+                <pre>
+                    <code class="language-python">
+                        from kyber import Kyber768
+                        kem = Kyber768()
+                        pk, sk = kem.keygen()
+                        key, ciphertext = kem.enc(pk)
+                        _key = kem.dec(sk, ciphertext)
+                        assert key == _key
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Section 10.6 -->
+        <section id="id-106">
+            <h2>10.6 パフォーマンスベンチマーク</h2>
+
+            <p>Intel Core i7-12700K（1コア、SIMD命令なし）でのベンチマーク：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作</th>
+                        <th>ML-KEM-512</th>
+                        <th>ML-KEM-768</th>
+                        <th>ML-KEM-1024</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>24 µs</td>
+                        <td>37 µs</td>
+                        <td>54 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>28 µs</td>
+                        <td>43 µs</td>
+                        <td>62 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>32 µs</td>
+                        <td>48 µs</td>
+                        <td>70 µs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>AVX2最適化あり</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作</th>
+                        <th>ML-KEM-768（SIMDなし）</th>
+                        <th>ML-KEM-768（AVX2）</th>
+                        <th>高速化</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>37 µs</td>
+                        <td>~10 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>43 µs</td>
+                        <td>~12 µs</td>
+                        <td>~3.6×</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>48 µs</td>
+                        <td>~13 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ECDH X25519との比較</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>X25519</th>
+                        <th>ML-KEM-768</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>~14 µs</td>
+                        <td>~37 µs</td>
+                    </tr>
+                    <tr>
+                        <td>交換</td>
+                        <td>~30 µs</td>
+                        <td>~48 µs</td>
+                    </tr>
+                    <tr>
+                        <td>公開鍵</td>
+                        <td>32 B</td>
+                        <td>1184 B</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ML-KEMはX25519より約2倍遅いですが、実際の接続におけるTLSハンドシェイクのレイテンシに対するオーバーヘッド（1 ms未満）はほとんどの場合無視できます。</p>
+        </section>
+
+        <!-- Section 10.7 -->
+        <section id="id-107">
+            <h2>10.7 OpenSSL：OQSプロバイダのインストール</h2>
+
+            <p>OpenSSL 3.xは、プロバイダ <code>oqsprovider</code> を通じてML-KEMをサポートします。バージョン3.4以降、サポートはネイティブまたは容易に統合可能です。</p>
+
+            <div class="code-block">
+                <pre><code># oqs-providerのコンパイル
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
+make
+sudo make install
+
+# 確認
+openssl list -providers
+# 表示されるはず：oqsprovider</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.8 -->
+        <section id="id-108">
+            <h2>10.8 OpenSSL CLIでのML-KEM鍵生成</h2>
+
+            <div class="code-block">
+                <pre><code># ML-KEM-768鍵ペアの生成
+openssl genpkey -algorithm mlkem768 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+
+# 鍵の詳細を表示
+openssl pkey -in private.pem -text -noout</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.9 -->
+        <section id="id-109">
+            <h2>10.9 ML-KEM-768を使用したTLS 1.3</h2>
+
+            <h3>ローカルテスト（サーバー + クライアント）</h3>
+            <div class="code-block">
+                <pre><code># サーバー
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups mlkem768
+
+# クライアント（別のターミナルで）
+openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
+            </div>
+
+            <h3>サポートされているグループの確認</h3>
+            <div class="code-block">
+                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.10 -->
+        <section id="id-1010">
+            <h2>10.10 ハイブリッド戦略：X25519 + ML-KEM-768</h2>
+
+            <p>移行に推奨されるアプローチは<strong>ハイブリッド化</strong>です。ECDH（X25519）とML-KEM-768を組み合わせます。最終鍵は両方から導出されます。</p>
+
+            <div class="math-block">
+                \[
+                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \]
+            </div>
+
+            <p><strong>利点：</strong> 少なくとも一方のスキームが安全であれば安全です。量子コンピュータがX25519を破ってもML-KEMが保護し、ML-KEMに未知の欠陥があってもX25519が保護します。</p>
+        </section>
+
+        <!-- Section 10.11 -->
+        <section id="id-1011">
+            <h2>10.11 TLS 1.3におけるハイブリッド暗号スイート</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>グループ名</th>
+                        <th>構成</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>X25519MLKEM768</code></td>
+                        <td>X25519 + ML-KEM-768</td>
+                    </tr>
+                    <tr>
+                        <td><code>SecP256r1MLKEM768</code></td>
+                        <td>P-256 + ML-KEM-768</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Chrome 131（2024年末）以降、<code>X25519MLKEM768</code> がデフォルトグループです。Firefox 128+も同じグループをサポートしています。</p>
+
+            <h3>OpenSSL設定</h3>
+            <div class="code-block">
+                <pre><code># クラシックX25519とハイブリッドグループの両方を受け入れるサーバー
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups X25519MLKEM768:x25519:P-256
+
+# ハイブリッドグループを優先するクライアント
+openssl s_client -connect localhost:4433 \
+    -groups X25519MLKEM768:x25519</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.12 -->
+        <section id="id-1012">
+            <h2>10.12 OpenSSLを使用したCアプリケーションへの統合</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
+#include &lt;openssl/err.h&gt;
+
+SSL_CTX *create_pqc_context(void) {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return NULL;
+    }
+
+    // 優先グループの設定：ハイブリッドを先に、クラシックをフォールバックとして
+    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
+        fprintf(stderr, "グループ設定エラー\n");
+        SSL_CTX_free(ctx);
+        return NULL;
+    }
+
+    return ctx;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.13 -->
+        <section id="id-1013">
+            <h2>10.13 移行のためのチェックリスト</h2>
+
+            <h3>アプリケーション開発者向け</h3>
+            <ul>
+                <li>公開鍵暗号（鍵交換、署名、KEM）が使用されている場所を棚卸しする。</li>
+                <li>5年以上秘密にしておく必要があるデータを特定する。</li>
+                <li>依存関係を更新する：OpenSSL ≥ 3.2、liboqs ≥ 0.10。</li>
+                <li>ハイブリッドアプローチを採用する：TLSには <code>X25519 + ML-KEM-768</code>。</li>
+                <li>デジタル署名については、ML-DSA（FIPS 204）またはSLH-DSA（FIPS 205）に移行する。</li>
+                <li>プロトコルにおける鍵と暗号文のサイズ増加をテストする。</li>
+                <li>タイムアウトやバッファサイズが小さな鍵を想定していないことを確認する。</li>
+            </ul>
+
+            <h3>インフラストラクチャ管理者向け</h3>
+            <ul>
+                <li>TLSスタックをML-KEMサポートバージョンに更新する。</li>
+                <li>TLSサーバーで <code>X25519MLKEM768</code> を有効にする。</li>
+                <li>クライアントの互換性を監視する（Chrome 131+、Firefox 128+はハイブリッドPQCをサポート）。</li>
+                <li>長期的な鍵ローテーションを計画する。</li>
+            </ul>
+
+            <h3>参考標準</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>標準</th>
+                        <th>内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIPS 203</td>
+                        <td>ML-KEM（鍵カプセル化）</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 204</td>
+                        <td>ML-DSA（格子ベースデジタル署名）</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 205</td>
+                        <td>SLH-DSA（ハッシュベース署名、保守的）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 10.14 -->
+        <section id="id-1014">
+            <h2>10.14 シナリオ：REST APIの移行</h2>
+
+            <h3>現在の状況（移行前）</h3>
+            <p>クライアント → TLS 1.3（X25519） → APIサーバー</p>
+
+            <h3>フェーズ1：ハイブリッド（現在、推奨）</h3>
+            <p>クライアント → TLS 1.3（X25519MLKEM768） → APIサーバー</p>
+
+            <div class="code-block">
+                <pre><code># nginx設定
+ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
+
+# Apache設定
+SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            </div>
+
+            <h3>フェーズ2：純粋な耐量子（将来）</h3>
+            <p>クライアント → TLS 1.3（ML-KEM-768 + ML-DSA） → APIサーバー</p>
+            <p>ほとんどのクライアントがML-KEMをネイティブサポートし、サーバー証明書が署名にML-DSAを使用するようになったときに採用します。</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>Open Quantum Safe project — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
+                <li>liboqsドキュメント — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
+                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
+                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
+                <li>IETF草案 — TLS 1.3におけるハイブリッド鍵交換</li>
+                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="9.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">10 / 10</span>
+            <a href="#" class="nav-btn disabled">ガイド終了 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/10.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

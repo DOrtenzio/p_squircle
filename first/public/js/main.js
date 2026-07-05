@@ -233,13 +233,24 @@ let currentPage = 0;
 const chaptersPerPage = 6;
 
 function getCurrentLang() {
-    const parts = window.location.pathname.split('/');
-
-    if (parts[3] && /^[a-z]{2}$/i.test(parts[3])) {
-        return parts[3].toLowerCase();
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const langFromPath = pathParts.find(p => /^[a-z]{2}$/i.test(p));
+    if (langFromPath && chaptersData[langFromPath.toLowerCase()]) {
+        return langFromPath.toLowerCase();
     }
 
-    return 'it';
+    const urlParams = new URLSearchParams(window.location.search);
+    const langFromParam = urlParams.get('lang');
+    if (langFromParam && chaptersData[langFromParam.toLowerCase()]) {
+        return langFromParam.toLowerCase();
+    }
+
+    const browserLang = navigator.language.split('-')[0];
+    if (chaptersData[browserLang]) {
+        return browserLang;
+    }
+
+    return 'it'; 
 }
 
 // Ottieni i capitoli per la lingua

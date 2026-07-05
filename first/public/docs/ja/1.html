@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第1章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – 対称鍵暗号</h1>
+        <p class="subtitle">PQC の全行程の実践的な到達点</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-11">1.1 対称鍵暗号とは</a></li>
+                <li><a href="#id-12">1.2 AES：Advanced Encryption Standard</a></li>
+                <li><a href="#id-13">1.3 動作モード</a></li>
+                <li><a href="#id-14">1.4 認証とAEAD</a></li>
+                <li><a href="#id-15">1.5 PQC における役割</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1.1 -->
+        <section id="id-11">
+            <h2>1.1 対称鍵暗号とは</h2>
+
+            <p><strong>対称鍵</strong>暗号システムでは、送信者と受信者は暗号化と復号に<strong>同じ鍵</strong> <span class="math">\(K\)</span> を使用します。</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{送信者: } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{受信者: } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>主な利点：</strong>効率性。AES-256 は最新のハードウェアで毎秒数十 GB の速度を達成します。</p>
+
+            <p><strong>欠点：</strong>通信を開始する<em>前に</em> <span class="math">\(K\)</span> を安全に交換するための安全なチャネルが必要です。これはまさに KEM が解決する問題です。</p>
+
+            <h3>対称鍵暗号のセキュリティ vs. 量子コンピュータ</h3>
+
+            <p>量子コンピュータは AES を破りません。Grover のアルゴリズムは鍵探索において<em>二次</em>の高速化をもたらしますが、</p>
+            <ul>
+                <li><strong>AES-128：</strong> 実効セキュリティが 128 ビットから約 64 ビットに低下 → 不十分</li>
+                <li><strong>AES-256：</strong> 実効セキュリティが 256 ビットから約 128 ビットに低下 → 依然として安全</li>
+            </ul>
+
+            <p>このため、FIPS 203（ML-KEM）は AES-256 で使用することを意図した 256 ビットの鍵を生成します。</p>
+        </section>
+
+        <!-- Section 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES：Advanced Encryption Standard</h2>
+
+            <p>AES は<strong>ブロック暗号</strong>です。128 ビットのブロックと鍵（<span class="math">\(K\)</span>）を入力として受け取り、128 ビットの暗号文を出力します。</p>
+
+            <h3>内部構造</h3>
+
+            <p>AES は入力 128 ビットをバイトの <span class="math">\(4 \times 4\)</span> 行列として整理します。次に、鍵サイズに応じて <span class="math">\(r\)</span> ラウンド（10、12、または 14）を適用します。各ラウンドは 4 つの変換から構成されます。</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>変換</th>
+                        <th>目的</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>S-Box による非線形置換（差分解読法への耐性）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>行の巡回シフト（拡散）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>列の線形結合（拡散）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>現在のラウンド鍵との XOR</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>鍵スケジュール</h3>
+
+            <p>元の鍵（<span class="math">\(K\)</span>、128、192、または 256 ビット）は、各ラウンドに 1 つずつ、<span class="math">\(r+1\)</span> 個のラウンド鍵に展開されます。</p>
+
+            <div class="example">
+                <p>AES-128：128 ビット鍵、10 ラウンド</p>
+                <p>AES-192：192 ビット鍵、12 ラウンド</p>
+                <p>AES-256：256 ビット鍵、14 ラウンド</p>
+            </div>
+
+            <h3>セキュリティ</h3>
+
+            <p>AES-128 に対する既知の最良の攻撃は <span class="math">\(2^{126.1}\)</span> 回の演算を必要とします（Biryukov &amp; Khovratovich, 2009）– 実質的には総当たり攻撃です。</p>
+        </section>
+
+        <!-- Section 1.3 -->
+        <section id="id-13">
+            <h2>1.3 動作モード</h2>
+
+            <p>AES は 128 ビットのブロックを暗号化します。しかし、実際のメッセージはより長いです。<strong>動作モード</strong>は、AES を繰り返し適用する方法を定義します。</p>
+
+            <h3>ECB（電子コードブック） – 使用禁止</h3>
+
+            <p>各ブロックは独立して暗号化されます。同一のブロックは同一の暗号文を生成します → 平文の構造が漏洩します。</p>
+
+            <h3>CBC（暗号ブロック連鎖）</h3>
+
+            <p>各平文ブロックは、暗号化される前に前のブロックの暗号文と XOR されます。ランダムな IV（初期化ベクトル）が必要です。</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>ECB よりも安全ですが、暗号化は並列化できません。</p>
+
+            <h3>CTR（カウンタモード） – 推奨</h3>
+
+            <p>増分カウンタを暗号化してキーストリームを生成します。平文はキーストリームと XOR されます。</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>暗号化と復号の両方で並列化可能です。AES をストリーム暗号に変換します。</p>
+
+            <h3>GCM（ガロア/カウンタモード） – TLS 1.3 で使用</h3>
+
+            <p>CTR とガロア体ベースの MAC を組み合わせます。機密性<strong>と</strong>完全性を提供します。</p>
+        </section>
+
+        <!-- Section 1.4 -->
+        <section id="id-14">
+            <h2>1.4 認証と AEAD</h2>
+
+            <p>機密性だけでは不十分です。攻撃者が受信者に気付かれずに暗号文を改ざんする可能性があります。<strong>完全性</strong>が必要です。</p>
+
+            <h3>MAC（メッセージ認証コード）</h3>
+
+            <p>MAC は関数 <span class="math">\(\text{MAC}(K, M) \to \tau\)</span> で、<span class="math">\(\tau\)</span> は<em>認証タグ</em>です。<span class="math">\(K\)</span> を知っている者だけが <span class="math">\(\tau\)</span> を生成および検証できます。</p>
+
+            <h3>AEAD（関連データ付き認証付き暗号化）</h3>
+
+            <p>暗号化と認証を単一のプリミティブに組み合わせます。</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{平文}) \to (\text{暗号文}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{暗号文}, \text{tag}) \to \text{平文}\)</span> または <span class="math">\(\perp\)</span>（タグが無効な場合）</p>
+            </div>
+
+            <p><code>AAD</code>（追加認証データ）は、認証されるが暗号化されないデータです（例：パケットヘッダー）。</p>
+
+            <p><strong>AES-256-GCM</strong> は、TLS 1.3 で使用される標準的な AEAD スキームであり、KEM 後の対称暗号としても使用されます。</p>
+        </section>
+
+        <!-- Section 1.5 -->
+        <section id="id-15">
+            <h2>1.5 PQC における役割</h2>
+
+            <p>実際の使用における完全な ML-KEM は次のように機能します。</p>
+
+            <div class="sequence-diagram">
+アリス                               ボブ
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, メッセージ) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  メッセージ = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ 安全な通信                     |
+            </div>
+
+            <p>ML-KEM によって生成された鍵 <span class="math">\(K\)</span>（32 バイト）は、AES 鍵として直接使用されるのではなく、異なるコンテキストを分離するために <strong>KDF（鍵導出関数）</strong>（HKDF など）で導出されます。</p>
+
+            <h3>実用的なサイズ（ML-KEM-768 + AES-256-GCM）</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>コンポーネント</th>
+                        <th>サイズ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM 公開鍵</td>
+                        <td>1184 バイト</td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM 暗号文</td>
+                        <td>1088 バイト</td>
+                    </tr>
+                    <tr>
+                        <td>共有秘密 → AES 鍵</td>
+                        <td>32 バイト</td>
+                    </tr>
+                    <tr>
+                        <td>AEAD オーバーヘッド（GCM タグ）</td>
+                        <td>16 バイト</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em>（第4～5章）<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">次の章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

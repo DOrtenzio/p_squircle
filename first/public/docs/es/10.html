@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capítulo 10 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax para las fórmulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Barra de herramientas (idéntica al índice) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Navegación rápida">
+            <a href="index.html#featureSection">Por qué</a>
+            <a href="index.html#learningPath">Recorrido</a>
+            <a href="index.html#searchSection">La Guía</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Seleccionar idioma">
+                    <span class="lang-current" id="langCurrent">🇪🇸 Español</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 idiomas -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal con barra lateral -->
+    <div class="container chapter-wrapper">
+        <!-- Barra lateral -->
+        <aside class="chapter-sidebar">
+            <h3>Capítulos</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Prerrequisitos</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simétrica</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimétrica</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Retículos</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Seguridad</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Implementaciones</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>10 – Implementaciones Prácticas</h1>
+        <p class="subtitle">De la teoría a la práctica: librerías, integración TLS y migración</p>
+
+        <!-- Índice -->
+        <div class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#id-101">10.1 liboqs: la librería C de referencia</a></li>
+                <li><a href="#id-102">10.2 Ejemplo completo: KEM con ML-KEM-768 en C</a></li>
+                <li><a href="#id-103">10.3 Usar la clave derivada con AES-256-GCM</a></li>
+                <li><a href="#id-104">10.4 Python: binding liboqs</a></li>
+                <li><a href="#id-105">10.5 Python: kyber-py (solo didáctico)</a></li>
+                <li><a href="#id-106">10.6 Benchmarks de rendimiento</a></li>
+                <li><a href="#id-107">10.7 OpenSSL: instalación del provider OQS</a></li>
+                <li><a href="#id-108">10.8 Generación de claves ML-KEM con OpenSSL CLI</a></li>
+                <li><a href="#id-109">10.9 TLS 1.3 con ML-KEM-768</a></li>
+                <li><a href="#id-1010">10.10 Estrategia híbrida: X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 Cipher suites híbridas en TLS 1.3</a></li>
+                <li><a href="#id-1012">10.12 Integración en aplicaciones C con OpenSSL</a></li>
+                <li><a href="#id-1013">10.13 Lista de verificación para la migración</a></li>
+                <li><a href="#id-1014">10.14 Escenario: migración de una API REST</a></li>
+            </ul>
+        </div>
+
+        <!-- Sección 10.1 -->
+        <section id="id-101">
+            <h2>10.1 liboqs: la librería C de referencia</h2>
+
+            <p><strong>liboqs</strong> es la librería C de referencia para criptografía post-cuántica, desarrollada por el proyecto Open Quantum Safe (OQS). Proporciona implementaciones optimizadas y de tiempo constante de ML-KEM y otros algoritmos PQC estandarizados por el NIST.</p>
+
+            <h3>Instalación desde fuentes</h3>
+            <div class="code-block">
+                <pre><code># Dependencias (Ubuntu/Debian)
+sudo apt-get install cmake gcc libssl-dev
+
+# Clonar y compilar
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+sudo make install</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.2 -->
+        <section id="id-102">
+            <h2>10.2 Ejemplo completo: KEM con ML-KEM-768 en C</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+int main() {
+    OQS_STATUS rc;
+    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
+
+    // Inicializar el algoritmo
+    OQS_KEM *kem = OQS_KEM_new(kem_alg);
+    if (kem == NULL) {
+        fprintf(stderr, "KEM no soportado\n");
+        return 1;
+    }
+
+    printf("Algoritmo: %s\n", kem-&gt;method_name);
+    printf("Clave pública: %zu bytes\n", kem-&gt;length_public_key);
+    printf("Clave privada: %zu bytes\n", kem-&gt;length_secret_key);
+    printf("Texto cifrado: %zu bytes\n", kem-&gt;length_ciphertext);
+    printf("Secreto compartido: %zu bytes\n\n", kem-&gt;length_shared_secret);
+
+    // Asignación de memoria
+    uint8_t *pk = malloc(kem-&gt;length_public_key);
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
+
+    // 1. KeyGen (Alice)
+    rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen falló\n"); return 1; }
+    printf("✓ KeyGen completada\n");
+
+    // 2. Encaps (Bob: solo conoce pk)
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps falló\n"); return 1; }
+    printf("✓ Encaps completada\n");
+
+    // 3. Decaps (Alice: usa sk para abrir ct)
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps falló\n"); return 1; }
+    printf("✓ Decaps completada\n\n");
+
+    // 4. Verificación
+    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
+        printf("✅ ¡Los secretos compartidos coinciden!\n");
+        printf("   Primeros bytes: ");
+        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
+        printf("...\n");
+    } else {
+        printf("❌ ERROR: ¡los secretos compartidos son diferentes!\n");
+    }
+
+    // Limpieza segura de memoria
+    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
+    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
+    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
+    free(pk); free(ct);
+    OQS_KEM_free(kem);
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <p><strong>Compilación:</strong></p>
+            <div class="code-block">
+                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
+./kem_example</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.3 -->
+        <section id="id-103">
+            <h2>10.3 Usar la clave derivada con AES-256-GCM</h2>
+
+            <p>Después de obtener el secreto compartido de ML-KEM, se puede usar como clave para un cifrador simétrico. En producción, se recomienda usar HKDF para derivar claves separadas.</p>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+// Después de obtener ss (32 bytes) de ML-KEM:
+void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
+                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
+                           const uint8_t *nonce) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
+
+    // Inicializar AES-256-GCM
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
+
+    // Usar el secreto compartido como clave
+    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
+
+    // Cifrado
+    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
+
+    // Recuperar la etiqueta de autenticación
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
+
+    EVP_CIPHER_CTX_free(ctx);
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.4 -->
+        <section id="id-104">
+            <h2>10.4 Python: binding liboqs</h2>
+
+            <p>Liboqs proporciona bindings oficiales para Python para pruebas rápidas y creación de prototipos.</p>
+
+            <div class="code-block">
+                <pre><code>pip install liboqs-python</code></pre>
+            </div>
+
+            <div class="code-block">
+                <pre><code class="language-python">import oqs
+
+# Algoritmo disponible
+kem = oqs.KeyEncapsulation("ML-KEM-768")
+
+# KeyGen
+public_key = kem.generate_keypair()
+
+# Encaps (lado de Bob)
+kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
+ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
+
+# Decaps (lado de Alice)
+shared_secret_dec = kem.decap_secret(ciphertext)
+
+assert shared_secret_enc == shared_secret_dec
+print(f"✓ Secreto compartido: {shared_secret_enc.hex()[:16]}...")
+
+kem.free()
+kem_bob.free()</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.5 -->
+        <section id="id-105">
+            <h2>10.5 Python: kyber-py (solo didáctico)</h2>
+
+            <p>Para propósitos puramente educativos, existe una implementación en Python puro que no requiere librerías C externas.</p>
+
+            <div class="note warning">
+                <p><strong>Atención:</strong> <code>kyber-py</code> no es de tiempo constante y no debe usarse en producción.</p>
+            </div>
+
+            <div class="code-block">
+                <pre>
+                    <code class="language-python">
+                        from kyber import Kyber768
+                        kem = Kyber768()
+                        pk, sk = kem.keygen()
+                        key, ciphertext = kem.enc(pk)
+                        _key = kem.dec(sk, ciphertext)
+                        assert key == _key
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.6 -->
+        <section id="id-106">
+            <h2>10.6 Benchmarks de rendimiento</h2>
+
+            <p>Benchmarks en Intel Core i7-12700K (un núcleo, sin instrucciones SIMD):</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operación</th>
+                        <th>ML-KEM-512</th>
+                        <th>ML-KEM-768</th>
+                        <th>ML-KEM-1024</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>24 µs</td>
+                        <td>37 µs</td>
+                        <td>54 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>28 µs</td>
+                        <td>43 µs</td>
+                        <td>62 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>32 µs</td>
+                        <td>48 µs</td>
+                        <td>70 µs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Con optimizaciones AVX2</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operación</th>
+                        <th>ML-KEM-768 (sin SIMD)</th>
+                        <th>ML-KEM-768 (AVX2)</th>
+                        <th>Speedup</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>37 µs</td>
+                        <td>~10 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>43 µs</td>
+                        <td>~12 µs</td>
+                        <td>~3.6×</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>48 µs</td>
+                        <td>~13 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Comparación con ECDH X25519</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>X25519</th>
+                        <th>ML-KEM-768</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>~14 µs</td>
+                        <td>~37 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Intercambio</td>
+                        <td>~30 µs</td>
+                        <td>~48 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Clave pública</td>
+                        <td>32 B</td>
+                        <td>1184 B</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ML-KEM es aproximadamente 2 veces más lento que X25519, pero la sobrecarga en la latencia del handshake TLS es insignificante (&lt; 1 ms) en la mayoría de las conexiones reales.</p>
+        </section>
+
+        <!-- Sección 10.7 -->
+        <section id="id-107">
+            <h2>10.7 OpenSSL: instalación del provider OQS</h2>
+
+            <p>OpenSSL 3.x soporta ML-KEM a través del provider <code>oqsprovider</code>. A partir de la versión 3.4, el soporte es nativo o fácilmente integrable.</p>
+
+            <div class="code-block">
+                <pre><code># Compilar oqs-provider
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
+make
+sudo make install
+
+# Verificar
+openssl list -providers
+# debería mostrar: oqsprovider</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.8 -->
+        <section id="id-108">
+            <h2>10.8 Generación de claves ML-KEM con OpenSSL CLI</h2>
+
+            <div class="code-block">
+                <pre><code># Generar par de claves ML-KEM-768
+openssl genpkey -algorithm mlkem768 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+
+# Ver los detalles de la clave
+openssl pkey -in private.pem -text -noout</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.9 -->
+        <section id="id-109">
+            <h2>10.9 TLS 1.3 con ML-KEM-768</h2>
+
+            <h3>Prueba local (servidor + cliente)</h3>
+            <div class="code-block">
+                <pre><code># Servidor
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups mlkem768
+
+# Cliente (en otra terminal)
+openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
+            </div>
+
+            <h3>Verificar los grupos soportados</h3>
+            <div class="code-block">
+                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.10 -->
+        <section id="id-1010">
+            <h2>10.10 Estrategia híbrida: X25519 + ML-KEM-768</h2>
+
+            <p>El enfoque recomendado para la migración es la <strong>hibridización</strong>: combinar ECDH (X25519) con ML-KEM-768. La clave final se deriva de ambas:</p>
+
+            <div class="math-block">
+                \[
+                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \]
+            </div>
+
+            <p><strong>Ventaja:</strong> seguro si al menos uno de los dos esquemas se mantiene. Si una computadora cuántica rompe X25519, ML-KEM protege. Si ML-KEM tuviera un defecto desconocido, X25519 protege.</p>
+        </section>
+
+        <!-- Sección 10.11 -->
+        <section id="id-1011">
+            <h2>10.11 Cipher suites híbridas en TLS 1.3</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del Grupo</th>
+                        <th>Composición</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>X25519MLKEM768</code></td>
+                        <td>X25519 + ML-KEM-768</td>
+                    </tr>
+                    <tr>
+                        <td><code>SecP256r1MLKEM768</code></td>
+                        <td>P-256 + ML-KEM-768</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>A partir de Chrome 131 (finales de 2024), <code>X25519MLKEM768</code> es el grupo por defecto. Firefox 128+ soporta el mismo grupo.</p>
+
+            <h3>Configuración OpenSSL</h3>
+            <div class="code-block">
+                <pre><code># Servidor que acepta tanto X25519 clásico como el grupo híbrido
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups X25519MLKEM768:x25519:P-256
+
+# Cliente que prefiere el grupo híbrido
+openssl s_client -connect localhost:4433 \
+    -groups X25519MLKEM768:x25519</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.12 -->
+        <section id="id-1012">
+            <h2>10.12 Integración en aplicaciones C con OpenSSL</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
+#include &lt;openssl/err.h&gt;
+
+SSL_CTX *create_pqc_context(void) {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return NULL;
+    }
+
+    // Establecer los grupos preferidos: híbrido primero, luego clásicos como fallback
+    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
+        fprintf(stderr, "Error en la configuración de grupos\n");
+        SSL_CTX_free(ctx);
+        return NULL;
+    }
+
+    return ctx;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Sección 10.13 -->
+        <section id="id-1013">
+            <h2>10.13 Lista de verificación para la migración</h2>
+
+            <h3>Para quienes desarrollan aplicaciones</h3>
+            <ul>
+                <li>Inventariar dónde se usa criptografía asimétrica (intercambio de claves, firma, KEM).</li>
+                <li>Identificar qué datos deben permanecer secretos durante más de 5 años.</li>
+                <li>Actualizar las dependencias: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
+                <li>Adoptar el enfoque híbrido: <code>X25519 + ML-KEM-768</code> para TLS.</li>
+                <li>Para firma digital: migrar a ML-DSA (FIPS 204) o SLH-DSA (FIPS 205).</li>
+                <li>Probar el aumento de tamaño de claves y textos cifrados en los protocolos.</li>
+                <li>Verificar que los timeouts y tamaños de búfer no asuman claves de pequeño tamaño.</li>
+            </ul>
+
+            <h3>Para quienes gestionan infraestructura</h3>
+            <ul>
+                <li>Actualizar la pila TLS a versiones con soporte ML-KEM.</li>
+                <li>Habilitar <code>X25519MLKEM768</code> en los servidores TLS.</li>
+                <li>Monitorear la compatibilidad de los clientes (Chrome 131+, Firefox 128+ soportan PQC híbrido).</li>
+                <li>Planificar la rotación de claves a largo plazo.</li>
+            </ul>
+
+            <h3>Estándares de referencia</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estándar</th>
+                        <th>Contenido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIPS 203</td>
+                        <td>ML-KEM (Key Encapsulation)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 204</td>
+                        <td>ML-DSA (firma digital basada en retículos)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 205</td>
+                        <td>SLH-DSA (firma basada en hash, conservadora)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sección 10.14 -->
+        <section id="id-1014">
+            <h2>10.14 Escenario: migración de una API REST</h2>
+
+            <h3>Situación actual (pre-migración)</h3>
+            <p>Cliente → TLS 1.3 con X25519 → Servidor API</p>
+
+            <h3>Fase 1: híbrido (hoy, recomendado)</h3>
+            <p>Cliente → TLS 1.3 con X25519MLKEM768 → Servidor API</p>
+
+            <div class="code-block">
+                <pre><code># Configuración nginx
+ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
+
+# Configuración Apache
+SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            </div>
+
+            <h3>Fase 2: puramente post-cuántico (futuro)</h3>
+            <p>Cliente → TLS 1.3 con ML-KEM-768 + ML-DSA → Servidor API</p>
+            <p>Para adoptar cuando la mayoría de los clientes soporten ML-KEM nativo y los certificados del servidor usen ML-DSA para la firma.</p>
+        </section>
+
+        <!-- Fuentes -->
+        <div class="sources">
+            <h2>Fuentes</h2>
+            <ul>
+                <li>Open Quantum Safe project — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
+                <li>Documentación de liboqs — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
+                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
+                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
+                <li>Borrador IETF — Hybrid key exchange in TLS 1.3</li>
+                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+            </ul>
+        </div>
+
+        <!-- Navegación de capítulos -->
+        <div class="chapter-nav">
+            <a href="9.html" class="nav-btn">← Capítulo anterior</a>
+            <span class="nav-label">10 / 10</span>
+            <a href="#" class="nav-btn disabled">Fin de la Guía →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Pie de página del sitio -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Biblioteca gratuita para todos. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'es';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/10.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

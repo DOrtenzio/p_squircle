@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第0章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – 数学的前提知識</h1>
+                <p class="subtitle">耐量子暗号を理解するための必須ツール</p>
+
+                <!-- Table of contents -->
+                <div class="toc">
+                    <h2>目次</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 モジュラ演算</a></li>
+                        <li><a href="#id-02">0.2 線形代数：ベクトルと行列</a></li>
+                        <li><a href="#id-03">0.3 多項式</a></li>
+                        <li><a href="#id-04">0.4 代数構造：群・環・体</a></li>
+                        <li><a href="#id-05">0.5 暗号学的ハッシュ関数</a></li>
+                        <li><a href="#id-06">0.6 確率とノイズ分布</a></li>
+                        <li><a href="#id-07">0.7 計算量理論</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 モジュラ演算</h2>
+
+                    <h3>モジュロとは</h3>
+                    <p><span class="math">\(a \bmod m\)</span> は、<span class="math">\(a\)</span> を <span class="math">\(m\)</span> で割ったときの<strong>余り</strong>を返します。</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{なぜなら } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{なぜなら } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>慣例：</strong>暗号では、<span class="math">\(q\)</span> を法とする結果は常に <span class="math">\([0, q-1]\)</span> の範囲にあります。</p>
+                    </blockquote>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> における演算</h3>
+                    <p><span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> は、<span class="math">\(q\)</span> を法とする整数の集合を表します。この集合では、加算・減算・乗算は常に <span class="math">\(q\)</span> を法として行われます。</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>乗法逆元</h3>
+                    <p>通常の数学では、ある数の逆数は乗算によって <span class="math">\(1\)</span> を得るために使われます（例：<span class="math">\(5\)</span> の逆数は <span class="math">\(\frac{1}{5}\)</span>、なぜなら <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>）。モジュラ演算では分数は存在しません。ある数 <span class="math">\(a\)</span> の逆数は、別の整数 <span class="math">\(b\)</span> で、<span class="math">\(a\)</span> に乗算して <span class="math">\(q\)</span> を法として <span class="math">\(1\)</span> となるものを指します。</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>存在条件</h4>
+                    <p><span class="math">\(a\)</span> の逆元は常に存在するわけではありません。それは、<span class="math">\(a\)</span> と <span class="math">\(q\)</span> が共通の約数を持たない場合（つまり、最大公約数が 1 の場合：<span class="math">\(\gcd(a, q) = 1\)</span>）にのみ存在します。</p>
+                    <ul>
+                        <li><strong>重要な性質：</strong> 法 <span class="math">\(q\)</span> が素数の場合、集合内のすべての数（ゼロを除く）は必ず逆元を持ちます。</li>
+                    </ul>
+
+                    <h4>実例：<span class="math">\(5^{-1} \bmod 13\)</span> の計算</h4>
+                    <p><span class="math">\(5^{-1}\)</span> という表記は、「5 の 13 を法とする逆元を求めよ」という意味です。<span class="math">\(5 \cdot b\)</span> を <span class="math">\(13\)</span> で割った余りが <span class="math">\(1\)</span> となるような数 <span class="math">\(b\)</span> を探します。</p>
+                    <ol>
+                        <li><span class="math">\(5\)</span> に様々な整数を掛けてみます。</li>
+                        <li><span class="math">\(b = 8\)</span> を選ぶと、<span class="math">\(5 \cdot 8 = 40\)</span> となります。</li>
+                        <li><span class="math">\(40\)</span> を <span class="math">\(13\)</span> で割ると、13 は 3 回（<span class="math">\(13 \cdot 3 = 39\)</span>）入り、余りは 1 です。</li>
+                    </ol>
+                    <p><strong>答えは 8</strong> です。なぜなら <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span> だからです。</p>
+
+                    <h3>モジュラ指数演算</h3>
+                    <p>モジュラ指数演算は、累乗の余り <span class="math">\(a^k \pmod m\)</span> を計算することです。この演算は現代暗号（RSA アルゴリズムなど）の基盤です。これは「一方向の時計」のように機能します。結果の計算は非常に簡単ですが、逆の操作（結果から指数 <span class="math">\(k\)</span> を見つけること）はほぼ不可能です。</p>
+
+                    <h4>大きな数の問題</h4>
+                    <p>もし <span class="math">\(5^{11} \pmod{13}\)</span> を計算する必要がある場合、指数が何百桁もあると直接計算はコンピュータでも不可能です。<span class="math">\(5^{11}\)</span> という数自体がメモリに収まりません。</p>
+
+                    <h4>解決策：Square-and-Multiply アルゴリズム</h4>
+                    <p>このアルゴリズムは、ごく少数のステップ（<span class="math">\(O(\log k)\)</span> 回の乗算）で結果を計算できるようにし、常に小さな数を扱うため、累乗が無限に大きくなるのを防ぎます。</p>
+
+                    <details>
+                        <summary><strong>実例：<span class="math">\(5^{11} \bmod 13\)</span> の仕組み</strong></summary>
+                        <p>指数を二進数に変換します：<span class="math">\(11 = 8 + 2 + 1\)</span>。<span class="math">\(5\)</span> を <span class="math">\(11\)</span> 回掛ける代わりに、各ステップで平方を計算し、その都度 <span class="math">\(13\)</span> を法として結果を小さくします。</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{基数： } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{平方： } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{平方の平方： } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{次の平方： } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>次に、指数 <span class="math">\(11\)</span> を構成する部分（つまり <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>）だけを組み合わせます。</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p><span class="math">\(60\)</span> を <span class="math">\(13\)</span> で割ると、13 は <span class="math">\(4\)</span> 回（<span class="math">\(52\)</span>）入り、余りは <span class="math">\(8\)</span> です。</p>
+                        <p><strong>最終結果：</strong> <span class="math">\(8\)</span>（11 ステップではなく、わずか 4 ステップで完了しました）。</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 線形代数：ベクトルと行列</h2>
+
+                    <h3>ベクトル</h3>
+                    <p>ベクトル <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> は、<span class="math">\(n\)</span> 個の整数を <span class="math">\(q\)</span> を法として計算したものの順序付きリストです。</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>ベクトル演算では、各結果が <span class="math">\(q\)</span> を法として縮小されます。</p>
+
+                    <h4>実例</h4>
+                    <p><span class="math">\(q = 13\)</span> の場合：</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>ベクトルの加算</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>内積</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>計算：</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>合計：<span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>13 を法とした縮小：<span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>行列</h3>
+                    <p>行列 <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> は、行と列の配列です。</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="行列の例" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>（実際には、ML-KEM における行列 <span class="math">\(A\)</span> は <span class="math">\(k \times k\)</span> の次元を持ち（<span class="math">\(k = 3, 4\)</span> または <span class="math">\(5\)</span>）、SHAKE によってランダムシードから生成されます。）</em></p>
+
+                    <h4>行列とベクトルの積</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>例</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>詳細な手順</summary>
+                        <p>1行目：<span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>2行目：<span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>13 を法とした縮小：<span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>したがって：<span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>無限大ノルム</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>このノルムは、絶対値が最大の成分を測定します。MLWE の文脈では、誤差ベクトルは非常に小さなノルムを持たなければなりません。</p>
+                    <details>
+                        <summary>実例</summary>
+                        <p><strong>有効な場合：</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>無効な場合：</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 多項式</h2>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> を係数とする多項式</h3>
+                    <p><span class="math">\(\mathbb{Z}_q[X]\)</span> における多項式は、次の形式を持ちます。</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>ここで、各 <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span> です。</p>
+
+                    <h4>多項式の加算</h4>
+                    <p>対応する係数を <span class="math">\(q\)</span> を法として加算します。</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>多項式の乗算と簡約</h4>
+                    <p><span class="math">\(\leq n-1\)</span> 次の 2 つの多項式の積は、最大 <span class="math">\(2n-2\)</span> 次までになります。これらをコンパクトに保つために、特別な多項式を法として簡約します。</p>
+                    <p>ML-KEM では、<span class="math">\(n = 256\)</span> として <span class="math">\(X^n + 1\)</span> を使用します。簡約規則は次の通りです。</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>したがって、積の中に <span class="math">\(X^{256}\)</span> が現れるたびに、<span class="math">\(-1\)</span> で置き換えます。</p>
+
+                    <h4>簡単な例</h4>
+                    <p><span class="math">\(n = 4\)</span>、<span class="math">\(q = 5\)</span>、<span class="math">\(X^4+1\)</span> を法とする場合：</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 代数構造：群・環・体</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>構造</th>
+                                <th>演算</th>
+                                <th>主な性質</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>群</strong></td>
+                                <td>1つ（+）</td>
+                                <td>閉性、結合性、単位元、逆元</td>
+                            </tr>
+                            <tr>
+                                <td><strong>環</strong></td>
+                                <td>2つ（+, ×）</td>
+                                <td>加法についてアーベル群、乗法について半群</td>
+                            </tr>
+                            <tr>
+                                <td><strong>体</strong></td>
+                                <td>2つ（+, ×）</td>
+                                <td>すべての非ゼロ元が乗法逆元を持つ環</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>体としての <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p><span class="math">\(q\)</span> が素数の場合、<span class="math">\(\mathbb{Z}_q\)</span> <strong>は体です</strong>。つまり、すべての非ゼロ元が乗法逆元を持ちます。ML-KEM では、<span class="math">\(q = 3329\)</span> は素数なので、<span class="math">\(\mathbb{Z}_{3329}\)</span> は体です。</p>
+
+                    <h3>環 <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>これは環です（すべての多項式が逆元を持つわけではないため、体ではありません）。しかし、暗号に有用な性質を持ちます。</p>
+                    <ul>
+                        <li>各多項式はちょうど 256 個の係数を持ちます。</li>
+                        <li>乗算は NTT によって効率的に行えます（07 ファイル参照）。</li>
+                        <li>多項式 <span class="math">\(X^{256}+1\)</span> は<em>円分多項式</em>であり、優れたセキュリティ特性を保証します。</li>
+                    </ul>
+                    <details>
+                        <summary><span class="math">\(X^{256}+1\)</span> が円分多項式であることの意味</summary>
+                        <p>代数学では、円分多項式は、その根が <strong>原始 1 の冪根</strong>（つまり、ある冪乗で <span class="math">\(1\)</span> になる複素数）である特別な多項式です。</p>
+                        <p><span class="math">\(X^{256}+1\)</span> の場合、この性質は ML-KEM のような暗号において 3 つの大きな利点をもたらします。</p>
+                        <ul>
+                            <li><strong>既約性</strong>：この多項式は整数係数では分解できません。これにより、攻撃者が数学的問題をより簡単な部分に「分割」することを防ぎます。</li>
+                            <li><strong>超高速乗算（NTT）</strong>：<em>数論変換</em>（NTT）を使用できます。このアルゴリズムにより、多項式の乗算は <span class="math">\(O(n^2)\)</span> からわずか <span class="math">\(O(n \log n)\)</span> に高速化され、耐量子暗号が驚くほど高速になります。</li>
+                            <li><strong>均一なセキュリティ</strong>：演算中に誤差（ノイズ）を 256 個の係数すべてに完全に対称的に分散させ、攻撃者が悪用できる構造的な弱点を排除します。</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 暗号学的ハッシュ関数</h2>
+                    <p>ハッシュ関数 <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> は、任意の長さの入力を固定長の出力に写像します。</p>
+                    <p><strong>暗号で要求される性質：</strong></p>
+                    <ul>
+                        <li><em>原像耐性：</em> <span class="math">\(H(x)\)</span> から <span class="math">\(x\)</span> を求めることはできません。</li>
+                        <li><em>衝突耐性：</em> <span class="math">\(x \neq y\)</span> かつ <span class="math">\(H(x) = H(y)\)</span> となるものを見つけることは計算量的に不可能です。</li>
+                        <li><em>アバランチ効果：</em> 入力の 1 ビットを変更すると、出力の約 50% が変化します。</li>
+                    </ul>
+
+                    <h3>SHA-3 と SHAKE</h3>
+                    <p>ML-KEM は、<strong>SHA-3</strong> ファミリー（NIST 2015 標準化）のプリミティブのみを使用します。</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>関数</th>
+                                <th>出力</th>
+                                <th>ML-KEM での使用</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 ビット固定</td>
+                                <td>一般的なハッシュ化</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 ビット固定</td>
+                                <td>鍵のハッシュ化</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>可変長</td>
+                                <td><span class="math">\(A\)</span> の生成（XOF）</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>可変長</td>
+                                <td>鍵導出</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE は <strong>XOF（拡張可能出力関数）</strong>です。与えられた入力から必要なだけのバイトを生成できます。ML-KEM では、<code>SHAKE128(seed)</code> が 32 バイトのシードから公開行列 <span class="math">\(A\)</span> 全体を生成します。</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 確率とノイズ分布</h2>
+
+                    <h3>中心二項分布 <span class="math">\(B_\eta\)</span></h3>
+                    <p>ML-KEM では、ノイズはガウス分布ではなく<strong>中心二項分布</strong>です。サンプリングは次のように機能します。</p>
+                    <ol>
+                        <li><span class="math">\(2\eta\)</span> 個の一様ビットをサンプリングします：<span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li><span class="math">\(\sum a_i - \sum b_i\)</span> を返します。</li>
+                    </ol>
+                    <p>結果は <span class="math">\([-\eta, +\eta]\)</span> の範囲の整数で、0 を中心とした近似的なガウス分布を持ちます。</p>
+                    <p><strong>なぜ真のガウス分布ではないのか？</strong> 二項分布は、<em>定数時間</em>（サイドチャネル攻撃に耐性）でのサンプリングがより簡単であり、セキュリティも同様です。</p>
+                    <p>ML-KEM-768 の場合：<span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>。ノイズ値は <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> の範囲になります。</p>
+
+                    <h3>無視できる（Negligible）</h3>
+                    <p>関数 <span class="math">\(f(\lambda)\)</span> が<strong>無視できる</strong>とは、すべての多項式 <span class="math">\(p(\cdot)\)</span> に対して、すべての <span class="math">\(\lambda > \lambda_0\)</span> で次が成り立つような <span class="math">\(\lambda_0\)</span> が存在することをいいます。</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>実用上：これは、任意の多項式の逆数よりも速く減少することを意味します。ML-KEM のエラー確率は、セキュリティパラメータ <span class="math">\(\lambda\)</span> に関して無視できる程度です。</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 計算量理論</h2>
+
+                    <h3>記法</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>：漸近的なオーダー（上限）</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>：下限</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>：タイトな境界</li>
+                    </ul>
+
+                    <h3>関連するクラス</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>クラス</th>
+                                <th>意味</th>
+                                <th>例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>多項式時間で解ける</td>
+                                <td>乗算、ソート</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>多項式時間で検証できる</td>
+                                <td>SAT、巡回セールスマン問題</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-hard</strong></td>
+                                <td>NP と少なくとも同程度に難しい</td>
+                                <td>素因数分解（推定）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>暗号問題とその困難性</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>問題</th>
+                                <th>古典的な困難性</th>
+                                <th>量子による困難性</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>素因数分解</td>
+                                <td>準指数関数</td>
+                                <td><strong>多項式時間</strong>（Shor）</td>
+                            </tr>
+                            <tr>
+                                <td>離散対数</td>
+                                <td>準指数関数</td>
+                                <td><strong>多項式時間</strong>（Shor）</td>
+                            </tr>
+                            <tr>
+                                <td>SVP（格子）</td>
+                                <td>指数関数</td>
+                                <td>指数関数（既知の高速化なし）</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>指数関数</td>
+                                <td>指数関数（既知の高速化なし）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>この表が、耐量子暗号の存在理由そのものです。</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>出典と参考資料</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>（第1～5章）</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em>（オンライン無料公開）</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">動画：代数環</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – 第2～3節</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← 前の章</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">次の章 →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

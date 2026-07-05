@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 7 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT (संख्या-सैद्धांतिक रूपांतरण)</h1>
+        <p class="subtitle">वह इंजन जो ML-KEM को व्यावहारिक रूप से उपयोगी बनाता है</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-71">7.1 समस्या: बहुपदों का गुणन</a></li>
+                <li><a href="#id-72">7.2 फूरियर रूपांतरण और DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: मॉड्यूलर दुनिया में DFT</a></li>
+                <li><a href="#id-74">7.4 ML-KEM में NTT</a></li>
+                <li><a href="#id-75">7.5 सरलीकृत संख्यात्मक उदाहरण</a></li>
+                <li><a href="#id-76">7.6 कार्यान्वयन</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 7.1 -->
+        <section id="id-71">
+            <h2>7.1 समस्या: बहुपदों का गुणन</h2>
+
+            <p>ML-KEM में, मौलिक संक्रियाओं में वलय <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span> में बहुपदों का गुणन शामिल है।</p>
+
+            <h3>सामान्य गुणन (Naïve Multiplication)</h3>
+            <p>घात <span class="math">\(n-1\)</span> वाले दो बहुपदों को स्कूली एल्गोरिथ्म से <span class="math">\(O(n^2)\)</span> जटिलता में गुणा किया जाता है।</p>
+            
+            <ul>
+                <li><span class="math">\(n = 256\)</span> के लिए: एकल गुणन के लिए लगभग <span class="math">\(256^2 = 65536\)</span> गुणा।</li>
+                <li>ML-KEM-768 (<span class="math">\(k=3\)</span>) में, एकल <code>Encaps</code> संक्रिया में दर्जनों बहुपदीय गुणन शामिल होते हैं → सामान्य विधि से लाखों गुणा।</li>
+            </ul>
+
+            <h3>NTT के साथ</h3>
+            <p>जटिलता घटकर <span class="math">\(O(n \log n)\)</span> हो जाती है:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ संक्रियाएँ प्रति गुणन}
+                \]
+            </div>
+            <p><strong>त्वरण:</strong> ~32×. अनुकूलित हार्डवेयर पर, ML-KEM-768 1 ms से भी कम समय लेता है।</p>
+        </section>
+
+        <!-- Section 7.2 -->
+        <section id="id-72">
+            <h2>7.2 फूरियर रूपांतरण और DFT</h2>
+
+            <h3>संवलन प्रमेय (Convolution Theorem)</h3>
+            <p>फूरियर रूपांतरण एक संवलन (जैसे बहुपदों का गुणन) को बिंदुवार गुणन में बदल देता है:</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>प्रक्रिया:</strong></p>
+            <ol>
+                <li><span class="math">\(\hat{f} = \text{DFT}(f)\)</span> और <span class="math">\(\hat{g} = \text{DFT}(g)\)</span> की गणना करें</li>
+                <li>बिंदुवार गुणा करें: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>प्रतिलोम रूपांतरण करें: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>यदि DFT और DFT<sup>-1</sup> की लागत <span class="math">\(O(n \log n)\)</span> है (FFT के माध्यम से), तो संपूर्ण गुणन की लागत <span class="math">\(O(n \log n)\)</span> है।</p>
+
+            <h3>फास्ट फूरियर रूपांतरण (FFT)</h3>
+            <p>कूली-टुकी एल्गोरिथ्म (1965) पुनरावर्ती संरचना का उपयोग करके DFT की गणना करता है:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{सम}}], \; \text{DFT}[f_{\text{विषम}}]\right) \text{ ट्विडल कारकों के साथ संयुक्त}
+                \]
+            </div>
+            <p><strong>समस्या:</strong> मानक FFT सम्मिश्र संख्याओं (फ्लोटिंग पॉइंट) का उपयोग करता है, जो पूर्णांकन त्रुटियाँ और गैर-स्थिर समय प्रस्तुत करते हैं, जिससे वे क्रिप्टोग्राफी के लिए अनुपयुक्त हो जाते हैं।</p>
+        </section>
+
+        <!-- Section 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: मॉड्यूलर दुनिया में DFT</h2>
+
+            <h3>विचार</h3>
+            <p>NTT (संख्या-सैद्धांतिक रूपांतरण) <span class="math">\(\mathbb{C}\)</span> के बजाय <span class="math">\(\mathbb{Z}_q\)</span> पर लागू DFT है। सम्मिश्र मूलों <span class="math">\(e^{2\pi i k/n}\)</span> के बजाय, <span class="math">\(\mathbb{Z}_q\)</span> में एकता के आदिम मूलों का उपयोग किया जाता है।</p>
+
+            <h3>मॉड्यूलो q में एकता के आदिम मूल</h3>
+            <p>एक अवयव <span class="math">\(\omega \in \mathbb{Z}_q\)</span> एकता का <span class="math">\(n\)</span>-वाँ आदिम मूल है यदि:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{और} \quad \omega^k \not\equiv 1 \pmod{q} \text{ for } 0 < k < n
+                \]
+            </div>
+            <p>आवश्यक शर्त: <span class="math">\(n \mid (q-1)\)</span> (अर्थात <span class="math">\(n\)</span>, <span class="math">\(q-1\)</span> को विभाजित करता है)।</p>
+
+            <p><strong>ML-KEM में:</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>सत्यापन: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>इसलिए मॉड्यूलो 3329 में एकता के 256-वें मूल मौजूद हैं।</li>
+                <li>FIPS 203 में उपयोग किया जाने वाला आदिम मूल: <span class="math">\(\omega = 17\)</span> (क्योंकि <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, ऋणात्मक-चक्रीय NTT के लिए उपयोग किया जाने वाला मूल <span class="math">\(\zeta = 17\)</span> है)।</li>
+            </ul>
+
+            <h3>NTT परिभाषा</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>प्रतिलोम NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>जहाँ <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>।</p>
+
+            <h3>मुख्य गुण</h3>
+            <ul>
+                <li><strong>सटीक:</strong> कोई पूर्णांकन त्रुटि नहीं, सब कुछ <span class="math">\(\mathbb{Z}_q\)</span> में</li>
+                <li><strong>कुशल:</strong> FFT की तरह <span class="math">\(O(n \log n)\)</span></li>
+                <li><strong>नियत-समय:</strong> गोपनीय डेटा पर बिना शाखाओं के कार्यान्वयन योग्य (साइड-चैनल सुरक्षा)</li>
+            </ul>
+        </section>
+
+        <!-- Section 7.4 -->
+        <section id="id-74">
+            <h2>7.4 ML-KEM में NTT</h2>
+
+            <h3>ऋणात्मक-चक्रीय NTT</h3>
+            <p>ML-KEM में, अपचयन <span class="math">\(X^n - 1\)</span> (चक्रीय) के बजाय <span class="math">\(X^n + 1\)</span> (ऋणात्मक-चक्रीय) के सापेक्ष है। ऋणात्मक-चक्रीय संवलन में, "लिपटे" हुए पद चिह्न बदलते हैं। इसके लिए समायोजित ट्विडल कारकों के साथ शास्त्रीय NTT की एक भिन्नता की आवश्यकता होती है।</p>
+
+            <p>FIPS 203 में NTT, <span class="math">\(\zeta = 17\)</span> की घातों के साथ पूर्व-मरोड़ (pre-torsion) लागू करता है:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{शास्त्रीय NTT से पहले}
+                \]
+            </div>
+
+            <h3>NTT डोमेन में ML-KEM संक्रियाएँ</h3>
+            <p>एक बार रूपांतरित होने के बाद, बहुपद NTT डोमेन में रहते हैं। संक्रियाएँ प्रारंभिक हो जाती हैं:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>संक्रिया</th>
+                        <th>NTT डोमेन में</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>गुणन <span class="math">\(f \cdot g\)</span></td>
+                        <td>प्रत्येक <span class="math">\(i\)</span> के लिए <span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>योग <span class="math">\(f + g\)</span></td>
+                        <td>प्रत्येक <span class="math">\(i\)</span> के लिए <span class="math">\(\hat{f}_i + \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>मैट्रिक्स-सदिश गुणन <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> बिंदुवार गुणन और <span class="math">\(k^2\)</span> बिंदुवार योग</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>सार्वजनिक कुंजी <span class="math">\(A\)</span> पहले से ही NTT डोमेन में उत्पन्न और संग्रहीत की जाती है, जिससे हर बार NTT की पुनः गणना करने से बचा जा सकता है।</p>
+
+            <h3>KeyGen का पूर्ण प्रवाह</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+बीज 
+  │
+  ├──► SHAKE128 ──► A_hat (पहले से NTT में)
+  │
+  └──► द्विपद प्रतिचयन ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          सार्वजनिक कुंजी (t_hat)
+                </pre>
+            </div>
+            <p>आउटपुट <code>t_hat</code> सार्वजनिक कुंजी है (पहले से NTT में)। <span class="math">\(t\)</span> के लिए NTT<sup>-1</sup> से बचा जाता है।</p>
+        </section>
+
+        <!-- Section 7.5 -->
+        <section id="id-75">
+            <h2>7.5 सरलीकृत संख्यात्मक उदाहरण</h2>
+
+            <p>हम <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (मॉड्यूलो 5 में 1 का 4-वाँ मूल: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>) का उपयोग करते हैं।</p>
+
+            <p><strong>बहुपद:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>f का NTT:</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>g का NTT:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. <span class="math">\(i=0\)</span> के लिए: <span class="math">\(4 \equiv 4\)</span>; <span class="math">\(i \neq 0\)</span> के लिए: मूलों का योग <span class="math">\(= 0\)</span>।</p>
+
+            <p><strong>बिंदुवार गुणन:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>।</p>
+            <p><strong><span class="math">\(\hat{h}\)</span> का INTT:</strong> <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span> देता है।</p>
+
+            <blockquote>
+                <p><strong>नोट:</strong> यह उदाहरण <span class="math">\(X^4-1\)</span> (चक्रीय) अपचयन का उपयोग करता है। ML-KEM <span class="math">\(X^n+1\)</span> (ऋणात्मक-चक्रीय) का उपयोग करता है, जिसमें खंड 7.4 में वर्णित भिन्नता है।</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 7.6 -->
+        <section id="id-76">
+            <h2>7.6 कार्यान्वयन</h2>
+
+            <h3>NTT के लिए कूली-टुकी स्यूडोकोड</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    स्थान-में (in-place) पुनरावृत्त NTT (कूली-टुकी)।
+    f: Z_q में n गुणांकों की सूची
+    q: अभाज्य मॉड्यूलस
+    omega: मॉड्यूलो q में एकता का n-वाँ आदिम मूल
+    """
+    n = len(f)
+    # बिट-रिवर्सल क्रमपरिवर्तन
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # बटरफ्लाई संक्रियाएँ
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>संदर्भ कार्यान्वयन</h3>
+            <p>FIPS 203, NTT की सटीक कार्यान्वयन और पूर्व-गणना की गई मूल तालिका <span class="math">\(\zeta^{br(i)}\)</span> (जहाँ <span class="math">\(br\)</span> बिट-रिवर्सल क्रमपरिवर्तन है) को निर्दिष्ट करता है।</p>
+            
+            <p>अनुकूलित असेंबली/SIMD कार्यान्वयन इसमें उपलब्ध हैं:</p>
+            <ul>
+                <li><code>liboqs</code> (AVX2 के साथ C)</li>
+                <li><code>pqclean</code> (पोर्टेबल C)</li>
+                <li><code>kyber</code> संदर्भ कार्यान्वयन (C)</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), खंड 4.3 और 5 – NTT परिभाषा और <span class="math">\(R_q\)</span> में संक्रियाएँ</li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – खंड 6 (NTT कार्यान्वयन)</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

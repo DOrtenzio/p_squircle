@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第7章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT（数論変換）</h1>
+        <p class="subtitle">ML-KEM を実用的にするエンジン</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-71">7.1 問題：多項式の乗算</a></li>
+                <li><a href="#id-72">7.2 フーリエ変換と DFT</a></li>
+                <li><a href="#id-73">7.3 NTT：モジュラ世界での DFT</a></li>
+                <li><a href="#id-74">7.4 ML-KEM における NTT</a></li>
+                <li><a href="#id-75">7.5 簡略化した数値例</a></li>
+                <li><a href="#id-76">7.6 実装</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 7.1 -->
+        <section id="id-71">
+            <h2>7.1 問題：多項式の乗算</h2>
+
+            <p>ML-KEM では、基本演算は環 <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span> における多項式の乗算を含みます。</p>
+
+            <h3>ナイーブな乗算</h3>
+            <p>次数 <span class="math">\(n-1\)</span> の 2 つの多項式は、学校で習うアルゴリズムで <span class="math">\(O(n^2)\)</span> の複雑さで乗算されます。</p>
+
+            <ul>
+                <li><span class="math">\(n = 256\)</span> の場合：1 回の積につき約 <span class="math">\(256^2 = 65536\)</span> 回の乗算。</li>
+                <li>ML-KEM-768（<span class="math">\(k=3\)</span>）では、1 回の <code>Encaps</code> 操作に数十回の多項式積が必要 → ナイーブな方法では数百万回の乗算。</li>
+            </ul>
+
+            <h3>NTT を使用</h3>
+            <p>複雑さが <span class="math">\(O(n \log n)\)</span> に低下します。</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ 回の演算/積}
+                \]
+            </div>
+            <p><strong>高速化：</strong> 約 32 倍。最適化されたハードウェアでは、ML-KEM-768 は 1 ms 未満です。</p>
+        </section>
+
+        <!-- Section 7.2 -->
+        <section id="id-72">
+            <h2>7.2 フーリエ変換と DFT</h2>
+
+            <h3>畳み込み定理</h3>
+            <p>フーリエ変換は畳み込み（多項式の乗算など）を点ごとの積に変換します。</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>手順：</strong></p>
+            <ol>
+                <li><span class="math">\(\hat{f} = \text{DFT}(f)\)</span> と <span class="math">\(\hat{g} = \text{DFT}(g)\)</span> を計算</li>
+                <li>点ごとに乗算：<span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>逆変換：<span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>DFT と DFT<sup>-1</sup> が <span class="math">\(O(n \log n)\)</span>（FFT による）で計算できる場合、乗算全体は <span class="math">\(O(n \log n)\)</span> になります。</p>
+
+            <h3>高速フーリエ変換（FFT）</h3>
+            <p>Cooley-Tukey アルゴリズム（1965）は、再帰的構造を利用して DFT を計算します。</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{偶数}}], \; \text{DFT}[f_{\text{奇数}}]\right) \text{ を twiddle factors で結合}
+                \]
+            </div>
+            <p><strong>問題：</strong> 標準的な FFT は複素数（浮動小数点）を使用するため、丸め誤差と非定数時間が発生し、暗号には不適切です。</p>
+        </section>
+
+        <!-- Section 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT：モジュラ世界での DFT</h2>
+
+            <h3>アイデア</h3>
+            <p>NTT（数論変換）は、<span class="math">\(\mathbb{C}\)</span> ではなく <span class="math">\(\mathbb{Z}_q\)</span> に適用された DFT です。複素数の 1 の冪根 <span class="math">\(e^{2\pi i k/n}\)</span> の代わりに、<span class="math">\(\mathbb{Z}_q\)</span> における原始 1 の冪根を使用します。</p>
+
+            <h3>法 q における原始 1 の冪根</h3>
+            <p>要素 <span class="math">\(\omega \in \mathbb{Z}_q\)</span> は、以下の場合に <span class="math">\(n\)</span> 次の原始 1 の冪根です。</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{かつ} \quad 0 < k < n \text{ に対して } \omega^k \not\equiv 1 \pmod{q}
+                \]
+            </div>
+            <p>必要条件：<span class="math">\(n \mid (q-1)\)</span>（つまり <span class="math">\(n\)</span> が <span class="math">\(q-1\)</span> を割り切ること）。</p>
+
+            <p><strong>ML-KEM では：</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>、<span class="math">\(n = 256\)</span></li>
+                <li>検証：<span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>したがって、法 3329 における 256 次の 1 の冪根が存在します。</li>
+                <li>FIPS 203 で使用される原始根：<span class="math">\(\omega = 17\)</span>（<span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span> のため、NTT ネガサイクリックに使用される根は <span class="math">\(\zeta = 17\)</span>）</li>
+            </ul>
+
+            <h3>NTT の定義</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>逆 NTT：</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>ここで <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>。</p>
+
+            <h3>重要な特性</h3>
+            <ul>
+                <li><strong>正確：</strong> 丸め誤差なし、すべて <span class="math">\(\mathbb{Z}_q\)</span> 上</li>
+                <li><strong>効率的：</strong> FFT と同様に <span class="math">\(O(n \log n)\)</span></li>
+                <li><strong>定数時間：</strong> 秘密データに対する分岐なしで実装可能（サイドチャネル耐性）</li>
+            </ul>
+        </section>
+
+        <!-- Section 7.4 -->
+        <section id="id-74">
+            <h2>7.4 ML-KEM における NTT</h2>
+
+            <h3>ネガサイクリック NTT</h3>
+            <p>ML-KEM では、簡約は <span class="math">\(X^n - 1\)</span>（サイクリック）ではなく <span class="math">\(X^n + 1\)</span>（ネガサイクリック）を法として行われます。ネガサイクリック畳み込みでは、「折り返された」項の符号が変わります。これには、調整された twiddle factors を持つ古典的な NTT の変種が必要です。</p>
+
+            <p>FIPS 203 の NTT は、<span class="math">\(\zeta = 17\)</span> の冪による前ひねりを適用します。</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{NTT クラシックの前}
+                \]
+            </div>
+
+            <h3>NTT 領域での ML-KEM 演算</h3>
+            <p>一度変換されると、多項式は NTT 領域に存在します。演算は要素ごとになります。</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>演算</th>
+                        <th>NTT 領域での処理</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>乗算 <span class="math">\(f \cdot g\)</span></td>
+                        <td>各 <span class="math">\(i\)</span> について <span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>加算 <span class="math">\(f + g\)</span></td>
+                        <td>各 <span class="math">\(i\)</span> について <span class="math">\(\hat{f}_i + \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>行列-ベクトル積 <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> 回の積と <span class="math">\(k^2\)</span> 回の要素ごとの加算</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>公開鍵 <span class="math">\(A\)</span> は NTT 領域で生成・保存され、NTT の再計算を回避します。</p>
+
+            <h3>KeyGen の完全なフロー</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+シード
+  │
+  ├──► SHAKE128 ──► A_hat（すでに NTT 領域）
+  │
+  └──► 二項サンプリング ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          公開鍵（t_hat）
+                </pre>
+            </div>
+            <p>出力 <code>t_hat</code> は公開鍵です（すでに NTT 領域）。<span class="math">\(t\)</span> の NTT<sup>-1</sup> は回避されます。</p>
+        </section>
+
+        <!-- Section 7.5 -->
+        <section id="id-75">
+            <h2>7.5 簡略化した数値例</h2>
+
+            <p><span class="math">\(n = 4\)</span>、<span class="math">\(q = 5\)</span>、<span class="math">\(\omega = 2\)</span>（法 5 における 4 次の 1 の冪根：<span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>）を使用します。</p>
+
+            <p><strong>多項式：</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>f の NTT：</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>g の NTT：</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>。<span class="math">\(i=0\)</span> の場合：<span class="math">\(4 \equiv 4\)</span>；<span class="math">\(i \neq 0\)</span> の場合：根の和 <span class="math">\(= 0\)</span>。</p>
+
+            <p><strong>要素ごとの積：</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>。</p>
+            <p><strong><span class="math">\(\hat{h}\)</span> の INTT：</strong> 積 <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span> を与えます。</p>
+
+            <blockquote>
+                <p><strong>注意：</strong> この例では <span class="math">\(X^4-1\)</span>（サイクリック）による簡約を使用しています。ML-KEM は <span class="math">\(X^n+1\)</span>（ネガサイクリック）を 7.4 節で説明した変種で使用します。</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 7.6 -->
+        <section id="id-76">
+            <h2>7.6 実装</h2>
+
+            <h3>Cooley-Tukey NTT の擬似コード</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    インプレース反復 NTT（Cooley-Tukey）。
+    f: Z_q 上の n 個の係数のリスト
+    q: 素数法
+    omega: 法 q における原始 n 乗根
+    """
+    n = len(f)
+    # ビット反転順列
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # バタフライ演算
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>リファレンス実装</h3>
+            <p>FIPS 203 は NTT の正確な実装と、事前計算された根 <span class="math">\(\zeta^{br(i)}\)</span> のテーブル（<span class="math">\(br\)</span> はビット反転順列）を規定しています。</p>
+
+            <p>アセンブリ/SIMD で最適化された実装は以下で入手可能です。</p>
+            <ul>
+                <li><code>liboqs</code>（AVX2 付き C）</li>
+                <li><code>pqclean</code>（ポータブル C）</li>
+                <li><code>kyber</code> リファレンス実装（C）</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), 第4.3節および第5節 – NTT の定義と <span class="math">\(R_q\)</span> 上の演算</li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – 第6節（NTT 実装）</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">次の章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

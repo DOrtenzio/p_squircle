@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – गणितीय पूर्वापेक्षाएँ</h1>
+                <p class="subtitle">क्वांटम-पश्चात क्रिप्टोग्राफी को समझने के लिए आवश्यक उपकरण</p>
+
+                <!-- Index -->
+                <div class="toc">
+                    <h2>विषय-सूची</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 मॉड्यूलर अंकगणित</a></li>
+                        <li><a href="#id-02">0.2 रैखिक बीजगणित: सदिश और आव्यूह</a></li>
+                        <li><a href="#id-03">0.3 बहुपद (पॉलिनोमियल)</a></li>
+                        <li><a href="#id-04">0.4 बीजगणितीय संरचनाएँ: समूह, वलय, क्षेत्र</a></li>
+                        <li><a href="#id-05">0.5 क्रिप्टोग्राफ़िक हैश फलन</a></li>
+                        <li><a href="#id-06">0.6 प्रायिकता और शोर वितरण</a></li>
+                        <li><a href="#id-07">0.7 संगणनात्मक जटिलता</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 मॉड्यूलर अंकगणित</h2>
+
+                    <h3>मॉड्यूलस क्या है</h3>
+                    <p>ऑपरेशन <span class="math">\(a \bmod m\)</span>, <span class="math">\(a\)</span> को <span class="math">\(m\)</span> से विभाजित करने पर प्राप्त <strong>शेषफल</strong> देता है।</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{क्योंकि } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{क्योंकि } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>परंपरा:</strong> क्रिप्टोग्राफी में मॉड्यूल <span class="math">\(q\)</span> के परिणाम हमेशा <span class="math">\([0, q-1]\)</span> की सीमा में होते हैं।</p>
+                    </blockquote>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> में अंकगणित</h3>
+                    <p><span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> मॉड्यूल <span class="math">\(q\)</span> के पूर्णांकों के समुच्चय को दर्शाता है। इस समुच्चय में जोड़, घटाव और गुणा हमेशा मॉड्यूल <span class="math">\(q\)</span> के अनुसार किए जाते हैं:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>गुणात्मक प्रतिलोम (Multiplicative Inverse)</h3>
+                    <p>सामान्य गणित में, किसी संख्या का प्रतिलोम गुणा करने पर <span class="math">\(1\)</span> प्राप्त करने के लिए होता है (जैसे, <span class="math">\(5\)</span> का प्रतिलोम <span class="math">\(\frac{1}{5}\)</span> है, क्योंकि <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). मॉड्यूलर अंकगणित में भिन्न (फ्रैक्शन) मौजूद नहीं होते। किसी संख्या <span class="math">\(a\)</span> का प्रतिलोम एक पूर्णांक <span class="math">\(b\)</span> होना चाहिए, जिसे <span class="math">\(a\)</span> से गुणा करने पर मॉड्यूल <span class="math">\(q\)</span> का शेषफल 1 प्राप्त हो:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>अस्तित्व का नियम</h4>
+                    <p><span class="math">\(a\)</span> का प्रतिलोम हमेशा मौजूद नहीं होता। यह तभी पाया जा सकता है जब <span class="math">\(a\)</span> और <span class="math">\(q\)</span> का कोई सामान्य भाजक (Divisor) न हो (अर्थात, उनका महत्तम समापवर्तक <span class="math">\(\gcd(a, q) = 1\)</span> हो)।</p>
+                    <ul>
+                        <li><strong>मुख्य गुण:</strong> यदि मॉड्यूलस <span class="math">\(q\)</span> एक अभाज्य संख्या है, तो समुच्चय की सभी संख्याओं (शून्य को छोड़कर) का एक गारंटीकृत प्रतिलोम होता है।</li>
+                    </ul>
+
+                    <h4>व्यावहारिक उदाहरण: <span class="math">\(5^{-1} \bmod 13\)</span> परिकलित करना</h4>
+                    <p><span class="math">\(5^{-1}\)</span> लिखने का अर्थ है: "5 का मॉड्यूल 13 के सापेक्ष प्रतिलोम ज्ञात करें"। हम एक संख्या <span class="math">\(b\)</span> ढूंढते हैं जिससे <span class="math">\(5 \cdot b\)</span> को <span class="math">\(13\)</span> से विभाजित करने पर शेषफल <span class="math">\(1\)</span> प्राप्त हो:</p>
+                    <ol>
+                        <li><span class="math">\(5\)</span> को विभिन्न पूर्णांकों से गुणा करके देखते हैं।</li>
+                        <li><span class="math">\(b = 8\)</span> चुनने पर: <span class="math">\(5 \cdot 8 = 40\)</span> प्राप्त होता है।</li>
+                        <li><span class="math">\(40\)</span> को <span class="math">\(13\)</span> से विभाजित करने पर: 13, 3 बार (<span class="math">\(13 \cdot 3 = 39\)</span>) आता है और शेषफल 1 बचता है।</li>
+                    </ol>
+                    <p><strong>उत्तर 8 है</strong>, क्योंकि <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>मॉड्यूलर घातांक (Exponentiation)</h3>
+                    <p>मॉड्यूलर घातांक का अर्थ है किसी घात को विभाजित करने पर प्राप्त शेषफल की गणना करना: <span class="math">\(a^k \pmod m\)</span>। यह ऑपरेशन आधुनिक क्रिप्टोग्राफी (जैसे RSA एल्गोरिथ्म) की रीढ़ है। इसका उपयोग इसलिए किया जाता है क्योंकि यह एक "एक-तरफ़ा घड़ी" है: परिणाम निकालना बहुत आसान है, लेकिन उल्टा रास्ता अपनाना (परिणाम से घातांक <span class="math">\(k\)</span> का पता लगाना) लगभग असंभव है।</p>
+
+                    <h4>बड़ी संख्याओं की समस्या</h4>
+                    <p>यदि हमें <span class="math">\(5^{11} \pmod{13}\)</span> परिकलित करना है, तो सीधी गणना कंप्यूटर के लिए असंभव है यदि घातांक सैकड़ों अंकों का हो। संख्या <span class="math">\(5^{11}\)</span> मेमोरी के लिए बहुत बड़ी हो जाती।</p>
+
+                    <h4>समाधान: स्क्वायर-एंड-मल्टीप्लाई एल्गोरिथ्म</h4>
+                    <p>यह एल्गोरिथ्म बहुत कम चरणों (<span class="math">\(O(\log k)\)</span> गुणा) में परिणाम निकालने की अनुमति देता है, हमेशा छोटी संख्याओं के साथ काम करता है और घात को अनंत तक बढ़ने से रोकता है।</p>
+
+                    <details>
+                        <summary><strong>यह व्यवहार में कैसे काम करता है (उदाहरण: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>घातांक को बाइनरी में बदलें: <span class="math">\(11 = 8 + 2 + 1\)</span>. <span class="math">\(5\)</span> को <span class="math">\(11\)</span> बार गुणा करने के बजाय, हम चरण-दर-चरण वर्ग घातों की गणना करते हैं और परिणाम को तुरंत मॉड्यूल <span class="math">\(13\)</span> के सापेक्ष घटा देते हैं:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{आधार: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{वर्ग: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{वर्ग का वर्ग: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{अगला वर्ग: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>अब केवल उन भागों को जोड़ते हैं जो हमारे घातांक <span class="math">\(11\)</span> (अर्थात <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>) को बनाते हैं:</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p><span class="math">\(60\)</span> को <span class="math">\(13\)</span> से विभाजित करें: <span class="math">\(13\)</span>, <span class="math">\(4\)</span> बार (<span class="math">\(52\)</span>) आता है और शेष <span class="math">\(8\)</span> बचता है।</p>
+                        <p><strong>अंतिम परिणाम:</strong> <span class="math">\(8\)</span> (हमने 11 के बजाय केवल 4 चरण किए)</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 रैखिक बीजगणित: सदिश और आव्यूह</h2>
+
+                    <h3>सदिश (Vectors)</h3>
+                    <p>एक सदिश <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span>, <span class="math">\(n\)</span> पूर्णांकों की एक क्रमबद्ध सूची है, जिनकी गणना मॉड्यूल <span class="math">\(q\)</span> के सापेक्ष की जाती है:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>सदिशों के बीच संक्रियाओं में, प्रत्येक परिणाम को मॉड्यूल <span class="math">\(q\)</span> के सापेक्ष घटाया जाता है।</p>
+
+                    <h4>व्यावहारिक उदाहरण</h4>
+                    <p><span class="math">\(q = 13\)</span> के साथ:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>सदिशों का योग</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>अदिश गुणनफल (Dot Product / Scalar Product)</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>गणना:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>योग: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>मॉड्यूल 13 के सापेक्ष घटाना: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>आव्यूह (Matrices)</h3>
+                    <p>एक आव्यूह <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>, पंक्तियों और स्तंभों की एक सारणी है।</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="आव्यूह का उदाहरण" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(व्यवहार में, ML-KEM में आव्यूह <span class="math">\(A\)</span> के आयाम <span class="math">\(k \times k\)</span> होते हैं, जहाँ <span class="math">\(k = 3, 4\)</span> या <span class="math">\(5\)</span> है, और यह SHAKE के माध्यम से एक यादृच्छिक बीज से उत्पन्न होता है।)</em></p>
+
+                    <h4>आव्यूह-सदिश गुणनफल</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>उदाहरण</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>विस्तृत चरण</summary>
+                        <p>पहली पंक्ति: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>दूसरी पंक्ति: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>मॉड्यूल 13 के सापेक्ष घटाना: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>इसलिए: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>अनंत मानदंड (Infinity Norm)</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>यह मानदंड उस घटक को मापता है जिसका निरपेक्ष मान सबसे बड़ा है। MLWE के संदर्भ में, त्रुटि सदिशों का मानदंड बहुत छोटा होना चाहिए।</p>
+                    <details>
+                        <summary>व्यावहारिक उदाहरण</summary>
+                        <p><strong>मान्य स्थिति:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>अमान्य स्थिति:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 बहुपद (Polynomials)</h2>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> में गुणांकों वाले बहुपद</h3>
+                    <p><span class="math">\(\mathbb{Z}_q[X]\)</span> में एक बहुपद का रूप इस प्रकार है:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>जहाँ प्रत्येक <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span> है।</p>
+
+                    <h4>बहुपदों का योग</h4>
+                    <p>समान घातों के गुणांकों को मॉड्यूल <span class="math">\(q\)</span> के सापेक्ष जोड़ा जाता है:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>बहुपदों का गुणन और अपचयन (Reduction)</h4>
+                    <p>दो बहुपदों का गुणनफल, जिनकी घात <span class="math">\(\leq n-1\)</span> है, की घात <span class="math">\(2n-2\)</span> तक हो सकती है। इन्हें संक्षिप्त रखने के लिए, एक विशेष बहुपद के सापेक्ष अपचयन किया जाता है।</p>
+                    <p>ML-KEM में <span class="math">\(X^n + 1\)</span> का उपयोग <span class="math">\(n = 256\)</span> के साथ किया जाता है। अपचयन का नियम है:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>इसलिए जब भी गुणनफल में <span class="math">\(X^{256}\)</span> आता है, तो उसे <span class="math">\(-1\)</span> से बदल दिया जाता है।</p>
+
+                    <h4>सरल उदाहरण</h4>
+                    <p><span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, मॉड्यूलस <span class="math">\(X^4+1\)</span> के साथ:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 बीजगणितीय संरचनाएँ: समूह, वलय, क्षेत्र</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>संरचना</th>
+                                <th>संक्रियाएँ</th>
+                                <th>मुख्य गुण</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>समूह (Group)</strong></td>
+                                <td>एक (+)</td>
+                                <td>संवरक (closure), साहचर्यता (associativity), तत्समक (identity), प्रतिलोम (inverse)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>वलय (Ring)</strong></td>
+                                <td>दो (+, ×)</td>
+                                <td>+ के लिए एबेलियन समूह, × के लिए अर्धसमूह (semigroup)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>क्षेत्र (Field)</strong></td>
+                                <td>दो (+, ×)</td>
+                                <td>ऐसा वलय जिसमें सभी ≠ 0 का गुणात्मक प्रतिलोम हो</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> एक क्षेत्र के रूप में</h3>
+                    <p>यदि <span class="math">\(q\)</span> अभाज्य है, तो <span class="math">\(\mathbb{Z}_q\)</span> <strong>एक क्षेत्र है</strong>: प्रत्येक गैर-शून्य अवयव का एक गुणात्मक प्रतिलोम होता है। ML-KEM में, <span class="math">\(q = 3329\)</span> अभाज्य है → <span class="math">\(\mathbb{Z}_{3329}\)</span> एक क्षेत्र है।</p>
+
+                    <h3>वलय <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>यह एक वलय है (क्षेत्र नहीं, क्योंकि सभी बहुपदों का प्रतिलोम नहीं होता), लेकिन क्रिप्टोग्राफी के लिए उपयोगी गुण हैं:</p>
+                    <ul>
+                        <li>प्रत्येक बहुपद में ठीक 256 गुणांक होते हैं;</li>
+                        <li>गुणन NTT (फ़ाइल 07 देखें) के माध्यम से कुशल है;</li>
+                        <li>बहुपद <span class="math">\(X^{256}+1\)</span> <em>चक्रवर्ती (cyclotomic)</em> है, जो अच्छे सुरक्षा गुणों की गारंटी देता है।</li>
+                    </ul>
+                    <details>
+                        <summary><span class="math">\(X^{256}+1\)</span> के चक्रवर्ती होने का क्या अर्थ है?</summary>
+                        <p>बीजगणित में, एक चक्रवर्ती बहुपद एक विशेष बहुपद होता है जिसके मूल (roots) <strong>एकता के आदिम मूल (primitive roots of unity)</strong> होते हैं (अर्थात वे सम्मिश्र संख्याएँ जिन्हें एक निश्चित घात तक बढ़ाने पर <span class="math">\(1\)</span> प्राप्त होता है)।</p>
+                        <p><span class="math">\(X^{256}+1\)</span> के विशिष्ट मामले में, यह गुण क्रिप्टोग्राफी (ML-KEM की तरह) में तीन बड़े लाभ प्रदान करता है:</p>
+                        <ul>
+                            <li><strong>अपरिवर्तनीयता (Irreducibility)</strong>: बहुपद को पूर्णांक गुणांकों वाले छोटे बहुपदों में विभाजित नहीं किया जा सकता। यह रोकता है कि कोई दुर्भावनापूर्ण उपयोगकर्ता गणितीय समस्या को आसान भागों में "तोड़" सके।</li>
+                            <li><strong>अत्यंत तीव्र गुणन (NTT)</strong>: यह <em>संख्या-सैद्धांतिक रूपांतरण (Number Theoretic Transform - NTT)</em> का उपयोग करने की अनुमति देता है। इस एल्गोरिथ्म के कारण, बहुपदों के बीच गुणन की जटिलता <span class="math">\(O(n^2)\)</span> से घटकर केवल <span class="math">\(O(n \log n)\)</span> हो जाती है, जिससे क्वांटम-पश्चात क्रिप्टोग्राफी अविश्वसनीय रूप से तीव्र हो जाती है।</li>
+                            <li><strong>समान सुरक्षा</strong>: संक्रियाओं के दौरान त्रुटि (शोर) को सभी 256 गुणांकों पर पूर्णतः सममित रूप से वितरित करता है, जिससे संरचनात्मक कमजोरियाँ समाप्त हो जाती हैं जिनका हैकर्स फायदा उठा सकते थे।</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 क्रिप्टोग्राफ़िक हैश फलन</h2>
+                    <p>एक हैश फलन <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> मनमानी लंबाई के इनपुट को निश्चित लंबाई के आउटपुट में मैप करता है।</p>
+                    <p><strong>क्रिप्टोग्राफी में आवश्यक गुण:</strong></p>
+                    <ul>
+                        <li><em>प्री-इमेज प्रतिरोध (Pre-image Resistance):</em> <span class="math">\(H(x)\)</span> से <span class="math">\(x\)</span> तक नहीं पहुँचा जा सकता</li>
+                        <li><em>संघट्ट प्रतिरोध (Collision Resistance):</em> <span class="math">\(x \neq y\)</span> के साथ <span class="math">\(H(x) = H(y)\)</span> ढूँढना संगणनात्मक रूप से असंभव है</li>
+                        <li><em>हिमस्खलन प्रभाव (Avalanche Effect):</em> इनपुट का एक बिट बदलने पर आउटपुट का ~50% भाग बदल जाता है</li>
+                    </ul>
+
+                    <h3>SHA-3 और SHAKE</h3>
+                    <p>ML-KEM विशेष रूप से <strong>SHA-3</strong> परिवार (NIST 2015 द्वारा मानकीकृत) की प्राइमिटिव्स का उपयोग करता है:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>फलन</th>
+                                <th>आउटपुट</th>
+                                <th>ML-KEM में उपयोग</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 निश्चित बिट</td>
+                                <td>सामान्य हैशिंग</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 निश्चित बिट</td>
+                                <td>कुंजियों का हैशिंग</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>परिवर्ती लंबाई</td>
+                                <td><span class="math">\(A\)</span> का उत्पादन (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>परिवर्ती लंबाई</td>
+                                <td>कुंजी व्युत्पत्ति (Key derivation)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE एक <strong>XOF (eXtendable Output Function)</strong> है: यह दिए गए इनपुट से जितने चाहें उतने बाइट उत्पन्न करता है। ML-KEM में, <code>SHAKE128(seed)</code> 32-बाइट बीज से पूरी सार्वजनिक आव्यूह <span class="math">\(A\)</span> उत्पन्न करता है।</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 प्रायिकता और शोर वितरण</h2>
+
+                    <h3>केंद्रित द्विपद वितरण <span class="math">\(B_\eta\)</span></h3>
+                    <p>ML-KEM में, शोर गाउसियन नहीं बल्कि <strong>केंद्रित द्विपद (centered binomial)</strong> होता है। प्रतिचयन (sampling) इस प्रकार काम करता है:</p>
+                    <ol>
+                        <li><span class="math">\(2\eta\)</span> समान बिट्स का प्रतिचयन करें: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li><span class="math">\(\sum a_i - \sum b_i\)</span> लौटाएँ</li>
+                    </ol>
+                    <p>परिणाम <span class="math">\([-\eta, +\eta]\)</span> में एक पूर्णांक होता है जिसका वितरण 0 के आसपास लगभग गाउसियन होता है।</p>
+                    <p><strong>वास्तविक गाउसियन क्यों नहीं?</strong> द्विपद वितरण को <em>नियत-समय (constant-time)</em> में प्रतिचयित करना (साइड-चैनल के प्रति प्रतिरोधी) अधिक सरल है, और सुरक्षा समान है।</p>
+                    <p>ML-KEM-768 के लिए: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. शोर मान <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> में होंगे।</p>
+
+                    <h3>तुच्छता (Negligibility)</h3>
+                    <p>एक फलन <span class="math">\(f(\lambda)\)</span> <strong>तुच्छ (negligible)</strong> कहलाता है यदि प्रत्येक बहुपद <span class="math">\(p(\cdot)\)</span> के लिए एक <span class="math">\(\lambda_0\)</span> अस्तित्व में है जिससे प्रत्येक <span class="math">\(\lambda > \lambda_0\)</span> के लिए:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>व्यवहार में: यह किसी भी बहुपदीय प्रतिलोम की तुलना में तेजी से घटता है। ML-KEM में त्रुटि की प्रायिकताएँ सुरक्षा पैरामीटर <span class="math">\(\lambda\)</span> के सापेक्ष तुच्छ हैं।</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 संगणनात्मक जटिलता</h2>
+
+                    <h3>संकेतन (Notations)</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: अनंतस्पर्शी परिमाण का क्रम (ऊपरी सीमा)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: निचली सीमा</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: सटीक सीमा</li>
+                    </ul>
+
+                    <h3>प्रासंगिक वर्ग</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>वर्ग</th>
+                                <th>अर्थ</th>
+                                <th>उदाहरण</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>बहुपदीय समय में हल करने योग्य</td>
+                                <td>गुणा, क्रमबद्धता (sorting)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>बहुपदीय समय में सत्यापित करने योग्य</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-hard</strong></td>
+                                <td>NP जितना कठिन या अधिक कठिन</td>
+                                <td>गुणनखंडन (presumably)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>क्रिप्टोग्राफ़िक समस्याएँ और उनकी कठिनाई</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>समस्या</th>
+                                <th>शास्त्रीय कठिनाई</th>
+                                <th>क्वांटम कठिनाई</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>गुणनखंडन (Factoring)</td>
+                                <td>उप-घातांकीय (subexponential)</td>
+                                <td><strong>बहुपदीय</strong> (शोर)</td>
+                            </tr>
+                            <tr>
+                                <td>विविक्त लघुगणक (Discrete Log)</td>
+                                <td>उप-घातांकीय</td>
+                                <td><strong>बहुपदीय</strong> (शोर)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (जालक)</td>
+                                <td>घातांकीय</td>
+                                <td>घातांकीय (कोई ज्ञात त्वरण नहीं)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>घातांकीय</td>
+                                <td>घातांकीय (कोई ज्ञात त्वरण नहीं)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>यह तालिका क्वांटम-पश्चात क्रिप्टोग्राफी के पूरे अस्तित्व को प्रेरित करती है।</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>स्रोत और अधिक जानकारी</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (अध्याय 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (मुफ्त ऑनलाइन)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">वीडियो: बीजगणितीय वलय</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – खंड 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← पिछला अध्याय</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">अगला अध्याय →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

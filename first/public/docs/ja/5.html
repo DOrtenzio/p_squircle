@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第5章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Quick navigation">
+            <a href="index.html#featureSection">なぜ</a>
+            <a href="index.html#learningPath">学習パス</a>
+            <a href="index.html#searchSection">ガイド</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="言語を選択">
+                    <span class="lang-current" id="langCurrent">🇯🇵 日本語</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 前提知識</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 対称鍵暗号</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 公開鍵暗号</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shorのアルゴリズム</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格子</a></li>
+                <li class="active"><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> セキュリティ</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 実装</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>05 – Module-LWE（MLWE）</h1>
+        <p class="subtitle">ML-KEM の数学的基盤</p>
+
+        <!-- Table of contents -->
+        <div class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#id-51">5.1 LWE から MLWE へ：動機</a></li>
+                <li><a href="#id-52">5.2 MLWE の形式的定義</a></li>
+                <li><a href="#id-53">5.3 ML-KEM におけるノイズ分布</a></li>
+                <li><a href="#id-54">5.4 公開行列 A の生成</a></li>
+                <li><a href="#id-55">5.5 困難性：なぜ MLWE が難しいのか</a></li>
+                <li><a href="#id-56">5.6 MLWE から PKE へ：構成的アイデア</a></li>
+                <li><a href="#id-57">5.7 完全な数値例</a></li>
+                <li><a href="#id-58">5.8 ML-KEM のパラメータがこうなっている理由</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 5.1 -->
+        <section id="id-51">
+            <h2>5.1 LWE から MLWE へ：動機</h2>
+
+            <h3>古典的 LWE とそのコスト</h3>
+
+            <p>ファイル <a href="4.html">04</a> で標準的な LWE を見ました。<span class="math">\(m\)</span> 個のサンプル <span class="math">\((\mathbf{a}_i, b_i)\)</span>（<span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span>、<span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span>）が与えられたとき、<span class="math">\(\mathbf{s}\)</span> を見つける問題です。この問題は難しいですが、実用的なコストが高くなります。</p>
+
+            <ul>
+                <li>公開鍵（行列 <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span>）のサイズは <span class="math">\(O(n^2)\)</span> です。<span class="math">\(n = 1024\)</span>、<span class="math">\(q = 3329\)</span> の場合、2 MB 以上になります。</li>
+                <li>行列-ベクトル積 <span class="math">\(A \cdot \mathbf{s}\)</span> は <span class="math">\(O(n^2)\)</span> 回の乗算を要します。</li>
+            </ul>
+
+            <h3>RLWE：硬直しすぎ</h3>
+
+            <p>Ring-LWE は演算を環 <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span> に移します。単一の多項式 <span class="math">\(a \in R_q\)</span> が行列全体を置き換え、公開鍵を <span class="math">\(O(n)\)</span> に削減します。</p>
+
+            <p>しかし RLWE は非常に特殊な代数構造を持ち、一部の研究者はそれが潜在的に対象となり得ると考えています（ただし 2024 年現在、実用的な攻撃は知られていません）。</p>
+
+            <h3>MLWE：最適な妥協案</h3>
+
+            <p><strong>Module-LWE</strong> は <span class="math">\(R_q\)</span> 上の <span class="math">\(k \times k\)</span> 多項式行列を使用して両方を一般化します。</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}
+                \]
+            </div>
+
+            <ul>
+                <li><span class="math">\(k = 1\)</span>：RLWE に縮退</li>
+                <li><span class="math">\(k \to \infty\)</span>（次数 0 の多項式）：古典的 LWE に縮退</li>
+            </ul>
+
+            <p>パラメータ <span class="math">\(k\)</span> により、<span class="math">\(n\)</span> とは独立にセキュリティとパフォーマンスを<strong>調整</strong>できます。</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>変種</th>
+                        <th>公開鍵</th>
+                        <th>セキュリティ</th>
+                        <th>柔軟性</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span></td>
+                        <td>高い</td>
+                        <td>低い</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span></td>
+                        <td>中程度</td>
+                        <td>低い</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span></td>
+                        <td><span class="math">\(k\)</span> で調整可能</td>
+                        <td><strong>高い</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5.2 -->
+        <section id="id-52">
+            <h2>5.2 MLWE の形式的定義</h2>
+
+            <h3>作業空間</h3>
+
+            <p>以下のパラメータを固定します。</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span>：円分多項式の次数</li>
+                <li><span class="math">\(q = 3329\)</span>：素数法</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>：モジュール次元</li>
+                <li><span class="math">\(\chi\)</span>：ノイズ分布（中心二項分布 <span class="math">\(B_\eta\)</span>）</li>
+            </ul>
+
+            <p>基本環は <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span> です。</p>
+
+            <h3>MLWE 分布</h3>
+
+            <p><span class="math">\(\mathbf{s} \in R_q^k\)</span> を多項式の秘密ベクトルとし、各係数は <span class="math">\(\chi\)</span> からサンプリングされます。</p>
+
+            <p><strong>MLWE インスタンス</strong> はペアです。</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{A},\; \mathbf{t}) \quad \text{ただし} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                \]
+            </div>
+
+            <p><span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span> とします。</p>
+
+            <h3>判定型 MLWE 問題</h3>
+
+            <p><strong>入力：</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>。ここで</p>
+            <ul>
+                <li><span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>（MLWE 分布）、または</li>
+                <li><span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span>（一様分布）</li>
+            </ul>
+
+            <p><strong>目的：</strong> 2 つのケースを無視できないアドバンテージで区別すること。</p>
+
+            <h3>探索型 MLWE 問題</h3>
+
+            <p><strong>入力：</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>（<span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>）</p>
+
+            <p><strong>目的：</strong> <span class="math">\(\mathbf{s}\)</span> を見つけること。</p>
+
+            <blockquote>
+                <p>Regev の還元（MLWE に適用）は、探索問題と判定問題が計算的に等価であり、両方が高次元格子における GapSVP と少なくとも同程度に困難であることを示しています。</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 5.3 -->
+        <section id="id-53">
+            <h2>5.3 ML-KEM におけるノイズ分布</h2>
+
+            <h3>中心二項分布 <span class="math">\(B_\eta\)</span></h3>
+
+            <p>ML-KEM では、ノイズはガウス分布ではなく中心二項分布です。<span class="math">\(B_\eta\)</span> から単一の係数をサンプリングするには：</p>
+
+            <ol>
+                <li><span class="math">\(2\eta\)</span> 個の一様ビットをサンプリング：<span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li><span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span> を返す</li>
+            </ol>
+
+            <p>結果は <span class="math">\([-\eta, \eta]\)</span> の整数です。</p>
+
+            <p><strong>η = 2 の確率分布：</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>値</th>
+                        <th>確率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\(-2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(-1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(0\)</span></td>
+                        <td><span class="math">\(6/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>なぜ真のガウス分布ではないのか？</strong></p>
+
+            <p>離散ガウス分布は理論的には最適ですが、<em>定数時間</em>（タイミング攻撃に耐性）でのサンプリングは複雑です。中心二項分布は：</p>
+
+            <ul>
+                <li>有限のサポート → 極端なケースがない</li>
+                <li>ビット演算のみでサンプリング可能 → 自明に定数時間</li>
+                <li>既知の攻撃に対してガウス分布と統計的に区別できない</li>
+            </ul>
+
+            <h3>ML-KEM におけるサンプリング（<code>SamplePolyCBD</code> 関数）</h3>
+
+            <div class="sequence-diagram">
+CBD_η(σ, b):
+    入力：シード σ ∈ {0,1}^256、ノンス b ∈ {0,1}^8
+    出力：係数が [-η, η] の多項式 f ∈ R_q
+
+    bytes = PRF(σ, b)   // SHAKE256、64η バイトを生成
+    j = 0..255 に対して：
+        a = bytes の位置 [2ηj .. 2ηj+η-1] のビットの合計
+        b = bytes の位置 [2ηj+η .. 2ηj+2η-1] のビットの合計
+        f[j] = a - b
+    f を返す
+            </div>
+
+            <p>各多項式 <span class="math">\(\mathbf{s}[i]\)</span> と <span class="math">\(\mathbf{e}[i]\)</span> は異なるノンスでサンプリングされ、統計的独立性が保証されます。</p>
+        </section>
+
+        <!-- Section Sampling -->
+        <section id="id-54">
+            <h2>5.4 ML-KEM におけるサンプリング</h2>
+
+            <h3>CBD：中心二項分布</h3>
+            <p>ML-KEM は中心二項分布 <span class="math">\(B_\eta\)</span> を使用して、小さな誤差と秘密を生成します。この分布は効率的で、rejection sampling を必要としません。</p>
+
+            <div class="code-block">
+                <h4>SamplePolyCBD(σ, b, η) 関数</h4>
+                <pre><code>入力：シード σ ∈ {0,1}^256、ノンス b、パラメータ η
+出力：係数が [-η, η] の多項式 f ∈ R_q
+
+1. bytes = PRF(σ, b)       // SHAKE256、64·η バイトを生成
+2. j = 0 から 255 まで：
+     a = sum(bits[2ηj .. 2ηj+η-1])   // 最初のグループの 1 をカウント
+     b = sum(bits[2ηj+η .. 2ηj+2η-1]) // 2番目のグループの 1 をカウント
+     f[j] = a - b                     // 0 を中心とした差
+3. f を返す</code></pre>
+            </div>
+
+            <p><span class="math">\(\eta=2\)</span> の場合、係数は <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> の範囲です。<span class="math">\(\eta=3\)</span> の場合は <span class="math">\(\{-3, \ldots, 3\}\)</span> です。</p>
+
+            <h3>SampleNTT：一様サンプリング</h3>
+            <p>公開行列 <span class="math">\(\mathbf{A}\)</span> を生成するには、<span class="math">\(\mathbb{Z}_q\)</span> 上の一様係数が必要です。SHAKE128 の出力に対して rejection sampling を使用します。</p>
+
+            <div class="code-block">
+                <h4>SampleNTT(stream) 関数</h4>
+                <pre><code>入力：XOF（SHAKE128）からのバイトストリーム
+出力：[0, q-1] の一様係数を持つ多項式
+
+coeficientes = []
+len(coeficientes) < 256 の間：
+    // 3バイト読み込んで2つの候補値を生成
+    b0, b1, b2 = next_3_bytes(stream)
+
+    // ビットを組み合わせて2つの12ビット数値を形成
+    d1 = b0 + 256 * (b1 mod 16)
+    d2 = floor(b1 / 16) + 16 * b2
+
+    // q（3329）より小さい場合のみ受け入れる
+    d1 < q の場合：
+        coeficientes.append(d1)
+    d2 < q かつ len(coeficientes) < 256 の場合：
+        coeficientes.append(d2)
+
+coeficientes を返す</code></pre>
+            </div>
+
+            <p>この方法は、範囲外の値を破棄することで完全な一様分布を保証します。</p>
+        </section>
+
+        <!-- Section 5.5 -->
+        <section id="id-55">
+            <h2>5.5 困難性：なぜ MLWE が難しいのか</h2>
+
+            <h3>最悪ケースから平均ケースへの還元</h3>
+
+            <p>LWE/MLWE の最も重要な特性は、<strong>最悪ケースから平均ケースへの還元</strong>です。</p>
+
+            <blockquote>
+                <p>ランダムなインスタンスの無視できない割合に対して MLWE を解く効率的なアルゴリズムが存在するなら、<em>任意の</em>格子に対して GapSVP（SVP の近似版）を最悪ケースで解く効率的なアルゴリズムが存在します。</p>
+            </blockquote>
+
+            <p>この還元（Regev 2005、Peikert 2009 および Brakerski らによる MLWE への適用）は例外的です。ほとんどの暗号問題は平均ケースから平均ケースへの還元しか持ちません。</p>
+
+            <p>実際には：ランダムなインスタンスで MLWE を破ることは、最悪ケースで SVP を解くのと同じくらい困難です → 暗号の仮定は非常に強固です。</p>
+
+            <h3>量子によって悪用可能な構造の欠如</h3>
+
+            <p>Shor のアルゴリズムは、因数分解や離散対数問題の<strong>アーベル群</strong>構造を悪用します。そこには QFT が検出できる周期的な群作用が存在します。</p>
+
+            <p>MLWE にはこの構造がありません。</p>
+
+            <ul>
+                <li>悪用可能な周期性がない</li>
+                <li>QFT を適用できる自然なアーベル群がない</li>
+                <li>最良の量子アルゴリズム（量子ウォークや QRAM に基づく）はせいぜい多項式的な高速化しか提供せず、指数関数的ではない</li>
+            </ul>
+        </section>
+
+        <!-- Section 5.6 -->
+        <section id="id-56">
+            <h2>5.6 MLWE から PKE へ：構成的アイデア</h2>
+
+            <p>MLWE から暗号システムをどのように構築するのでしょうか？直感はエレガントです。</p>
+
+            <h3>Diffie-Hellman との類推</h3>
+
+            <p>DH では、公開鍵は <span class="math">\(g^s\)</span> です。計算は簡単で、逆算は困難です。<br />
+            MLWE では、公開鍵は <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> です。計算は簡単で、逆算は困難です。</p>
+
+            <h3>暗号化スキーム（Regev 型）</h3>
+
+            <p><strong>KeyGen：</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p style="text-align: right;">公開鍵：<span class="math">\((\mathbf{A}, \mathbf{t})\)</span><br />
+            秘密鍵：<span class="math">\(\mathbf{s}\)</span></p>
+
+            <p><strong>暗号化</strong>（メッセージ <span class="math">\(m \in \{0,1\}\)</span>、<span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span> としてエンコード）：</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{r}, \mathbf{e}_1 \leftarrow \chi^k, \quad e_2 \leftarrow \chi
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{u} = \mathbf{A}^T\mathbf{r} + \mathbf{e}_1 \qquad v = \mathbf{t}^T\mathbf{r} + e_2 + \mu
+                \]
+            </div>
+
+            <p style="text-align: right;">暗号文：<span class="math">\((\mathbf{u}, v)\)</span></p>
+
+            <p><strong>復号：</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+
+            <p><strong>解析：</strong></p>
+
+            <div class="math-block">
+                \[
+                w = \mathbf{t}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T\mathbf{u}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = (\mathbf{A}\mathbf{s})^T\mathbf{r} + \mathbf{e}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T(\mathbf{A}^T\mathbf{r} + \mathbf{e}_1)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{小さなノイズ}} + \mu \approx \mu
+                \]
+            </div>
+
+            <p>ノイズは小さい → 丸めることで <span class="math">\(\mu\)</span> が回復され、したがって <span class="math">\(m\)</span> が回復されます。</p>
+
+            <h3>多項式版（実際の MLWE）</h3>
+
+            <p>ML-KEM では、各スカラーが <span class="math">\(R_q\)</span> 内の多項式に置き換えられ、演算は多項式積となります。メカニズムは同一ですが、乗算は環上で実行されます。</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \circ \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>ここで <span class="math">\(\circ\)</span> は <span class="math">\(R_q\)</span> 上の乗算（多項式、NTT で高速化）です。</p>
+        </section>
+
+        <!-- Section 5.7 -->
+        <section id="id-57">
+            <h2>5.7 完全な数値例</h2>
+
+            <p>おもちゃのパラメータを使用します。<span class="math">\(n = 4\)</span>、<span class="math">\(q = 17\)</span>、<span class="math">\(k = 2\)</span>、係数は <span class="math">\(\{-1, 0, 1\}\)</span> の小さい値です。</p>
+
+            <p>多項式は <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span> にあり、次数は <span class="math">\(\leq 3\)</span> です。</p>
+
+            <h3>初期データ</h3>
+
+            <p><strong>公開行列</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>：</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} = \begin{pmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{pmatrix}
+                \]
+            </div>
+
+            <p><span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>、<span class="math">\(a_{01} = 5 + X + 2X^2\)</span>、<span class="math">\(a_{10} = 3 + X^3\)</span>、<span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+
+            <p><strong>秘密</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span>、<span class="math">\(s_0 = 1 - X\)</span>、<span class="math">\(s_1 = X^2\)</span></p>
+
+            <p><strong>誤差</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span>、<span class="math">\(e_0 = 1\)</span>、<span class="math">\(e_1 = -X\)</span></p>
+
+            <h3>t = As + e の計算</h3>
+
+            <p><strong>成分 t0 = a00 s0 + a01 s1 + e0：</strong></p>
+
+            <div class="math-block">
+                \[
+                a_{00} \cdot s_0 = (1 + 2X + 3X^2 + 4X^3)(1 - X)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 1 - X + 2X - 2X^2 + 3X^2 - 3X^3 + 4X^3 - 4X^4
+                \]
+            </div>
+
+            <p><span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span> で簡約：</p>
+
+            <div class="math-block">
+                \[
+                = 1 + X + X^2 + X^3 + 4 = 5 + X + X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                a_{01} \cdot s_1 = (5 + X + 2X^2)(X^2) = 5X^2 + X^3 + 2X^4
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \equiv 5X^2 + X^3 - 2 = -2 + 5X^2 + X^3 \equiv 15 + 5X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                t_0 = (5 + X + X^2 + X^3) + (15 + 5X^2 + X^3) + 1
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 21 + X + 6X^2 + 2X^3 \equiv 4 + X + 6X^2 + 2X^3 \pmod{17}
+                \]
+            </div>
+
+            <p><strong>結果：</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span>（2番目の成分も同様に計算されます）</p>
+
+            <h3>重要な観察</h3>
+
+            <p><span class="math">\((\mathbf{A}, \mathbf{t})\)</span> を見る攻撃者は <span class="math">\((\mathbf{s}, \mathbf{e})\)</span> を見つけなければなりません。これらの小さな数値でも、問題はもはや自明ではありません。誤差が線形性を壊すため Gauss の消去法を使用できず、探索空間は ML-KEM の実際の次元に対して指数関数的です。</p>
+        </section>
+
+        <!-- Section 5.8 -->
+        <section id="id-58">
+            <h2>5.8 ML-KEM のパラメータがこうなっている理由</h2>
+
+            <h3><span class="math">\(n = 256\)</span></h3>
+
+            <ul>
+                <li>2 のべき乗でなければならない（効率的な NTT のため）</li>
+                <li>多項式 <span class="math">\(X^{256}+1\)</span> は <span class="math">\(\mathbb{Z}_q\)</span> 上で既約でなければならない：<span class="math">\(q \equiv 1 \pmod{512}\)</span> の場合に成立</li>
+                <li><span class="math">\(256\)</span> はセキュリティとパフォーマンスのバランスが取れている。<span class="math">\(n = 128\)</span> は安全でなく、<span class="math">\(n = 512\)</span> は遅すぎる</li>
+            </ul>
+
+            <h3><span class="math">\(q = 3329\)</span></h3>
+
+            <ul>
+                <li>素数でなければならない（<span class="math">\(\mathbb{Z}_q\)</span> が体であるため）</li>
+                <li><span class="math">\(q \equiv 1 \pmod{256}\)</span> を満たす必要がある：<span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>256 乗根が存在するような値でなければならない：前の条件で保証される</li>
+                <li>ノイズ予算と互換性のある最小値でなければならない（鍵をコンパクトにするため）</li>
+                <li><span class="math">\(3329\)</span> は、ノイズに対して十分な余裕を持ってすべての条件を満たす素数</li>
+            </ul>
+
+            <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
+
+            <ul>
+                <li><span class="math">\(k = 2\)</span>（ML-KEM-512）：NIST レベル 1、古典的 AES-128 相当</li>
+                <li><span class="math">\(k = 3\)</span>（ML-KEM-768）：NIST レベル 3、AES-192 相当、一般的な使用に推奨</li>
+                <li><span class="math">\(k = 4\)</span>（ML-KEM-1024）：NIST レベル 5、AES-256 相当、高重要度システム向け</li>
+            </ul>
+
+            <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
+
+            <p>ノイズは以下の条件を満たす必要があります。</p>
+
+            <ul>
+                <li>MLWE 問題を困難にするのに十分<strong>大きい</strong></li>
+                <li>復号が失敗しないことを保証するのに十分<strong>小さい</strong>（ノイズ予算）</li>
+            </ul>
+
+            <p><span class="math">\(\eta\)</span> を大きくするとセキュリティは向上しますが、復号エラーの確率も増加します。ML-KEM-768 の <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> は最適なポイントです。</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>出典</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
+                STOC 2005. LWE の基礎。</li>
+                <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
+                Designs, Codes and Cryptography. MLWE の基礎。</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
+                EUROCRYPT 2010. RLWE の基礎。</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>、第1～4節（パラメータの合理的設計）</li>
+                <li>NIST FIPS 203 (2024)、第3～4節（表記とプリミティブ）</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="4.html" class="nav-btn">← 前の章</a>
+            <span class="nav-label">05 / 10</span>
+            <a href="6.html" class="nav-btn">次の章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> すべての人に無料の図書室。無断複写・転載を禁じます。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ja';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/5.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

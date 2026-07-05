@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 3 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – शोर का एल्गोरिथ्म</h1>
+        <p class="subtitle">RSA और ECC क्वांटम कंप्यूटरों के प्रति संवेदनशील क्यों हैं</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-31">3.1 क्वांटम कंप्यूटर: आवश्यक आधार</a></li>
+                <li><a href="#id-32">3.2 शोर का एल्गोरिथ्म</a></li>
+                <li><a href="#id-33">3.3 RSA, DH, ECC पर प्रभाव</a></li>
+                <li><a href="#id-34">3.4 ग्रोवर: सममित क्रिप्टोग्राफी के लिए खतरा</a></li>
+                <li><a href="#id-35">3.5 क्वांटम कंप्यूटरों की वर्तमान स्थिति (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 अभी काटो, बाद में डिक्रिप्ट करो</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 3.1 -->
+        <section id="id-31">
+            <h2>3.1 क्वांटम कंप्यूटर: आवश्यक आधार</h2>
+
+            <h3>क्यूबिट बनाम शास्त्रीय बिट</h3>
+
+            <p>एक शास्त्रीय बिट या तो 0 होता है या 1। एक <strong>क्यूबिट</strong> <strong>अध्यारोपण (superposition)</strong> में हो सकता है: <span class="math">\(|0\rangle\)</span> और <span class="math">\(|1\rangle\)</span> का एक रैखिक संयोजन।</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>मापन से पहले, क्यूबिट "0 और 1 दोनों" होता है। मापन के बाद, यह 0 (प्रायिकता <span class="math">\(|\alpha|^2\)</span> के साथ) या 1 (प्रायिकता <span class="math">\(|\beta|^2\)</span> के साथ) में विभंग (collapse) हो जाता है।</p>
+
+            <blockquote>
+                <p><strong>सादृश्य:</strong> एक सिक्का उछालने की कल्पना करें जो हवा में होने पर एक साथ चित और पट दोनों का प्रतिनिधित्व करता है। जब आप उसे देखते हैं, तो वह दोनों में से एक हो जाता है।</p>
+            </blockquote>
+
+            <h3>उलझाव (Entanglement) और व्यतिकरण (Interference)</h3>
+
+            <ul>
+                <li><strong>उलझाव:</strong> दो क्यूबिट इस प्रकार सहसंबद्ध हो सकते हैं कि एक को मापने से दूसरा तुरंत निर्धारित हो जाता है।</li>
+                <li><strong>क्वांटम व्यतिकरण:</strong> "गलत" गणना पथ विनाशकारी रूप से रद्द हो जाते हैं (जैसे तरंगें एक दूसरे को रद्द करती हैं), जबकि "सही" पथ प्रबल हो जाते हैं।</li>
+            </ul>
+
+            <p>क्वांटम एल्गोरिथ्म सही उत्तरों को प्रबल करने और गलत उत्तरों को दबाने के लिए व्यतिकरण का उपयोग करते हैं।</p>
+
+            <h3>क्वांटम समानांतरता (Quantum Parallelism)</h3>
+
+            <p><span class="math">\(n\)</span> क्यूबिट के साथ, <span class="math">\(2^n\)</span> अवस्थाओं के अध्यारोपण का प्रतिनिधित्व किया जा सकता है। लेकिन मापन केवल एक अवस्था लौटाता है → चाल यह है कि ऐसे एल्गोरिथ्म बनाए जाएँ जहाँ व्यतिकरण केवल सही उत्तर को जीवित रहने दे।</p>
+        </section>
+
+        <!-- Section Schema Algoritmo -->
+        <section id="id-32">
+            <h2>3.2 शोर का एल्गोरिथ्म</h2>
+            
+            <h3><span class="math">\(n\)</span> के गुणनखंडन के लिए एल्गोरिथ्म की रूपरेखा</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>इनपुट:</strong> भाज्य पूर्णांक <span class="math">\(n\)</span></li>
+                    <li><strong>आरंभीकरण:</strong> यादृच्छिक <span class="math">\(a\)</span> चुनें जैसे कि <span class="math">\(1 < a < n\)</span> और <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>क्वांटम तैयारी:</strong> <span class="math">\(0\)</span> से <span class="math">\(2^k-1\)</span> तक एक रजिस्टर को एकसमान अध्यारोपण में तैयार करें</li>
+                    <li><strong>ओरेकल:</strong> <span class="math">\(f(x) = a^x \bmod n\)</span> की समानांतर में गणना करें (अध्यारोपण में)</li>
+                    <li><strong>QFT:</strong> पहले रजिस्टर पर क्वांटम फूरियर रूपांतरण (Quantum Fourier Transform) लागू करें</li>
+                    <li><strong>मापन:</strong> आवर्त <span class="math">\(r\)</span> से संबंधित मान प्राप्त करने के लिए रजिस्टर को मापें</li>
+                    <li><strong>शास्त्रीय:</strong> <span class="math">\(r\)</span> का अनुमान लगाने के लिए निरंतर भिन्न (continued fractions) एल्गोरिथ्म का उपयोग करें</li>
+                    <li><strong>सत्यापन:</strong> यदि <span class="math">\(r\)</span> सम है और <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li><span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> और <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span> की गणना करें</li>
+                            <li>ये <span class="math">\(n\)</span> के गैर-तुच्छ गुणनखंड हैं</li>
+                        </ul>
+                    </li>
+                    <li><strong>लूप:</strong> यदि विफल हो, तो नए <span class="math">\(a\)</span> के साथ चरण 2 पर वापस जाएँ</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>नोट:</strong> क्वांटम कोर (चरण 3-5) फलन <span class="math">\(f(x)\)</span> का आवर्त <span class="math">\(r\)</span> बहुपदीय समय में खोजता है, QFT के रचनात्मक/विनाशकारी व्यतिकरण का उपयोग करके।</p>
+            </div>
+        </section>
+
+        <!-- Section 3.3 -->
+        <section id="id-33">
+            <h2>3.3 RSA, DH, ECC पर प्रभाव</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>योजना</th>
+                        <th>सुरक्षा का आधार</th>
+                        <th>शोर के प्रति संवेदनशील?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>गुणनखंडन</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">हाँ</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (<span class="math">\(p\)</span> मॉड्यूलस)</td>
+                        <td><span class="math">\(\mathbb{Z}_p^*\)</span> में विविक्त लघुगणक</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">हाँ</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (दीर्घवृत्तीय वक्रों पर विविक्त लघुगणक)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">हाँ</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>जालक समस्याएँ</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">कोई ज्ञात कुशल एल्गोरिथ्म नहीं</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>छद्म-यादृच्छिक क्रमपरिवर्तन</td>
+                        <td>केवल ग्रोवर (नीचे देखें)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>शोर किसी भी संरचित समस्या को हल करता है जो एक एबेलियन समूह में आवर्तता की खोज है। गुणनखंडन और विविक्त लघुगणक (EC पर भी) में ठीक यही संरचना होती है। जालक समस्याओं में नहीं।</p>
+        </section>
+
+        <!-- Section 3.4 -->
+        <section id="id-34">
+            <h2>3.4 ग्रोवर: सममित क्रिप्टोग्राफी के लिए खतरा</h2>
+
+            <p>ग्रोवर का एल्गोरिथ्म (1996) असंरचित खोज में <strong>द्विघात</strong> त्वरण प्रदान करता है:</p>
+            <ul>
+                <li><span class="math">\(2^k\)</span> संभावनाओं में से एक कुंजी को शास्त्रीय रूप से खोजना: <span class="math">\(O(2^k)\)</span> प्रयास</li>
+                <li>ग्रोवर के साथ: <span class="math">\(O(2^{k/2})\)</span> प्रयास</li>
+            </ul>
+
+            <p><strong>व्यावहारिक परिणाम:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>कुंजी</th>
+                        <th>शास्त्रीय सुरक्षा</th>
+                        <th>क्वांटम-पश्चात सुरक्षा (ग्रोवर)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 बिट</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 बिट → अपर्याप्त</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 बिट</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 बिट → अभी भी सुरक्षित</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 बिट</td>
+                        <td>128 बिट → सुरक्षित</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 बिट</td>
+                        <td>128 बिट → सुरक्षित</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>इसीलिए NIST क्वांटम-पश्चात संदर्भ में AES-256 (AES-128 नहीं) की अनुशंसा करता है।</p>
+        </section>
+
+        <!-- Section 3.5 -->
+        <section id="id-35">
+            <h2>3.5 क्वांटम कंप्यूटरों की वर्तमान स्थिति (2024–2025)</h2>
+
+            <p>वर्तमान क्वांटम कंप्यूटर <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong> हैं: इनमें दसियों-सैकड़ों भौतिक क्यूबिट होते हैं लेकिन त्रुटि दर उच्च होती है।</p>
+
+            <p>RSA-2048 को शोर से तोड़ने के लिए आवश्यक है:</p>
+            <ul>
+                <li>~4000 पूर्ण तार्किक क्यूबिट</li>
+                <li>या क्वांटम त्रुटि सुधार के साथ ~4 मिलियन भौतिक क्यूबिट</li>
+            </ul>
+
+            <p>वर्तमान सर्वोत्तम प्रणालियों (Google Willow, IBM Heron, आदि) में ~100-1000 उच्च-निष्ठा वाले भौतिक क्यूबिट हैं, लेकिन हम अभी भी आवश्यक पैमाने से बहुत दूर हैं।</p>
+
+            <blockquote>
+                <p><strong>NIST का अनुमान:</strong> क्रिप्टोग्राफ़िक रूप से प्रासंगिक क्वांटम कंप्यूटर 10–15 वर्षों के भीतर अस्तित्व में आ सकते हैं, जिसमें दोनों दिशाओं में महत्वपूर्ण अनिश्चितता है।</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 3.6 -->
+        <section id="id-36">
+            <h2>3.6 अभी काटो, बाद में डिक्रिप्ट करो</h2>
+
+            <p>भले ही क्वांटम कंप्यूटर <em>अभी</em> क्रिप्टोग्राफ़िक रूप से प्रासंगिक रूप में मौजूद नहीं हैं, <strong>आज</strong> एक ठोस खतरा मौजूद है:</p>
+
+            <blockquote>
+                <p>एक विरोधी <strong>अभी</strong> एन्क्रिप्टेड संचार एकत्र कर सकता है (भले ही वह उन्हें डिक्रिप्ट न कर सके), और <strong>भविष्य में</strong> जब उसके पास पर्याप्त शक्तिशाली क्वांटम कंप्यूटर होगा तो उन्हें डिक्रिप्ट कर सकता है।</p>
+            </blockquote>
+
+            <p>इस हमले को <strong>"Harvest Now, Decrypt Later" (HNDL)</strong> या <em>store-now-decrypt-later</em> के रूप में जाना जाता है।</p>
+
+            <h4>जोखिम में कौन है:</h4>
+            <ul>
+                <li>लंबी गोपनीयता अवधि वाले राजनयिक और सैन्य संचार</li>
+                <li>चिकित्सा, वित्तीय, कानूनी डेटा जिसमें दशकों की गोपनीयता आवश्यकताएँ हैं</li>
+                <li>औद्योगिक रहस्य और बौद्धिक संपदा</li>
+            </ul>
+
+            <h4>कब स्थानांतरित करें?</h4>
+
+            <p>यदि आपका डेटा उतने वर्षों तक गोपनीय रहना चाहिए जितने वर्षों में पर्याप्त शक्तिशाली क्वांटम कंप्यूटर आने की संभावना है, तो आपको <em>अभी</em> स्थानांतरित करना होगा।</p>
+
+            <p>यही मुख्य कारण है कि NIST ने 2024 में ML-KEM (FIPS 203) को मानकीकृत किया, और NSA, ENISA और ANSSI जैसे संगठन उच्च-जोखिम प्रणालियों के लिए तत्काल स्थानांतरण की अनुशंसा क्यों करते हैं।</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

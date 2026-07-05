@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>अध्याय 9 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="त्वरित नेविगेशन">
+            <a href="index.html#featureSection">क्यों</a>
+            <a href="index.html#learningPath">पाठ्यक्रम</a>
+            <a href="index.html#searchSection">गाइड</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="भाषा चुनें">
+                    <span class="lang-current" id="langCurrent">🇮🇳 हिन्दी</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>अध्याय</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> पूर्वापेक्षाएँ</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> सममित</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> असममित</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> शोर</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> जालक (लैटिस)</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li class="active"><a href="9.html"><span class="chapter-number">09</span> सुरक्षा</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> कार्यान्वयन</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>09 – सुरक्षा और पैरामीटर</h1>
+        <p class="subtitle">ML-KEM सुरक्षित क्यों है और संख्याएँ कैसे चुनी गईं</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>विषय-सूची</h2>
+            <ul>
+                <li><a href="#id-91">9.1 सुरक्षा मॉडल</a></li>
+                <li><a href="#id-92">9.2 MLWE की कठिनाई मापना</a></li>
+                <li><a href="#id-93">9.3 जालकों पर मुख्य हमले</a></li>
+                <li><a href="#id-94">9.4 NIST सुरक्षा स्तर</a></li>
+                <li><a href="#id-95">9.5 अन्य PQC योजनाओं के साथ तुलना</a></li>
+                <li><a href="#id-96">9.6 साइड-चैनल और सुरक्षित कार्यान्वयन</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 9.1 -->
+        <section id="id-91">
+            <h2>9.1 सुरक्षा मॉडल</h2>
+
+            <h3>IND-CPA (चुने हुए प्लेनटेक्स्ट हमले के तहत अप्रभेद्यता)</h3>
+            <p>इस मॉडल में, एक विरोधी:</p>
+            <ol>
+                <li>सार्वजनिक कुंजी <span class="math">\(ek\)</span> प्राप्त करता है</li>
+                <li>दो संदेश <span class="math">\(m_0, m_1\)</span> चुनता है</li>
+                <li>उनमें से एक (यादृच्छिक रूप से चुना गया) का सिफर प्राप्त करता है</li>
+                <li>अनुमान लगाना होता है कि कौन सा संदेश एन्क्रिप्ट किया गया था</li>
+            </ol>
+            <p>योजना सुरक्षित है यदि: <span class="math">\(\Pr[\text{अनुमान सही}] \leq 1/2 + \text{negl}(\lambda)\)</span>.</p>
+            <p>K-PKE (मूल एन्क्रिप्शन घटक) MLWE मान्यता के तहत IND-CPA है।</p>
+
+            <h3>IND-CCA2 (अनुकूली चुने हुए सिफरटेक्स्ट हमले के तहत अप्रभेद्यता)</h3>
+            <p>CPA की तरह, लेकिन विरोधी किसी भी सिफरटेक्स्ट (चुनौती वाले को छोड़कर) पर डिक्रिप्शन ओरेकल से पूछताछ भी कर सकता है। यह मॉडल वास्तविक हमलों (जैसे ब्लीचेनबैचर) को पकड़ता है, जहाँ एक सक्रिय विरोधी विशेष रूप से निर्मित संदेश भेजता है और प्रतिक्रियाओं का निरीक्षण करता है।</p>
+            <p><strong>ML-KEM IND-CCA2 है।</strong> TLS या SSH जैसे वास्तविक प्रोटोकॉल में सुरक्षित KEM के लिए यह आवश्यक स्तर है।</p>
+
+            <h3>ROM बनाम QROM</h3>
+            <p>सुरक्षा प्रमाण हैश फलनों के लिए आदर्श मॉडल का उपयोग करते हैं:</p>
+            <ul>
+                <li><strong>ROM (रैंडम ओरेकल मॉडल):</strong> हैश पूर्ण यादृच्छिक ओरेकल हैं।</li>
+                <li><strong>QROM (क्वांटम रैंडम ओरेकल मॉडल):</strong> क्वांटम विरोधी ओरेकल को अध्यारोपण में पूछताछ कर सकता है।</li>
+            </ul>
+            <p>ML-KEM में उपयोग किए जाने वाले FO (फुजिसाकी-ओकामोटो) रूपांतरण के लिए आधुनिक प्रमाण QROM में सुरक्षा की गारंटी देते हैं, जो क्वांटम विरोधियों के खिलाफ आवश्यक है।</p>
+        </section>
+
+        <!-- Section 9.2 -->
+        <section id="id-92">
+            <h2>9.2 MLWE की कठिनाई कैसे मापी जाती है</h2>
+
+            <h3>सुरक्षा हमले की लागत के रूप में</h3>
+            <p>इस बात का कोई पूर्ण प्रमाण नहीं है कि MLWE कठिन है। सुरक्षा का अनुमान सर्वोत्तम ज्ञात हमले एल्गोरिथ्म की लागत की गणना करके लगाया जाता है। <span class="math">\(\lambda\)</span> बिट सुरक्षा का अर्थ है कि हमले के लिए लगभग <span class="math">\(2^\lambda\)</span> संक्रियाओं की आवश्यकता होती है।</p>
+
+            <h3>पैरामीटर</h3>
+            <p>कठिनाई निर्भर करती है:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span> (बहुपद आयाम, नियत)</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span> (मॉड्यूल आयाम)</li>
+                <li><span class="math">\(q = 3329\)</span> (अभाज्य मॉड्यूलस)</li>
+                <li><span class="math">\(\eta \in \{2, 3\}\)</span> (शोर आयाम)</li>
+            </ul>
+
+            <h3>लैटिस एस्टीमेटर</h3>
+            <p>मानक उपकरण अल्ब्रेक्ट एट अल. का <a href="https://github.com/malb/lattice-estimator" target="_blank">लैटिस एस्टीमेटर</a> है। ML-KEM-768 के लिए:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>हमला</th>
+                        <th>अनुमानित लागत (बिट)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>प्राइमल हमला (BKZ)</td>
+                        <td>~178 बिट</td>
+                    </tr>
+                    <tr>
+                        <td>ड्यूल हमला</td>
+                        <td>~175 बिट</td>
+                    </tr>
+                    <tr>
+                        <td>कॉम्बिनेटोरियल</td>
+                        <td>&gt; 200 बिट</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>128 बिट शास्त्रीय/क्वांटम लक्ष्य की तुलना में सुरक्षा मार्जिन बड़ा है।</p>
+        </section>
+
+        <!-- Section 9.3 -->
+        <section id="id-93">
+            <h2>9.3 जालकों पर मुख्य हमले</h2>
+
+            <h3>BKZ (ब्लॉक कोरकाइन-ज़ोलोटारेव)</h3>
+            <p>यह छोटे सदिश खोजने के लिए सर्वोत्तम सामान्य एल्गोरिथ्म है। यह जालक को <span class="math">\(\beta\)</span> आकार के ब्लॉकों में विभाजित करता है और स्थानीय रूप से SVP को हल करता है। जटिलता: <span class="math">\(2^{O(\beta \log \beta)}\)</span>। ML-KEM-768 के लिए, <span class="math">\(\beta \approx 430\)</span>।</p>
+
+            <h3>प्राइमल हमला (uSVP)</h3>
+            <p>MLWE को सार्वजनिक कुंजी और सिफरटेक्स्ट वाले एक संवर्धित जालक में छोटे सदिश समस्या में बदल देता है। गोपनीय सदिश <span class="math">\((\mathbf{s}, \mathbf{e}, -1)\)</span> एक छोटा सदिश बन जाता है जिसे BKZ खोजने का प्रयास करता है।</p>
+
+            <h3>ड्यूल हमला</h3>
+            <p>MLWE नमूनों को एकसमान से अलग करने के लिए सांख्यिकी के माध्यम से ड्यूल जालक का उपयोग करता है। विभेदक (distinguisher) करने के लिए ड्यूल में कई छोटे सदिश बनाता है।</p>
+
+            <h3>q = 3329 का चयन</h3>
+            <p>अभाज्य होने और किसी विशेष बीजगणितीय संरचना से रहित होने के कारण, यह विशिष्ट बीजगणितीय हमलों को रोकता है। कोई छोटे गुणनखंड या सरल संबंध नहीं हैं जिनका दोहन किया जा सके।</p>
+        </section>
+
+        <!-- Section 9.4 -->
+        <section id="id-94">
+            <h2>9.4 NIST सुरक्षा स्तर</h2>
+
+            <p>NIST ने 5 स्तर परिभाषित किए हैं। ML-KEM स्तर 1, 3 और 5 को कवर करता है:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>योजना</th>
+                        <th>NIST स्तर</th>
+                        <th>शास्त्रीय सुरक्षा</th>
+                        <th>क्वांटम सुरक्षा</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM-512</td>
+                        <td>1 (AES-128)</td>
+                        <td>~118 बिट</td>
+                        <td>~100 बिट</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>3 (AES-192)</td>
+                        <td><strong>~178 बिट</strong></td>
+                        <td><strong>~164 बिट</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM-1024</td>
+                        <td>5 (AES-256)</td>
+                        <td>~230 बिट</td>
+                        <td>~218 बिट</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p><strong>अनुशंसा:</strong> ML-KEM-768 अधिकांश उपयोगों के लिए सुरक्षा/प्रदर्शन का इष्टतम संतुलन प्रदान करता है। ML-KEM-1024 अत्यंत उच्च-जोखिम प्रणालियों के लिए आरक्षित है।</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 9.5 -->
+        <section id="id-95">
+            <h2>9.5 अन्य PQC योजनाओं के साथ तुलना</h2>
+
+            <h3>मानकीकृत क्वांटम-पश्चात KEM (NIST 2024)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>योजना</th>
+                        <th>गणितीय आधार</th>
+                        <th>सार्वजनिक कुंजी</th>
+                        <th>सिफरटेक्स्ट</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>MLWE (जालक)</td>
+                        <td>1184 B</td>
+                        <td>1088 B</td>
+                    </tr>
+                    <tr>
+                        <td>BIKE</td>
+                        <td>सुधारक कोड</td>
+                        <td>~1541 B</td>
+                        <td>~1573 B</td>
+                    </tr>
+                    <tr>
+                        <td>HQC</td>
+                        <td>सुधारक कोड</td>
+                        <td>~2249 B</td>
+                        <td>~4522 B</td>
+                    </tr>
+                    <tr>
+                        <td>Classic McEliece</td>
+                        <td>गोप्पा कोड</td>
+                        <td>~261 KB</td>
+                        <td>128 B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>शास्त्रीय क्रिप्टोग्राफी के साथ तुलना</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>योजना</th>
+                        <th>सार्वजनिक कुंजी</th>
+                        <th>क्वांटम सुरक्षा</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA-3072</td>
+                        <td>384 B</td>
+                        <td>❌ संवेदनशील</td>
+                    </tr>
+                    <tr>
+                        <td>ECDH X25519</td>
+                        <td>32 B</td>
+                        <td>❌ संवेदनशील</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM-768</strong></td>
+                        <td>1184 B</td>
+                        <td>✅ 164+ बिट</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>मुख्य लागत बड़ा आकार (~37× ECDH की तुलना में) है, लेकिन यह आधुनिक TLS हैंडशेक के लिए स्वीकार्य बना हुआ है।</p>
+        </section>
+
+        <!-- Section 9.6 -->
+        <section id="id-96">
+            <h2>9.6 साइड-चैनल और सुरक्षित कार्यान्वयन</h2>
+
+            <p>एक सही कार्यान्वयन संवेदनशील हो सकता है यदि यह निष्पादन समय (टाइमिंग हमले) या बिजली की खपत के माध्यम से जानकारी लीक करता है।</p>
+
+            <h3>नियत-समय (Constant-Time - CT)</h3>
+            <p>सभी संक्रियाओं का समय गोपनीय डेटा से स्वतंत्र रूप से नियत होना चाहिए। Decaps में महत्वपूर्ण उदाहरण:</p>
+
+            <pre><code class="language-c">// असुरक्षित (परिवर्तनशील समय):
+if (memcmp(c, c_prime, len) == 0) { 
+    K = K_good; 
+} else { 
+    K = K_reject; 
+}
+
+// सुरक्षित (नियत-समय):
+uint8_t mask = ct_memcmp(c, c_prime, len); // 0xFF यदि समान, 0x00 यदि भिन्न
+K = ct_select(mask, K_good, K_reject);     // CT चयन बिना शाखा के</code></pre>
+
+            <h3>ML-KEM में CT के लिए महत्वपूर्ण क्षेत्र</h3>
+            <ul>
+                <li><strong><span class="math">\(B_\eta\)</span> प्रतिचयन:</strong> बिना सशर्त शाखाओं के बिट्स का योग।</li>
+                <li><strong>NTT:</strong> बटरफ्लाई संक्रियाएँ हमेशा निष्पादित होनी चाहिए, भले ही परिणाम न बदले।</li>
+                <li><strong>सिफरटेक्स्ट सत्यापन:</strong> <code>ct_memcmp</code> का उपयोग।</li>
+            </ul>
+
+            <h3>संदर्भ कार्यान्वयन</h3>
+            <ul>
+                <li><code>pqclean</code>: पोर्टेबल CT कार्यान्वयन।</li>
+                <li><code>liboqs</code>: AVX2 अनुकूलन जिनके CT गुण सत्यापित हैं।</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>स्रोत</h2>
+            <ul>
+                <li>Albrecht, M. et al. – <em>Lattice Estimator</em> – <a href="https://github.com/malb/lattice-estimator" target="_blank">GitHub</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P</li>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em></li>
+                <li>Bindel, N. et al. (2019) – <em>Tighter proofs of CCA security in the quantum random oracle model</em></li>
+                <li>Reparaz, O. et al. (2016) – <em>Constant-time discrete Gaussian sampling</em></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="8.html" class="nav-btn">← पिछला अध्याय</a>
+            <span class="nav-label">09 / 10</span>
+            <a href="10.html" class="nav-btn">अगला अध्याय →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> सभी के लिए मुफ्त पुस्तकालय। सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'hi';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/9.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
