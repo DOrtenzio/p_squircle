@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bölüm 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Hızlı navigasyon">
+            <a href="index.html#featureSection">Neden</a>
+            <a href="index.html#learningPath">Yol Haritası</a>
+            <a href="index.html#searchSection">Rehber</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Dil seçin">
+                    <span class="lang-current" id="langCurrent">🇹🇷 Türkçe</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Bölümler</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Ön Koşullar</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simetrik</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimetrik</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kafesler</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Güvenlik</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Uygulamalar</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – Matematiksel Ön Koşullar</h1>
+                <p class="subtitle">Kuantum-sonrası kriptografiyi anlamak için temel araçlar</p>
+
+                <!-- Index -->
+                <div class="toc">
+                    <h2>İçindekiler</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 Modüler aritmetik</a></li>
+                        <li><a href="#id-02">0.2 Lineer cebir: vektörler ve matrisler</a></li>
+                        <li><a href="#id-03">0.3 Polinomlar</a></li>
+                        <li><a href="#id-04">0.4 Cebirsel yapılar: gruplar, halkalar, cisimler</a></li>
+                        <li><a href="#id-05">0.5 Kriptografik hash fonksiyonları</a></li>
+                        <li><a href="#id-06">0.6 Olasılık ve gürültü dağılımı</a></li>
+                        <li><a href="#id-07">0.7 Hesaplama karmaşıklığı</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 Modüler aritmetik</h2>
+
+                    <h3>Modül nedir</h3>
+                    <p><span class="math">\(a \bmod m\)</span> işlemi, <span class="math">\(a\)</span>'nın <span class="math">\(m\)</span>'ye bölümünden <strong>kalanı</strong> verir.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{çünkü } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{çünkü } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>Kural:</strong> Kriptografide mod <span class="math">\(q\)</span> sonuçları her zaman <span class="math">\([0, q-1]\)</span> aralığındadır.</p>
+                    </blockquote>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span>'de aritmetik</h3>
+                    <p><span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> ile mod <span class="math">\(q\)</span>'ya göre tamsayılar kümesini gösteririz. Bu kümede toplama, çıkarma ve çarpma her zaman mod <span class="math">\(q\)</span>'ya indirgenir:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>Çarpımsal ters</h3>
+                    <p>Normal matematikte, bir sayının tersi, çarpma yoluyla <span class="math">\(1\)</span> elde etmek için kullanılır (ör. <span class="math">\(5\)</span>'in tersi <span class="math">\(\frac{1}{5}\)</span>'tir, çünkü <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). Modüler aritmetikte kesirler yoktur. Bir <span class="math">\(a\)</span> sayısının tersi, <span class="math">\(a\)</span> ile çarpıldığında mod <span class="math">\(q\)</span>'ya göre 1 kalanını veren başka bir tamsayı <span class="math">\(b\)</span> olmalıdır:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>Varoluş kuralı</h4>
+                    <p><span class="math">\(a\)</span>'nın tersi her zaman mevcut değildir. Ancak <span class="math">\(a\)</span> ve <span class="math">\(q\)</span>'nun ortak böleni yoksa (yani En Büyük Ortak Bölenleri 1 ise: <span class="math">\(\gcd(a, q) = 1\)</span>) bulunabilir.</p>
+                    <ul>
+                        <li><strong>Anahtar özellik:</strong> Modül <span class="math">\(q\)</span> bir asal sayı ise, kümedeki tüm sayıların (sıfır hariç) her zaman garantili bir tersi vardır.</li>
+                    </ul>
+
+                    <h4>Pratik örnek: <span class="math">\(5^{-1} \bmod 13\)</span> hesaplama</h4>
+                    <p><span class="math">\(5^{-1}\)</span> yazımı şu anlama gelir: "5'in mod 13'e göre tersini bulun". <span class="math">\(5 \cdot b\)</span> ifadesi <span class="math">\(13\)</span>'e bölündüğünde <span class="math">\(1\)</span> kalanını veren bir <span class="math">\(b\)</span> sayısı arıyoruz:</p>
+                    <ol>
+                        <li><span class="math">\(5\)</span>'i çeşitli tamsayılarla çarpmayı deneyin.</li>
+                        <li><span class="math">\(b = 8\)</span> seçerek: <span class="math">\(5 \cdot 8 = 40\)</span> elde ederiz.</li>
+                        <li><span class="math">\(40\)</span>'ı <span class="math">\(13\)</span>'e bölün: 13, 3 kez (<span class="math">\(13 \cdot 3 = 39\)</span>) girer ve kalan 1 olur.</li>
+                    </ol>
+                    <p><strong>Cevap 8'dir</strong>, çünkü <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>Modüler üs alma</h3>
+                    <p>Modüler üs alma, bir kuvvetin bölümünden kalanı hesaplamaktır: <span class="math">\(a^k \pmod m\)</span>. Bu işlem modern kriptografinin (RSA algoritması gibi) bel kemiğidir. Kullanılmasının nedeni, "tek yönlü bir saat" olmasıdır: sonucu hesaplamak çok kolaydır, ancak sonuçtan <span class="math">\(k\)</span> üssünü bulmak (ters yönde gitmek) neredeyse imkânsızdır.</p>
+
+                    <h4>Büyük sayılar sorunu</h4>
+                    <p><span class="math">\(5^{11} \pmod{13}\)</span> hesaplamak istersek, üs yüzlerce basamaklıysa doğrudan hesaplama bir bilgisayar için imkânsızdır. <span class="math">\(5^{11}\)</span> sayısı hafıza için çok büyük olurdu.</p>
+
+                    <h4>Çözüm: Kare-Al-Çarp Algoritması</h4>
+                    <p>Bu algoritma, sonucu çok az adımda (<span class="math">\(O(\log k)\)</span> çarpma) hesaplamaya olanak tanır, her zaman küçük sayılarla çalışır ve kuvvetin sonsuza büyümesini önler.</p>
+
+                    <details>
+                        <summary><strong>Pratikte nasıl çalışır (Örnek: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>Üssü ikiliye çevirelim: <span class="math">\(11 = 8 + 2 + 1\)</span>. <span class="math">\(5\)</span>'i <span class="math">\(11\)</span> kez kendisiyle çarpmak yerine, adım adım kare kuvvetleri hesaplar ve sonucu hemen mod <span class="math">\(13\)</span>'e indirgeriz:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{Taban: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{Kare: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{Karenin karesi: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{Sonraki kare: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>Şimdi sadece üssümüzü oluşturan parçaları birleştirelim <span class="math">\(11\)</span> (yani <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p><span class="math">\(60\)</span>'ı <span class="math">\(13\)</span>'e bölelim: <span class="math">\(13\)</span>, <span class="math">\(4\)</span> kez (<span class="math">\(52\)</span>) girer ve kalan <span class="math">\(8\)</span> olur.</p>
+                        <p><strong>Sonuç:</strong> <span class="math">\(8\)</span> (11 yerine sadece 4 adımda yaptık).</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 Lineer cebir: vektörler ve matrisler</h2>
+
+                    <h3>Vektörler</h3>
+                    <p>Bir <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> vektörü, mod <span class="math">\(q\)</span>'ya göre hesaplanmış <span class="math">\(n\)</span> tamsayının sıralı bir listesidir:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>Vektör işlemlerinde her sonuç mod <span class="math">\(q\)</span>'ya indirgenir.</p>
+
+                    <h4>Pratik örnek</h4>
+                    <p><span class="math">\(q = 13\)</span> ile:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>Vektör toplamı</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>Skaler çarpım</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>Hesaplama:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>Toplam: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>Mod 13'e indirgeme: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>Matrisler</h3>
+                    <p>Bir <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> matrisi, satır ve sütunlardan oluşan bir dizidir.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Matris örneği" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(Pratikte, ML-KEM'deki <span class="math">\(A\)</span> matrisi <span class="math">\(k \times k\)</span> boyutlarındadır, <span class="math">\(k = 3, 4\)</span> veya <span class="math">\(5\)</span> olup SHAKE aracılığıyla rastgele bir tohumdan üretilir.)</em></p>
+
+                    <h4>Matris-vektör çarpımı</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>Örnek</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>Detaylı adımlar</summary>
+                        <p>Birinci satır: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>İkinci satır: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>Mod 13'e indirgeme: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>Yani: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>Sonsuz norm</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>Bu norm, mutlak değeri en büyük olan bileşeni ölçer. MLWE bağlamında, hata vektörleri çok küçük norma sahip olmalıdır.</p>
+                    <details>
+                        <summary>Pratik örnekler</summary>
+                        <p><strong>Geçerli durum:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>Geçersiz durum:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 Polinomlar</h2>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span>'de katsayılı polinomlar</h3>
+                    <p><span class="math">\(\mathbb{Z}_q[X]\)</span>'de bir polinom şu şekildedir:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>burada her <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>'dir.</p>
+
+                    <h4>Polinom toplamı</h4>
+                    <p>Aynı dereceli katsayılar mod <span class="math">\(q\)</span>'ya göre toplanır:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>Polinom çarpımı ve indirgeme</h4>
+                    <p>Derecesi <span class="math">\(\leq n-1\)</span> olan iki polinomun çarpımı <span class="math">\(2n-2\)</span> derecesine kadar çıkabilir. Bunları kompakt tutmak için özel bir polinoma göre indirgenir.</p>
+                    <p>ML-KEM'de <span class="math">\(n = 256\)</span> ile <span class="math">\(X^n + 1\)</span> kullanılır. İndirgeme kuralı:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>Bu nedenle çarpımda <span class="math">\(X^{256}\)</span> göründüğünde, yerine <span class="math">\(-1\)</span> konur.</p>
+
+                    <h4>Basit örnek</h4>
+                    <p><span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, mod <span class="math">\(X^4+1\)</span> ile:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 Cebirsel yapılar: gruplar, halkalar, cisimler</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Yapı</th>
+                                <th>İşlemler</th>
+                                <th>Anahtar özellikler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Grup</strong></td>
+                                <td>bir (+)</td>
+                                <td>kapalılık, birleşme, birim, ters</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Halka</strong></td>
+                                <td>iki (+, ×)</td>
+                                <td>+ için değişmeli grup, × için yarıgrup</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cisim</strong></td>
+                                <td>iki (+, ×)</td>
+                                <td>tüm ≠ 0 için çarpımsal tersi olan halka</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> bir cisim olarak</h3>
+                    <p><span class="math">\(q\)</span> asal ise, <span class="math">\(\mathbb{Z}_q\)</span> <strong>bir cisimdir</strong>: sıfırdan farklı her elemanın çarpımsal tersi vardır. ML-KEM'de <span class="math">\(q = 3329\)</span> asaldır → <span class="math">\(\mathbb{Z}_{3329}\)</span> bir cisimdir.</p>
+
+                    <h3><span class="math">\(R_q\)</span> halkası</h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>Bu bir halkadır (cisim değil, çünkü tüm polinomların tersi yoktur), ancak kriptografi için yararlı özellikleri vardır:</p>
+                    <ul>
+                        <li>her polinom tam olarak 256 katsayıya sahiptir;</li>
+                        <li>çarpma NTT aracılığıyla verimlidir (dosya 07'ye bakınız);</li>
+                        <li><span class="math">\(X^{256}+1\)</span> polinomu <em>siklotomiktir</em>, bu da iyi güvenlik özellikleri sağlar.</li>
+                    </ul>
+                    <details>
+                        <summary><span class="math">\(X^{256}+1\)</span>'in siklotomik olması ne anlama gelir?</summary>
+                        <p>Cebirde, siklotomik bir polinom, kökleri <strong>birliğin ilkel kökleri</strong> (yani belirli bir kuvvete yükseltildiğinde <span class="math">\(1\)</span> veren karmaşık sayılar) olan özel bir polinomdur.</p>
+                        <p><span class="math">\(X^{256}+1\)</span> özel durumunda, bu özellik kriptografide (ML-KEM'de olduğu gibi) üç büyük avantaj sağlar:</p>
+                        <ul>
+                            <li><strong>İndirgenemezlik</strong>: Polinom, tamsayı katsayılı daha küçük polinomlara bölünemez. Bu, kötü niyetli bir kullanıcının matematiksel problemi daha kolay çözülebilir parçalara "bölmesini" engeller.</li>
+                            <li><strong>Süper hızlı çarpma (NTT)</strong>: <em>Sayı Teorik Dönüşümü</em>'nü (NTT) kullanmaya izin verir. Bu algoritma sayesinde, polinom çarpımı <span class="math">\(O(n^2)\)</span> karmaşıklığından sadece <span class="math">\(O(n \log n)\)</span>'ye düşer ve kuantum-sonrası kriptografiyi inanılmaz derecede hızlı hale getirir.</li>
+                            <li><strong>Tekdüze güvenlik</strong>: İşlemler sırasında hatayı (gürültüyü) tüm 256 katsayıya mükemmel simetrik olarak dağıtarak, bilgisayar korsanlarının kullanabileceği yapısal zayıf noktaları ortadan kaldırır.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 Kriptografik hash fonksiyonları</h2>
+                    <p>Bir hash fonksiyonu <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span>, keyfi uzunluktaki girdileri sabit uzunluktaki çıktılara eşler.</p>
+                    <p><strong>Kriptografide gerekli özellikler:</strong></p>
+                    <ul>
+                        <li><em>Ön görüntü direnci:</em> <span class="math">\(H(x)\)</span>'ten <span class="math">\(x\)</span>'e ulaşılamaz</li>
+                        <li><em>Çarpışma direnci:</em> <span class="math">\(x \neq y\)</span> ile <span class="math">\(H(x) = H(y)\)</span> bulmak hesaplama açısından imkânsızdır</li>
+                        <li><em>Çığ etkisi:</em> Girdideki bir bitin değişmesi çıktının ~%50'sini değiştirir</li>
+                    </ul>
+
+                    <h3>SHA-3 ve SHAKE</h3>
+                    <p>ML-KEM yalnızca <strong>SHA-3</strong> ailesinin ilkellerini kullanır (NIST 2015'te standartlaştırmıştır):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fonksiyon</th>
+                                <th>Çıktı</th>
+                                <th>ML-KEM'de kullanımı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>256 sabit bit</td>
+                                <td>genel hash</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>512 sabit bit</td>
+                                <td>anahtar hash'leme</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>değişken uzunluk</td>
+                                <td><span class="math">\(A\)</span> üretimi (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>değişken uzunluk</td>
+                                <td>anahtar türetme</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE, bir <strong>XOF (eXtendable Output Function)</strong>'dur: verilen bir girdiden istenilen sayıda bayt üretir. ML-KEM'de, <code>SHAKE128(tohum)</code> 32 baytlık bir tohumdan tüm kamu matrisi <span class="math">\(A\)</span>'yı üretir.</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 Olasılık ve gürültü dağılımı</h2>
+
+                    <h3>Merkezli binom dağılımı <span class="math">\(B_\eta\)</span></h3>
+                    <p>ML-KEM'de gürültü Gauss değil <strong>merkezli binom</strong>'dur. Örnekleme şu şekilde çalışır:</p>
+                    <ol>
+                        <li><span class="math">\(2\eta\)</span> tekdüze bit örnekleyin: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li><span class="math">\(\sum a_i - \sum b_i\)</span> döndürün</li>
+                    </ol>
+                    <p>Sonuç, <span class="math">\([-\eta, +\eta]\)</span> aralığında, 0 civarında yaklaşık Gauss dağılımına sahip bir tamsayıdır.</p>
+                    <p><strong>Neden gerçek Gauss değil?</strong> Binom dağılımı <em>sabit süreli</em> (yan kanal saldırılarına karşı dayanıklı) örneklemesi daha basittir ve güvenlik benzerdir.</p>
+                    <p>ML-KEM-768 için: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Gürültü değerleri <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> aralığında olacaktır.</p>
+
+                    <h3>İhmal edilebilirlik</h3>
+                    <p>Bir <span class="math">\(f(\lambda)\)</span> fonksiyonu <strong>ihmal edilebilir</strong>dir, eğer her <span class="math">\(p(\cdot)\)</span> polinomu için bir <span class="math">\(\lambda_0\)</span> vardır öyle ki her <span class="math">\(\lambda > \lambda_0\)</span> için:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>Pratikte: herhangi bir polinom tersinden daha hızlı azalır. ML-KEM'deki hata olasılıkları <span class="math">\(\lambda\)</span> güvenlik parametresine göre ihmal edilebilirdir.</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 Hesaplama karmaşıklığı</h2>
+
+                    <h3>Gösterimler</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: asimptotik büyüklük sırası (üst sınır)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: alt sınır</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: kesin sınır</li>
+                    </ul>
+
+                    <h3>İlgili sınıflar</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sınıf</th>
+                                <th>Anlamı</th>
+                                <th>Örnekler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>Polinom zamanda çözülebilir</td>
+                                <td>çarpma, sıralama</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>Polinom zamanda doğrulanabilir</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-zor</strong></td>
+                                <td>En az NP kadar zor</td>
+                                <td>çarpanlara ayırma (varsayımsal olarak)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Kriptografik problemler ve zorlukları</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Klasik zorluk</th>
+                                <th>Kuantum zorluğu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Çarpanlara ayırma</td>
+                                <td>üstel-altı</td>
+                                <td><strong>polinom</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>Kesikli logaritma</td>
+                                <td>üstel-altı</td>
+                                <td><strong>polinom</strong> (Shor)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (kafes)</td>
+                                <td>üstel</td>
+                                <td>üstel (bilinen hızlanma yok)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>üstel</td>
+                                <td>üstel (bilinen hızlanma yok)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>Bu tablo, kuantum-sonrası kriptografinin tüm varlık nedenini motive eder.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>Kaynaklar ve derinlemesine inceleme</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Bölüm 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (ücretsiz çevrimiçi)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Video: Cebirsel Halkalar</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – bölüm 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← Önceki bölüm</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">Sonraki bölüm →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Herkese açık ücretsiz kütüphane. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'tr';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

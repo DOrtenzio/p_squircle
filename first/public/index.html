@@ -1,13 +1,344 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0; url=docs/en/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Redirecting to English guide</title>
-  <script>window.location.replace("docs/en/index.html");</script>
+  <title>MONEOO.</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Fallback tokens in case css/style.css fails to load */
+    :root{
+      --bg-color:#f5f5f5; --text-main:#111111; --text-muted:#666666;
+      --accent:#111111; --radius:32px; --shadow:0 34px 80px rgba(0,0,0,0.08);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; display:grid; place-items:center;
+      background:var(--bg-color); color:var(--text-main);
+      font-family:'Inter', system-ui, sans-serif;
+    }
+    .redirect-note{
+      position:fixed; bottom:1.5rem; left:0; right:0;
+      text-align:center; color:var(--text-muted); font-size:0.85rem;
+    }
+    .consent-card{
+      max-width:520px; width:100%; text-align:left;
+    }
+    .consent-card h1{ text-align:center; }
+    .consent-card > p#consentDesc{ text-align:center; }
+    .consent-actions{
+      display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.75rem; justify-content:center;
+    }
+    .consent-actions .btn{ flex:1 1 140px; cursor:pointer; border:none; font-weight:600; font-size:0.92rem; padding:14px 16px; }
+    .consent-actions .btn-text{ flex:1 1 140px; text-decoration:none; border-radius:999px; border:1px solid rgba(0,0,0,0.12); }
+    .consent-note{ margin-top:1.25rem; font-size:0.8rem; color:var(--text-muted); line-height:1.6; text-align:center; }
+    .squircle-icon{ width:60px; height:60px; background:#111; border-radius:20px; margin:0 auto 1.5rem; }
+
+    /* Customize panel */
+    .consent-categories{
+      margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid rgba(0,0,0,0.08);
+    }
+    .consent-category{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;
+      padding:0.85rem 0;
+    }
+    .consent-category + .consent-category{ border-top:1px solid rgba(0,0,0,0.06); }
+    .consent-category-copy strong{ display:block; font-size:0.95rem; margin-bottom:0.2rem; }
+    .consent-category-copy span{ display:block; font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
+
+    .toggle-switch{
+      position:relative; flex-shrink:0; width:44px; height:26px; margin-top:0.15rem;
+    }
+    .toggle-switch input{ opacity:0; width:0; height:0; }
+    .toggle-slider{
+      position:absolute; inset:0; background:rgba(0,0,0,0.15); border-radius:999px;
+      transition:background 0.2s ease; cursor:pointer;
+    }
+    .toggle-slider::before{
+      content:""; position:absolute; height:20px; width:20px; left:3px; top:3px;
+      background:#fff; border-radius:50%; transition:transform 0.2s ease;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-slider{ background:var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before{ transform:translateX(18px); }
+    .toggle-switch input:disabled + .toggle-slider{ opacity:0.5; cursor:not-allowed; }
+
+    #saveCustomBtn{ width:100%; margin-top:1.25rem; border:none; cursor:pointer; font-weight:600; }
+  </style>
 </head>
 <body>
-  <p>Redirecting to the English guide…</p>
+
+  <div class="gatekeeper-overlay" id="consentOverlay">
+    <div class="gatekeeper-card consent-card" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+      <div class="squircle-icon"></div>
+      <h1 id="consentTitle" style="margin:0 0 0.75rem; font-size:1.6rem;"></h1>
+      <p id="consentDesc" style="color:var(--text-muted); line-height:1.8; margin:0;"></p>
+
+      <div class="consent-actions" id="mainActions">
+        <button id="acceptAllBtn" class="btn btn-primary"></button>
+        <button id="rejectBtn" class="btn btn-outline"></button>
+        <button id="customizeBtn" class="btn btn-text"></button>
+      </div>
+
+      <div class="consent-categories hidden" id="categoriesPanel">
+        <div class="consent-category">
+          <div class="consent-category-copy">
+            <strong id="catNecessaryTitle"></strong>
+            <span id="catNecessaryDesc"></span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked disabled>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="consent-category">
+          <div class="consent-category-copy">
+            <strong id="catPreferencesTitle"></strong>
+            <span id="catPreferencesDesc"></span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="prefToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="consent-category">
+          <div class="consent-category-copy">
+            <strong id="catAnalyticsTitle"></strong>
+            <span id="catAnalyticsDesc"></span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="analyticsToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="consent-category">
+          <div class="consent-category-copy">
+            <strong id="catMarketingTitle"></strong>
+            <span id="catMarketingDesc"></span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="marketingToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <button id="saveCustomBtn" class="btn btn-primary"></button>
+      </div>
+
+      <p id="consentNote" class="consent-note"></p>
+    </div>
+  </div>
+
+  <p class="redirect-note" id="redirectNote"></p>
+
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=docs/en/index.html" />
+    <p style="text-align:center; margin-top:2rem;">
+      JavaScript is disabled. <a href="docs/en/index.html">Continue to the English guide</a>.
+    </p>
+  </noscript>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // ---------------------------------------------------------------
+    // 1) Supported languages (must match the 16 options in the guide)
+    // ---------------------------------------------------------------
+    var SUPPORTED_LANGS = ["it", "en", "fr", "de", "es", "pt", "nl", "ru", "zh", "ja", "ko", "ar", "hi", "tr", "pl", "uk"];
+    var DEFAULT_LANG = "en";
+    var RTL_LANGS = ["ar"];
+
+    // ---------------------------------------------------------------
+    // 2) UI strings for the cookie banner, one entry per supported lang
+    // ---------------------------------------------------------------
+    var STRINGS = {
+      it: { title: "Prima di continuare", desc: "Usiamo cookie tecnici necessari al funzionamento del sito e, se lo accetti, cookie di preferenza/analitici/marketing per ricordare la lingua scelta e migliorare la guida. Scegli come procedere.", acceptAll: "Accetta tutti", reject: "Rifiuta", customize: "Personalizza", save: "Salva preferenze", note: "Puoi cambiare idea in qualsiasi momento cancellando i cookie del browser.", redirecting: "Reindirizzamento in corso…", catNecessary: "Necessari", catNecessaryDesc: "Indispensabili al funzionamento del sito. Sempre attivi.", catPreferences: "Preferenze", catPreferencesDesc: "Ricordano la lingua e le impostazioni scelte.", catAnalytics: "Analitici", catAnalyticsDesc: "Ci aiutano a capire come viene usata la guida.", catMarketing: "Marketing", catMarketingDesc: "Usati per contenuti e annunci personalizzati." },
+      en: { title: "Before you continue", desc: "We use essential cookies for the site to work and, if you accept, preference/analytics/marketing cookies to remember your language and improve the guide. Choose how to proceed.", acceptAll: "Accept all", reject: "Reject", customize: "Customize", save: "Save preferences", note: "You can change your mind at any time by clearing your browser cookies.", redirecting: "Redirecting…", catNecessary: "Necessary", catNecessaryDesc: "Required for the site to work. Always active.", catPreferences: "Preferences", catPreferencesDesc: "Remember your language and chosen settings.", catAnalytics: "Analytics", catAnalyticsDesc: "Help us understand how the guide is used.", catMarketing: "Marketing", catMarketingDesc: "Used for personalized content and ads." },
+      fr: { title: "Avant de continuer", desc: "Nous utilisons des cookies essentiels au fonctionnement du site et, si vous acceptez, des cookies de préférence/analytiques/marketing pour mémoriser votre langue et améliorer le guide. Choisissez comment continuer.", acceptAll: "Tout accepter", reject: "Refuser", customize: "Personnaliser", save: "Enregistrer les préférences", note: "Vous pouvez changer d'avis à tout moment en supprimant les cookies de votre navigateur.", redirecting: "Redirection en cours…", catNecessary: "Nécessaires", catNecessaryDesc: "Indispensables au fonctionnement du site. Toujours actifs.", catPreferences: "Préférences", catPreferencesDesc: "Mémorisent la langue et les réglages choisis.", catAnalytics: "Analytiques", catAnalyticsDesc: "Nous aident à comprendre l'utilisation du guide.", catMarketing: "Marketing", catMarketingDesc: "Utilisés pour du contenu et des publicités personnalisés." },
+      de: { title: "Bevor Sie fortfahren", desc: "Wir verwenden technisch notwendige Cookies für den Betrieb der Seite und, sofern Sie zustimmen, Präferenz-/Analyse-/Marketing-Cookies, um Ihre Sprache zu merken und den Guide zu verbessern. Wählen Sie, wie Sie fortfahren möchten.", acceptAll: "Alle akzeptieren", reject: "Ablehnen", customize: "Anpassen", save: "Einstellungen speichern", note: "Sie können Ihre Meinung jederzeit ändern, indem Sie die Browser-Cookies löschen.", redirecting: "Weiterleitung läuft…", catNecessary: "Notwendig", catNecessaryDesc: "Für den Betrieb der Seite erforderlich. Immer aktiv.", catPreferences: "Präferenzen", catPreferencesDesc: "Merken sich Sprache und gewählte Einstellungen.", catAnalytics: "Analyse", catAnalyticsDesc: "Helfen uns zu verstehen, wie der Guide genutzt wird.", catMarketing: "Marketing", catMarketingDesc: "Für personalisierte Inhalte und Anzeigen." },
+      es: { title: "Antes de continuar", desc: "Usamos cookies esenciales para el funcionamiento del sitio y, si aceptas, cookies de preferencia/analíticas/marketing para recordar tu idioma y mejorar la guía. Elige cómo continuar.", acceptAll: "Aceptar todo", reject: "Rechazar", customize: "Personalizar", save: "Guardar preferencias", note: "Puedes cambiar de opinión en cualquier momento borrando las cookies del navegador.", redirecting: "Redirigiendo…", catNecessary: "Necesarias", catNecessaryDesc: "Imprescindibles para el funcionamiento del sitio. Siempre activas.", catPreferences: "Preferencias", catPreferencesDesc: "Recuerdan el idioma y los ajustes elegidos.", catAnalytics: "Analíticas", catAnalyticsDesc: "Nos ayudan a entender cómo se usa la guía.", catMarketing: "Marketing", catMarketingDesc: "Usadas para contenido y anuncios personalizados." },
+      pt: { title: "Antes de continuar", desc: "Usamos cookies essenciais para o funcionamento do site e, se aceitar, cookies de preferência/análise/marketing para lembrar o seu idioma e melhorar o guia. Escolha como continuar.", acceptAll: "Aceitar tudo", reject: "Recusar", customize: "Personalizar", save: "Guardar preferências", note: "Pode mudar de ideias a qualquer momento apagando os cookies do navegador.", redirecting: "A redirecionar…", catNecessary: "Necessários", catNecessaryDesc: "Indispensáveis para o funcionamento do site. Sempre ativos.", catPreferences: "Preferências", catPreferencesDesc: "Lembram o idioma e as definições escolhidas.", catAnalytics: "Análise", catAnalyticsDesc: "Ajudam-nos a perceber como o guia é utilizado.", catMarketing: "Marketing", catMarketingDesc: "Usados para conteúdo e anúncios personalizados." },
+      nl: { title: "Voordat u verdergaat", desc: "We gebruiken essentiële cookies om de site te laten werken en, indien u akkoord gaat, voorkeurs-/analyse-/marketingcookies om uw taal te onthouden en de gids te verbeteren. Kies hoe u wilt doorgaan.", acceptAll: "Alles accepteren", reject: "Weigeren", customize: "Aanpassen", save: "Voorkeuren opslaan", note: "U kunt op elk moment van gedachten veranderen door de cookies van uw browser te wissen.", redirecting: "Bezig met doorverwijzen…", catNecessary: "Noodzakelijk", catNecessaryDesc: "Vereist voor het functioneren van de site. Altijd actief.", catPreferences: "Voorkeuren", catPreferencesDesc: "Onthouden taal en gekozen instellingen.", catAnalytics: "Analyse", catAnalyticsDesc: "Helpen ons te begrijpen hoe de gids wordt gebruikt.", catMarketing: "Marketing", catMarketingDesc: "Gebruikt voor gepersonaliseerde inhoud en advertenties." },
+      ru: { title: "Прежде чем продолжить", desc: "Мы используем необходимые для работы сайта cookie и, при вашем согласии, cookie предпочтений/аналитики/маркетинга, чтобы запомнить язык и улучшить гайд. Выберите, как продолжить.", acceptAll: "Принять все", reject: "Отклонить", customize: "Настроить", save: "Сохранить настройки", note: "Вы можете изменить решение в любой момент, удалив cookie браузера.", redirecting: "Идёт перенаправление…", catNecessary: "Необходимые", catNecessaryDesc: "Нужны для работы сайта. Всегда активны.", catPreferences: "Предпочтения", catPreferencesDesc: "Запоминают язык и выбранные настройки.", catAnalytics: "Аналитика", catAnalyticsDesc: "Помогают понять, как используется гайд.", catMarketing: "Маркетинг", catMarketingDesc: "Используются для персонализированного контента и рекламы." },
+      zh: { title: "继续之前", desc: "我们使用网站运行所必需的 Cookie；如果您同意，还会使用偏好/分析/营销类 Cookie 以记住您的语言并改进指南。请选择如何继续。", acceptAll: "接受全部", reject: "拒绝", customize: "自定义", save: "保存偏好设置", note: "您可以随时清除浏览器 Cookie 来更改此选择。", redirecting: "正在跳转…", catNecessary: "必要", catNecessaryDesc: "网站运行所必需，始终启用。", catPreferences: "偏好", catPreferencesDesc: "记住语言和您选择的设置。", catAnalytics: "分析", catAnalyticsDesc: "帮助我们了解指南的使用情况。", catMarketing: "营销", catMarketingDesc: "用于个性化内容和广告。" },
+      ja: { title: "続行する前に", desc: "サイトの動作に必要なクッキーを使用しています。同意いただければ、言語の記憶やガイド改善のための設定・解析・マーケティング用クッキーも使用します。続行方法を選択してください。", acceptAll: "すべて同意する", reject: "拒否する", customize: "カスタマイズ", save: "設定を保存", note: "ブラウザのクッキーを削除すれば、いつでも選択を変更できます。", redirecting: "リダイレクトしています…", catNecessary: "必須", catNecessaryDesc: "サイトの動作に必要です。常に有効です。", catPreferences: "設定", catPreferencesDesc: "言語や選択した設定を記憶します。", catAnalytics: "解析", catAnalyticsDesc: "ガイドの利用状況の把握に役立てます。", catMarketing: "マーケティング", catMarketingDesc: "パーソナライズされたコンテンツや広告に使用します。" },
+      ko: { title: "계속하기 전에", desc: "사이트 운영에 필요한 필수 쿠키를 사용합니다. 동의하시면 언어 기억 및 가이드 개선을 위한 환경설정/분석/마케팅 쿠키도 사용합니다. 진행 방법을 선택하세요.", acceptAll: "모두 동의", reject: "거부", customize: "사용자 지정", save: "설정 저장", note: "브라우저 쿠키를 삭제하면 언제든지 선택을 변경할 수 있습니다.", redirecting: "리디렉션 중…", catNecessary: "필수", catNecessaryDesc: "사이트 운영에 필요하며 항상 활성화됩니다.", catPreferences: "환경설정", catPreferencesDesc: "언어 및 선택한 설정을 기억합니다.", catAnalytics: "분석", catAnalyticsDesc: "가이드 사용 방식을 이해하는 데 도움이 됩니다.", catMarketing: "마케팅", catMarketingDesc: "맞춤형 콘텐츠 및 광고에 사용됩니다." },
+      ar: { title: "قبل المتابعة", desc: "نستخدم ملفات تعريف الارتباط الضرورية لتشغيل الموقع، وإذا وافقت، ملفات تفضيلات/تحليلات/تسويق لتذكر لغتك وتحسين الدليل. اختر كيفية المتابعة.", acceptAll: "قبول الكل", reject: "رفض", customize: "تخصيص", save: "حفظ التفضيلات", note: "يمكنك تغيير رأيك في أي وقت بمسح ملفات تعريف الارتباط من المتصفح.", redirecting: "جارٍ إعادة التوجيه…", catNecessary: "ضرورية", catNecessaryDesc: "لازمة لتشغيل الموقع. مفعّلة دائمًا.", catPreferences: "تفضيلات", catPreferencesDesc: "تتذكر اللغة والإعدادات المختارة.", catAnalytics: "تحليلات", catAnalyticsDesc: "تساعدنا على فهم كيفية استخدام الدليل.", catMarketing: "تسويق", catMarketingDesc: "تُستخدم لمحتوى وإعلانات مخصصة." },
+      hi: { title: "जारी रखने से पहले", desc: "हम साइट के संचालन के लिए ज़रूरी कुकीज़ का उपयोग करते हैं और, आपकी सहमति से, भाषा याद रखने व गाइड बेहतर बनाने के लिए प्राथमिकता/विश्लेषण/मार्केटिंग कुकीज़ का भी उपयोग करते हैं। आगे बढ़ने का तरीका चुनें।", acceptAll: "सभी स्वीकार करें", reject: "अस्वीकार करें", customize: "अनुकूलित करें", save: "प्राथमिकताएँ सहेजें", note: "आप ब्राउज़र कुकीज़ साफ़ करके किसी भी समय अपना निर्णय बदल सकते हैं।", redirecting: "रीडायरेक्ट हो रहा है…", catNecessary: "आवश्यक", catNecessaryDesc: "साइट के संचालन के लिए आवश्यक। हमेशा सक्रिय।", catPreferences: "प्राथमिकताएँ", catPreferencesDesc: "भाषा और चुनी गई सेटिंग्स याद रखती हैं।", catAnalytics: "विश्लेषण", catAnalyticsDesc: "गाइड के उपयोग को समझने में मदद करते हैं।", catMarketing: "मार्केटिंग", catMarketingDesc: "व्यक्तिगत सामग्री और विज्ञापनों के लिए उपयोग होते हैं।" },
+      tr: { title: "Devam etmeden önce", desc: "Sitenin çalışması için gerekli çerezleri kullanıyoruz; kabul ederseniz dilinizi hatırlamak ve rehberi geliştirmek için tercih/analiz/pazarlama çerezleri de kullanırız. Nasıl devam edeceğinizi seçin.", acceptAll: "Tümünü kabul et", reject: "Reddet", customize: "Özelleştir", save: "Tercihleri kaydet", note: "Tarayıcı çerezlerinizi temizleyerek istediğiniz zaman fikrinizi değiştirebilirsiniz.", redirecting: "Yönlendiriliyor…", catNecessary: "Gerekli", catNecessaryDesc: "Sitenin çalışması için gereklidir. Her zaman aktiftir.", catPreferences: "Tercihler", catPreferencesDesc: "Dilinizi ve seçtiğiniz ayarları hatırlar.", catAnalytics: "Analiz", catAnalyticsDesc: "Rehberin nasıl kullanıldığını anlamamıza yardımcı olur.", catMarketing: "Pazarlama", catMarketingDesc: "Kişiselleştirilmiş içerik ve reklamlar için kullanılır." },
+      pl: { title: "Zanim przejdziesz dalej", desc: "Używamy plików cookie niezbędnych do działania strony oraz, po Twojej zgodzie, plików preferencji/analitycznych/marketingowych, aby zapamiętać Twój język i ulepszać przewodnik. Wybierz, jak kontynuować.", acceptAll: "Akceptuj wszystkie", reject: "Odrzuć", customize: "Dostosuj", save: "Zapisz preferencje", note: "Możesz zmienić decyzję w dowolnym momencie, czyszcząc pliki cookie przeglądarki.", redirecting: "Trwa przekierowanie…", catNecessary: "Niezbędne", catNecessaryDesc: "Wymagane do działania strony. Zawsze aktywne.", catPreferences: "Preferencje", catPreferencesDesc: "Zapamiętują język i wybrane ustawienia.", catAnalytics: "Analityczne", catAnalyticsDesc: "Pomagają nam zrozumieć, jak używany jest przewodnik.", catMarketing: "Marketingowe", catMarketingDesc: "Używane do spersonalizowanych treści i reklam." },
+      uk: { title: "Перш ніж продовжити", desc: "Ми використовуємо необхідні для роботи сайту файли cookie та, за вашою згодою, файли налаштувань/аналітики/маркетингу, щоб запам'ятати вашу мову та покращити гайд. Оберіть, як продовжити.", acceptAll: "Прийняти всі", reject: "Відхилити", customize: "Налаштувати", save: "Зберегти налаштування", note: "Ви можете змінити рішення в будь-який момент, очистивши cookie браузера.", redirecting: "Перенаправлення…", catNecessary: "Необхідні", catNecessaryDesc: "Потрібні для роботи сайту. Завжди активні.", catPreferences: "Налаштування", catPreferencesDesc: "Запам'ятовують мову та обрані параметри.", catAnalytics: "Аналітика", catAnalyticsDesc: "Допомагають зрозуміти, як використовується гайд.", catMarketing: "Маркетинг", catMarketingDesc: "Використовуються для персоналізованого контенту та реклами." }
+    };
+
+    // ---------------------------------------------------------------
+    // 3) Storage helpers — resilient to disabled localStorage/cookies
+    //    (private browsing, embedded iframes, strict privacy settings…)
+    // ---------------------------------------------------------------
+    var STORAGE_KEY = "moneoo_cookie_consent";
+    var LANG_KEY = "moneoo_lang";
+
+    function safeLocalStorageGet(key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+    }
+    function safeLocalStorageSet(key, value) {
+      try { window.localStorage.setItem(key, value); return true; } catch (e) { return false; }
+    }
+
+    function setCookie(name, value, days) {
+      try {
+        var expires = "";
+        if (days) {
+          var d = new Date();
+          d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+          expires = "; expires=" + d.toUTCString();
+        }
+        document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/; SameSite=Lax";
+      } catch (e) { /* cookies disabled — localStorage already covers this */ }
+    }
+    function getCookie(name) {
+      try {
+        var match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+        return match ? decodeURIComponent(match[1]) : null;
+      } catch (e) { return null; }
+    }
+
+    function getStoredConsent() {
+      var raw = safeLocalStorageGet(STORAGE_KEY) || getCookie(STORAGE_KEY);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch (e) { return null; }
+    }
+    function storeConsent(level, categories) {
+      var flags = categories || {
+        preferences: level === "all",
+        analytics: level === "all",
+        marketing: level === "all"
+      };
+      var payload = JSON.stringify({
+        level: level, // "all" | "necessary" | "custom"
+        necessary: true,
+        preferences: !!flags.preferences,
+        analytics: !!flags.analytics,
+        marketing: !!flags.marketing,
+        timestamp: new Date().toISOString()
+      });
+      safeLocalStorageSet(STORAGE_KEY, payload);
+      setCookie(STORAGE_KEY, payload, 180);
+    }
+    function storeLang(lang) {
+      safeLocalStorageSet(LANG_KEY, lang);
+      setCookie(LANG_KEY, lang, 365);
+    }
+    function getStoredLang() {
+      return safeLocalStorageGet(LANG_KEY) || getCookie(LANG_KEY);
+    }
+
+    // ---------------------------------------------------------------
+    // 4) Language detection
+    // ---------------------------------------------------------------
+    function detectLang() {
+      var stored = getStoredLang();
+      if (stored && SUPPORTED_LANGS.indexOf(stored) !== -1) return stored;
+
+      var candidates = [];
+      if (Array.isArray(navigator.languages)) candidates = candidates.concat(navigator.languages);
+      if (navigator.language) candidates.push(navigator.language);
+      if (navigator.userLanguage) candidates.push(navigator.userLanguage); // old IE, just in case
+
+      for (var i = 0; i < candidates.length; i++) {
+        var code = String(candidates[i] || "").toLowerCase().split("-")[0];
+        if (SUPPORTED_LANGS.indexOf(code) !== -1) return code;
+      }
+      return DEFAULT_LANG;
+    }
+
+    // ---------------------------------------------------------------
+    // 5) Redirect target
+    //    If we were sent here by cookie-guard.js from another page
+    //    (?returnTo=...), go back there instead of the language home.
+    //    Only same-origin, non protocol-relative targets are honored.
+    // ---------------------------------------------------------------
+    function targetUrl(lang) {
+      return "docs/" + lang + "/index.html";
+    }
+    function getReturnTarget() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var rt = params.get("returnTo");
+        if (!rt) return null;
+        if (/^https?:\/\//i.test(rt)) {
+          return rt.indexOf(window.location.origin) === 0 ? rt : null;
+        }
+        if (rt.indexOf("//") === 0) return null; // protocol-relative, unsafe
+        return rt;
+      } catch (e) { return null; }
+    }
+    function goToGuide(lang) {
+      var note = document.getElementById("redirectNote");
+      var t = STRINGS[lang] || STRINGS[DEFAULT_LANG];
+      if (note) note.textContent = t.redirecting;
+      window.location.replace(getReturnTarget() || targetUrl(lang));
+    }
+
+    // ---------------------------------------------------------------
+    // 6) Main flow
+    // ---------------------------------------------------------------
+    var lang = detectLang();
+    document.getElementById("htmlRoot").setAttribute("lang", lang);
+    if (RTL_LANGS.indexOf(lang) !== -1) {
+      document.getElementById("htmlRoot").setAttribute("dir", "rtl");
+    }
+
+    var existingConsent = getStoredConsent();
+    if (existingConsent && existingConsent.necessary) {
+      // Consent already given previously: skip the banner entirely.
+      storeLang(lang);
+      goToGuide(lang);
+      return;
+    }
+
+    // No consent on record yet — show the banner in the detected language.
+    var t = STRINGS[lang] || STRINGS[DEFAULT_LANG];
+    document.getElementById("consentTitle").textContent = t.title;
+    document.getElementById("consentDesc").textContent = t.desc;
+    document.getElementById("acceptAllBtn").textContent = t.acceptAll;
+    document.getElementById("rejectBtn").textContent = t.reject;
+    document.getElementById("customizeBtn").textContent = t.customize;
+    document.getElementById("saveCustomBtn").textContent = t.save;
+    document.getElementById("consentNote").textContent = t.note;
+
+    document.getElementById("catNecessaryTitle").textContent = t.catNecessary;
+    document.getElementById("catNecessaryDesc").textContent = t.catNecessaryDesc;
+    document.getElementById("catPreferencesTitle").textContent = t.catPreferences;
+    document.getElementById("catPreferencesDesc").textContent = t.catPreferencesDesc;
+    document.getElementById("catAnalyticsTitle").textContent = t.catAnalytics;
+    document.getElementById("catAnalyticsDesc").textContent = t.catAnalyticsDesc;
+    document.getElementById("catMarketingTitle").textContent = t.catMarketing;
+    document.getElementById("catMarketingDesc").textContent = t.catMarketingDesc;
+
+    document.getElementById("acceptAllBtn").addEventListener("click", function () {
+      storeConsent("all");
+      storeLang(lang);
+      goToGuide(lang);
+    });
+    document.getElementById("rejectBtn").addEventListener("click", function () {
+      storeConsent("necessary");
+      storeLang(lang);
+      goToGuide(lang);
+    });
+    document.getElementById("customizeBtn").addEventListener("click", function () {
+      document.getElementById("categoriesPanel").classList.toggle("hidden");
+    });
+    document.getElementById("saveCustomBtn").addEventListener("click", function () {
+      storeConsent("custom", {
+        preferences: document.getElementById("prefToggle").checked,
+        analytics: document.getElementById("analyticsToggle").checked,
+        marketing: document.getElementById("marketingToggle").checked
+      });
+      storeLang(lang);
+      goToGuide(lang);
+    });
+  })();
+  </script>
 </body>
 </html>

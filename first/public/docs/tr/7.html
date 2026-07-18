@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bölüm 7 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Hızlı navigasyon">
+            <a href="index.html#featureSection">Neden</a>
+            <a href="index.html#learningPath">Yol Haritası</a>
+            <a href="index.html#searchSection">Rehber</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Dil seçin">
+                    <span class="lang-current" id="langCurrent">🇹🇷 Türkçe</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Bölümler</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Ön Koşullar</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simetrik</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimetrik</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kafesler</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Güvenlik</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Uygulamalar</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT (Sayı Teorik Dönüşümü)</h1>
+        <p class="subtitle">ML-KEM'i pratik olarak kullanılabilir kılan motor</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>İçindekiler</h2>
+            <ul>
+                <li><a href="#id-71">7.1 Sorun: polinomları çarpmak</a></li>
+                <li><a href="#id-72">7.2 Fourier Dönüşümleri ve DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT'nin modüler dünyadaki hali</a></li>
+                <li><a href="#id-74">7.4 ML-KEM'de NTT</a></li>
+                <li><a href="#id-75">7.5 Basitleştirilmiş sayısal örnek</a></li>
+                <li><a href="#id-76">7.6 Uygulama</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 7.1 -->
+        <section id="id-71">
+            <h2>7.1 Sorun: polinomları çarpmak</h2>
+
+            <p>ML-KEM'de temel işlemler, <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span> halkasında polinom çarpımlarını içerir.</p>
+
+            <h3>Saf çarpma</h3>
+            <p>Derecesi <span class="math">\(n-1\)</span> olan iki polinom, okul algoritmasıyla <span class="math">\(O(n^2)\)</span> karmaşıklığında çarpılır.</p>
+            
+            <ul>
+                <li><span class="math">\(n = 256\)</span> için: tek bir çarpım için yaklaşık <span class="math">\(256^2 = 65536\)</span> çarpma işlemi.</li>
+                <li>ML-KEM-768'de (<span class="math">\(k=3\)</span>), tek bir <code>Encaps</code> işlemi onlarca polinom çarpımı gerektirir → saf yöntemle milyonlarca çarpma.</li>
+            </ul>
+
+            <h3>NTT ile</h3>
+            <p>Karmaşıklık <span class="math">\(O(n \log n)\)</span>'ye düşer:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ işlem çarpım başına}
+                \]
+            </div>
+            <p><strong>Hızlanma:</strong> ~32×. Optimize edilmiş donanımda ML-KEM-768 1 ms'den az sürer.</p>
+        </section>
+
+        <!-- Section 7.2 -->
+        <section id="id-72">
+            <h2>7.2 Fourier Dönüşümleri ve DFT</h2>
+
+            <h3>Konvolüsyon teoremi</h3>
+            <p>Fourier dönüşümü, bir konvolüsyonu (polinom çarpımı gibi) noktasal çarpıma dönüştürür:</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>Prosedür:</strong></p>
+            <ol>
+                <li><span class="math">\(\hat{f} = \text{DFT}(f)\)</span> ve <span class="math">\(\hat{g} = \text{DFT}(g)\)</span>'yi hesaplayın</li>
+                <li>Noktasal çarpın: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Ters dönüşümü uygulayın: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>DFT ve DFT<sup>-1</sup> <span class="math">\(O(n \log n)\)</span> maliyetindeyse (FFT ile), tüm çarpım <span class="math">\(O(n \log n)\)</span> maliyetindedir.</p>
+
+            <h3>Hızlı Fourier Dönüşümü (FFT)</h3>
+            <p>Cooley-Tukey algoritması (1965), özyinelemeli yapıyı kullanarak DFT'yi hesaplar:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{çift}}], \; \text{DFT}[f_{\text{tek}}]\right) \text{ döndürme faktörleriyle birleştirilir}
+                \]
+            </div>
+            <p><strong>Sorun:</strong> Standart FFT, yuvarlama hatalarına ve sabit olmayan zamana neden olan karmaşık sayılar (kayan nokta) kullanır ve bu da onu kriptografi için uygun hale getirmez.</p>
+        </section>
+
+        <!-- Section 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: DFT'nin modüler dünyadaki hali</h2>
+
+            <h3>Fikir</h3>
+            <p>NTT (Sayı Teorik Dönüşümü), <span class="math">\(\mathbb{C}\)</span> yerine <span class="math">\(\mathbb{Z}_q\)</span>'ya uygulanan DFT'dir. Karmaşık birim kökler <span class="math">\(e^{2\pi i k/n}\)</span> yerine, <span class="math">\(\mathbb{Z}_q\)</span>'daki ilkel birim kökler kullanılır.</p>
+
+            <h3>Modülo q'da ilkel birim kökler</h3>
+            <p>Bir <span class="math">\(\omega \in \mathbb{Z}_q\)</span> elemanı, eğer aşağıdaki koşulları sağlıyorsa <span class="math">\(n\)</span>-inci dereceden ilkel birim köktür:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{ve} \quad \omega^k \not\equiv 1 \pmod{q} \text{ için } 0 < k < n
+                \]
+            </div>
+            <p>Gerekli koşul: <span class="math">\(n \mid (q-1)\)</span> (yani <span class="math">\(n\)</span>, <span class="math">\(q-1\)</span>'i böler).</p>
+
+            <p><strong>ML-KEM'de:</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>Kontrol: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Bu nedenle, modülo 3329'da 256. dereceden birim kökler mevcuttur.</li>
+                <li>FIPS 203'te kullanılan ilkel kök: <span class="math">\(\omega = 17\)</span> (çünkü <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, negacyclic NTT için kullanılan kök <span class="math">\(\zeta = 17\)</span>'dir).</li>
+            </ul>
+
+            <h3>NTT tanımı</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>Ters NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>burada <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>'tür.</p>
+
+            <h3>Anahtar özellikler</h3>
+            <ul>
+                <li><strong>Tam:</strong> yuvarlama hatası yok, her şey <span class="math">\(\mathbb{Z}_q\)</span> içinde</li>
+                <li><strong>Verimli:</strong> FFT gibi <span class="math">\(O(n \log n)\)</span></li>
+                <li><strong>Sabit süreli:</strong> gizli veriler üzerinde dallanma olmadan uygulanabilir (yan kanal güvenliği)</li>
+            </ul>
+        </section>
+
+        <!-- Section 7.4 -->
+        <section id="id-74">
+            <h2>7.4 ML-KEM'de NTT</h2>
+
+            <h3>Negacyclic NTT</h3>
+            <p>ML-KEM'de indirgeme, <span class="math">\(X^n - 1\)</span> (cyclic) yerine <span class="math">\(X^n + 1\)</span> (negacyclic) modülüne göre yapılır. Negacyclic konvolüsyonda, "sarılan" terimler işaret değiştirir. Bu, ayarlanmış döndürme faktörleriyle klasik NTT'nin bir varyantını gerektirir.</p>
+
+            <p>FIPS 203'teki NTT, <span class="math">\(\zeta = 17\)</span>'nin kuvvetleriyle ön döndürme uygular:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{klasik NTT'den önce}
+                \]
+            </div>
+
+            <h3>NTT alanında ML-KEM işlemleri</h3>
+            <p>Dönüştürüldükten sonra polinomlar NTT alanında yaşar. İşlemler temel hale gelir:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>İşlem</th>
+                        <th>NTT alanında</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Çarpım <span class="math">\(f \cdot g\)</span></td>
+                        <td>her <span class="math">\(i\)</span> için <span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Toplam <span class="math">\(f + g\)</span></td>
+                        <td>her <span class="math">\(i\)</span> için <span class="math">\(\hat{f}_i + \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Matris-vektör çarpımı <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> noktasal çarpım ve <span class="math">\(k^2\)</span> noktasal toplam</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Genel anahtar <span class="math">\(A\)</span>, NTT alanında oluşturulur ve saklanır, böylece her seferinde NTT'nin yeniden hesaplanması önlenir.</p>
+
+            <h3>KeyGen'in tam akışı</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+tohum 
+  │
+  ├──► SHAKE128 ──► A_hat (zaten NTT'de)
+  │
+  └──► Binom örnekleme ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          Genel Anahtar (t_hat)
+                </pre>
+            </div>
+            <p>Çıktı <code>t_hat</code> genel anahtardır (zaten NTT'de). <span class="math">\(t\)</span> için NTT<sup>-1</sup>'den kaçınılır.</p>
+        </section>
+
+        <!-- Section 7.5 -->
+        <section id="id-75">
+            <h2>7.5 Basitleştirilmiş sayısal örnek</h2>
+
+            <p><span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (modülo 5'te 1'in 4. dereceden kökü: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>) kullanıyoruz.</p>
+
+            <p><strong>Polinomlar:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>f'nin NTT'si:</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>g'nin NTT'si:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. <span class="math">\(i=0\)</span> için: <span class="math">\(4 \equiv 4\)</span>; <span class="math">\(i \neq 0\)</span> için: köklerin toplamı <span class="math">\(= 0\)</span>.</p>
+
+            <p><strong>Noktasal çarpım:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong><span class="math">\(\hat{h}\)</span>'nin ters NTT'si:</strong> <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span> çarpımını verir.</p>
+
+            <blockquote>
+                <p><strong>Not:</strong> bu örnek <span class="math">\(X^4-1\)</span> (cyclic) indirgemesini kullanır. ML-KEM, bölüm 7.4'te açıklanan varyantla <span class="math">\(X^n+1\)</span> (negacyclic) kullanır.</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 7.6 -->
+        <section id="id-76">
+            <h2>7.6 Uygulama</h2>
+
+            <h3>NTT için Cooley-Tukey sözde kodu</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    Yerinde (in-place) yinelemeli NTT (Cooley-Tukey).
+    f: Z_q içinde n katsayının listesi
+    q: asal modül
+    omega: modülo q'da birimin n'inci ilkel kökü
+    """
+    n = len(f)
+    # bit-ters çevirme permütasyonu
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # kelebek işlemleri
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>Referans uygulama</h3>
+            <p>FIPS 203, NTT'nin tam uygulamasını ve önceden hesaplanmış kök tablosunu <span class="math">\(\zeta^{br(i)}\)</span> (burada <span class="math">\(br\)</span> bit-ters çevirme permütasyonudur) belirtir.</p>
+            
+            <p>Optimize edilmiş assembly/SIMD uygulamaları şurada mevcuttur:</p>
+            <ul>
+                <li><code>liboqs</code> (AVX2 ile C)</li>
+                <li><code>pqclean</code> (taşınabilir C)</li>
+                <li><code>kyber</code> referans uygulaması (C)</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Kaynaklar</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), Bölüm 4.3 ve 5 – NTT tanımı ve <span class="math">\(R_q\)</span>'deki işlemler</li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Bölüm 6 (NTT uygulaması)</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← Önceki bölüm</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">Sonraki bölüm →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Herkese açık ücretsiz kütüphane. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'tr';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

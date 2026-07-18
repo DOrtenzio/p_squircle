@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bölüm 5 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Hızlı navigasyon">
+            <a href="index.html#featureSection">Neden</a>
+            <a href="index.html#learningPath">Yol Haritası</a>
+            <a href="index.html#searchSection">Rehber</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Dil seçin">
+                    <span class="lang-current" id="langCurrent">🇹🇷 Türkçe</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Bölümler</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Ön Koşullar</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simetrik</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimetrik</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kafesler</a></li>
+                <li class="active"><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Güvenlik</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Uygulamalar</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>05 – Module-LWE (MLWE)</h1>
+        <p class="subtitle">ML-KEM'in matematiksel temeli</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>İçindekiler</h2>
+            <ul>
+                <li><a href="#id-51">5.1 LWE'den MLWE'ye: motivasyon</a></li>
+                <li><a href="#id-52">5.2 MLWE'nin biçimsel tanımı</a></li>
+                <li><a href="#id-53">5.3 ML-KEM'de gürültü dağılımı</a></li>
+                <li><a href="#id-54">5.4 ML-KEM'de örnekleme</a></li>
+                <li><a href="#id-55">5.5 Zorluk: MLWE neden zordur</a></li>
+                <li><a href="#id-56">5.6 MLWE'den PKE'ye: yapıcı fikir</a></li>
+                <li><a href="#id-57">5.7 Tam sayısal örnek</a></li>
+                <li><a href="#id-58">5.8 ML-KEM parametreleri neden böyledir</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 5.1 -->
+        <section id="id-51">
+            <h2>5.1 LWE'den MLWE'ye: motivasyon</h2>
+
+            <h3>Klasik LWE ve maliyeti</h3>
+
+            <p><a href="4.html">04</a> dosyasında standart LWE'yi gördük: <span class="math">\((\mathbf{a}_i, b_i)\)</span> örnekleri verildiğinde <span class="math">\(\mathbf{a}_i \in \mathbb{Z}_q^n\)</span> ve <span class="math">\(b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i\)</span> ile, <span class="math">\(\mathbf{s}\)</span>'yi bulun. Problem zordur, ancak yüksek pratik maliyeti vardır:</p>
+
+            <ul>
+                <li>Genel anahtar (<span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> matrisi) <span class="math">\(O(n^2)\)</span> boyutundadır: <span class="math">\(n = 1024\)</span> ve <span class="math">\(q = 3329\)</span> için 2 MB'den fazla olurdu.</li>
+                <li>Matris-vektör çarpımı <span class="math">\(A \cdot \mathbf{s}\)</span>, <span class="math">\(O(n^2)\)</span> çarpma maliyetindedir.</li>
+            </ul>
+
+            <h3>RLWE: çok katı</h3>
+
+            <p>Ring-LWE işlemleri <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^n + 1)\)</span> halkasına taşır. Tek bir polinom <span class="math">\(a \in R_q\)</span> tüm matrisin yerini alır ve genel anahtarı <span class="math">\(O(n)\)</span>'ye düşürür.</p>
+
+            <p>Ancak RLWE, bazı araştırmacıların potansiyel olarak kullanılabilir olduğunu düşündüğü çok spesifik bir cebirsel yapıya sahiptir (her ne kadar 2024'te bilinen pratik bir saldırı olmasa da).</p>
+
+            <h3>MLWE: optimal uzlaşma</h3>
+
+            <p><strong>Module-LWE</strong>, <span class="math">\(R_q\)</span> içinde <span class="math">\(k \times k\)</span> polinom matrisi kullanarak her ikisini de genelleştirir:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}
+                \]
+            </div>
+
+            <ul>
+                <li><span class="math">\(k = 1\)</span> için: RLWE'ye indirgenir</li>
+                <li><span class="math">\(k \to \infty\)</span> (derece 0 polinomlar) için: klasik LWE'ye indirgenir</li>
+            </ul>
+
+            <p><span class="math">\(k\)</span> parametresi, <span class="math">\(n\)</span>'den bağımsız olarak güvenliği ve performansı <strong>kalibre etmeye</strong> olanak tanır.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Varyant</th>
+                        <th>Genel anahtar</th>
+                        <th>Güvenlik</th>
+                        <th>Esneklik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span></td>
+                        <td>yüksek</td>
+                        <td>düşük</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span></td>
+                        <td>orta</td>
+                        <td>düşük</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span></td>
+                        <td><span class="math">\(k\)</span> ile ayarlanabilir</td>
+                        <td><strong>yüksek</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5.2 -->
+        <section id="id-52">
+            <h2>5.2 MLWE'nin biçimsel tanımı</h2>
+
+            <h3>Çalışma alanı</h3>
+
+            <p>Parametreleri sabitleyin:</p>
+            <ul>
+                <li><span class="math">\(n = 256\)</span>: siklotomik polinomun derecesi</li>
+                <li><span class="math">\(q = 3329\)</span>: asal modül</li>
+                <li><span class="math">\(k \in \{2, 3, 4\}\)</span>: modül boyutu</li>
+                <li><span class="math">\(\chi\)</span>: gürültü dağılımı (merkezli binom dağılımı <span class="math">\(B_\eta\)</span>)</li>
+            </ul>
+
+            <p>Temel halka <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>'dir.</p>
+
+            <h3>MLWE dağılımı</h3>
+
+            <p><span class="math">\(\mathbf{s} \in R_q^k\)</span>, her biri <span class="math">\(\chi\)</span>'den örneklenmiş katsayılara sahip gizli bir polinom vektörü olsun.</p>
+
+            <p>Bir <strong>MLWE örneği</strong> bir çifttir:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{A},\; \mathbf{t}) \quad \text{burada} \quad \mathbf{A} \stackrel{\$}{\leftarrow} R_q^{k \times k},\quad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}
+                \]
+            </div>
+
+            <p><span class="math">\(\mathbf{s}, \mathbf{e} \stackrel{\$}{\leftarrow} \chi^k\)</span> ile.</p>
+
+            <h3>Karar MLWE problemi</h3>
+
+            <p><strong>Girdi:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> burada:</p>
+            <ul>
+                <li>ya <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span> (MLWE dağılımı), ya da</li>
+                <li><span class="math">\(\mathbf{t} \stackrel{\$}{\leftarrow} R_q^k\)</span> tekdüze</li>
+            </ul>
+
+            <p><strong>Amaç:</strong> iki durumu ihmal edilemez avantajla ayırt edin.</p>
+
+            <h3>Arama MLWE problemi</h3>
+
+            <p><strong>Girdi:</strong> <span class="math">\((\mathbf{A}, \mathbf{t})\)</span> ile <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p><strong>Amaç:</strong> <span class="math">\(\mathbf{s}\)</span>'yi bulun.</p>
+
+            <blockquote>
+                <p>Regev'in (MLWE için uyarlanmış) indirgemesi, arama probleminin karar problemine hesaplama açısından eşdeğer olduğunu ve her ikisinin de yüksek boyutlu kafeslerde GapSVP'den en az o kadar zor olduğunu gösterir.</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 5.3 -->
+        <section id="id-53">
+            <h2>5.3 ML-KEM'de gürültü dağılımı</h2>
+
+            <h3>Merkezli binom dağılımı <span class="math">\(B_\eta\)</span></h3>
+
+            <p>ML-KEM'de gürültü Gauss değil, merkezli binomdur. <span class="math">\(B_\eta\)</span>'dan tek bir katsayı örneklemek için:</p>
+
+            <ol>
+                <li><span class="math">\(2\eta\)</span> tekdüze bit örnekleyin: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                <li><span class="math">\(\sum_{i=1}^{\eta} a_i - \sum_{i=1}^{\eta} b_i\)</span> döndürün</li>
+            </ol>
+
+            <p>Sonuç, <span class="math">\([-\eta, \eta]\)</span> aralığında bir tamsayıdır.</p>
+
+            <p><strong>η = 2 için olasılık dağılımı:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Değer</th>
+                        <th>Olasılık</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\(-2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(-1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(0\)</span></td>
+                        <td><span class="math">\(6/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+1\)</span></td>
+                        <td><span class="math">\(4/16\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(+2\)</span></td>
+                        <td><span class="math">\(1/16\)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Neden gerçek Gauss değil?</strong></p>
+
+            <p>Ayrık Gauss teorik olarak optimaldir, ancak <em>sabit süreli</em> (zamanlama saldırılarına karşı dayanıklı) örneklemesi karmaşıktır. Merkezli binom:</p>
+
+            <ul>
+                <li>sonlu desteğe sahiptir → uç durum yoktur</li>
+                <li>yalnızca bit işlemleriyle örneklenir → önemsiz şekilde sabit sürelidir</li>
+                <li>bilinen saldırılar için Gauss'tan istatistiksel olarak ayırt edilemez</li>
+            </ul>
+        </section>
+
+        <!-- Section 5.4 -->
+        <section id="id-54">
+            <h2>5.4 ML-KEM'de örnekleme</h2>
+
+            <h3>CBD: Merkezli Binom Dağılımı</h3>
+            <p>ML-KEM, küçük hatalar ve sırlar üretmek için merkezli binom dağılımını <span class="math">\(B_\eta\)</span> kullanır. Bu dağılım verimlidir ve red örneklemesi gerektirmez.</p>
+
+            <div class="code-block">
+                <h4>SamplePolyCBD(σ, b, η) Fonksiyonu</h4>
+                <pre><code>Girdi: tohum σ ∈ {0,1}^256, nonce b, parametre η
+Çıktı: katsayıları [-η, η] aralığında olan f ∈ R_q polinomu
+
+1. baytlar = PRF(σ, b)       // SHAKE256, 64·η bayt üretir
+2. j = 0'dan 255'e:
+     a = sum(bitler[2ηj .. 2ηj+η-1])   // ilk gruptaki 1'leri say
+     b = sum(bitler[2ηj+η .. 2ηj+2η-1]) // ikinci gruptaki 1'leri say
+     f[j] = a - b                     // 0'da merkezlenmiş fark
+3. f'yi döndür</code></pre>
+            </div>
+
+            <p><span class="math">\(\eta=2\)</span> için katsayılar <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> aralığındadır. <span class="math">\(\eta=3\)</span> için <span class="math">\(\{-3, \ldots, 3\}\)</span> aralığındadır.</p>
+
+            <h3>SampleNTT: Tekdüze Örnekleme</h3>
+            <p><span class="math">\(\mathbf{A}\)</span> genel matrisini oluşturmak için <span class="math">\(\mathbb{Z}_q\)</span> içinde tekdüze katsayılara ihtiyaç vardır. SHAKE128 çıktısı üzerinde <em>red örneklemesi</em> kullanılır.</p>
+
+            <div class="code-block">
+                <h4>SampleNTT(stream) Fonksiyonu</h4>
+                <pre><code>Girdi: XOF'tan (SHAKE128) bayt akışı
+Çıktı: [0, q-1] aralığında tekdüze katsayılı polinom
+
+katsayılar = []
+len(katsayılar) < 256 olduğu sürece:
+    // 2 aday değer üretmek için 3 bayt oku
+    b0, b1, b2 = next_3_bytes(stream)
+
+    // İki 12-bit sayı oluşturmak için bitleri birleştir
+    d1 = b0 + 256 * (b1 mod 16)
+    d2 = floor(b1 / 16) + 16 * b2
+
+    // Yalnızca q < 3329 ise kabul et
+    eğer d1 < q:
+        katsayılar.append(d1)
+    eğer d2 < q ve len(katsayılar) < 256:
+        katsayılar.append(d2)
+
+katsayıları döndür</code></pre>
+            </div>
+
+            <p>Bu yöntem, aralık dışındaki değerleri atarak mükemmel tekdüze dağılımı garanti eder.</p>
+        </section>
+
+        <!-- Section 5.5 -->
+        <section id="id-55">
+            <h2>5.5 Zorluk: MLWE neden zordur</h2>
+
+            <h3>En kötü durumdan ortalama duruma indirgeme</h3>
+
+            <p>LWE/MLWE'nin en önemli özelliği <strong>en kötü durumdan ortalama duruma indirgeme</strong>'dir:</p>
+
+            <blockquote>
+                <p>Rastgele örneklerin ihmal edilemez bir kısmı için MLWE'yi çözen verimli bir algoritma varsa, o zaman <em>herhangi</em> bir kafeste, en kötü durumda GapSVP'yi (SVP'nin yaklaşık versiyonu) çözen verimli bir algoritma vardır.</p>
+            </blockquote>
+
+            <p>Bu indirgeme (Regev 2005, Peikert 2009 ve Brakerski ve diğerleri tarafından MLWE için uyarlanmış) olağanüstüdür: çoğu kriptografik problemin yalnızca ortalama durumdan ortalama duruma indirgemeleri vardır.</p>
+
+            <p>Pratikte: rastgele örneklerde MLWE'yi kırmak, en kötü durumda SVP'yi çözmek kadar zordur → kriptografik varsayımlar çok güçlüdür.</p>
+
+            <h3>Kuantum tarafından kullanılabilecek yapının olmaması</h3>
+
+            <p>Shor algoritması, çarpanlara ayırma ve kesikli logaritma problemlerinin <strong>değişmeli grup</strong> yapısını kullanır: QFT'nin tespit edebileceği periyodik bir grup eylemi vardır.</p>
+
+            <p>MLWE bu yapıya sahip değildir:</p>
+
+            <ul>
+                <li>Kullanılacak periyodiklik yoktur</li>
+                <li>QFT'nin uygulanabileceği doğal bir değişmeli grup yoktur</li>
+                <li>En iyi kuantum algoritmaları (kuantum yürüyüşleri veya QRAM tabanlı) en fazla polinom hızlanması sağlar, üstel değil</li>
+            </ul>
+        </section>
+
+        <!-- Section 5.6 -->
+        <section id="id-56">
+            <h2>5.6 MLWE'den PKE'ye: yapıcı fikir</h2>
+
+            <p>MLWE'den nasıl bir şifreleme sistemi inşa edilir? Sezgi zariftir.</p>
+
+            <h3>Diffie-Hellman ile benzerlik</h3>
+
+            <p>DH'de genel anahtar <span class="math">\(g^s\)</span>'tir: hesaplaması kolay, tersi zordur.<br />
+            MLWE'de genel anahtar <span class="math">\(\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span>'dir: hesaplaması kolay, tersi zordur.</p>
+
+            <h3>Şifreleme şeması (Regev tipi)</h3>
+
+            <p><strong>KeyGen:</strong> <span class="math">\(\mathbf{s}, \mathbf{e} \leftarrow \chi^k \qquad \mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e}\)</span></p>
+
+            <p style="text-align: right;">Genel anahtar: <span class="math">\((\mathbf{A}, \mathbf{t})\)</span>.<br />
+            Özel anahtar: <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <p><strong>Encrypt</strong> (<span class="math">\(m \in \{0,1\}\)</span> mesajı, <span class="math">\(\mu = m \cdot \lfloor q/2 \rfloor\)</span> olarak kodlanır):</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{r}, \mathbf{e}_1 \leftarrow \chi^k, \quad e_2 \leftarrow \chi
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{u} = \mathbf{A}^T\mathbf{r} + \mathbf{e}_1 \qquad v = \mathbf{t}^T\mathbf{r} + e_2 + \mu
+                \]
+            </div>
+
+            <p style="text-align: right;">Şifreli metin: <span class="math">\((\mathbf{u}, v)\)</span>.</p>
+
+            <p><strong>Decrypt:</strong> <span class="math">\(w = v - \mathbf{s}^T\mathbf{u}\)</span></p>
+
+            <p><strong>Analiz:</strong></p>
+
+            <div class="math-block">
+                \[
+                w = \mathbf{t}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T\mathbf{u}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = (\mathbf{A}\mathbf{s})^T\mathbf{r} + \mathbf{e}^T\mathbf{r} + e_2 + \mu - \mathbf{s}^T(\mathbf{A}^T\mathbf{r} + \mathbf{e}_1)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = \underbrace{\mathbf{s}^T\mathbf{A}^T\mathbf{r} - \mathbf{s}^T\mathbf{A}^T\mathbf{r}}_{= 0} + \underbrace{\mathbf{e}^T\mathbf{r} + e_2 - \mathbf{s}^T\mathbf{e}_1}_{\text{küçük gürültü}} + \mu \approx \mu
+                \]
+            </div>
+
+            <p>Gürültü küçüktür → yuvarlama <span class="math">\(\mu\)</span>'yı ve dolayısıyla <span class="math">\(m\)</span>'yi geri getirir.</p>
+
+            <h3>Polinom versiyonu (gerçek MLWE)</h3>
+
+            <p>ML-KEM'de her skaler <span class="math">\(R_q\)</span> içinde bir polinom olur ve işlemler polinom çarpımlarıdır. Mekanizma aynıdır, ancak çarpmalar halka içinde yapılır:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \circ \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>burada <span class="math">\(\circ\)</span> <span class="math">\(R_q\)</span> içinde çarpımdır (polinom, NTT ile hızlandırılmış).</p>
+        </section>
+
+        <!-- Section 5.7 -->
+        <section id="id-57">
+            <h2>5.7 Tam sayısal örnek</h2>
+
+            <p>Oyuncak parametreler kullanıyoruz: <span class="math">\(n = 4\)</span>, <span class="math">\(q = 17\)</span>, <span class="math">\(k = 2\)</span>, <span class="math">\(\{-1, 0, 1\}\)</span> içinde küçük katsayılar.</p>
+
+            <p>Polinomlar <span class="math">\(R_{17} = \mathbb{Z}_{17}[X]/(X^4+1)\)</span> içindedir, dolayısıyla derece <span class="math">\(\leq 3\)</span>'tür.</p>
+
+            <h3>Başlangıç verileri</h3>
+
+            <p><strong>Genel matris</strong> <span class="math">\(\mathbf{A} \in R_{17}^{2 \times 2}\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} = \begin{pmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{pmatrix}
+                \]
+            </div>
+
+            <p>ile <span class="math">\(a_{00} = 1 + 2X + 3X^2 + 4X^3\)</span>, <span class="math">\(a_{01} = 5 + X + 2X^2\)</span>, <span class="math">\(a_{10} = 3 + X^3\)</span>, <span class="math">\(a_{11} = 1 + X + X^2 + X^3\)</span></p>
+
+            <p><strong>Sır</strong> <span class="math">\(\mathbf{s} = (s_0, s_1)^T\)</span> ile <span class="math">\(s_0 = 1 - X\)</span>, <span class="math">\(s_1 = X^2\)</span>.</p>
+
+            <p><strong>Hata</strong> <span class="math">\(\mathbf{e} = (e_0, e_1)^T\)</span> ile <span class="math">\(e_0 = 1\)</span>, <span class="math">\(e_1 = -X\)</span>.</p>
+
+            <h3>t = As + e hesaplaması</h3>
+
+            <p><strong>Bileşen t0 = a00 s0 + a01 s1 + e0:</strong></p>
+
+            <div class="math-block">
+                \[
+                a_{00} \cdot s_0 = (1 + 2X + 3X^2 + 4X^3)(1 - X)
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 1 - X + 2X - 2X^2 + 3X^2 - 3X^3 + 4X^3 - 4X^4
+                \]
+            </div>
+
+            <p><span class="math">\(X^4 \equiv -1 \pmod{X^4+1}\)</span> indirgemesini yapalım:</p>
+
+            <div class="math-block">
+                \[
+                = 1 + X + X^2 + X^3 + 4 = 5 + X + X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                a_{01} \cdot s_1 = (5 + X + 2X^2)(X^2) = 5X^2 + X^3 + 2X^4
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \equiv 5X^2 + X^3 - 2 = -2 + 5X^2 + X^3 \equiv 15 + 5X^2 + X^3 \pmod{17}
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                t_0 = (5 + X + X^2 + X^3) + (15 + 5X^2 + X^3) + 1
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                = 21 + X + 6X^2 + 2X^3 \equiv 4 + X + 6X^2 + 2X^3 \pmod{17}
+                \]
+            </div>
+
+            <p><strong>Sonuç:</strong> <span class="math">\(\mathbf{t} = (4 + X + 6X^2 + 2X^3,\ \ldots)^T\)</span> (ikinci bileşen benzer şekilde hesaplanır).</p>
+
+            <h3>Anahtar gözlem</h3>
+
+            <p><span class="math">\((\mathbf{A}, \mathbf{t})\)</span>'yi gören bir saldırgan <span class="math">\((\mathbf{s}, \mathbf{e})\)</span>'yi bulmalıdır. Bu küçük sayılarla bile problem artık önemsiz değildir: Gauss eliminasyonu kullanılamaz (hata doğrusallığı bozar) ve arama uzayı ML-KEM'in gerçek boyutunda üslerdir.</p>
+        </section>
+
+        <!-- Section 5.8 -->
+        <section id="id-58">
+            <h2>5.8 ML-KEM parametreleri neden böyledir</h2>
+
+            <h3><span class="math">\(n = 256\)</span></h3>
+
+            <ul>
+                <li>2'nin kuvveti olmalıdır (verimli NTT için)</li>
+                <li><span class="math">\(X^{256}+1\)</span> polinomu <span class="math">\(\mathbb{Z}_q\)</span> üzerinde indirgenemez olmalıdır: <span class="math">\(q \equiv 1 \pmod{512}\)</span> ise öyledir</li>
+                <li><span class="math">\(256\)</span> güvenlik ve performansı dengeler: <span class="math">\(n = 128\)</span> çok güvensiz olurdu, <span class="math">\(n = 512\)</span> çok yavaş</li>
+            </ul>
+
+            <h3><span class="math">\(q = 3329\)</span></h3>
+
+            <ul>
+                <li>Asal olmalıdır (<span class="math">\(\mathbb{Z}_q\)</span>'nin bir cisim olması için)</li>
+                <li><span class="math">\(q \equiv 1 \pmod{256}\)</span>'yı sağlamalıdır: <span class="math">\(3329 = 13 \cdot 256 + 1\)</span> ✓</li>
+                <li>256. dereceden kökler mevcut olmalıdır: önceki koşul tarafından garanti edilir</li>
+                <li>Gürültü bütçesiyle uyumlu olarak mümkün olduğunca küçük olmalıdır (kompakt anahtarlar)</li>
+                <li><span class="math">\(3329\)</span>, gürültü için yeterli marjla tüm koşulları sağlayan asal sayıdır</li>
+            </ul>
+
+            <h3><span class="math">\(k \in \{2, 3, 4\}\)</span></h3>
+
+            <ul>
+                <li><span class="math">\(k = 2\)</span> (ML-KEM-512): NIST seviye 1, kuantum-öncesi AES-128'e eşdeğer</li>
+                <li><span class="math">\(k = 3\)</span> (ML-KEM-768): seviye 3, AES-192'ye eşdeğer, genel kullanım için önerilir</li>
+                <li><span class="math">\(k = 4\)</span> (ML-KEM-1024): seviye 5, AES-256'ya eşdeğer, yüksek kritik sistemler için</li>
+            </ul>
+
+            <h3><span class="math">\(\eta_1, \eta_2 \in \{2, 3\}\)</span></h3>
+
+            <p>Gürültü şu olmalıdır:</p>
+
+            <ul>
+                <li>MLWE problemini zorlaştıracak kadar <strong>Büyük</strong></li>
+                <li>Deşifrenin başarısız olmamasını garanti edecek kadar <strong>Küçük</strong> (gürültü bütçesi)</li>
+            </ul>
+
+            <p><span class="math">\(\eta\)</span>'yı artırmak güvenliği artırır ancak deşifre hata olasılığını da artırır. ML-KEM-768 için <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span> değerleri optimal noktadır.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Kaynaklar</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On Lattices, Learning With Errors, Random Linear Codes, and Cryptography</em><br />
+                STOC 2005. LWE'nin temeli.</li>
+                <li>Langlois, A., Stehlé, D. (2015) – <em>Worst-case to average-case reductions for module lattices</em><br />
+                Designs, Codes and Cryptography. MLWE'nin temeli.</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and LWE Over Rings</em><br />
+                EUROCRYPT 2010. RLWE'nin temeli.</li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, Bölüm 1–4 (parametrelerin rasyonel tasarımı)</li>
+                <li>NIST FIPS 203 (2024), Bölüm 3–4 (notasyon ve ilkeller)</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="4.html" class="nav-btn">← Önceki bölüm</a>
+            <span class="nav-label">05 / 10</span>
+            <a href="6.html" class="nav-btn">Sonraki bölüm →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Herkese açık ücretsiz kütüphane. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'tr';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/5.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

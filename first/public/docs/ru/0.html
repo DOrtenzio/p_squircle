@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Глава 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax для формул -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Панель инструментов (идентична index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Быстрая навигация">
+            <a href="index.html#featureSection">Почему</a>
+            <a href="index.html#learningPath">Путь</a>
+            <a href="index.html#searchSection">Руководство</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Выберите язык">
+                    <span class="lang-current" id="langCurrent">🇷🇺 Русский</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 языков -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контейнер с боковой панелью -->
+    <div class="container chapter-wrapper">
+        <!-- Боковая панель -->
+        <aside class="chapter-sidebar">
+            <h3>Главы</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Предварительные требования</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симметричная</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асимметричная</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Решётки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безопасность</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реализации</a></li>
+            </ul>
+        </aside>
+
+        <!-- Содержание главы -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – Математические предварительные требования</h1>
+                <p class="subtitle">Необходимые инструменты для понимания постквантовой криптографии</p>
+
+                <!-- Оглавление -->
+                <div class="toc">
+                    <h2>Содержание</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 Модульная арифметика</a></li>
+                        <li><a href="#id-02">0.2 Линейная алгебра: векторы и матрицы</a></li>
+                        <li><a href="#id-03">0.3 Полиномы</a></li>
+                        <li><a href="#id-04">0.4 Алгебраические структуры: группы, кольца, поля</a></li>
+                        <li><a href="#id-05">0.5 Криптографические хеш-функции</a></li>
+                        <li><a href="#id-06">0.6 Вероятность и распределение шума</a></li>
+                        <li><a href="#id-07">0.7 Вычислительная сложность</a></li>
+                    </ul>
+                </div>
+
+                <!-- Раздел 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 Модульная арифметика</h2>
+
+                    <h3>Что такое модуль</h3>
+                    <p>Операция <span class="math">\(a \bmod m\)</span> возвращает <strong>остаток</strong> от деления <span class="math">\(a\)</span> на <span class="math">\(m\)</span>.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{потому что } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{потому что } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>Соглашение:</strong> в криптографии результаты по модулю <span class="math">\(q\)</span> всегда находятся в интервале <span class="math">\([0, q-1]\)</span>.</p>
+                    </blockquote>
+
+                    <h3>Арифметика в <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Обозначим через <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> множество целых чисел по модулю <span class="math">\(q\)</span>. В этом множестве сложение, вычитание и умножение всегда выполняются по модулю <span class="math">\(q\)</span>:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>Мультипликативное обратное</h3>
+                    <p>В обычной математике обратное число нужно для получения <span class="math">\(1\)</span> путём умножения (например, обратное к <span class="math">\(5\)</span> равно <span class="math">\(\frac{1}{5}\)</span>, потому что <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). В модульной арифметике дробей не существует. Обратным к числу <span class="math">\(a\)</span> должно быть целое число <span class="math">\(b\)</span>, которое при умножении на <span class="math">\(a\)</span> даёт остаток 1 по модулю <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>Правило существования</h4>
+                    <p>Обратное к <span class="math">\(a\)</span> существует не всегда. Его можно найти тогда и только тогда, когда <span class="math">\(a\)</span> и <span class="math">\(q\)</span> не имеют общих делителей (то есть их Наибольший Общий Делитель равен 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+                    <ul>
+                        <li><strong>Ключевое свойство:</strong> Если модуль <span class="math">\(q\)</span> является простым числом, то все числа множества (кроме нуля) всегда имеют гарантированное обратное.</li>
+                    </ul>
+
+                    <h4>Практический пример: Вычисление <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>Запись <span class="math">\(5^{-1}\)</span> означает: "Найдите обратное к 5 по модулю 13". Ищем число <span class="math">\(b\)</span> такое, что <span class="math">\(5 \cdot b\)</span> даёт остаток <span class="math">\(1\)</span> при делении на <span class="math">\(13\)</span>:</p>
+                    <ol>
+                        <li>Пробуем умножать <span class="math">\(5\)</span> на различные целые числа.</li>
+                        <li>Выбрав <span class="math">\(b = 8\)</span>, получаем: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                        <li>Делим <span class="math">\(40\)</span> на <span class="math">\(13\)</span>: 13 помещается 3 раза (<span class="math">\(13 \cdot 3 = 39\)</span>) с остатком 1.</li>
+                    </ol>
+                    <p><strong>Ответ — 8</strong>, потому что <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>Модульное возведение в степень</h3>
+                    <p>Модульное возведение в степень заключается в вычислении остатка от деления степени: <span class="math">\(a^k \pmod m\)</span>. Эта операция является основой современной криптографии (например, алгоритма RSA). Она используется потому что является "односторонними часами": вычислить результат очень легко, но почти невозможно проделать обратный путь (найти показатель <span class="math">\(k\)</span> по результату).</p>
+
+                    <h4>Проблема больших чисел</h4>
+                    <p>Если нам нужно вычислить <span class="math">\(5^{11} \pmod{13}\)</span>, прямой расчёт невозможен для компьютера, если показатель имеет сотни цифр. Число <span class="math">\(5^{11}\)</span> стало бы слишком большим для памяти.</p>
+
+                    <h4>Решение: Алгоритм Square-and-Multiply</h4>
+                    <p>Этот алгоритм позволяет вычислить результат за очень малое число шагов (<span class="math">\(O(\log k)\)</span> умножений), всегда работая с маленькими числами и не позволяя степени неограниченно расти.</p>
+
+                    <details>
+                        <summary><strong>Как это работает на практике (Пример: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>Переведём показатель в двоичную систему: <span class="math">\(11 = 8 + 2 + 1\)</span>. Вместо того чтобы умножать <span class="math">\(5\)</span> само на себя <span class="math">\(11\)</span> раз, мы вычисляем квадраты степеней шаг за шагом, сразу уменьшая результат по модулю <span class="math">\(13\)</span>:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{Основа: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{Квадрат: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{Квадрат квадрата: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{Следующий квадрат: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>Теперь объединяем только те части, которые составляют наш показатель <span class="math">\(11\)</span> (то есть <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>Делим <span class="math">\(60\)</span> на <span class="math">\(13\)</span>: <span class="math">\(13\)</span> помещается <span class="math">\(4\)</span> раза (<span class="math">\(52\)</span>) с остатком <span class="math">\(8\)</span>.</p>
+                        <p><strong>Конечный результат:</strong> <span class="math">\(8\)</span> (мы сделали всего 4 шага вместо 11).</p>
+                    </details>
+                </section>
+
+                <!-- Раздел 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 Линейная алгебра: векторы и матрицы</h2>
+
+                    <h3>Векторы</h3>
+                    <p>Вектор <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> — это упорядоченный список из <span class="math">\(n\)</span> целых чисел, вычисленных по модулю <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>При операциях над векторами каждый результат уменьшается по модулю <span class="math">\(q\)</span>.</p>
+
+                    <h4>Практический пример</h4>
+                    <p>С <span class="math">\(q = 13\)</span>:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>Сложение векторов</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>Скалярное произведение</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>Вычисление:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>Сумма: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>Приведение по модулю 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>Матрицы</h3>
+                    <p>Матрица <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> — это массив строк и столбцов.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Пример матрицы" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(На практике матрица <span class="math">\(A\)</span> в ML-KEM имеет размеры <span class="math">\(k \times k\)</span> с <span class="math">\(k = 3, 4\)</span> или <span class="math">\(5\)</span> и генерируется из случайного начального числа через SHAKE.)</em></p>
+
+                    <h4>Произведение матрицы на вектор</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>Пример</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>Подробные шаги</summary>
+                        <p>Первая строка: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>Вторая строка: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>Приведение по модулю 13: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>Следовательно: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>Бесконечная норма</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>Эта норма измеряет компоненту с наибольшим абсолютным значением. В контексте MLWE векторы ошибок должны иметь очень маленькую норму.</p>
+                    <details>
+                        <summary>Практические примеры</summary>
+                        <p><strong>Допустимый случай:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>Недопустимый случай:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Раздел 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 Полиномы</h2>
+
+                    <h3>Полиномы с коэффициентами в <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Полином в <span class="math">\(\mathbb{Z}_q[X]\)</span> имеет вид:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>где каждый <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+
+                    <h4>Сложение полиномов</h4>
+                    <p>Складываются коэффициенты при одинаковых степенях по модулю <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>Умножение полиномов и приведение</h4>
+                    <p>Произведение двух полиномов степени <span class="math">\(\leq n-1\)</span> может иметь степень до <span class="math">\(2n-2\)</span>. Чтобы сохранить компактность, производится приведение по специальному полиному.</p>
+                    <p>В ML-KEM используется <span class="math">\(X^n + 1\)</span> с <span class="math">\(n = 256\)</span>. Правило приведения:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>Поэтому всякий раз, когда в произведении появляется <span class="math">\(X^{256}\)</span>, его заменяют на <span class="math">\(-1\)</span>.</p>
+
+                    <h4>Простой пример</h4>
+                    <p>С <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, по модулю <span class="math">\(X^4+1\)</span>:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Раздел 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 Алгебраические структуры: группы, кольца, поля</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Структура</th>
+                                <th>Операции</th>
+                                <th>Ключевые свойства</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Группа</strong></td>
+                                <td>одна (+)</td>
+                                <td>замкнутость, ассоциативность, нейтральный элемент, обратный элемент</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Кольцо</strong></td>
+                                <td>две (+, ×)</td>
+                                <td>абелева группа по +, полугруппа по ×</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Поле</strong></td>
+                                <td>две (+, ×)</td>
+                                <td>кольцо с мультипликативным обратным для всех ≠ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> как поле</h3>
+                    <p>Если <span class="math">\(q\)</span> простое, то <span class="math">\(\mathbb{Z}_q\)</span> <strong>является полем</strong>: каждый ненулевой элемент имеет мультипликативное обратное. В ML-KEM <span class="math">\(q = 3329\)</span> простое → <span class="math">\(\mathbb{Z}_{3329}\)</span> является полем.</p>
+
+                    <h3>Кольцо <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>Это кольцо (не поле, потому что не все полиномы имеют обратное), но оно обладает полезными для криптографии свойствами:</p>
+                    <ul>
+                        <li>каждый полином имеет ровно 256 коэффициентов;</li>
+                        <li>умножение эффективно через NTT (см. файл 07);</li>
+                        <li>полином <span class="math">\(X^{256}+1\)</span> является <em>циклотомическим</em>, что обеспечивает хорошие свойства безопасности.</li>
+                    </ul>
+                    <details>
+                        <summary>Что означает, что <span class="math">\(X^{256}+1\)</span> является циклотомическим?</summary>
+                        <p>В алгебре циклотомический полином — это специальный полином, корнями которого являются <strong>примитивные корни из единицы</strong> (то есть комплексные числа, которые при возведении в определённую степень дают <span class="math">\(1\)</span>).</p>
+                        <p>В конкретном случае <span class="math">\(X^{256}+1\)</span> это свойство даёт три огромных преимущества в криптографии (как в ML-KEM):</p>
+                        <ul>
+                            <li><strong>Неприводимость</strong>: Полином нельзя разложить на меньшие полиномы с целыми коэффициентами. Это предотвращает возможность злоумышленника "разбить" математическую задачу на более лёгкие для решения части.</li>
+                            <li><strong>Сверхбыстрое умножение (NTT)</strong>: Позволяет использовать <em>Числовое теоретическое преобразование</em> (NTT). Благодаря этому алгоритму умножение полиномов переходит от сложности <span class="math">\(O(n^2)\)</span> к всего лишь <span class="math">\(O(n \log n)\)</span>, делая постквантовую криптографию невероятно быстрой.</li>
+                            <li><strong>Равномерная безопасность</strong>: Распределяет ошибку (шум) идеально симметрично по всем 256 коэффициентам во время операций, устраняя структурные слабости, которые хакеры могли бы использовать.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Раздел 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 Криптографические хеш-функции</h2>
+                    <p>Хеш-функция <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> отображает входные данные произвольной длины в выходные данные фиксированной длины.</p>
+                    <p><strong>Требуемые свойства в криптографии:</strong></p>
+                    <ul>
+                        <li><em>Стойкость к нахождению прообраза:</em> по <span class="math">\(H(x)\)</span> нельзя восстановить <span class="math">\(x\)</span></li>
+                        <li><em>Стойкость к коллизиям:</em> найти <span class="math">\(x \neq y\)</span> такие, что <span class="math">\(H(x) = H(y)\)</span>, вычислительно невозможно</li>
+                        <li><em>Лавинный эффект:</em> изменение одного бита входа меняет ~50% выхода</li>
+                    </ul>
+
+                    <h3>SHA-3 и SHAKE</h3>
+                    <p>ML-KEM использует исключительно примитивы семейства <strong>SHA-3</strong> (стандартизированы NIST в 2015):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Функция</th>
+                                <th>Выход</th>
+                                <th>Использование в ML-KEM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>фиксированные 256 бит</td>
+                                <td>общее хеширование</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>фиксированные 512 бит</td>
+                                <td>хеширование ключей</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>переменная длина</td>
+                                <td>генерация <span class="math">\(A\)</span> (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>переменная длина</td>
+                                <td>производные ключей</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE — это <strong>XOF (eXtendable Output Function)</strong>: она производит столько байтов, сколько нужно, из заданных входных данных. В ML-KEM <code>SHAKE128(seed)</code> генерирует всю публичную матрицу <span class="math">\(A\)</span> из 32-байтового начального числа.</p>
+                </section>
+
+                <!-- Раздел 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 Вероятность и распределение шума</h2>
+
+                    <h3>Центрированное биномиальное распределение <span class="math">\(B_\eta\)</span></h3>
+                    <p>В ML-KEM шум не гауссовский, а <strong>центрированный биномиальный</strong>. Сэмплирование работает так:</p>
+                    <ol>
+                        <li>Выбрать <span class="math">\(2\eta\)</span> равномерных битов: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>Вернуть <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                    </ol>
+                    <p>Результат — целое число в <span class="math">\([-\eta, +\eta]\)</span> с распределением, приблизительно гауссовским вокруг 0.</p>
+                    <p><strong>Почему не настоящий гауссовский?</strong> Биномиальное распределение проще сэмплировать <em>за постоянное время</em> (устойчиво к побочным каналам), а безопасность аналогична.</p>
+                    <p>Для ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Значения шума будут в <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+
+                    <h3>Пренебрежимость</h3>
+                    <p>Функция <span class="math">\(f(\lambda)\)</span> называется <strong>пренебрежимой</strong>, если для любого полинома <span class="math">\(p(\cdot)\)</span> существует <span class="math">\(\lambda_0\)</span> такое, что для любого <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>На практике: она убывает быстрее любого полиномиального обратного. Вероятности ошибок в ML-KEM пренебрежимы по параметру безопасности <span class="math">\(\lambda\)</span>.</p>
+                </section>
+
+                <!-- Раздел 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 Вычислительная сложность</h2>
+
+                    <h3>Обозначения</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: асимптотический порядок величины (верхняя граница)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: нижняя граница</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: точная граница</li>
+                    </ul>
+
+                    <h3>Релевантные классы</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Класс</th>
+                                <th>Значение</th>
+                                <th>Примеры</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>Разрешимо за полиномиальное время</td>
+                                <td>умножение, сортировка</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>Проверяемо за полиномиальное время</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-трудные</strong></td>
+                                <td>По крайней мере не легче NP</td>
+                                <td>факторизация (предположительно)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Криптографические задачи и их сложность</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Задача</th>
+                                <th>Классическая сложность</th>
+                                <th>Квантовая сложность</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Факторизация</td>
+                                <td>субэкспоненциальная</td>
+                                <td><strong>полиномиальная</strong> (Шор)</td>
+                            </tr>
+                            <tr>
+                                <td>Дискретный логарифм</td>
+                                <td>субэкспоненциальная</td>
+                                <td><strong>полиномиальная</strong> (Шор)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (решётки)</td>
+                                <td>экспоненциальная</td>
+                                <td>экспоненциальная (нет известного ускорения)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>экспоненциальная</td>
+                                <td>экспоненциальная (нет известного ускорения)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>Эта таблица мотивирует всё существование постквантовой криптографии.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Источники -->
+                <div class="sources">
+                    <h2>Источники и углублённое изучение</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Главы 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (бесплатно онлайн)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Видео: Алгебраические кольца</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – разделы 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Навигация по главам -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← Предыдущая глава</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">Следующая глава →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Нижний колонтитул сайта -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Бесплатная библиотека для всех. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ru';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

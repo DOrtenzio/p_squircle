@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bölüm 10 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Hızlı navigasyon">
+            <a href="index.html#featureSection">Neden</a>
+            <a href="index.html#learningPath">Yol Haritası</a>
+            <a href="index.html#searchSection">Rehber</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Dil seçin">
+                    <span class="lang-current" id="langCurrent">🇹🇷 Türkçe</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Bölümler</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Ön Koşullar</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simetrik</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimetrik</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Kafesler</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Güvenlik</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Uygulamalar</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>10 – Pratik Uygulamalar</h1>
+        <p class="subtitle">Teoriden pratiğe: kütüphaneler, TLS entegrasyonu ve göç</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>İçindekiler</h2>
+            <ul>
+                <li><a href="#id-101">10.1 liboqs: referans C kütüphanesi</a></li>
+                <li><a href="#id-102">10.2 Tam örnek: C'de ML-KEM-768 ile KEM</a></li>
+                <li><a href="#id-103">10.3 Türetilen anahtarı AES-256-GCM ile kullanmak</a></li>
+                <li><a href="#id-104">10.4 Python: liboqs bağlantısı</a></li>
+                <li><a href="#id-105">10.5 Python: kyber-py (sadece eğitim amaçlı)</a></li>
+                <li><a href="#id-106">10.6 Performans kıyaslamaları</a></li>
+                <li><a href="#id-107">10.7 OpenSSL: OQS sağlayıcısının kurulumu</a></li>
+                <li><a href="#id-108">10.8 OpenSSL CLI ile ML-KEM anahtarı oluşturma</a></li>
+                <li><a href="#id-109">10.9 ML-KEM-768 ile TLS 1.3</a></li>
+                <li><a href="#id-1010">10.10 Hibrit strateji: X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 TLS 1.3'te hibrit şifre paketleri</a></li>
+                <li><a href="#id-1012">10.12 OpenSSL ile C uygulamalarında entegrasyon</a></li>
+                <li><a href="#id-1013">10.13 Göç için kontrol listesi</a></li>
+                <li><a href="#id-1014">10.14 Senaryo: REST API göçü</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 10.1 -->
+        <section id="id-101">
+            <h2>10.1 liboqs: referans C kütüphanesi</h2>
+
+            <p><strong>liboqs</strong>, Open Quantum Safe (OQS) projesi tarafından geliştirilen post-kuantum kriptografi için referans C kütüphanesidir. NIST tarafından standartlaştırılmış ML-KEM ve diğer PQC algoritmalarının optimize edilmiş ve sabit süreli uygulamalarını sağlar.</p>
+
+            <h3>Kaynaktan kurulum</h3>
+            <div class="code-block">
+                <pre><code># Bağımlılıklar (Ubuntu/Debian)
+sudo apt-get install cmake gcc libssl-dev
+
+# Klonlama ve derleme
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+sudo make install</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.2 -->
+        <section id="id-102">
+            <h2>10.2 Tam örnek: C'de ML-KEM-768 ile KEM</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+int main() {
+    OQS_STATUS rc;
+    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
+
+    // Algoritmayı başlat
+    OQS_KEM *kem = OQS_KEM_new(kem_alg);
+    if (kem == NULL) {
+        fprintf(stderr, "KEM desteklenmiyor\n");
+        return 1;
+    }
+
+    printf("Algoritma: %s\n", kem-&gt;method_name);
+    printf("Genel anahtar: %zu bayt\n", kem-&gt;length_public_key);
+    printf("Özel anahtar: %zu bayt\n", kem-&gt;length_secret_key);
+    printf("Şifreli metin: %zu bayt\n", kem-&gt;length_ciphertext);
+    printf("Paylaşılan sır: %zu bayt\n\n", kem-&gt;length_shared_secret);
+
+    // Bellek tahsisi
+    uint8_t *pk = malloc(kem-&gt;length_public_key);
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
+
+    // 1. KeyGen (Alice)
+    rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen başarısız\n"); return 1; }
+    printf("✓ KeyGen tamamlandı\n");
+
+    // 2. Encaps (Bob: sadece pk'yi bilir)
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps başarısız\n"); return 1; }
+    printf("✓ Encaps tamamlandı\n");
+
+    // 3. Decaps (Alice: ct'yi açmak için sk'yi kullanır)
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps başarısız\n"); return 1; }
+    printf("✓ Decaps tamamlandı\n\n");
+
+    // 4. Doğrulama
+    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
+        printf("✅ Paylaşılan sırlar eşleşiyor!\n");
+        printf("   İlk baytlar: ");
+        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
+        printf("...\n");
+    } else {
+        printf("❌ HATA: paylaşılan sırlar farklı!\n");
+    }
+
+    // Güvenli bellek temizliği
+    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
+    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
+    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
+    free(pk); free(ct);
+    OQS_KEM_free(kem);
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <p><strong>Derleme:</strong></p>
+            <div class="code-block">
+                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
+./kem_example</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.3 -->
+        <section id="id-103">
+            <h2>10.3 Türetilen anahtarı AES-256-GCM ile kullanmak</h2>
+
+            <p>ML-KEM'den paylaşılan sır elde edildikten sonra, simetrik bir şifre için anahtar olarak kullanılabilir. Üretimde, ayrı anahtarlar türetmek için HKDF kullanılması önerilir.</p>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+// ML-KEM'den ss (32 bayt) aldıktan sonra:
+void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
+                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
+                           const uint8_t *nonce) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
+
+    // AES-256-GCM başlat
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
+
+    // Paylaşılan sırrı anahtar olarak kullan
+    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
+
+    // Şifreleme
+    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
+
+    // Kimlik doğrulama etiketini al
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
+
+    EVP_CIPHER_CTX_free(ctx);
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.4 -->
+        <section id="id-104">
+            <h2>10.4 Python: liboqs bağlantısı</h2>
+
+            <p>Liboqs, hızlı test ve prototip oluşturma için resmi Python bağlantıları sağlar.</p>
+
+            <div class="code-block">
+                <pre><code>pip install liboqs-python</code></pre>
+            </div>
+
+            <div class="code-block">
+                <pre><code class="language-python">import oqs
+
+# Mevcut algoritma
+kem = oqs.KeyEncapsulation("ML-KEM-768")
+
+# KeyGen
+public_key = kem.generate_keypair()
+
+# Encaps (Bob tarafı)
+kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
+ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
+
+# Decaps (Alice tarafı)
+shared_secret_dec = kem.decap_secret(ciphertext)
+
+assert shared_secret_enc == shared_secret_dec
+print(f"✓ Paylaşılan sır: {shared_secret_enc.hex()[:16]}...")
+
+kem.free()
+kem_bob.free()</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.5 -->
+        <section id="id-105">
+            <h2>10.5 Python: kyber-py (sadece eğitim amaçlı)</h2>
+
+            <p>Tamamen eğitim amaçları için, harici C kütüphaneleri gerektirmeyen saf Python uygulaması mevcuttur.</p>
+
+            <div class="note warning">
+                <p><strong>Uyarı:</strong> <code>kyber-py</code> sabit süreli değildir ve üretimde kullanılmamalıdır.</p>
+            </div>
+
+            <div class="code-block">
+                <pre>
+                    <code class="language-python">
+                        from kyber import Kyber768
+                        kem = Kyber768()
+                        pk, sk = kem.keygen()
+                        key, ciphertext = kem.enc(pk)
+                        _key = kem.dec(sk, ciphertext)
+                        assert key == _key
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Section 10.6 -->
+        <section id="id-106">
+            <h2>10.6 Performans kıyaslamaları</h2>
+
+            <p>Intel Core i7-12700K üzerinde performans kıyaslamaları (tek çekirdek, SIMD talimatları yok):</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>İşlem</th>
+                        <th>ML-KEM-512</th>
+                        <th>ML-KEM-768</th>
+                        <th>ML-KEM-1024</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>24 µs</td>
+                        <td>37 µs</td>
+                        <td>54 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>28 µs</td>
+                        <td>43 µs</td>
+                        <td>62 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>32 µs</td>
+                        <td>48 µs</td>
+                        <td>70 µs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>AVX2 optimizasyonları ile</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>İşlem</th>
+                        <th>ML-KEM-768 (SIMD yok)</th>
+                        <th>ML-KEM-768 (AVX2)</th>
+                        <th>Hızlanma</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>37 µs</td>
+                        <td>~10 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>43 µs</td>
+                        <td>~12 µs</td>
+                        <td>~3.6×</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>48 µs</td>
+                        <td>~13 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ECDH X25519 ile karşılaştırma</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>X25519</th>
+                        <th>ML-KEM-768</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>~14 µs</td>
+                        <td>~37 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Değişim</td>
+                        <td>~30 µs</td>
+                        <td>~48 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Genel anahtar</td>
+                        <td>32 B</td>
+                        <td>1184 B</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ML-KEM, X25519'ten yaklaşık 2 kat daha yavaştır, ancak TLS el sıkışma gecikmesindeki ek yük çoğu gerçek bağlantıda ihmal edilebilir düzeydedir (&lt; 1 ms).</p>
+        </section>
+
+        <!-- Section 10.7 -->
+        <section id="id-107">
+            <h2>10.7 OpenSSL: OQS sağlayıcısının kurulumu</h2>
+
+            <p>OpenSSL 3.x, <code>oqsprovider</code> sağlayıcısı aracılığıyla ML-KEM'i destekler. 3.4 sürümünden itibaren destek yereldir veya kolayca entegre edilebilir.</p>
+
+            <div class="code-block">
+                <pre><code># oqs-provider derleme
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
+make
+sudo make install
+
+# Doğrulama
+openssl list -providers
+# şunu göstermeli: oqsprovider</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.8 -->
+        <section id="id-108">
+            <h2>10.8 OpenSSL CLI ile ML-KEM anahtarı oluşturma</h2>
+
+            <div class="code-block">
+                <pre><code># ML-KEM-768 anahtar çifti oluştur
+openssl genpkey -algorithm mlkem768 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+
+# Anahtar ayrıntılarını görüntüle
+openssl pkey -in private.pem -text -noout</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.9 -->
+        <section id="id-109">
+            <h2>10.9 ML-KEM-768 ile TLS 1.3</h2>
+
+            <h3>Yerel test (sunucu + istemci)</h3>
+            <div class="code-block">
+                <pre><code># Sunucu
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups mlkem768
+
+# İstemci (başka bir terminalde)
+openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
+            </div>
+
+            <h3>Desteklenen grupları kontrol et</h3>
+            <div class="code-block">
+                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.10 -->
+        <section id="id-1010">
+            <h2>10.10 Hibrit strateji: X25519 + ML-KEM-768</h2>
+
+            <p>Göç için önerilen yaklaşım <strong>hibritleştirmedir</strong>: ECDH'yi (X25519) ML-KEM-768 ile birleştirmek. Nihai anahtar her ikisinden de türetilir:</p>
+
+            <div class="math-block">
+                \[
+                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \]
+            </div>
+
+            <p><strong>Avantaj:</strong> iki şemadan en az biri ayakta kalırsa güvenlidir. Bir kuantum bilgisayar X25519'i kırarsa, ML-KEM korur. ML-KEM'in bilinmeyen bir kusuru varsa, X25519 korur.</p>
+        </section>
+
+        <!-- Section 10.11 -->
+        <section id="id-1011">
+            <h2>10.11 TLS 1.3'te hibrit şifre paketleri</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grup Adı</th>
+                        <th>Bileşim</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>X25519MLKEM768</code></td>
+                        <td>X25519 + ML-KEM-768</td>
+                    </tr>
+                    <tr>
+                        <td><code>SecP256r1MLKEM768</code></td>
+                        <td>P-256 + ML-KEM-768</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Chrome 131'den itibaren (2024 sonu), <code>X25519MLKEM768</code> varsayılan gruptur. Firefox 128+ aynı grubu destekler.</p>
+
+            <h3>OpenSSL yapılandırması</h3>
+            <div class="code-block">
+                <pre><code># Hem klasik X25519 hem de hibrit grubu kabul eden sunucu
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups X25519MLKEM768:x25519:P-256
+
+# Hibrit grubu tercih eden istemci
+openssl s_client -connect localhost:4433 \
+    -groups X25519MLKEM768:x25519</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.12 -->
+        <section id="id-1012">
+            <h2>10.12 OpenSSL ile C uygulamalarında entegrasyon</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
+#include &lt;openssl/err.h&gt;
+
+SSL_CTX *create_pqc_context(void) {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return NULL;
+    }
+
+    // Tercih edilen grupları ayarla: önce hibrit, sonra klasik yedek
+    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
+        fprintf(stderr, "Grup yapılandırma hatası\n");
+        SSL_CTX_free(ctx);
+        return NULL;
+    }
+
+    return ctx;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 10.13 -->
+        <section id="id-1013">
+            <h2>10.13 Göç için kontrol listesi</h2>
+
+            <h3>Uygulama geliştiricileri için</h3>
+            <ul>
+                <li>Asimetrik kriptografinin (anahtar değişimi, imza, KEM) kullanıldığı yerleri envanterleyin.</li>
+                <li>5 yıldan fazla gizli kalması gereken verileri belirleyin.</li>
+                <li>Bağımlılıkları güncelleyin: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
+                <li>Hibrit yaklaşımı benimseyin: TLS için <code>X25519 + ML-KEM-768</code>.</li>
+                <li>Dijital imza için: ML-DSA'ya (FIPS 204) veya SLH-DSA'ya (FIPS 205) geçin.</li>
+                <li>Protokollerde anahtar ve şifreli metin boyutlarının artışını test edin.</li>
+                <li>Zaman aşımlarının ve tampon boyutlarının küçük anahtarları varsaymadığını doğrulayın.</li>
+            </ul>
+
+            <h3>Altyapı yöneticileri için</h3>
+            <ul>
+                <li>TLS yığınını ML-KEM desteği olan sürümlere güncelleyin.</li>
+                <li>TLS sunucularında <code>X25519MLKEM768</code>'i etkinleştirin.</li>
+                <li>İstemci uyumluluğunu izleyin (Chrome 131+, Firefox 128+ hibrit PQC'yi destekler).</li>
+                <li>Uzun vadeli anahtar rotasyonunu planlayın.</li>
+            </ul>
+
+            <h3>Referans standartlar</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Standart</th>
+                        <th>İçerik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIPS 203</td>
+                        <td>ML-KEM (Anahtar Kapsülleme)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 204</td>
+                        <td>ML-DSA (kafes tabanlı dijital imza)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 205</td>
+                        <td>SLH-DSA (hash tabanlı imza, muhafazakâr)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 10.14 -->
+        <section id="id-1014">
+            <h2>10.14 Senaryo: REST API göçü</h2>
+
+            <h3>Mevcut durum (göç öncesi)</h3>
+            <p>İstemci → X25519 ile TLS 1.3 → API Sunucusu</p>
+
+            <h3>Aşama 1: Hibrit (bugün, önerilir)</h3>
+            <p>İstemci → X25519MLKEM768 ile TLS 1.3 → API Sunucusu</p>
+
+            <div class="code-block">
+                <pre><code># nginx yapılandırması
+ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
+
+# Apache yapılandırması
+SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            </div>
+
+            <h3>Aşama 2: Tamamen post-kuantum (gelecek)</h3>
+            <p>İstemci → ML-KEM-768 + ML-DSA ile TLS 1.3 → API Sunucusu</p>
+            <p>İstemcilerin çoğu yerel ML-KEM'i desteklediğinde ve sunucu sertifikaları imza için ML-DSA kullandığında benimseyin.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Kaynaklar</h2>
+            <ul>
+                <li>Open Quantum Safe project — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
+                <li>liboqs belgeleri — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
+                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
+                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
+                <li>IETF taslağı — Hybrid key exchange in TLS 1.3</li>
+                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="9.html" class="nav-btn">← Önceki bölüm</a>
+            <span class="nav-label">10 / 10</span>
+            <a href="#" class="nav-btn disabled">Rehber Sonu →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Herkese açık ücretsiz kütüphane. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'tr';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/10.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Глава 10 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax для формул -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Панель инструментов (идентична index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Быстрая навигация">
+            <a href="index.html#featureSection">Почему</a>
+            <a href="index.html#learningPath">Путь</a>
+            <a href="index.html#searchSection">Руководство</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Выберите язык">
+                    <span class="lang-current" id="langCurrent">🇷🇺 Русский</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 языков -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контейнер с боковой панелью -->
+    <div class="container chapter-wrapper">
+        <!-- Боковая панель -->
+        <aside class="chapter-sidebar">
+            <h3>Главы</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Предварительные требования</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симметричная</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асимметричная</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Решётки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безопасность</a></li>
+                <li class="active"><a href="10.html"><span class="chapter-number">10</span> Реализации</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>10 – Практические реализации</h1>
+        <p class="subtitle">От теории к практике: библиотеки, интеграция TLS и миграция</p>
+
+        <!-- Оглавление -->
+        <div class="toc">
+            <h2>Содержание</h2>
+            <ul>
+                <li><a href="#id-101">10.1 liboqs: эталонная библиотека C</a></li>
+                <li><a href="#id-102">10.2 Полный пример: KEM с ML-KEM-768 на C</a></li>
+                <li><a href="#id-103">10.3 Использование производного ключа с AES-256-GCM</a></li>
+                <li><a href="#id-104">10.4 Python: биндинг liboqs</a></li>
+                <li><a href="#id-105">10.5 Python: kyber-py (только для обучения)</a></li>
+                <li><a href="#id-106">10.6 Тесты производительности</a></li>
+                <li><a href="#id-107">10.7 OpenSSL: установка провайдера OQS</a></li>
+                <li><a href="#id-108">10.8 Генерация ключей ML-KEM с OpenSSL CLI</a></li>
+                <li><a href="#id-109">10.9 TLS 1.3 с ML-KEM-768</a></li>
+                <li><a href="#id-1010">10.10 Гибридная стратегия: X25519 + ML-KEM-768</a></li>
+                <li><a href="#id-1011">10.11 Гибридные шифр-наборы в TLS 1.3</a></li>
+                <li><a href="#id-1012">10.12 Интеграция в приложения на C с OpenSSL</a></li>
+                <li><a href="#id-1013">10.13 Контрольный список для миграции</a></li>
+                <li><a href="#id-1014">10.14 Сценарий: миграция REST API</a></li>
+            </ul>
+        </div>
+
+        <!-- Раздел 10.1 -->
+        <section id="id-101">
+            <h2>10.1 liboqs: эталонная библиотека C</h2>
+
+            <p><strong>liboqs</strong> — эталонная библиотека C для постквантовой криптографии, разрабатываемая проектом Open Quantum Safe (OQS). Она предоставляет оптимизированные реализации с постоянным временем ML-KEM и других алгоритмов PQC, стандартизированных NIST.</p>
+
+            <h3>Установка из исходников</h3>
+            <div class="code-block">
+                <pre><code># Зависимости (Ubuntu/Debian)
+sudo apt-get install cmake gcc libssl-dev
+
+# Клонирование и компиляция
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+sudo make install</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.2 -->
+        <section id="id-102">
+            <h2>10.2 Полный пример: KEM с ML-KEM-768 на C</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+int main() {
+    OQS_STATUS rc;
+    const char *kem_alg = OQS_KEM_alg_ml_kem_768;
+
+    // Инициализация алгоритма
+    OQS_KEM *kem = OQS_KEM_new(kem_alg);
+    if (kem == NULL) {
+        fprintf(stderr, "KEM не поддерживается\n");
+        return 1;
+    }
+
+    printf("Алгоритм: %s\n", kem-&gt;method_name);
+    printf("Открытый ключ: %zu байт\n", kem-&gt;length_public_key);
+    printf("Закрытый ключ: %zu байт\n", kem-&gt;length_secret_key);
+    printf("Шифртекст: %zu байт\n", kem-&gt;length_ciphertext);
+    printf("Общий секрет: %zu байт\n\n", kem-&gt;length_shared_secret);
+
+    // Выделение памяти
+    uint8_t *pk = malloc(kem-&gt;length_public_key);
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret);
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
+
+    // 1. KeyGen (Алиса)
+    rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "KeyGen не удался\n"); return 1; }
+    printf("✓ KeyGen завершён\n");
+
+    // 2. Encaps (Боб: знает только pk)
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Encaps не удался\n"); return 1; }
+    printf("✓ Encaps завершён\n");
+
+    // 3. Decaps (Алиса: использует sk для открытия ct)
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) { fprintf(stderr, "Decaps не удался\n"); return 1; }
+    printf("✓ Decaps завершён\n\n");
+
+    // 4. Проверка
+    if (memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0) {
+        printf("✅ Общие секреты совпадают!\n");
+        printf("   Первые байты: ");
+        for (int i = 0; i &lt; 8; i++) printf("%02x", ss_enc[i]);
+        printf("...\n");
+    } else {
+        printf("❌ ОШИБКА: общие секреты различаются!\n");
+    }
+
+    // Безопасная очистка памяти
+    OQS_MEM_cleanse(sk, kem-&gt;length_secret_key);
+    OQS_MEM_cleanse(ss_enc, kem-&gt;length_shared_secret);
+    OQS_MEM_cleanse(ss_dec, kem-&gt;length_shared_secret);
+    free(pk); free(ct);
+    OQS_KEM_free(kem);
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <p><strong>Компиляция:</strong></p>
+            <div class="code-block">
+                <pre><code>gcc -o kem_example kem_example.c -loqs -lcrypto
+./kem_example</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.3 -->
+        <section id="id-103">
+            <h2>10.3 Использование производного ключа с AES-256-GCM</h2>
+
+            <p>После получения общего секрета из ML-KEM его можно использовать как ключ для симметричного шифра. В производстве рекомендуется использовать HKDF для вывода отдельных ключей.</p>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/evp.h&gt;
+#include &lt;oqs/oqs.h&gt;
+
+// После получения ss (32 байта) из ML-KEM:
+void encrypt_with_kem_key(const uint8_t *ss, const uint8_t *plaintext,
+                           size_t pt_len, uint8_t *ciphertext, uint8_t *tag,
+                           const uint8_t *nonce) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
+
+    // Инициализация AES-256-GCM
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL);
+
+    // Использование общего секрета как ключа
+    EVP_EncryptInit_ex(ctx, NULL, NULL, ss, nonce);
+
+    // Шифрование
+    EVP_EncryptUpdate(ctx, ciphertext, &amp;len, plaintext, pt_len);
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &amp;len);
+
+    // Получение тега аутентификации
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag);
+
+    EVP_CIPHER_CTX_free(ctx);
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.4 -->
+        <section id="id-104">
+            <h2>10.4 Python: биндинг liboqs</h2>
+
+            <p>Liboqs предоставляет официальные биндинги для Python для быстрого тестирования и прототипирования.</p>
+
+            <div class="code-block">
+                <pre><code>pip install liboqs-python</code></pre>
+            </div>
+
+            <div class="code-block">
+                <pre><code class="language-python">import oqs
+
+# Доступный алгоритм
+kem = oqs.KeyEncapsulation("ML-KEM-768")
+
+# KeyGen
+public_key = kem.generate_keypair()
+
+# Encaps (сторона Боба)
+kem_bob = oqs.KeyEncapsulation("ML-KEM-768")
+ciphertext, shared_secret_enc = kem_bob.encap_secret(public_key)
+
+# Decaps (сторона Алисы)
+shared_secret_dec = kem.decap_secret(ciphertext)
+
+assert shared_secret_enc == shared_secret_dec
+print(f"✓ Общий секрет: {shared_secret_enc.hex()[:16]}...")
+
+kem.free()
+kem_bob.free()</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.5 -->
+        <section id="id-105">
+            <h2>10.5 Python: kyber-py (только для обучения)</h2>
+
+            <p>Для чисто образовательных целей существует реализация на чистом Python, не требующая внешних библиотек C.</p>
+
+            <div class="note warning">
+                <p><strong>Внимание:</strong> <code>kyber-py</code> не имеет постоянного времени и не должен использоваться в производстве.</p>
+            </div>
+
+            <div class="code-block">
+                <pre>
+                    <code class="language-python">
+                        from kyber import Kyber768
+                        kem = Kyber768()
+                        pk, sk = kem.keygen()
+                        key, ciphertext = kem.enc(pk)
+                        _key = kem.dec(sk, ciphertext)
+                        assert key == _key
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.6 -->
+        <section id="id-106">
+            <h2>10.6 Тесты производительности</h2>
+
+            <p>Тесты производительности на Intel Core i7-12700K (одно ядро, без инструкций SIMD):</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Операция</th>
+                        <th>ML-KEM-512</th>
+                        <th>ML-KEM-768</th>
+                        <th>ML-KEM-1024</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>24 µs</td>
+                        <td>37 µs</td>
+                        <td>54 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>28 µs</td>
+                        <td>43 µs</td>
+                        <td>62 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>32 µs</td>
+                        <td>48 µs</td>
+                        <td>70 µs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>С оптимизациями AVX2</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Операция</th>
+                        <th>ML-KEM-768 (без SIMD)</th>
+                        <th>ML-KEM-768 (AVX2)</th>
+                        <th>Ускорение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>37 µs</td>
+                        <td>~10 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                    <tr>
+                        <td>Encaps</td>
+                        <td>43 µs</td>
+                        <td>~12 µs</td>
+                        <td>~3.6×</td>
+                    </tr>
+                    <tr>
+                        <td>Decaps</td>
+                        <td>48 µs</td>
+                        <td>~13 µs</td>
+                        <td>~3.7×</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Сравнение с ECDH X25519</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>X25519</th>
+                        <th>ML-KEM-768</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>KeyGen</td>
+                        <td>~14 µs</td>
+                        <td>~37 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Обмен</td>
+                        <td>~30 µs</td>
+                        <td>~48 µs</td>
+                    </tr>
+                    <tr>
+                        <td>Открытый ключ</td>
+                        <td>32 B</td>
+                        <td>1184 B</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>ML-KEM примерно в 2 раза медленнее X25519, но задержка рукопожатия TLS является незначительной (&lt; 1 мс) в большинстве реальных соединений.</p>
+        </section>
+
+        <!-- Раздел 10.7 -->
+        <section id="id-107">
+            <h2>10.7 OpenSSL: установка провайдера OQS</h2>
+
+            <p>OpenSSL 3.x поддерживает ML-KEM через провайдер <code>oqsprovider</code>. Начиная с версии 3.4, поддержка является нативной или легко интегрируемой.</p>
+
+            <div class="code-block">
+                <pre><code># Компиляция oqs-provider
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -DOPENSSL_ROOT_DIR=/usr/local/ssl .
+make
+sudo make install
+
+# Проверка
+openssl list -providers
+# должен показывать: oqsprovider</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.8 -->
+        <section id="id-108">
+            <h2>10.8 Генерация ключей ML-KEM с OpenSSL CLI</h2>
+
+            <div class="code-block">
+                <pre><code># Генерация пары ключей ML-KEM-768
+openssl genpkey -algorithm mlkem768 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+
+# Просмотр деталей ключа
+openssl pkey -in private.pem -text -noout</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.9 -->
+        <section id="id-109">
+            <h2>10.9 TLS 1.3 с ML-KEM-768</h2>
+
+            <h3>Локальный тест (сервер + клиент)</h3>
+            <div class="code-block">
+                <pre><code># Сервер
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups mlkem768
+
+# Клиент (в другом терминале)
+openssl s_client -connect localhost:4433 -groups mlkem768</code></pre>
+            </div>
+
+            <h3>Проверка поддерживаемых групп</h3>
+            <div class="code-block">
+                <pre><code>openssl list -key-exchange-algorithms | grep -i kem</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.10 -->
+        <section id="id-1010">
+            <h2>10.10 Гибридная стратегия: X25519 + ML-KEM-768</h2>
+
+            <p>Рекомендуемым подходом к миграции является <strong>гибридизация</strong>: комбинация ECDH (X25519) с ML-KEM-768. Финальный ключ выводится из обоих:</p>
+
+            <div class="math-block">
+                \[
+                K = \text{HKDF}(K_{\text{X25519}} \| K_{\text{ML-KEM}})
+                \]
+            </div>
+
+            <p><strong>Преимущество:</strong> безопасно, если хотя бы одна из двух схем сохраняется. Если квантовый компьютер взломает X25519, ML-KEM защищает. Если у ML-KEM будет неизвестный дефект, X25519 защищает.</p>
+        </section>
+
+        <!-- Раздел 10.11 -->
+        <section id="id-1011">
+            <h2>10.11 Гибридные шифр-наборы в TLS 1.3</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Название группы</th>
+                        <th>Состав</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>X25519MLKEM768</code></td>
+                        <td>X25519 + ML-KEM-768</td>
+                    </tr>
+                    <tr>
+                        <td><code>SecP256r1MLKEM768</code></td>
+                        <td>P-256 + ML-KEM-768</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Начиная с Chrome 131 (конец 2024), <code>X25519MLKEM768</code> является группой по умолчанию. Firefox 128+ поддерживает ту же группу.</p>
+
+            <h3>Конфигурация OpenSSL</h3>
+            <div class="code-block">
+                <pre><code># Сервер, принимающий как классический X25519, так и гибридную группу
+openssl s_server -accept 4433 -cert server.crt -key server.key \
+    -groups X25519MLKEM768:x25519:P-256
+
+# Клиент, предпочитающий гибридную группу
+openssl s_client -connect localhost:4433 \
+    -groups X25519MLKEM768:x25519</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.12 -->
+        <section id="id-1012">
+            <h2>10.12 Интеграция в приложения на C с OpenSSL</h2>
+
+            <div class="code-block">
+                <pre><code class="language-c">#include &lt;openssl/ssl.h&gt;
+#include &lt;openssl/err.h&gt;
+
+SSL_CTX *create_pqc_context(void) {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return NULL;
+    }
+
+    // Установить предпочтительные группы: гибридная первая, затем классические как запасной вариант
+    if (SSL_CTX_set1_groups_list(ctx, "X25519MLKEM768:x25519:P-256") != 1) {
+        fprintf(stderr, "Ошибка конфигурации групп\n");
+        SSL_CTX_free(ctx);
+        return NULL;
+    }
+
+    return ctx;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Раздел 10.13 -->
+        <section id="id-1013">
+            <h2>10.13 Контрольный список для миграции</h2>
+
+            <h3>Для разработчиков приложений</h3>
+            <ul>
+                <li>Инвентаризация мест использования асимметричной криптографии (обмен ключами, подписи, KEM).</li>
+                <li>Идентификация данных, которые должны оставаться секретными более 5 лет.</li>
+                <li>Обновление зависимостей: OpenSSL ≥ 3.2, liboqs ≥ 0.10.</li>
+                <li>Принятие гибридного подхода: <code>X25519 + ML-KEM-768</code> для TLS.</li>
+                <li>Для цифровых подписей: миграция на ML-DSA (FIPS 204) или SLH-DSA (FIPS 205).</li>
+                <li>Тестирование увеличения размера ключей и шифртекстов в протоколах.</li>
+                <li>Проверка, что таймауты и размеры буферов не предполагают малых ключей.</li>
+            </ul>
+
+            <h3>Для администраторов инфраструктуры</h3>
+            <ul>
+                <li>Обновление стека TLS до версий с поддержкой ML-KEM.</li>
+                <li>Включение <code>X25519MLKEM768</code> на серверах TLS.</li>
+                <li>Мониторинг совместимости клиентов (Chrome 131+, Firefox 128+ поддерживают гибридный PQC).</li>
+                <li>Планирование долгосрочной ротации ключей.</li>
+            </ul>
+
+            <h3>Справочные стандарты</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Стандарт</th>
+                        <th>Содержание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIPS 203</td>
+                        <td>ML-KEM (инкапсуляция ключа)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 204</td>
+                        <td>ML-DSA (цифровая подпись на основе решёток)</td>
+                    </tr>
+                    <tr>
+                        <td>FIPS 205</td>
+                        <td>SLH-DSA (подпись на основе хеша, консервативная)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Раздел 10.14 -->
+        <section id="id-1014">
+            <h2>10.14 Сценарий: миграция REST API</h2>
+
+            <h3>Текущая ситуация (до миграции)</h3>
+            <p>Клиент → TLS 1.3 с X25519 → Сервер API</p>
+
+            <h3>Фаза 1: гибридная (сегодня, рекомендуется)</h3>
+            <p>Клиент → TLS 1.3 с X25519MLKEM768 → Сервер API</p>
+
+            <div class="code-block">
+                <pre><code># Конфигурация nginx
+ssl_ecdh_curve X25519MLKEM768:x25519:P-256;
+
+# Конфигурация Apache
+SSLOpenSSLConfCmd Curves X25519MLKEM768:x25519:P-256;</code></pre>
+            </div>
+
+            <h3>Фаза 2: чисто постквантовая (будущее)</h3>
+            <p>Клиент → TLS 1.3 с ML-KEM-768 + ML-DSA → Сервер API</p>
+            <p>Для внедрения, когда большинство клиентов будут поддерживать нативный ML-KEM, а сертификаты сервера будут использовать ML-DSA для подписи.</p>
+        </section>
+
+        <!-- Источники -->
+        <div class="sources">
+            <h2>Источники</h2>
+            <ul>
+                <li>Open Quantum Safe project — <a href="https://openquantumsafe.org/" target="_blank">https://openquantumsafe.org/</a></li>
+                <li>Документация liboqs — <a href="https://github.com/open-quantum-safe/liboqs" target="_blank">GitHub</a></li>
+                <li>kyber-py — <a href="https://github.com/GiacomoPope/kyber-py" target="_blank">GitHub</a></li>
+                <li>oqs-provider — <a href="https://github.com/open-quantum-safe/oqs-provider" target="_blank">GitHub</a></li>
+                <li>Черновик IETF — Hybrid key exchange in TLS 1.3</li>
+                <li>NSA CNSA 2.0 (2022) — Commercial National Security Algorithm Suite</li>
+            </ul>
+        </div>
+
+        <!-- Навигация по главам -->
+        <div class="chapter-nav">
+            <a href="9.html" class="nav-btn">← Предыдущая глава</a>
+            <span class="nav-label">10 / 10</span>
+            <a href="#" class="nav-btn disabled">Конец руководства →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Нижний колонтитул сайта -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Бесплатная библиотека для всех. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ru';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/10.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

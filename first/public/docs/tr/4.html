@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bölüm 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Hızlı navigasyon">
+            <a href="index.html#featureSection">Neden</a>
+            <a href="index.html#learningPath">Yol Haritası</a>
+            <a href="index.html#searchSection">Rehber</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Dil seçin">
+                    <span class="lang-current" id="langCurrent">🇹🇷 Türkçe</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Bölümler</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Ön Koşullar</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Simetrik</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Asimetrik</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Kafesler</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Güvenlik</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Uygulamalar</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Kafesler (Lattices)</h1>
+        <p class="subtitle">Kuantum-sonrası kriptografinin altındaki matematiksel yapı</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>İçindekiler</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Kafes tanımı</a></li>
+                <li><a href="#id-42">4.2 Kafeslerde zor problemler</a></li>
+                <li><a href="#id-43">4.3 SVP'den LWE'ye</a></li>
+                <li><a href="#id-44">4.4 LWE: Hatalarla Öğrenme</a></li>
+                <li><a href="#id-45">4.5 RLWE: halka üzerindeki varyant</a></li>
+                <li><a href="#id-46">4.6 MLWE: ML-KEM'in temeli</a></li>
+                <li><a href="#id-47">4.7 Kafeslerin kuantum-sonrası güvenliği</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Kafes tanımı</h2>
+
+            <h3>Biçimsel tanım</h3>
+
+            <p><span class="math">\(\mathbb{R}^m\)</span> içinde bir <strong>kafes</strong> <span class="math">\(\mathcal{L}\)</span>, <span class="math">\(n\)</span> doğrusal bağımsız vektörün <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span> tüm tamsayı doğrusal kombinasyonlarının kümesidir:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p><span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> vektörleri kafesin bir <strong>tabanını</strong> oluşturur.</p>
+
+            <h3>Geometrik sezgi</h3>
+
+            <p>2B'de sonsuz bir nokta ızgarası hayal edin. Her nokta, iki taban vektörünün tamsayı (gerçek değil) kombinasyonuyla ulaşılabilir:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Bu, standart tamsayı ızgarası <span class="math">\(\mathbb{Z}^2\)</span>'dir.</p>
+
+            <p>Ancak aynı kafesin sonsuz sayıda farklı tabanı vardır:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>aynı kafesi üretir. Bazı tabanlar "iyi"dir (kısa ve neredeyse dik vektörler), diğerleri "kötü"dür (uzun ve neredeyse paralel vektörler).</p>
+
+            <h3>Boyut ve rank</h3>
+
+            <ul>
+                <li><strong>Ortam boyutu</strong> <span class="math">\(m\)</span>: her vektörün koordinat sayısı</li>
+                <li><strong>Rank</strong> <span class="math">\(n\)</span>: tabandaki vektör sayısı</li>
+            </ul>
+
+            <p>Eğer <span class="math">\(n = m\)</span>: tam rank kafes (<em>full-rank lattice</em>)</p>
+
+            <p>Kriptografide tipik olarak <span class="math">\(n = m\)</span> çok büyük (256–4096) olan kafesler kullanırız.</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Kafeslerde zor problemler</h2>
+
+            <h3>SVP – En Kısa Vektör Problemi</h3>
+
+            <p><strong>Verilen:</strong> bir <span class="math">\(\mathcal{L}\)</span> kafesinin tabanı <span class="math">\(B\)</span><br />
+            <strong>Bulunacak:</strong> <span class="math">\(\mathcal{L}\)</span>'deki sıfır olmayan en kısa vektör</p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{öyle bir } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ bulun ki } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>2B'de kolaydır (Gauss algoritması). Yüksek boyutta (yüzlerce), bazı varsayımlar altında <strong>NP-zor</strong>'dur ve bilinen en iyi algoritma üstel zaman gerektirir.</p>
+
+            <h3>CVP – En Yakın Vektör Problemi</h3>
+
+            <p><strong>Verilen:</strong> <span class="math">\(\mathcal{L}\)</span> kafesinin tabanı <span class="math">\(B\)</span> ve hedef nokta <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (kafeste değil)<br />
+            <strong>Bulunacak:</strong> <span class="math">\(\mathbf{t}\)</span>'ye en yakın kafes noktası</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{öyle bir } \mathbf{v} \in \mathcal{L} \text{ bulun ki } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP en az SVP kadar zordur. ML-KEM'deki dekapsülasyonun merkezinde yer alır: <span class="math">\(\mathbf{s}\)</span> sırrını bilen karşılık gelen "kolay" CVP'yi çözebilir, bilmeyen çözemez.</p>
+
+            <h3>GapSVP ve SIS</h3>
+
+            <p>Yaklaşık varyantlar (GapSVP) ve ilgili problemler (SIS – Kısa Tamsayı Çözümü) vardır ve bunlar kafes kriptografisinin güvenlik kanıtlarının temelini oluşturur. Bu noktada, hepsinin birbirine indirgendiğini ve zor problemlerin bir ailesini oluşturduğunu bilmek yeterlidir.</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 SVP'den LWE'ye</h2>
+
+            <p>SVP'den kriptografik bir sistem nasıl inşa edilir?</p>
+
+            <p>Regev'in (2005) fikri: SVP ile doğrudan çalışmak yerine (geometrik olarak sezgisel ancak kullanımı zahmetli), eşdeğer bir istatistiksel problem tanımlanır: <strong>Hatalarla Öğrenme (LWE)</strong>.</p>
+
+            <p>Güvenlik indirgemesi şunu gösterir:</p>
+
+            <blockquote>
+                <p>LWE kırılırsa ⇒ GapSVP çözülür</p>
+            </blockquote>
+
+            <p>Bu nedenle LWE, yüksek boyutta GapSVP'den <strong>en az o kadar zordur</strong>.</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Hatalarla Öğrenme</h2>
+
+            <h3>Tanım</h3>
+
+            <p><span class="math">\(n\)</span> (boyut), <span class="math">\(q\)</span> (modül), <span class="math">\(\chi\)</span> (gürültü dağılımı) parametrelerini sabitleyin:</p>
+
+            <p><strong>LWE dağılımı:</strong> gizli <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span> seçin. Örnekler üretin:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>burada <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> tekdüze, <span class="math">\(e \leftarrow \chi\)</span> küçüktür.</p>
+
+            <p><strong>Karar LWE problemi:</strong> <span class="math">\((\mathbf{a}, b)\)</span> örneklerini rastgele tekdüze çiftlerden <span class="math">\((\mathbf{a}, u)\)</span> ile <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span> ayırt edin.</p>
+
+            <p><strong>Arama LWE problemi:</strong> bir <span class="math">\((\mathbf{a}_i, b_i)\)</span> örnek kümesi verildiğinde, <span class="math">\(\mathbf{s}\)</span>'yi bulun.</p>
+
+            <h3>LWE parametreleri</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametre</th>
+                        <th>Sembol</th>
+                        <th>Rolü</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Boyut</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Güvenlik <span class="math">\(n\)</span> ile üstel olarak artar</td>
+                    </tr>
+                    <tr>
+                        <td>Modül</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Gürültüyü içerecek kadar büyük olmalıdır</td>
+                    </tr>
+                    <tr>
+                        <td>Hata dağılımı</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Ayrık Gauss veya merkezli binom</td>
+                    </tr>
+                    <tr>
+                        <td>Gürültü/sinyal oranı</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Küçük olmalı ama çok küçük değil</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>n=2, q=7 ile örnek</h3>
+
+            <p>Gizli: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p><span class="math">\(\{-1, 0, 1\}\)</span> içinde küçük hatalarla LWE örnekleri:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>a vektörü</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Hatalı sistemi göz önüne alındığında, <span class="math">\(\mathbf{s}\)</span>'yi bulmak zordur: Gauss eliminasyonu kullanılamaz çünkü <span class="math">\(b_i\)</span> değerleri tam değildir.</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: halka üzerindeki varyant</h2>
+
+            <p>Standart LWE vektörleri kullanır. <strong>Ring-LWE (RLWE)</strong> işlemleri polinom halkasına taşır:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>RLWE'de:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (bir polinom, tamsayı vektörü değil)</li>
+                <li><span class="math">\(a \in R_q\)</span> (tekdüze örneklenir)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>RLWE'nin LWE'ye göre avantajları:</strong></p>
+            <ul>
+                <li>Anahtar boyutu: <span class="math">\(O(n^2)\)</span> yerine <span class="math">\(O(n)\)</span></li>
+                <li>Hız: NTT ile polinom çarpımı <span class="math">\(O(n^2)\)</span> yerine <span class="math">\(O(n \log n)\)</span>'dir</li>
+            </ul>
+
+            <p><strong>Dezavantaj:</strong> ek cebirsel yapı → potansiyel olarak daha savunmasız; güvenlik kanıtı biraz daha zayıftır.</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: ML-KEM'in temeli</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong>, LWE ve RLWE arasında bir uzlaşmadır: <span class="math">\(R_q\)</span> içinde polinom modülleri (polinom matrisleri) kullanır.</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p><span class="math">\(k\)</span> parametresi <strong>modül boyutudur</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> ML-KEM-512 için</li>
+                <li><span class="math">\(k = 3\)</span> ML-KEM-768 için</li>
+                <li><span class="math">\(k = 4\)</span> ML-KEM-1024 için</li>
+            </ul>
+
+            <p><strong>Neden MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Şema</th>
+                        <th>Anahtar boyutu</th>
+                        <th>Hız</th>
+                        <th>Güvenlik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → büyük</td>
+                        <td>yavaş</td>
+                        <td>daha muhafazakâr</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → küçük</td>
+                        <td>hızlı</td>
+                        <td>ek yapı</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → orta</td>
+                        <td>hızlı</td>
+                        <td>dengeli</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE, <span class="math">\(n\)</span>'yi değiştirmeden <span class="math">\(k\)</span>'yı değiştirerek güvenliği ölçeklendirmeye olanak tanır ve halka yapısının optimizasyonlarını korur.</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Kafeslerin kuantum-sonrası güvenliği</h2>
+
+            <h3>En iyi klasik algoritma: BKZ (Blok Korkine-Zolotarev)</h3>
+
+            <p>BKZ algoritması ve varyantları (BKZ 2.0, G6K), kafeslere saldırmak için en iyi klasik algoritmalardır. ML-KEM-768 için karmaşıklıkları <span class="math">\(> 2^{178}\)</span> işlem olarak tahmin edilmektedir.</p>
+
+            <h3>Kuantum bilgisayarların etkisi</h3>
+
+            <p>MLWE'ye saldırmak için bilinen en iyi kuantum algoritmaları (QRAM yaklaşımları dahil) mütevazı bir hızlanma sunar — en fazla ikinci dereceden, problemin zorluğunu üstel bölgede tutar.</p>
+
+            <p>Bu, çarpanlara ayırma ve DLP üzerinde üstel hızlanma sunan Shor ile keskin bir tezat oluşturur.</p>
+
+            <h3>MLWE neden bir "Shor algoritmasına" sahip değil</h3>
+
+            <p>MLWE, Shor'un kullandığı değişmeli grup yapısına sahip değildir. Problem temelde farklıdır: bir fonksiyonda periyodiklik bulmak değil, yüksek boyutlu bir kafeste kısa bir vektör bulmaktır — üstel hızlanma sağlayan hiçbir kuantum tekniğinin bilinmediği geometrik bir problem.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Kaynaklar</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Bölüm 17</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Önceki bölüm</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Sonraki bölüm →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Herkese açık ücretsiz kütüphane. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'tr';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

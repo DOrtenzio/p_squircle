@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Глава 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" /><script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax для формул -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Панель инструментов (идентична index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Быстрая навигация">
+            <a href="index.html#featureSection">Почему</a>
+            <a href="index.html#learningPath">Путь</a>
+            <a href="index.html#searchSection">Руководство</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Выберите язык">
+                    <span class="lang-current" id="langCurrent">🇷🇺 Русский</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 языков -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контейнер с боковой панелью -->
+    <div class="container chapter-wrapper">
+        <!-- Боковая панель -->
+        <aside class="chapter-sidebar">
+            <h3>Главы</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Предварительные требования</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симметричная</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асимметричная</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Решётки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безопасность</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реализации</a></li>
+            </ul>
+        </aside>
+
+        <!-- Содержание главы -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Решётки (Lattices)</h1>
+        <p class="subtitle">Математическая структура, лежащая в основе постквантовой криптографии</p>
+
+        <!-- Оглавление -->
+        <div class="toc">
+            <h2>Содержание</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Определение решётки</a></li>
+                <li><a href="#id-42">4.2 Трудные задачи на решётках</a></li>
+                <li><a href="#id-43">4.3 От SVP к LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: вариант на кольцах</a></li>
+                <li><a href="#id-46">4.6 MLWE: основа ML-KEM</a></li>
+                <li><a href="#id-47">4.7 Постквантовая безопасность решёток</a></li>
+            </ul>
+        </div>
+
+        <!-- Раздел 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Определение решётки</h2>
+
+            <h3>Формальное определение</h3>
+
+            <p><strong>Решётка</strong> <span class="math">\(\mathcal{L}\)</span> в <span class="math">\(\mathbb{R}^m\)</span> — это множество всех целочисленных линейных комбинаций <span class="math">\(n\)</span> линейно независимых векторов <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Векторы <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> образуют <strong>базис</strong> решётки.</p>
+
+            <h3>Геометрическая интуиция</h3>
+
+            <p>В 2D представьте бесконечную сетку точек. Каждая точка достижима целочисленной (не вещественной) комбинацией двух базисных векторов:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Это стандартная целочисленная решётка <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>Но одна и та же решётка имеет бесконечно много различных базисов:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>порождают ту же решётку. Некоторые базисы "хорошие" (короткие и почти ортогональные векторы), другие "плохие" (длинные и почти параллельные векторы).</p>
+
+            <h3>Размерность и ранг</h3>
+
+            <ul>
+                <li><strong>Размерность пространства</strong> <span class="math">\(m\)</span>: число координат каждого вектора</li>
+                <li><strong>Ранг</strong> <span class="math">\(n\)</span>: число векторов в базисе</li>
+            </ul>
+
+            <p>Если <span class="math">\(n = m\)</span>: решётка полного ранга (<em>full-rank lattice</em>)</p>
+
+            <p>В криптографии мы обычно используем решётки с <span class="math">\(n = m\)</span> очень большими (256–4096).</p>
+        </section>
+
+        <!-- Раздел 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Трудные задачи на решётках</h2>
+
+            <h3>SVP – Задача о кратчайшем векторе (Shortest Vector Problem)</h3>
+
+            <p><strong>Дано:</strong> базис <span class="math">\(B\)</span> решётки <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Найти:</strong> ненулевой вектор наименьшей длины в <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{найти } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ такой, что } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>В 2D это легко (алгоритм Гаусса). В высокой размерности (сотни) это <strong>NP-трудная</strong> задача при некоторых предположениях, и лучший известный алгоритм требует экспоненциального времени.</p>
+
+            <h3>CVP – Задача о ближайшем векторе (Closest Vector Problem)</h3>
+
+            <p><strong>Дано:</strong> базис <span class="math">\(B\)</span> решётки <span class="math">\(\mathcal{L}\)</span> и целевая точка <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (не в решётке)<br />
+            <strong>Найти:</strong> точку решётки, ближайшую к <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{найти } \mathbf{v} \in \mathcal{L} \text{ такой, что } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP по крайней мере не легче SVP. Он лежит в основе декапсуляции в ML-KEM: тот, кто знает секрет <span class="math">\(\mathbf{s}\)</span>, может решить соответствующее "лёгкое" CVP, тот, кто не знает — не может.</p>
+
+            <h3>GapSVP и SIS</h3>
+
+            <p>Существуют приближённые варианты (GapSVP) и связанные задачи (SIS – Short Integer Solution), которые образуют основу доказательств безопасности криптографии на решётках. Для наших целей достаточно знать, что все они сводятся друг к другу, образуя семейство трудных задач.</p>
+        </section>
+
+        <!-- Раздел 4.3 -->
+        <section id="id-43">
+            <h2>4.3 От SVP к LWE</h2>
+
+            <p>Как построить криптографическую систему из SVP?</p>
+
+            <p>Идея Регева (2005): вместо того чтобы работать непосредственно с SVP (геометрически интуитивным, но неудобным в использовании), определяется эквивалентная статистическая задача: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>Доказательство безопасности показывает, что:</p>
+
+            <blockquote>
+                <p>Если взломать LWE ⇒ Решить GapSVP</p>
+            </blockquote>
+
+            <p>Таким образом, LWE <strong>по крайней мере так же труден</strong>, как GapSVP в высокой размерности.</p>
+        </section>
+
+        <!-- Раздел 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Определение</h3>
+
+            <p>Заданы параметры <span class="math">\(n\)</span> (размерность), <span class="math">\(q\)</span> (модуль), <span class="math">\(\chi\)</span> (распределение шума):</p>
+
+            <p><strong>Распределение LWE:</strong> выбрать секретный <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Сгенерировать выборки:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>где <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> равномерное, <span class="math">\(e \leftarrow \chi\)</span> маленькое.</p>
+
+            <p><strong>Решающая задача LWE:</strong> отличить выборки <span class="math">\((\mathbf{a}, b)\)</span> от равномерных случайных пар <span class="math">\((\mathbf{a}, u)\)</span> с <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Поисковая задача LWE:</strong> по набору выборок <span class="math">\((\mathbf{a}_i, b_i)\)</span> найти <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>Параметры LWE</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Символ</th>
+                        <th>Роль</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Размерность</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Безопасность растёт экспоненциально с <span class="math">\(n\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Модуль</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Должен быть достаточно большим, чтобы вместить шум</td>
+                    </tr>
+                    <tr>
+                        <td>Распределение ошибки</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Дискретное гауссовское или центрированное биномиальное</td>
+                    </tr>
+                    <tr>
+                        <td>Отношение шум/сигнал</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Должно быть маленьким, но не слишком</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Пример с n=2, q=7</h3>
+
+            <p>Секрет: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>Выборки LWE с маленькими ошибками в <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Вектор a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Имея систему с ошибками, найти <span class="math">\(\mathbf{s}\)</span> трудно: нельзя использовать метод Гаусса, потому что значения <span class="math">\(b_i\)</span> не точны.</p>
+        </section>
+
+        <!-- Раздел 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: вариант на кольцах</h2>
+
+            <p>Стандартный LWE использует векторы. <strong>Ring-LWE (RLWE)</strong> переносит операции в кольцо полиномов:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>В RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (полином, а не вектор целых чисел)</li>
+                <li><span class="math">\(a \in R_q\)</span> (выбирается равномерно)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Преимущества RLWE перед LWE:</strong></p>
+            <ul>
+                <li>Размер ключей: <span class="math">\(O(n)\)</span> вместо <span class="math">\(O(n^2)\)</span></li>
+                <li>Скорость: умножение полиномов через NTT даёт <span class="math">\(O(n \log n)\)</span> вместо <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Недостаток:</strong> дополнительная алгебраическая структура → потенциально более уязвим; доказательство безопасности немного слабее.</p>
+        </section>
+
+        <!-- Раздел 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: основа ML-KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> — это компромисс между LWE и RLWE: использует модули полиномов (матрицы полиномов в <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>Параметр <span class="math">\(k\)</span> — это <strong>размерность модуля</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> для ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> для ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> для ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Почему MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Схема</th>
+                        <th>Размер ключей</th>
+                        <th>Скорость</th>
+                        <th>Безопасность</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → большой</td>
+                        <td>медленный</td>
+                        <td>более консервативная</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → маленький</td>
+                        <td>быстрый</td>
+                        <td>дополнительная структура</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → средний</td>
+                        <td>быстрый</td>
+                        <td>сбалансированная</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE позволяет масштабировать безопасность, изменяя <span class="math">\(k\)</span> без изменения <span class="math">\(n\)</span>, сохраняя оптимизации кольцевой структуры.</p>
+        </section>
+
+        <!-- Раздел 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Постквантовая безопасность решёток</h2>
+
+            <h3>Лучший классический алгоритм: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>Алгоритм BKZ и его варианты (BKZ 2.0, G6K) являются лучшими классическими алгоритмами для атаки на решётки. Их сложность для ML-KEM-768 оценивается в <span class="math">\(> 2^{178}\)</span> операций.</p>
+
+            <h3>Влияние квантовых компьютеров</h3>
+
+            <p>Лучшие известные квантовые алгоритмы для атаки на MLWE (включая подходы с QRAM) дают скромное ускорение — не более чем квадратичное, сохраняя сложность задачи в экспоненциальной области.</p>
+
+            <p>Это резко контрастирует с Шором, который даёт экспоненциальное ускорение для факторизации и DLP.</p>
+
+            <h3>Почему у MLWE нет "алгоритма Шора"</h3>
+
+            <p>У MLWE нет структуры абелевой группы, которую использует Шор. Задача принципиально иная: это не поиск периодичности в функции, а поиск короткого вектора в решётке высокой размерности — геометрическая задача, для которой не известно ни одной квантовой техники с экспоненциальным ускорением.</p>
+        </section>
+
+        <!-- Источники -->
+        <div class="sources">
+            <h2>Источники</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Глава 17</li>
+            </ul>
+        </div>
+
+        <!-- Навигация по главам -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Предыдущая глава</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Следующая глава →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Нижний колонтитул сайта -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Бесплатная библиотека для всех. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'ru';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
