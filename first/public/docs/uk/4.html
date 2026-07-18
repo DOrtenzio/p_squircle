@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Розділ 4 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Швидка навігація">
+            <a href="index.html#featureSection">Чому</a>
+            <a href="index.html#learningPath">Маршрут</a>
+            <a href="index.html#searchSection">Путівник</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Виберіть мову">
+                    <span class="lang-current" id="langCurrent">🇺🇦 Українська</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Розділи</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Попередні вимоги</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симетрична</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асиметрична</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> Ґратки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безпека</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реалізації</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – Ґратки (Lattices)</h1>
+        <p class="subtitle">Математична структура, що лежить в основі постквантової криптографії</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>Зміст</h2>
+            <ul>
+                <li><a href="#id-41">4.1 Визначення ґратки</a></li>
+                <li><a href="#id-42">4.2 Складні задачі на ґратках</a></li>
+                <li><a href="#id-43">4.3 Від SVP до LWE</a></li>
+                <li><a href="#id-44">4.4 LWE: Learning With Errors</a></li>
+                <li><a href="#id-45">4.5 RLWE: варіант на кільцях</a></li>
+                <li><a href="#id-46">4.6 MLWE: основа ML-KEM</a></li>
+                <li><a href="#id-47">4.7 Постквантова безпека ґраток</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 Визначення ґратки</h2>
+
+            <h3>Формальне визначення</h3>
+
+            <p><strong>Ґратка</strong> <span class="math">\(\mathcal{L}\)</span> у <span class="math">\(\mathbb{R}^m\)</span> — це множина всіх цілочислових лінійних комбінацій <span class="math">\(n\)</span> лінійно незалежних векторів <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span>:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Вектори <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> утворюють <strong>базис</strong> ґратки.</p>
+
+            <h3>Геометрична інтуїція</h3>
+
+            <p>У 2D уявіть нескінченну сітку точок. Кожна точка досяжна цілочисловою (не дійсною) комбінацією двох базисних векторів:</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>Це стандартна цілочислова ґратка <span class="math">\(\mathbb{Z}^2\)</span>.</p>
+
+            <p>Але одна й та сама ґратка має нескінченно багато різних базисів:</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>породжують ту ж ґратку. Деякі базиси "хороші" (короткі та майже ортогональні вектори), інші "погані" (довгі та майже паралельні вектори).</p>
+
+            <h3>Розмірність і ранг</h3>
+
+            <ul>
+                <li><strong>Розмірність простору</strong> <span class="math">\(m\)</span>: кількість координат кожного вектора</li>
+                <li><strong>Ранг</strong> <span class="math">\(n\)</span>: кількість векторів у базисі</li>
+            </ul>
+
+            <p>Якщо <span class="math">\(n = m\)</span>: ґратка повного рангу (<em>full-rank lattice</em>)</p>
+
+            <p>У криптографії ми зазвичай використовуємо ґратки з <span class="math">\(n = m\)</span> дуже великими (256–4096).</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 Складні задачі на ґратках</h2>
+
+            <h3>SVP – Задача про найкоротший вектор</h3>
+
+            <p><strong>Дано:</strong> базис <span class="math">\(B\)</span> ґратки <span class="math">\(\mathcal{L}\)</span><br />
+            <strong>Знайти:</strong> ненульовий вектор найменшої довжини в <span class="math">\(\mathcal{L}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{знайти } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ такий, що } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>У 2D це легко (алгоритм Гауса). У високій розмірності (сотні) це <strong>NP-складна</strong> задача за деяких припущень, і найкращий відомий алгоритм потребує експоненційного часу.</p>
+
+            <h3>CVP – Задача про найближчий вектор</h3>
+
+            <p><strong>Дано:</strong> базис <span class="math">\(B\)</span> ґратки <span class="math">\(\mathcal{L}\)</span> і цільова точка <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span> (не в ґратці)<br />
+            <strong>Знайти:</strong> точку ґратки, найближчу до <span class="math">\(\mathbf{t}\)</span></p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{знайти } \mathbf{v} \in \mathcal{L} \text{ такий, що } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP принаймні не легший за SVP. Він лежить в основі декапсуляції в ML-KEM: той, хто знає секрет <span class="math">\(\mathbf{s}\)</span>, може розв'язати відповідне "легке" CVP, той, хто не знає — не може.</p>
+
+            <h3>GapSVP та SIS</h3>
+
+            <p>Існують наближені варіанти (GapSVP) та пов'язані задачі (SIS – Short Integer Solution), які утворюють основу доведень безпеки криптографії на ґратках. Для наших цілей достатньо знати, що всі вони зводяться одна до одної, утворюючи сімейство складних задач.</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 Від SVP до LWE</h2>
+
+            <p>Як побудувати криптографічну систему з SVP?</p>
+
+            <p>Ідея Регева (2005): замість того щоб працювати безпосередньо з SVP (геометрично інтуїтивним, але незручним у використанні), визначається еквівалентна статистична задача: <strong>Learning With Errors (LWE)</strong>.</p>
+
+            <p>Доведення безпеки показує, що:</p>
+
+            <blockquote>
+                <p>Якщо зламати LWE ⇒ Розв'язати GapSVP</p>
+            </blockquote>
+
+            <p>Таким чином, LWE <strong>принаймні такий же складний</strong>, як GapSVP у високій розмірності.</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE: Learning With Errors</h2>
+
+            <h3>Визначення</h3>
+
+            <p>Задано параметри <span class="math">\(n\)</span> (розмірність), <span class="math">\(q\)</span> (модуль), <span class="math">\(\chi\)</span> (розподіл шуму):</p>
+
+            <p><strong>Розподіл LWE:</strong> вибрати секретний <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>. Згенерувати вибірки:</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>де <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> рівномірне, <span class="math">\(e \leftarrow \chi\)</span> мале.</p>
+
+            <p><strong>Розрізнювальна задача LWE:</strong> відрізнити вибірки <span class="math">\((\mathbf{a}, b)\)</span> від рівномірних випадкових пар <span class="math">\((\mathbf{a}, u)\)</span> з <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>.</p>
+
+            <p><strong>Пошукова задача LWE:</strong> за набором вибірок <span class="math">\((\mathbf{a}_i, b_i)\)</span> знайти <span class="math">\(\mathbf{s}\)</span>.</p>
+
+            <h3>Параметри LWE</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Символ</th>
+                        <th>Роль</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Розмірність</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>Безпека зростає експоненційно з <span class="math">\(n\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Модуль</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>Має бути достатньо великим, щоб вмістити шум</td>
+                    </tr>
+                    <tr>
+                        <td>Розподіл помилки</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>Дискретний гауссівський або центрований біноміальний</td>
+                    </tr>
+                    <tr>
+                        <td>Відношення шум/сигнал</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>Має бути малим, але не занадто</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Приклад з n=2, q=7</h3>
+
+            <p>Секрет: <span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>Вибірки LWE з малими помилками в <span class="math">\(\{-1, 0, 1\}\)</span>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Вектор a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Маючи систему з помилками, знайти <span class="math">\(\mathbf{s}\)</span> важко: не можна використовувати метод Гауса, тому що значення <span class="math">\(b_i\)</span> не точні.</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE: варіант на кільцях</h2>
+
+            <p>Стандартний LWE використовує вектори. <strong>Ring-LWE (RLWE)</strong> переносить операції в кільце поліномів:</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>У RLWE:</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span> (поліном, а не вектор цілих чисел)</li>
+                <li><span class="math">\(a \in R_q\)</span> (вибирається рівномірно)</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>Переваги RLWE перед LWE:</strong></p>
+            <ul>
+                <li>Розмір ключів: <span class="math">\(O(n)\)</span> замість <span class="math">\(O(n^2)\)</span></li>
+                <li>Швидкість: множення поліномів через NTT дає <span class="math">\(O(n \log n)\)</span> замість <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>Недолік:</strong> додаткова алгебраїчна структура → потенційно більш вразливий; доведення безпеки трохи слабше.</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE: основа ML-KEM</h2>
+
+            <p><strong>Module-LWE (MLWE)</strong> — це компроміс між LWE та RLWE: використовує модулі поліномів (матриці поліномів у <span class="math">\(R_q\)</span>).</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>Параметр <span class="math">\(k\)</span> — це <strong>розмірність модуля</strong>:</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> для ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> для ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> для ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>Чому MLWE?</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Схема</th>
+                        <th>Розмір ключів</th>
+                        <th>Швидкість</th>
+                        <th>Безпека</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → великий</td>
+                        <td>повільний</td>
+                        <td>більш консервативна</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → малий</td>
+                        <td>швидкий</td>
+                        <td>додаткова структура</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → середній</td>
+                        <td>швидкий</td>
+                        <td>збалансована</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE дозволяє масштабувати безпеку, змінюючи <span class="math">\(k\)</span> без зміни <span class="math">\(n\)</span>, зберігаючи оптимізації кільцевої структури.</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 Постквантова безпека ґраток</h2>
+
+            <h3>Найкращий класичний алгоритм: BKZ (Block Korkine-Zolotarev)</h3>
+
+            <p>Алгоритм BKZ та його варіанти (BKZ 2.0, G6K) є найкращими класичними алгоритмами для атаки на ґратки. Їх складність для ML-KEM-768 оцінюється в <span class="math">\(> 2^{178}\)</span> операцій.</p>
+
+            <h3>Вплив квантових комп'ютерів</h3>
+
+            <p>Найкращі відомі квантові алгоритми для атаки на MLWE (включно з підходами з QRAM) дають скромне прискорення — не більше ніж квадратичне, зберігаючи складність задачі в експоненційній області.</p>
+
+            <p>Це різко контрастує з Шором, який дає експоненційне прискорення для факторизації та DLP.</p>
+
+            <h3>Чому в MLWE немає "алгоритму Шора"</h3>
+
+            <p>У MLWE немає структури абелевої групи, яку використовує Шор. Задача принципово інша: це не пошук періодичності у функції, а пошук короткого вектора у ґратці високої розмірності — геометрична задача, для якої не відомо жодної квантової техніки з експоненційним прискоренням.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Джерела</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>, Розділ 17</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← Попередній розділ</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">Наступний розділ →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Безкоштовна бібліотека для всіх. Усі права захищено.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'uk';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Розділ 3 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Швидка навігація">
+            <a href="index.html#featureSection">Чому</a>
+            <a href="index.html#learningPath">Маршрут</a>
+            <a href="index.html#searchSection">Путівник</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Виберіть мову">
+                    <span class="lang-current" id="langCurrent">🇺🇦 Українська</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Розділи</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Попередні вимоги</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симетрична</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асиметрична</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Ґратки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безпека</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реалізації</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – Алгоритм Шора</h1>
+        <p class="subtitle">Чому RSA та ECC вразливі до квантових комп'ютерів</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>Зміст</h2>
+            <ul>
+                <li><a href="#id-31">3.1 Квантові комп'ютери: основи</a></li>
+                <li><a href="#id-32">3.2 Алгоритм Шора</a></li>
+                <li><a href="#id-33">3.3 Вплив на RSA, DH, ECC</a></li>
+                <li><a href="#id-34">3.4 Гровер: загроза симетричній криптографії</a></li>
+                <li><a href="#id-35">3.5 Сучасний стан квантових комп'ютерів (2024–2025)</a></li>
+                <li><a href="#id-36">3.6 Збирай зараз, розшифровуй потім</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 3.1 -->
+        <section id="id-31">
+            <h2>3.1 Квантові комп'ютери: основи</h2>
+
+            <h3>Кубіт vs. класичний біт</h3>
+
+            <p>Класичний біт — це 0 або 1. <strong>Кубіт</strong> може перебувати в <strong>суперпозиції</strong>: лінійній комбінації <span class="math">\(|0\rangle\)</span> та <span class="math">\(|1\rangle\)</span>.</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>До вимірювання кубіт перебуває "одночасно в 0 і 1". Після вимірювання він колапсує в 0 (з ймовірністю <span class="math">\(|\alpha|^2\)</span>) або 1 (з ймовірністю <span class="math">\(|\beta|^2\)</span>).</p>
+
+            <blockquote>
+                <p><strong>Аналогія:</strong> уявіть підкинуту монету, яка в повітрі одночасно представляє орла і решку. Тільки коли ви на неї подивитеся, вона стає однією з них.</p>
+            </blockquote>
+
+            <h3>Заплутаність та інтерференція</h3>
+
+            <ul>
+                <li><strong>Заплутаність:</strong> два кубіти можуть бути скорельовані так, що вимірювання одного миттєво визначає інший.</li>
+                <li><strong>Квантова інтерференція:</strong> "неправильні" шляхи обчислень конструктивно гасяться (як хвилі, які анулюють одна одну), а "правильні" шляхи посилюються.</li>
+            </ul>
+
+            <p>Квантові алгоритми використовують інтерференцію для посилення правильних відповідей і придушення неправильних.</p>
+
+            <h3>Квантовий паралелізм</h3>
+
+            <p>З <span class="math">\(n\)</span> кубітами можна представити суперпозицію <span class="math">\(2^n\)</span> станів одночасно. Але вимірювання дає лише один стан → мистецтво полягає в тому, щоб побудувати алгоритми, де інтерференція залишає в живих лише правильну відповідь.</p>
+        </section>
+
+        <!-- Section Schema Algoritmo -->
+        <section id="id-32">
+            <h2>3.2 Алгоритм Шора</h2>
+            
+            <h3>Схема алгоритму факторизації \(n\)</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>Вхід:</strong> складене ціле число <span class="math">\(n\)</span></li>
+                    <li><strong>Ініціалізація:</strong> Вибрати випадкове <span class="math">\(a\)</span> таке, що <span class="math">\(1 < a < n\)</span> і <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>Квантова підготовка:</strong> Підготувати регістр у рівномірній суперпозиції від <span class="math">\(0\)</span> до <span class="math">\(2^k-1\)</span></li>
+                    <li><strong>Оракул:</strong> Обчислити <span class="math">\(f(x) = a^x \bmod n\)</span> паралельно (у суперпозиції)</li>
+                    <li><strong>QFT:</strong> Застосувати Квантове перетворення Фур'є до першого регістру</li>
+                    <li><strong>Вимірювання:</strong> Виміряти регістр, щоб отримати значення, корельоване з періодом <span class="math">\(r\)</span></li>
+                    <li><strong>Класичний:</strong> Використати алгоритм ланцюгових дробів для оцінки <span class="math">\(r\)</span></li>
+                    <li><strong>Перевірка:</strong> Якщо <span class="math">\(r\)</span> парне і <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>:
+                        <ul>
+                            <li>Обчислити <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> і <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>Це нетривіальні множники <span class="math">\(n\)</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Цикл:</strong> У разі невдачі повернутися до кроку 2 з новим <span class="math">\(a\)</span></li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>Примітка:</strong> Квантове ядро (кроки 3-5) знаходить період <span class="math">\(r\)</span> функції <span class="math">\(f(x)\)</span> за поліноміальний час, використовуючи конструктивну/деструктивну інтерференцію QFT.</p>
+            </div>
+        </section>
+
+        <!-- Section 3.3 -->
+        <section id="id-33">
+            <h2>3.3 Вплив на RSA, DH, ECC</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Схема</th>
+                        <th>Основа безпеки</th>
+                        <th>Вразлива до Шора?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>Факторизація</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Так</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH (mod <span class="math">\(p\)</span>)</td>
+                        <td>Дискретний логарифм у <span class="math">\(\mathbb{Z}_p^*\)</span></td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Так</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP (дискретний логарифм на EC)</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">Так</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM (MLWE)</strong></td>
+                        <td>Задачі на ґратках</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">Немає відомого ефективного алгоритму</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>Псевдовипадкові перестановки</td>
+                        <td>Тільки Гровер (див. нижче)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Шор розв'язує будь-яку структуровану задачу, пов'язану з пошуком періодичності в абелевій групі. Факторизація та дискретний логарифм (включно з EC) мають саме цю структуру. Задачі на ґратках — ні.</p>
+        </section>
+
+        <!-- Section 3.4 -->
+        <section id="id-34">
+            <h2>3.4 Гровер: загроза симетричній криптографії</h2>
+
+            <p>Алгоритм Гровера (1996) дає <strong>квадратичне</strong> прискорення в неструктурованому пошуку:</p>
+            <ul>
+                <li>Пошук ключа серед <span class="math">\(2^k\)</span> можливостей класично: <span class="math">\(O(2^k)\)</span> спроб</li>
+                <li>З Гровером: <span class="math">\(O(2^{k/2})\)</span> спроб</li>
+            </ul>
+
+            <p><strong>Практичні наслідки:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ключ</th>
+                        <th>Класична безпека</th>
+                        <th>Постквантова безпека (Гровер)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 біт</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 біти → недостатньо</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 біт</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 біт → все ще безпечно</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 біт</td>
+                        <td>128 біт → безпечно</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 біт</td>
+                        <td>128 біт → безпечно</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Тому NIST рекомендує AES-256 (а не AES-128) у постквантовому контексті.</p>
+        </section>
+
+        <!-- Section 3.5 -->
+        <section id="id-35">
+            <h2>3.5 Сучасний стан квантових комп'ютерів (2024–2025)</h2>
+
+            <p>Сучасні квантові комп'ютери належать до <strong>NISQ (Noisy Intermediate-Scale Quantum)</strong>: вони мають десятки-сотні фізичних кубітів, але з високою частотою помилок.</p>
+
+            <p>Для зламу RSA-2048 за допомогою Шора потрібно:</p>
+            <ul>
+                <li>~4000 ідеальних логічних кубітів</li>
+                <li>або ~4 мільйони фізичних кубітів з квантовою корекцією помилок</li>
+            </ul>
+
+            <p>Найкращі сучасні системи (Google Willow, IBM Heron та ін.) мають ~100-1000 фізичних кубітів високої точності, але ми все ще далекі від необхідного масштабу.</p>
+
+            <blockquote>
+                <p><strong>Оцінка NIST:</strong> криптографічно значущі квантові комп'ютери можуть з'явитися протягом 10–15 років, зі значною невизначеністю в обидва боки.</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 3.6 -->
+        <section id="id-36">
+            <h2>3.6 Збирай зараз, розшифровуй потім</h2>
+
+            <p>Навіть якщо квантові комп'ютери ще <em>не існують</em> у криптографічно значущій формі, існує конкретна загроза <strong>сьогодні</strong>:</p>
+
+            <blockquote>
+                <p>Противник може <strong>збирати зараз</strong> зашифровані повідомлення (навіть якщо не може їх розшифрувати) і <strong>розшифрувати їх у майбутньому</strong>, коли матиме достатньо потужний квантовий комп'ютер.</p>
+            </blockquote>
+
+            <p>Ця атака відома як <strong>"Збирай зараз, розшифровуй потім" (Harvest Now, Decrypt Later - HNDL)</strong> або <em>store-now-decrypt-later</em>.</p>
+
+            <h4>Хто в зоні ризику:</h4>
+            <ul>
+                <li>Дипломатичні та військові комунікації з тривалим терміном секретності</li>
+                <li>Медичні, фінансові, юридичні дані з вимогами конфіденційності на десятиліття</li>
+                <li>Промислові секрети та інтелектуальна власність</li>
+            </ul>
+
+            <h4>Коли мігрувати?</h4>
+
+            <p>Якщо ваші дані повинні залишатися секретними довше, ніж залишилося часу до появи достатньо потужних квантових комп'ютерів, ви повинні мігрувати <em>зараз</em>.</p>
+
+            <p>Це головна причина, чому NIST стандартизував ML-KEM (FIPS 203) у 2024 році, і чому такі організації, як NSA, ENISA та ANSSI, рекомендують негайну міграцію для систем з високим рівнем критичності.</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Джерела</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← Попередній розділ</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">Наступний розділ →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Безкоштовна бібліотека для всіх. Усі права захищено.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'uk';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

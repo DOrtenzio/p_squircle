@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Розділ 7 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Швидка навігація">
+            <a href="index.html#featureSection">Чому</a>
+            <a href="index.html#learningPath">Маршрут</a>
+            <a href="index.html#searchSection">Путівник</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Виберіть мову">
+                    <span class="lang-current" id="langCurrent">🇺🇦 Українська</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Розділи</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Попередні вимоги</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симетрична</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асиметрична</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Ґратки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li class="active"><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безпека</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реалізації</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>07 – NTT (Числове теоретичне перетворення)</h1>
+        <p class="subtitle">Двигун, що робить ML-KEM практично застосовним</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>Зміст</h2>
+            <ul>
+                <li><a href="#id-71">7.1 Проблема: множення поліномів</a></li>
+                <li><a href="#id-72">7.2 Перетворення Фур'є та DFT</a></li>
+                <li><a href="#id-73">7.3 NTT: DFT у модульному світі</a></li>
+                <li><a href="#id-74">7.4 NTT у ML-KEM</a></li>
+                <li><a href="#id-75">7.5 Спрощений числовий приклад</a></li>
+                <li><a href="#id-76">7.6 Реалізація</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 7.1 -->
+        <section id="id-71">
+            <h2>7.1 Проблема: множення поліномів</h2>
+
+            <p>У ML-KEM основні операції включають множення поліномів у кільці <span class="math">\(R_q = \mathbb{Z}_q[X]/(X^{256}+1)\)</span>.</p>
+
+            <h3>Наївне множення</h3>
+            <p>Два поліноми степеня <span class="math">\(n-1\)</span> множаться шкільним алгоритмом зі складністю <span class="math">\(O(n^2)\)</span>.</p>
+            
+            <ul>
+                <li>Для <span class="math">\(n = 256\)</span>: близько <span class="math">\(256^2 = 65536\)</span> множень для одного добутку.</li>
+                <li>У ML-KEM-768 (<span class="math">\(k=3\)</span>) одна операція <code>Encaps</code> потребує десятків поліноміальних множень → мільйони множень наївним методом.</li>
+            </ul>
+
+            <h3>З NTT</h3>
+            <p>Складність знижується до <span class="math">\(O(n \log n)\)</span>:</p>
+            <div class="math-block">
+                \[
+                256 \cdot 8 = 2048 \text{ операцій на добуток}
+                \]
+            </div>
+            <p><strong>Прискорення:</strong> ~32×. На оптимізованому обладнанні ML-KEM-768 виконується менш ніж за 1 мс.</p>
+        </section>
+
+        <!-- Section 7.2 -->
+        <section id="id-72">
+            <h2>7.2 Перетворення Фур'є та DFT</h2>
+
+            <h3>Теорема про згортку</h3>
+            <p>Перетворення Фур'є перетворює згортку (як множення поліномів) на поточкове множення:</p>
+
+            <div class="math-block">
+                \[
+                f * g \;\longleftrightarrow\; \hat{f} \cdot \hat{g}
+                \]
+            </div>
+
+            <p><strong>Процедура:</strong></p>
+            <ol>
+                <li>Обчислити <span class="math">\(\hat{f} = \text{DFT}(f)\)</span> та <span class="math">\(\hat{g} = \text{DFT}(g)\)</span></li>
+                <li>Перемножити поточково: <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i\)</span></li>
+                <li>Виконати обернене перетворення: <span class="math">\(h = \text{DFT}^{-1}(\hat{h})\)</span></li>
+            </ol>
+
+            <p>Якщо DFT та DFT<sup>-1</sup> коштують <span class="math">\(O(n \log n)\)</span> (через БПФ), все множення коштує <span class="math">\(O(n \log n)\)</span>.</p>
+
+            <h3>Швидке перетворення Фур'є (БПФ)</h3>
+            <p>Алгоритм Кулі-Тьюкі (1965) обчислює DFT, використовуючи рекурсивну структуру:</p>
+            <div class="math-block">
+                \[
+                \text{DFT}[f] = \left(\text{DFT}[f_{\text{парні}}], \; \text{DFT}[f_{\text{непарні}}]\right) \text{ з коефіцієнтами повороту}
+                \]
+            </div>
+            <p><strong>Проблема:</strong> Стандартне БПФ використовує комплексні числа (з плаваючою комою), що вносить помилки округлення та непостійний час, роблячи його непридатним для криптографії.</p>
+        </section>
+
+        <!-- Section 7.3 -->
+        <section id="id-73">
+            <h2>7.3 NTT: DFT у модульному світі</h2>
+
+            <h3>Ідея</h3>
+            <p>NTT (Числове теоретичне перетворення) — це DFT, застосована до <span class="math">\(\mathbb{Z}_q\)</span> замість <span class="math">\(\mathbb{C}\)</span>. Замість комплексних коренів з одиниці <span class="math">\(e^{2\pi i k/n}\)</span> використовуються примітивні корені з одиниці в <span class="math">\(\mathbb{Z}_q\)</span>.</p>
+
+            <h3>Примітивні корені з одиниці за модулем q</h3>
+            <p>Елемент <span class="math">\(\omega \in \mathbb{Z}_q\)</span> є примітивним коренем <span class="math">\(n\)</span>-го степеня з одиниці, якщо:</p>
+            <div class="math-block">
+                \[
+                \omega^n \equiv 1 \pmod{q} \quad \text{і} \quad \omega^k \not\equiv 1 \pmod{q} \text{ для } 0 < k < n
+                \]
+            </div>
+            <p>Необхідна умова: <span class="math">\(n \mid (q-1)\)</span> (тобто <span class="math">\(n\)</span> ділить <span class="math">\(q-1\)</span>).</p>
+
+            <p><strong>У ML-KEM:</strong></p>
+            <ul>
+                <li><span class="math">\(q = 3329\)</span>, <span class="math">\(n = 256\)</span></li>
+                <li>Перевірка: <span class="math">\(3329 - 1 = 3328 = 256 \cdot 13\)</span> <span class="math">\(\checkmark\)</span></li>
+                <li>Отже, існують корені 256-го степеня з одиниці за модулем 3329.</li>
+                <li>Примітивний корінь, що використовується в FIPS 203: <span class="math">\(\omega = 17\)</span> (оскільки <span class="math">\(17^{128} \equiv -1 \pmod{3329}\)</span>, корінь, що використовується для негациклічного NTT, дорівнює <span class="math">\(\zeta = 17\)</span>).</li>
+            </ul>
+
+            <h3>Визначення NTT</h3>
+            <div class="math-block">
+                \[
+                \hat{f}_i = \text{NTT}(f)_i = \sum_{j=0}^{n-1} f_j \cdot \omega^{ij} \pmod{q}
+                \]
+            </div>
+            <p><strong>Обернене NTT:</strong></p>
+            <div class="math-block">
+                \[
+                f_j = \text{NTT}^{-1}(\hat{f})_j = n^{-1} \sum_{i=0}^{n-1} \hat{f}_i \cdot \omega^{-ij} \pmod{q}
+                \]
+            </div>
+            <p>де <span class="math">\(n^{-1} = 256^{-1} \bmod 3329 = 3303\)</span>.</p>
+
+            <h3>Ключові властивості</h3>
+            <ul>
+                <li><strong>Точне:</strong> немає помилок округлення, все в <span class="math">\(\mathbb{Z}_q\)</span></li>
+                <li><strong>Ефективне:</strong> <span class="math">\(O(n \log n)\)</span> як БПФ</li>
+                <li><strong>Постійний час:</strong> може бути реалізоване без розгалужень на секретних даних (стійкість до побічних каналів)</li>
+            </ul>
+        </section>
+
+        <!-- Section 7.4 -->
+        <section id="id-74">
+            <h2>7.4 NTT у ML-KEM</h2>
+
+            <h3>Негациклічне NTT</h3>
+            <p>У ML-KEM редукція виконується не за модулем <span class="math">\(X^n - 1\)</span> (циклічна), а за модулем <span class="math">\(X^n + 1\)</span> (негациклічна). У негациклічній згортці "загорнуті" члени змінюють знак. Це потребує варіанту класичного NTT зі скоригованими коефіцієнтами повороту.</p>
+
+            <p>NTT у FIPS 203 застосовує попереднє скручування зі степенями <span class="math">\(\zeta = 17\)</span>:</p>
+            <div class="math-block">
+                \[
+                \tilde{f}_j = f_j \cdot \zeta^j \bmod q \quad \text{перед класичним NTT}
+                \]
+            </div>
+
+            <h3>Операції ML-KEM у домені NTT</h3>
+            <p>Після перетворення поліноми перебувають у домені NTT. Операції стають елементарними:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Операція</th>
+                        <th>У домені NTT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Множення <span class="math">\(f \cdot g\)</span></td>
+                        <td>для кожного <span class="math">\(i\)</span> <span class="math">\(\hat{f}_i \cdot \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Додавання <span class="math">\(f + g\)</span></td>
+                        <td>для кожного <span class="math">\(i\)</span> <span class="math">\(\hat{f}_i + \hat{g}_i\)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Множення матриці на вектор <span class="math">\(A \cdot s\)</span></td>
+                        <td><span class="math">\(k^2\)</span> поточкових множень та <span class="math">\(k^2\)</span> поточкових додавань</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Публічний ключ <span class="math">\(A\)</span> генерується та зберігається вже в домені NTT, уникаючи перерахунку NTT щоразу.</p>
+
+            <h3>Повний потік KeyGen</h3>
+            <div class="flowchart-container">
+                <pre style="font-family: monospace; background: #f4f4f4; padding: 1rem; border-radius: 4px;">
+зерно 
+  │
+  ├──► SHAKE128 ──► A_hat (вже в NTT)
+  │
+  └──► Біноміальне семплювання ──► s, e
+         │              │
+         ▼              ▼
+     s_hat = NTT(s)   e_hat = NTT(e)
+         │              │
+         └──────┬───────┘
+                ▼
+     t_hat = A_hat * s_hat + e_hat
+                │
+                ▼
+          Публічний ключ (t_hat)
+                </pre>
+            </div>
+            <p>Вихід <code>t_hat</code> — це публічний ключ (вже в NTT). Уникається NTT<sup>-1</sup> для <span class="math">\(t\)</span>.</p>
+        </section>
+
+        <!-- Section 7.5 -->
+        <section id="id-75">
+            <h2>7.5 Спрощений числовий приклад</h2>
+
+            <p>Використовуємо <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, <span class="math">\(\omega = 2\)</span> (корінь 4-го степеня з 1 за модулем 5: <span class="math">\(2^4 = 16 \equiv 1 \pmod 5\)</span>).</p>
+
+            <p><strong>Поліноми:</strong></p>
+            <div class="math-block">
+                \[
+                f = 1 + 2X + 3X^2 + 4X^3 \quad \Rightarrow \quad \mathbf{f} = (1, 2, 3, 4)
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                g = 1 + X + X^2 + X^3 \quad \Rightarrow \quad \mathbf{g} = (1, 1, 1, 1)
+                \]
+            </div>
+
+            <p><strong>NTT від f:</strong></p>
+            <ul>
+                <li><span class="math">\(\hat{f}_0 = 1 + 2 + 3 + 4 = 10 \equiv 0\)</span></li>
+                <li><span class="math">\(\hat{f}_1 = 1 + 2 \cdot 2 + 3 \cdot 4 + 4 \cdot 8 = 49 \equiv 4\)</span></li>
+                <li><span class="math">\(\hat{f}_2 = 1 + 2 \cdot 4 + 3 \cdot 16 + 4 \cdot 64 = 313 \equiv 3\)</span></li>
+                <li><span class="math">\(\hat{f}_3 = 1 + 2 \cdot 8 + 3 \cdot 64 + 4 \cdot 512 = 2257 \equiv 2\)</span></li>
+            </ul>
+
+            <p><strong>NTT від g:</strong> <span class="math">\(\hat{g}_i = \sum_j \omega^{ij} \pmod 5\)</span>. Для <span class="math">\(i=0\)</span>: <span class="math">\(4 \equiv 4\)</span>; для <span class="math">\(i \neq 0\)</span>: сума коренів <span class="math">\(= 0\)</span>.</p>
+
+            <p><strong>Поточкове множення:</strong> <span class="math">\(\hat{h}_i = \hat{f}_i \cdot \hat{g}_i \pmod 5\)</span>.</p>
+            <p><strong>Обернене NTT від <span class="math">\(\hat{h}\)</span>:</strong> дає добуток <span class="math">\(f \cdot g \bmod (X^4-1, 5)\)</span>.</p>
+
+            <blockquote>
+                <p><strong>Примітка:</strong> цей приклад використовує редукцію за модулем <span class="math">\(X^4-1\)</span> (циклічну). ML-KEM використовує <span class="math">\(X^n+1\)</span> (негациклічну) з варіантом, описаним у розділі 7.4.</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 7.6 -->
+        <section id="id-76">
+            <h2>7.6 Реалізація</h2>
+
+            <h3>Псевдокод Кулі-Тьюкі для NTT</h3>
+            <pre><code class="language-python">def ntt(f, q, omega):
+    """
+    Ітеративне NTT in-place (Кулі-Тьюкі).
+    f: список з n коефіцієнтів у Z_q
+    q: простий модуль
+    omega: примітивний корінь n-го степеня з одиниці mod q
+    """
+    n = len(f)
+    # перестановка bit-reversal
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            f[i], f[j] = f[j], f[i]
+
+    # операції "метелик"
+    length = 2
+    while length <= n:
+        w = pow(omega, n // length, q)
+        for i in range(0, n, length):
+            wn = 1
+            for k in range(length // 2):
+                u = f[i + k]
+                v = f[i + k + length // 2] * wn % q
+                f[i + k] = (u + v) % q
+                f[i + k + length // 2] = (u - v) % q
+                wn = wn * w % q
+        length <<= 1
+    return f</code></pre>
+
+            <h3>Еталонна реалізація</h3>
+            <p>FIPS 203 визначає точну реалізацію NTT та попередньо обчислену таблицю коренів <span class="math">\(\zeta^{br(i)}\)</span> (де <span class="math">\(br\)</span> — перестановка бітового обернення).</p>
+            
+            <p>Оптимізовані реалізації на асемблері/SIMD доступні в:</p>
+            <ul>
+                <li><code>liboqs</code> (C з AVX2)</li>
+                <li><code>pqclean</code> (переносимий C)</li>
+                <li><code>kyber</code> еталонна реалізація (C)</li>
+            </ul>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Джерела</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024), Розділи 4.3 та 5 – визначення NTT та операції в <span class="math">\(R_q\)</span></li>
+                <li>Cooley, J.W., Tukey, J.W. (1965) – <em>An Algorithm for the Machine Calculation of Complex Fourier Series</em></li>
+                <li>Longa, P., Naehrig, M. (2016) – <em>Speeding up the Number Theoretic Transform for Faster Ideal Lattice-Based Cryptography</em></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber</em>, IEEE EuroS&P – Розділ 6 (реалізація NTT)</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="6.html" class="nav-btn">← Попередній розділ</a>
+            <span class="nav-label">07 / 10</span>
+            <a href="8.html" class="nav-btn">Наступний розділ →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Безкоштовна бібліотека для всіх. Усі права захищено.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'uk';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/7.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

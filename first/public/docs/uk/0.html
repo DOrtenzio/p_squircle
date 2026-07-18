@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Розділ 0 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Швидка навігація">
+            <a href="index.html#featureSection">Чому</a>
+            <a href="index.html#learningPath">Маршрут</a>
+            <a href="index.html#searchSection">Путівник</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Виберіть мову">
+                    <span class="lang-current" id="langCurrent">🇺🇦 Українська</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Розділи</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> Попередні вимоги</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симетрична</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асиметрична</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Ґратки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безпека</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реалізації</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – Математичні попередні вимоги</h1>
+                <p class="subtitle">Необхідні інструменти для розуміння постквантової криптографії</p>
+
+                <!-- Index -->
+                <div class="toc">
+                    <h2>Зміст</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 Модульна арифметика</a></li>
+                        <li><a href="#id-02">0.2 Лінійна алгебра: вектори та матриці</a></li>
+                        <li><a href="#id-03">0.3 Поліноми</a></li>
+                        <li><a href="#id-04">0.4 Алгебраїчні структури: групи, кільця, поля</a></li>
+                        <li><a href="#id-05">0.5 Криптографічні хеш-функції</a></li>
+                        <li><a href="#id-06">0.6 Ймовірність та розподіл шуму</a></li>
+                        <li><a href="#id-07">0.7 Обчислювальна складність</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 Модульна арифметика</h2>
+
+                    <h3>Що таке модуль</h3>
+                    <p>Операція <span class="math">\(a \bmod m\)</span> повертає <strong>остачу</strong> від ділення <span class="math">\(a\)</span> на <span class="math">\(m\)</span>.</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{тому що } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{тому що } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>Угода:</strong> у криптографії результати за модулем <span class="math">\(q\)</span> завжди знаходяться в інтервалі <span class="math">\([0, q-1]\)</span>.</p>
+                    </blockquote>
+
+                    <h3>Арифметика в <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Позначимо через <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> множину цілих чисел за модулем <span class="math">\(q\)</span>. У цій множині додавання, віднімання та множення завжди виконуються за модулем <span class="math">\(q\)</span>:</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>Мультиплікативний обернений</h3>
+                    <p>У звичайній математиці обернене число потрібне для отримання <span class="math">\(1\)</span> шляхом множення (наприклад, обернене до <span class="math">\(5\)</span> дорівнює <span class="math">\(\frac{1}{5}\)</span>, тому що <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>). У модульній арифметиці дробів не існує. Оберненим до числа <span class="math">\(a\)</span> має бути ціле число <span class="math">\(b\)</span>, яке при множенні на <span class="math">\(a\)</span> дає остачу 1 за модулем <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>Правило існування</h4>
+                    <p>Обернене до <span class="math">\(a\)</span> існує не завжди. Його можна знайти тоді і тільки тоді, коли <span class="math">\(a\)</span> та <span class="math">\(q\)</span> не мають спільних дільників (тобто якщо їх Найбільший Спільний Дільник дорівнює 1: <span class="math">\(\gcd(a, q) = 1\)</span>).</p>
+                    <ul>
+                        <li><strong>Ключова властивість:</strong> Якщо модуль <span class="math">\(q\)</span> є простим числом, то всі числа множини (крім нуля) завжди мають гарантований обернений.</li>
+                    </ul>
+
+                    <h4>Практичний приклад: Обчислення <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>Запис <span class="math">\(5^{-1}\)</span> означає: "Знайдіть обернене до 5 за модулем 13". Шукаємо число <span class="math">\(b\)</span> таке, що <span class="math">\(5 \cdot b\)</span> дає остачу <span class="math">\(1\)</span> при діленні на <span class="math">\(13\)</span>:</p>
+                    <ol>
+                        <li>Пробуємо множити <span class="math">\(5\)</span> на різні цілі числа.</li>
+                        <li>Обираючи <span class="math">\(b = 8\)</span>, отримуємо: <span class="math">\(5 \cdot 8 = 40\)</span>.</li>
+                        <li>Ділимо <span class="math">\(40\)</span> на <span class="math">\(13\)</span>: 13 вміщується 3 рази (<span class="math">\(13 \cdot 3 = 39\)</span>) з остачею 1.</li>
+                    </ol>
+                    <p><strong>Відповідь — 8</strong>, тому що <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>.</p>
+
+                    <h3>Модульне піднесення до степеня</h3>
+                    <p>Модульне піднесення до степеня полягає в обчисленні остачі від ділення степеня: <span class="math">\(a^k \pmod m\)</span>. Ця операція є основою сучасної криптографії (наприклад, алгоритму RSA). Вона використовується тому що є "одностороннім годинником": обчислити результат дуже легко, але майже неможливо пройти зворотний шлях (знайти показник <span class="math">\(k\)</span> за результатом).</p>
+
+                    <h4>Проблема великих чисел</h4>
+                    <p>Якщо нам потрібно обчислити <span class="math">\(5^{11} \pmod{13}\)</span>, прямий розрахунок неможливий для комп'ютера, якщо показник має сотні цифр. Число <span class="math">\(5^{11}\)</span> стало б занадто великим для пам'яті.</p>
+
+                    <h4>Рішення: Алгоритм Square-and-Multiply</h4>
+                    <p>Цей алгоритм дозволяє обчислити результат за дуже малу кількість кроків (<span class="math">\(O(\log k)\)</span> множень), завжди працюючи з малими числами та не дозволяючи степеню необмежено зростати.</p>
+
+                    <details>
+                        <summary><strong>Як це працює на практиці (Приклад: <span class="math">\(5^{11} \bmod 13\)</span>)</strong></summary>
+                        <p>Переведемо показник у двійкову систему: <span class="math">\(11 = 8 + 2 + 1\)</span>. Замість того щоб множити <span class="math">\(5\)</span> саме на себе <span class="math">\(11\)</span> разів, ми обчислюємо квадрати степенів крок за кроком, одразу зменшуючи результат за модулем <span class="math">\(13\)</span>:</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{Основа: } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{Квадрат: } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{Квадрат квадрата: } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{Наступний квадрат: } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>Тепер об'єднуємо лише ті частини, які складають наш показник <span class="math">\(11\)</span> (тобто <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>):</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>Ділимо <span class="math">\(60\)</span> на <span class="math">\(13\)</span>: <span class="math">\(13\)</span> вміщується <span class="math">\(4\)</span> рази (<span class="math">\(52\)</span>) з остачею <span class="math">\(8\)</span>.</p>
+                        <p><strong>Кінцевий результат:</strong> <span class="math">\(8\)</span> (ми зробили лише 4 кроки замість 11).</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 Лінійна алгебра: вектори та матриці</h2>
+
+                    <h3>Вектори</h3>
+                    <p>Вектор <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> — це впорядкований список з <span class="math">\(n\)</span> цілих чисел, обчислених за модулем <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>При операціях над векторами кожен результат зменшується за модулем <span class="math">\(q\)</span>.</p>
+
+                    <h4>Практичний приклад</h4>
+                    <p>З <span class="math">\(q = 13\)</span>:</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>Додавання векторів</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>Скалярний добуток</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>Обчислення:</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>Сума: <span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>Зведення за модулем 13: <span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>Матриці</h3>
+                    <p>Матриця <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> — це масив рядків і стовпців.</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="Приклад матриці" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>(На практиці матриця <span class="math">\(A\)</span> в ML-KEM має розміри <span class="math">\(k \times k\)</span> з <span class="math">\(k = 3, 4\)</span> або <span class="math">\(5\)</span> і генерується з випадкового зерна через SHAKE.)</em></p>
+
+                    <h4>Добуток матриці на вектор</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>Приклад</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>Детальні кроки</summary>
+                        <p>Перший рядок: <span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>Другий рядок: <span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>Зведення за модулем 13: <span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>Отже: <span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>Нескінченна норма</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>Ця норма вимірює компоненту з найбільшим абсолютним значенням. У контексті MLWE вектори помилок повинні мати дуже малу норму.</p>
+                    <details>
+                        <summary>Практичні приклади</summary>
+                        <p><strong>Допустимий випадок:</strong> <span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>Недопустимий випадок:</strong> <span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 Поліноми</h2>
+
+                    <h3>Поліноми з коефіцієнтами в <span class="math">\(\mathbb{Z}_q\)</span></h3>
+                    <p>Поліном у <span class="math">\(\mathbb{Z}_q[X]\)</span> має вигляд:</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>де кожен <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>.</p>
+
+                    <h4>Додавання поліномів</h4>
+                    <p>Додаються коефіцієнти при однакових степенях за модулем <span class="math">\(q\)</span>:</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>Множення поліномів та зведення</h4>
+                    <p>Добуток двох поліномів степеня <span class="math">\(\leq n-1\)</span> може мати степінь до <span class="math">\(2n-2\)</span>. Щоб зберегти компактність, виконується зведення за спеціальним поліномом.</p>
+                    <p>У ML-KEM використовується <span class="math">\(X^n + 1\)</span> з <span class="math">\(n = 256\)</span>. Правило зведення:</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>Тому щоразу, коли в добутку з'являється <span class="math">\(X^{256}\)</span>, його замінюють на <span class="math">\(-1\)</span>.</p>
+
+                    <h4>Простий приклад</h4>
+                    <p>З <span class="math">\(n = 4\)</span>, <span class="math">\(q = 5\)</span>, за модулем <span class="math">\(X^4+1\)</span>:</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 Алгебраїчні структури: групи, кільця, поля</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Структура</th>
+                                <th>Операції</th>
+                                <th>Ключові властивості</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Група</strong></td>
+                                <td>одна (+)</td>
+                                <td>замкненість, асоціативність, нейтральний елемент, обернений елемент</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Кільце</strong></td>
+                                <td>дві (+, ×)</td>
+                                <td>абелева група за +, напівгрупа за ×</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Поле</strong></td>
+                                <td>дві (+, ×)</td>
+                                <td>кільце з мультиплікативним оберненим для всіх ≠ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> як поле</h3>
+                    <p>Якщо <span class="math">\(q\)</span> просте, то <span class="math">\(\mathbb{Z}_q\)</span> <strong>є полем</strong>: кожен ненульовий елемент має мультиплікативний обернений. У ML-KEM <span class="math">\(q = 3329\)</span> просте → <span class="math">\(\mathbb{Z}_{3329}\)</span> є полем.</p>
+
+                    <h3>Кільце <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>Це кільце (не поле, тому що не всі поліноми мають обернений), але воно має корисні для криптографії властивості:</p>
+                    <ul>
+                        <li>кожен поліном має рівно 256 коефіцієнтів;</li>
+                        <li>множення ефективне через NTT (див. файл 07);</li>
+                        <li>поліном <span class="math">\(X^{256}+1\)</span> є <em>циклотомічним</em>, що забезпечує хороші властивості безпеки.</li>
+                    </ul>
+                    <details>
+                        <summary>Що означає, що <span class="math">\(X^{256}+1\)</span> є циклотомічним?</summary>
+                        <p>В алгебрі циклотомічний поліном — це спеціальний поліном, коренями якого є <strong>примітивні корені з одиниці</strong> (тобто комплексні числа, які при піднесенні до певного степеня дають <span class="math">\(1\)</span>).</p>
+                        <p>У конкретному випадку <span class="math">\(X^{256}+1\)</span> ця властивість дає три величезні переваги в криптографії (як у ML-KEM):</p>
+                        <ul>
+                            <li><strong>Непривідність</strong>: Поліном не можна розкласти на менші поліноми з цілими коефіцієнтами. Це запобігає можливості зловмисника "розбити" математичну задачу на легші для розв'язання частини.</li>
+                            <li><strong>Надшвидке множення (NTT)</strong>: Дозволяє використовувати <em>Числове теоретичне перетворення</em> (NTT). Завдяки цьому алгоритму множення поліномів переходить від складності <span class="math">\(O(n^2)\)</span> до лише <span class="math">\(O(n \log n)\)</span>, роблячи постквантову криптографію неймовірно швидкою.</li>
+                            <li><strong>Рівномірна безпека</strong>: Розподіляє помилку (шум) ідеально симетрично по всіх 256 коефіцієнтах під час операцій, усуваючи структурні слабкості, які хакери могли б використовувати.</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 Криптографічні хеш-функції</h2>
+                    <p>Хеш-функція <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> відображає вхідні дані довільної довжини у вихідні дані фіксованої довжини.</p>
+                    <p><strong>Необхідні властивості в криптографії:</strong></p>
+                    <ul>
+                        <li><em>Стійкість до знаходження прообразу:</em> за <span class="math">\(H(x)\)</span> не можна відновити <span class="math">\(x\)</span></li>
+                        <li><em>Стійкість до колізій:</em> знайти <span class="math">\(x \neq y\)</span> такі, що <span class="math">\(H(x) = H(y)\)</span>, обчислювально неможливо</li>
+                        <li><em>Лавинний ефект:</em> зміна одного біта входу змінює ~50% виходу</li>
+                    </ul>
+
+                    <h3>SHA-3 та SHAKE</h3>
+                    <p>ML-KEM використовує виключно примітиви сімейства <strong>SHA-3</strong> (стандартизовані NIST у 2015 році):</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Функція</th>
+                                <th>Вихід</th>
+                                <th>Використання в ML-KEM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>фіксовані 256 біт</td>
+                                <td>загальне хешування</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>фіксовані 512 біт</td>
+                                <td>хешування ключів</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>змінна довжина</td>
+                                <td>генерація <span class="math">\(A\)</span> (XOF)</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>змінна довжина</td>
+                                <td>похідні ключів</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE — це <strong>XOF (eXtendable Output Function)</strong>: вона виробляє стільки байтів, скільки потрібно, з заданих вхідних даних. У ML-KEM <code>SHAKE128(seed)</code> генерує всю публічну матрицю <span class="math">\(A\)</span> з 32-байтового зерна.</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 Ймовірність та розподіл шуму</h2>
+
+                    <h3>Центрований біноміальний розподіл <span class="math">\(B_\eta\)</span></h3>
+                    <p>У ML-KEM шум не гауссівський, а <strong>центрований біноміальний</strong>. Семплювання працює так:</p>
+                    <ol>
+                        <li>Вибрати <span class="math">\(2\eta\)</span> рівномірних бітів: <span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>Повернути <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                    </ol>
+                    <p>Результат — ціле число в <span class="math">\([-\eta, +\eta]\)</span> з розподілом, приблизно гауссівським навколо 0.</p>
+                    <p><strong>Чому не справжній гауссівський?</strong> Біноміальний розподіл простіше семплювати <em>за постійний час</em> (стійкий до побічних каналів), а безпека аналогічна.</p>
+                    <p>Для ML-KEM-768: <span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>. Значення шуму будуть у <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span>.</p>
+
+                    <h3>Знехтуваність</h3>
+                    <p>Функція <span class="math">\(f(\lambda)\)</span> називається <strong>знехтуваною</strong>, якщо для будь-якого полінома <span class="math">\(p(\cdot)\)</span> існує <span class="math">\(\lambda_0\)</span> таке, що для будь-якого <span class="math">\(\lambda > \lambda_0\)</span>:</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>На практиці: вона спадає швидше будь-якого поліноміального оберненого. Ймовірності помилок у ML-KEM є знехтуваними за параметром безпеки <span class="math">\(\lambda\)</span>.</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 Обчислювальна складність</h2>
+
+                    <h3>Позначення</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>: асимптотичний порядок величини (верхня межа)</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>: нижня межа</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>: точна межа</li>
+                    </ul>
+
+                    <h3>Релевантні класи</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Клас</th>
+                                <th>Значення</th>
+                                <th>Приклади</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>Розв'язне за поліноміальний час</td>
+                                <td>множення, сортування</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>Перевірне за поліноміальний час</td>
+                                <td>SAT, TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-складні</strong></td>
+                                <td>Принаймні не легші за NP</td>
+                                <td>факторизація (імовірно)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Криптографічні задачі та їх складність</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Задача</th>
+                                <th>Класична складність</th>
+                                <th>Квантова складність</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Факторизація</td>
+                                <td>субекспоненційна</td>
+                                <td><strong>поліноміальна</strong> (Шор)</td>
+                            </tr>
+                            <tr>
+                                <td>Дискретний логарифм</td>
+                                <td>субекспоненційна</td>
+                                <td><strong>поліноміальна</strong> (Шор)</td>
+                            </tr>
+                            <tr>
+                                <td>SVP (ґратки)</td>
+                                <td>експоненційна</td>
+                                <td>експоненційна (немає відомого прискорення)</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>експоненційна</td>
+                                <td>експоненційна (немає відомого прискорення)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>Ця таблиця мотивує все існування постквантової криптографії.</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>Джерела та поглиблене вивчення</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em> (Розділи 1–5)</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em> (безкоштовно онлайн)</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">Відео: Алгебраїчні кільця</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – розділи 2–3</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← Попередній розділ</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">Наступний розділ →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Безкоштовна бібліотека для всіх. Усі права захищено.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'uk';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

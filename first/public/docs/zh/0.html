@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第0章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="快速导航">
+            <a href="index.html#featureSection">为什么</a>
+            <a href="index.html#learningPath">学习路径</a>
+            <a href="index.html#searchSection">指南</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="选择语言">
+                    <span class="lang-current" id="langCurrent">🇨🇳 中文</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章节</h3>
+            <ul>
+                <li class="active"><a href="0.html"><span class="chapter-number">00</span> 预备知识</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 对称加密</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 非对称加密</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor算法</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 安全性</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 实现</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+            <article>
+                <h1>00 – 数学预备知识</h1>
+                <p class="subtitle">理解后量子密码学所需的基本工具</p>
+
+                <!-- Index -->
+                <div class="toc">
+                    <h2>目录</h2>
+                    <ul>
+                        <li><a href="#id-01">0.1 模算术</a></li>
+                        <li><a href="#id-02">0.2 线性代数：向量与矩阵</a></li>
+                        <li><a href="#id-03">0.3 多项式</a></li>
+                        <li><a href="#id-04">0.4 代数结构：群、环、域</a></li>
+                        <li><a href="#id-05">0.5 密码学哈希函数</a></li>
+                        <li><a href="#id-06">0.6 概率与噪声分布</a></li>
+                        <li><a href="#id-07">0.7 计算复杂性</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 0.1 -->
+                <section id="id-01">
+                    <h2>0.1 模算术</h2>
+
+                    <h3>什么是模</h3>
+                    <p>运算 <span class="math">\(a \bmod m\)</span> 返回 <span class="math">\(a\)</span> 除以 <span class="math">\(m\)</span> 的 <strong>余数</strong>。</p>
+                    <div class="example">
+                        <p><span class="math">\(17 \bmod 5 = 2 \qquad \text{因为 } 17 = 3 \cdot 5 + 2\)</span></p>
+                        <p><span class="math">\(-3 \bmod 13 = 10 \qquad \text{因为 } -3 + 13 = 10\)</span></p>
+                    </div>
+                    <blockquote>
+                        <p><strong>约定：</strong>在密码学中，模 <span class="math">\(q\)</span> 的结果始终在区间 <span class="math">\([0, q-1]\)</span> 内。</p>
+                    </blockquote>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> 中的算术</h3>
+                    <p>我们用 <span class="math">\(\mathbb{Z}_q = \{0, 1, \ldots, q-1\}\)</span> 表示模 <span class="math">\(q\)</span> 的整数集合。在这个集合中，加法、减法和乘法总是按模 <span class="math">\(q\)</span> 进行归约：</p>
+                    <div class="example">
+                        <p><span class="math">\(7 + 9 \equiv 3 \pmod{13}\)</span></p>
+                        <p><span class="math">\(3 \cdot 5 \equiv 2 \pmod{13}\)</span></p>
+                    </div>
+
+                    <h3>乘法逆元</h3>
+                    <p>在普通数学中，一个数的逆元用于通过乘法得到 <span class="math">\(1\)</span>（例如，<span class="math">\(5\)</span> 的逆元是 <span class="math">\(\frac{1}{5}\)</span>，因为 <span class="math">\(5 \cdot \frac{1}{5} = 1\)</span>）。在模算术中，分数不存在。数 <span class="math">\(a\)</span> 的逆元必须是一个整数 <span class="math">\(b\)</span>，使得 <span class="math">\(a\)</span> 乘以 <span class="math">\(b\)</span> 后模 <span class="math">\(q\)</span> 的余数为 1：</p>
+                    <p><span class="math">\(a \cdot b \equiv 1 \pmod{q}\)</span></p>
+
+                    <h4>存在性规则</h4>
+                    <p><span class="math">\(a\)</span> 的逆元并不总是存在。当且仅当 <span class="math">\(a\)</span> 和 <span class="math">\(q\)</span> 没有公因数（即它们的最大公约数为 1：<span class="math">\(\gcd(a, q) = 1\)</span>）时，才能找到逆元。</p>
+                    <ul>
+                        <li><strong>关键性质：</strong>如果模 <span class="math">\(q\)</span> 是素数，则集合中所有数（零除外）都保证有逆元。</li>
+                    </ul>
+
+                    <h4>实际示例：计算 <span class="math">\(5^{-1} \bmod 13\)</span></h4>
+                    <p>记法 <span class="math">\(5^{-1}\)</span> 的意思是："找出 5 模 13 的逆元"。我们寻找一个数 <span class="math">\(b\)</span>，使得 <span class="math">\(5 \cdot b\)</span> 除以 <span class="math">\(13\)</span> 的余数为 <span class="math">\(1\)</span>：</p>
+                    <ol>
+                        <li>尝试将 <span class="math">\(5\)</span> 乘以各种整数。</li>
+                        <li>选择 <span class="math">\(b = 8\)</span>，得到：<span class="math">\(5 \cdot 8 = 40\)</span>。</li>
+                        <li>将 <span class="math">\(40\)</span> 除以 <span class="math">\(13\)</span>：13 可以整除 3 次（<span class="math">\(13 \cdot 3 = 39\)</span>），余数为 1。</li>
+                    </ol>
+                    <p><strong>答案是 8</strong>，因为 <span class="math">\(5 \cdot 8 = 40 \equiv 1 \pmod{13}\)</span>。</p>
+
+                    <h3>模幂运算</h3>
+                    <p>模幂运算是计算幂的除法余数：<span class="math">\(a^k \pmod m\)</span>。这个运算是现代密码学（如 RSA 算法）的基石。它之所以被使用，是因为它是一个"单向钟表"：计算结果非常容易，但反向操作（从结果找出指数 <span class="math">\(k\)</span>）几乎不可能。</p>
+
+                    <h4>大数问题</h4>
+                    <p>如果我们需要计算 <span class="math">\(5^{11} \pmod{13}\)</span>，当指数有数百位时，直接计算对计算机来说是不可能的。数字 <span class="math">\(5^{11}\)</span> 会变得太大而无法存入内存。</p>
+
+                    <h4>解决方案：平方-乘算法</h4>
+                    <p>该算法只需很少的步骤（<span class="math">\(O(\log k)\)</span> 次乘法）即可计算结果，始终使用较小的数字，避免幂无限制地增长。</p>
+
+                    <details>
+                        <summary><strong>实际工作原理（示例：<span class="math">\(5^{11} \bmod 13\)</span>）</strong></summary>
+                        <p>将指数转换为二进制：<span class="math">\(11 = 8 + 2 + 1\)</span>。与其将 <span class="math">\(5\)</span> 自乘 <span class="math">\(11\)</span> 次，我们逐步计算平方幂，并立即将结果按模 <span class="math">\(13\)</span> 归约：</p>
+                        <div class="math-block">
+                            \[
+                            \begin{aligned}
+                            \text{基数： } & 5^1 \equiv 5 \pmod{13} \\
+                            \text{平方： } & 5^2 = 25 \equiv 12 \pmod{13} \\
+                            \text{平方的平方： } & 5^4 = 12^2 = 144 \equiv 1 \pmod{13} \\
+                            \text{下一个平方： } & 5^8 = 1^2 = 1 \pmod{13}
+                            \end{aligned}
+                            \]
+                        </div>
+                        <p>现在只组合构成我们指数 <span class="math">\(11\)</span> 的部分（即 <span class="math">\(5^8 \cdot 5^2 \cdot 5^1\)</span>）：</p>
+                        <p><span class="math">\(5^{11} = 5^8 \cdot 5^2 \cdot 5^1 \equiv 1 \cdot 12 \cdot 5 = 60 \pmod{13}\)</span></p>
+                        <p>将 <span class="math">\(60\)</span> 除以 <span class="math">\(13\)</span>：<span class="math">\(13\)</span> 可以整除 <span class="math">\(4\)</span> 次（<span class="math">\(52\)</span>），余数为 <span class="math">\(8\)</span>。</p>
+                        <p><strong>最终结果：</strong><span class="math">\(8\)</span>（我们只用了 4 步，而不是 11 步）。</p>
+                    </details>
+                </section>
+
+                <!-- Section 0.2 -->
+                <section id="id-02">
+                    <h2>0.2 线性代数：向量与矩阵</h2>
+
+                    <h3>向量</h3>
+                    <p>向量 <span class="math">\(\mathbf{v} \in \mathbb{Z}_q^n\)</span> 是按模 <span class="math">\(q\)</span> 计算的 <span class="math">\(n\)</span> 个整数的有序列表：</p>
+                    <p><span class="math">\(\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}\)</span></p>
+                    <p>在向量运算中，每个结果都按模 <span class="math">\(q\)</span> 归约。</p>
+
+                    <h4>实际示例</h4>
+                    <p>取 <span class="math">\(q = 13\)</span>：</p>
+                    <p><span class="math">\(\mathbf{u} = \begin{pmatrix} 5 \\ 9 \\ 2 \end{pmatrix} \qquad \mathbf{v} = \begin{pmatrix} 8 \\ 7 \\ 4 \end{pmatrix}\)</span></p>
+
+                    <h4>向量加法</h4>
+                    <p><span class="math">\(\mathbf{u} + \mathbf{v} = \begin{pmatrix} 5+8 \\ 9+7 \\ 2+4 \end{pmatrix} = \begin{pmatrix} 13 \\ 16 \\ 6 \end{pmatrix} \equiv \begin{pmatrix} 0 \\ 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <ul>
+                        <li><span class="math">\(5+8=13 \equiv 0 \pmod{13}\)</span></li>
+                        <li><span class="math">\(9+7=16 \equiv 3 \pmod{13}\)</span></li>
+                        <li><span class="math">\(2+4=6 \equiv 6 \pmod{13}\)</span></li>
+                    </ul>
+
+                    <h4>点积</h4>
+                    <p><span class="math">\(\langle \mathbf{u}, \mathbf{v} \rangle = (u_1 v_1) + (u_2 v_2) + (u_3 v_3) \pmod{13}\)</span></p>
+                    <p>计算：</p>
+                    <ul>
+                        <li><span class="math">\(5 \cdot 8 = 40\)</span></li>
+                        <li><span class="math">\(9 \cdot 7 = 63\)</span></li>
+                        <li><span class="math">\(2 \cdot 4 = 8\)</span></li>
+                    </ul>
+                    <p>和：<span class="math">\(40 + 63 + 8 = 111\)</span></p>
+                    <p>模 13 归约：<span class="math">\(111 \equiv 7 \pmod{13}\)</span></p>
+
+                    <h3>矩阵</h3>
+                    <p>矩阵 <span class="math">\(A \in \mathbb{Z}_q^{m \times n}\)</span> 是一个行和列的数组。</p>
+                    <p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUylhLIeWCk1HRKzUcDha2RsBQmNSTX52xoQb0mxNvaQ&s=10" alt="矩阵示例" style="max-width:100%; border-radius: 16px; margin: 0.5rem 0;" /></p>
+                    <p><em>（在实际应用中，ML-KEM 中的矩阵 <span class="math">\(A\)</span> 的维度为 <span class="math">\(k \times k\)</span>，其中 <span class="math">\(k = 3, 4\)</span> 或 <span class="math">\(5\)</span>，通过 SHAKE 从随机种子生成。）</em></p>
+
+                    <h4>矩阵-向量乘法</h4>
+                    <p><span class="math">\((\mathbf{A} \mathbf{v})_i = \sum_{j=1}^{n} A_{ij} v_j \pmod{q}\)</span></p>
+
+                    <h4>示例</h4>
+                    <p><span class="math">\(\begin{pmatrix} 4 & 7 \\ 9 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 \\ -7 \end{pmatrix} \equiv \begin{pmatrix} 3 \\ 6 \end{pmatrix} \pmod{13}\)</span></p>
+                    <details>
+                        <summary>详细步骤</summary>
+                        <p>第一行：<span class="math">\((4 \cdot -1) + (7 \cdot 1) = 3\)</span></p>
+                        <p>第二行：<span class="math">\((9 \cdot -1) + (2 \cdot 1) = -7\)</span></p>
+                        <p>模 13 归约：<span class="math">\(-7 + 13 = 6\)</span></p>
+                        <p>因此：<span class="math">\(-7 \equiv 6 \pmod{13}\)</span></p>
+                    </details>
+
+                    <h3>无穷范数</h3>
+                    <p><span class="math">\(\|\mathbf{v}\|_\infty = \max_i |v_i|\)</span></p>
+                    <p>这个范数度量绝对值最大的分量。在 MLWE 的上下文中，错误向量的范数必须非常小。</p>
+                    <details>
+                        <summary>实际示例</summary>
+                        <p><strong>有效情况：</strong><span class="math">\(\mathbf{e} = \begin{pmatrix} 2 \\ -1 \\ 0 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{e}\|_\infty = 2\)</span></p>
+                        <p><strong>无效情况：</strong><span class="math">\(\mathbf{v} = \begin{pmatrix} 3 \\ -7 \end{pmatrix}\)</span></p>
+                        <p><span class="math">\(\|\mathbf{v}\|_\infty = 7\)</span></p>
+                    </details>
+                </section>
+
+                <!-- Section 0.3 -->
+                <section id="id-03">
+                    <h2>0.3 多项式</h2>
+
+                    <h3>系数在 <span class="math">\(\mathbb{Z}_q\)</span> 中的多项式</h3>
+                    <p><span class="math">\(\mathbb{Z}_q[X]\)</span> 中的多项式形式为：</p>
+                    <p><span class="math">\(f(X) = a_0 + a_1 X + a_2 X^2 + \cdots + a_{n-1} X^{n-1}\)</span></p>
+                    <p>其中每个 <span class="math">\(a_i \in \{0, 1, \ldots, q-1\}\)</span>。</p>
+
+                    <h4>多项式加法</h4>
+                    <p>同次项的系数按模 <span class="math">\(q\)</span> 相加：</p>
+                    <p><span class="math">\((f + g)(X) = (a_0 + b_0) + (a_1 + b_1)X + \cdots \pmod{q}\)</span></p>
+
+                    <h4>多项式乘法与归约</h4>
+                    <p>两个次数 <span class="math">\(\leq n-1\)</span> 的多项式的乘积次数可能高达 <span class="math">\(2n-2\)</span>。为了保持紧凑，需要按一个特殊多项式进行归约。</p>
+                    <p>在 ML-KEM 中，使用 <span class="math">\(X^n + 1\)</span>，其中 <span class="math">\(n = 256\)</span>。归约规则是：</p>
+                    <p><span class="math">\(X^{256} \equiv -1 \pmod{X^{256}+1}\)</span></p>
+                    <p>因此，当乘积中出现 <span class="math">\(X^{256}\)</span> 时，将其替换为 <span class="math">\(-1\)</span>。</p>
+
+                    <h4>简单示例</h4>
+                    <p>取 <span class="math">\(n = 4\)</span>，<span class="math">\(q = 5\)</span>，模 <span class="math">\(X^4+1\)</span>：</p>
+                    <p><span class="math">\(f = X^3 + 2, \quad g = X^2 + 1\)</span></p>
+                    <p><span class="math">\(f \cdot g = X^5 + X^3 + 2X^2 + 2\)</span></p>
+                    <p><span class="math">\(X^5 = X \cdot X^4 \equiv X \cdot (-1) = -X \pmod{X^4+1}\)</span></p>
+                    <p><span class="math">\(\Rightarrow f \cdot g \equiv -X + X^3 + 2X^2 + 2 \pmod{X^4+1, 5}\)</span></p>
+                </section>
+
+                <!-- Section 0.4 -->
+                <section id="id-04">
+                    <h2>0.4 代数结构：群、环、域</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>结构</th>
+                                <th>运算</th>
+                                <th>关键性质</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>群</strong></td>
+                                <td>一个 (+)</td>
+                                <td>封闭性、结合律、单位元、逆元</td>
+                            </tr>
+                            <tr>
+                                <td><strong>环</strong></td>
+                                <td>两个 (+, ×)</td>
+                                <td>加法构成阿贝尔群，乘法构成半群</td>
+                            </tr>
+                            <tr>
+                                <td><strong>域</strong></td>
+                                <td>两个 (+, ×)</td>
+                                <td>所有非零元都有乘法逆元的环</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3><span class="math">\(\mathbb{Z}_q\)</span> 作为域</h3>
+                    <p>如果 <span class="math">\(q\)</span> 是素数，则 <span class="math">\(\mathbb{Z}_q\)</span> <strong>是一个域</strong>：每个非零元素都有乘法逆元。在 ML-KEM 中，<span class="math">\(q = 3329\)</span> 是素数 → <span class="math">\(\mathbb{Z}_{3329}\)</span> 是一个域。</p>
+
+                    <h3>环 <span class="math">\(R_q\)</span></h3>
+                    <p><span class="math">\(R_q = \mathbb{Z}_q[X] / (X^{256}+1)\)</span></p>
+                    <p>这是一个环（不是域，因为并非所有多项式都有逆元），但它具有对密码学有用的性质：</p>
+                    <ul>
+                        <li>每个多项式恰好有 256 个系数；</li>
+                        <li>乘法通过 NTT 高效进行（见文件 07）；</li>
+                        <li>多项式 <span class="math">\(X^{256}+1\)</span> 是 <em>分圆</em>的，这保证了良好的安全性。</li>
+                    </ul>
+                    <details>
+                        <summary><span class="math">\(X^{256}+1\)</span> 是分圆的是什么意思？</summary>
+                        <p>在代数中，分圆多项式是一种特殊的多项式，其根是 <strong>本原单位根</strong>（即升到某个幂次后得到 <span class="math">\(1\)</span> 的复数）。</p>
+                        <p>在 <span class="math">\(X^{256}+1\)</span> 的具体情况下，这个性质在密码学（如 ML-KEM）中提供了三个巨大的优势：</p>
+                        <ul>
+                            <li><strong>不可约性</strong>：该多项式不能分解为具有整数系数的较小多项式。这防止了恶意用户将数学问题"拆分"成更容易解决的部分。</li>
+                            <li><strong>超快速乘法（NTT）</strong>：允许使用 <em>数论变换</em>（NTT）。借助该算法，多项式乘法从 <span class="math">\(O(n^2)\)</span> 的复杂度降低到仅 <span class="math">\(O(n \log n)\)</span>，使后量子密码学变得非常快速。</li>
+                            <li><strong>均匀安全性</strong>：在运算过程中将误差（噪声）完美对称地分布到所有 256 个系数上，消除了黑客可能利用的结构性弱点。</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <!-- Section 0.5 -->
+                <section id="id-05">
+                    <h2>0.5 密码学哈希函数</h2>
+                    <p>哈希函数 <span class="math">\(H : \{0,1\}^* \to \{0,1\}^k\)</span> 将任意长度的输入映射到固定长度的输出。</p>
+                    <p><strong>密码学中要求的性质：</strong></p>
+                    <ul>
+                        <li><em>抗原像性：</em>从 <span class="math">\(H(x)\)</span> 无法恢复 <span class="math">\(x\)</span></li>
+                        <li><em>抗碰撞性：</em>找到 <span class="math">\(x \neq y\)</span> 使得 <span class="math">\(H(x) = H(y)\)</span> 在计算上是不可能的</li>
+                        <li><em>雪崩效应：</em>输入中一个比特的变化会改变约 50% 的输出</li>
+                    </ul>
+
+                    <h3>SHA-3 和 SHAKE</h3>
+                    <p>ML-KEM 仅使用 <strong>SHA-3</strong> 家族的基元（NIST 于 2015 年标准化）：</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>函数</th>
+                                <th>输出</th>
+                                <th>在 ML-KEM 中的用途</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SHA3-256</code></td>
+                                <td>固定 256 位</td>
+                                <td>通用哈希</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHA3-512</code></td>
+                                <td>固定 512 位</td>
+                                <td>密钥哈希</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE128</code></td>
+                                <td>可变长度</td>
+                                <td>生成 <span class="math">\(A\)</span>（XOF）</td>
+                            </tr>
+                            <tr>
+                                <td><code>SHAKE256</code></td>
+                                <td>可变长度</td>
+                                <td>密钥派生</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>SHAKE 是一种 <strong>XOF（可扩展输出函数）</strong>：它可以从给定输入生成任意数量的字节。在 ML-KEM 中，<code>SHAKE128(seed)</code> 从 32 字节种子生成整个公共矩阵 <span class="math">\(A\)</span>。</p>
+                </section>
+
+                <!-- Section 0.6 -->
+                <section id="id-06">
+                    <h2>0.6 概率与噪声分布</h2>
+
+                    <h3>中心二项分布 <span class="math">\(B_\eta\)</span></h3>
+                    <p>在 ML-KEM 中，噪声不是高斯的，而是 <strong>中心二项分布</strong>。采样方式如下：</p>
+                    <ol>
+                        <li>采样 <span class="math">\(2\eta\)</span> 个均匀比特：<span class="math">\(a_1, \ldots, a_\eta, b_1, \ldots, b_\eta \in \{0,1\}\)</span></li>
+                        <li>返回 <span class="math">\(\sum a_i - \sum b_i\)</span></li>
+                    </ol>
+                    <p>结果是一个在 <span class="math">\([-\eta, +\eta]\)</span> 中的整数，其分布在 0 附近近似高斯分布。</p>
+                    <p><strong>为什么不用真正的高斯分布？</strong>二项分布更容易以 <em>恒定时间</em>（抗侧信道攻击）进行采样，且安全性相似。</p>
+                    <p>对于 ML-KEM-768：<span class="math">\(\eta_1 = 2, \eta_2 = 2\)</span>。噪声值将在 <span class="math">\(\{-2, -1, 0, 1, 2\}\)</span> 中。</p>
+
+                    <h3>可忽略性</h3>
+                    <p>函数 <span class="math">\(f(\lambda)\)</span> 被称为 <strong>可忽略的</strong>，如果对于每个多项式 <span class="math">\(p(\cdot)\)</span>，存在 <span class="math">\(\lambda_0\)</span>，使得对于所有 <span class="math">\(\lambda > \lambda_0\)</span>：</p>
+                    <p><span class="math">\(f(\lambda) < \frac{1}{p(\lambda)}\)</span></p>
+                    <p>实际上：它比任何多项式倒数的衰减都快。ML-KEM 中的错误概率在安全参数 <span class="math">\(\lambda\)</span> 上是可忽略的。</p>
+                </section>
+
+                <!-- Section 0.7 -->
+                <section id="id-07">
+                    <h2>0.7 计算复杂性</h2>
+
+                    <h3>符号</h3>
+                    <ul>
+                        <li><span class="math">\(O(f(n))\)</span>：渐近量级（上界）</li>
+                        <li><span class="math">\(\Omega(f(n))\)</span>：下界</li>
+                        <li><span class="math">\(\Theta(f(n))\)</span>：紧界</li>
+                    </ul>
+
+                    <h3>相关类别</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>类别</th>
+                                <th>含义</th>
+                                <th>示例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P</strong></td>
+                                <td>多项式时间可解</td>
+                                <td>乘法、排序</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP</strong></td>
+                                <td>多项式时间可验证</td>
+                                <td>SAT、TSP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NP-难</strong></td>
+                                <td>至少和 NP 一样难</td>
+                                <td>因数分解（推测）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>密码学问题及其难度</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>问题</th>
+                                <th>经典难度</th>
+                                <th>量子难度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>因数分解</td>
+                                <td>亚指数</td>
+                                <td><strong>多项式</strong>（Shor）</td>
+                            </tr>
+                            <tr>
+                                <td>离散对数</td>
+                                <td>亚指数</td>
+                                <td><strong>多项式</strong>（Shor）</td>
+                            </tr>
+                            <tr>
+                                <td>SVP（格）</td>
+                                <td>指数</td>
+                                <td>指数（无已知加速）</td>
+                            </tr>
+                            <tr>
+                                <td>LWE / MLWE</td>
+                                <td>指数</td>
+                                <td>指数（无已知加速）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <blockquote>
+                        <p>这个表格说明了后量子密码学存在的全部理由。</p>
+                    </blockquote>
+                </section>
+
+                <!-- Sources -->
+                <div class="sources">
+                    <h2>资料来源与深入学习</h2>
+                    <ul>
+                        <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>（第 1–5 章）</li>
+                        <li>Shoup, V. – <em>A Computational Introduction to Number Theory and Algebra</em>（免费在线）</li>
+                        <li><a href="https://youtu.be/MQXrY7deBZE?si=pLeC0wJ3kanWwlnk" target="_blank">视频：代数环</a></li>
+                        <li>Regev, O. (2009) – <em>On Lattices, Learning With Errors...</em> – 第 2–3 节</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter navigation -->
+                <div class="chapter-nav">
+                    <a href="#" class="nav-btn disabled">← 上一章</a>
+                    <span class="nav-label">00 / 10</span>
+                    <a href="1.html" class="nav-btn">下一章 →</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'zh';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/0.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

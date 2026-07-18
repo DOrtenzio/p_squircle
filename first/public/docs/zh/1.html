@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第1章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="快速导航">
+            <a href="index.html#featureSection">为什么</a>
+            <a href="index.html#learningPath">学习路径</a>
+            <a href="index.html#searchSection">指南</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="选择语言">
+                    <span class="lang-current" id="langCurrent">🇨🇳 中文</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章节</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 预备知识</a></li>
+                <li class="active"><a href="1.html"><span class="chapter-number">01</span> 对称加密</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 非对称加密</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor算法</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 安全性</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 实现</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>01 – 对称加密</h1>
+        <p class="subtitle">整个 PQC 学习路径的实际终点</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#id-11">1.1 什么是对称加密</a></li>
+                <li><a href="#id-12">1.2 AES：高级加密标准</a></li>
+                <li><a href="#id-13">1.3 工作模式</a></li>
+                <li><a href="#id-14">1.4 认证与 AEAD</a></li>
+                <li><a href="#id-15">1.5 在 PQC 上下文中的角色</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1.1 -->
+        <section id="id-11">
+            <h2>1.1 什么是对称加密</h2>
+
+            <p>在 <strong>对称</strong> 加密系统中，发送方和接收方使用 <strong>相同的密钥</strong> <span class="math">\(K\)</span> 进行加密和解密。</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{发送方： } C = \text{Enc}(K, M)\)</span></p>
+                <p><span class="math">\(\text{接收方： } M = \text{Dec}(K, C)\)</span></p>
+            </div>
+
+            <p><strong>主要优势：</strong>高效。AES-256 在现代硬件上可达到数十 GB/s 的速度。</p>
+
+            <p><strong>缺点：</strong>在通信 <em>之前</em> 需要一个安全通道来交换 <span class="math">\(K\)</span>。这正是 KEM 要解决的问题。</p>
+
+            <h3>对称加密 vs. 量子计算的安全性</h3>
+
+            <p>量子计算机不会破解 AES。Grover 算法在密钥搜索中提供 <em>二次</em> 加速，但：</p>
+            <ul>
+                <li><strong>AES-128：</strong>有效安全性从 128 位降至 ~64 位 → 不足</li>
+                <li><strong>AES-256：</strong>有效安全性从 256 位降至 ~128 位 → 仍然安全</li>
+            </ul>
+
+            <p>因此，FIPS 203（ML-KEM）生成 256 位密钥，设计用于 AES-256。</p>
+        </section>
+
+        <!-- Section 1.2 -->
+        <section id="id-12">
+            <h2>1.2 AES：高级加密标准</h2>
+
+            <p>AES 是一种 <strong>分组密码</strong>：它接收 128 位的块和密钥（<span class="math">\(K\)</span>），输出 128 位的密文。</p>
+
+            <h3>内部结构</h3>
+
+            <p>AES 将 128 位输入组织为 <span class="math">\(4 \times 4\)</span> 的字节矩阵。然后应用 <span class="math">\(r\)</span> 轮（10、12 或 14，取决于密钥大小），每轮由四个变换组成：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>变换</th>
+                        <th>目的</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SubBytes</strong></td>
+                        <td>通过 S-Box 进行非线性替换（抵抗差分密码分析）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ShiftRows</strong></td>
+                        <td>循环行移位（扩散）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MixColumns</strong></td>
+                        <td>列的线性组合（扩散）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AddRoundKey</strong></td>
+                        <td>与当前轮子密钥进行 XOR</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>密钥调度</h3>
+
+            <p>原始密钥（<span class="math">\(K\)</span> 为 128、192 或 256 位）扩展为 <span class="math">\(r+1\)</span> 个子密钥，每轮一个。</p>
+
+            <div class="example">
+                <p>AES-128：128 位密钥，10 轮</p>
+                <p>AES-192：192 位密钥，12 轮</p>
+                <p>AES-256：256 位密钥，14 轮</p>
+            </div>
+
+            <h3>安全性</h3>
+
+            <p>已知对 AES-128 的最佳攻击需要 <span class="math">\(2^{126.1}\)</span> 次操作（Biryukov &amp; Khovratovich, 2009）——基本上是暴力破解。</p>
+        </section>
+
+        <!-- Section 1.3 -->
+        <section id="id-13">
+            <h2>1.3 工作模式</h2>
+
+            <p>AES 加密一个 128 位的块。但实际消息更长。<strong>工作模式</strong> 定义了如何重复应用 AES。</p>
+
+            <h3>ECB（电子密码本）——不要使用</h3>
+
+            <p>每个块独立加密。相同的块产生相同的密文 → 丢失明文结构。</p>
+
+            <h3>CBC（密码块链接）</h3>
+
+            <p>每个明文块在加密前与前一个块的密文进行 XOR。需要随机的 IV（初始化向量）。</p>
+
+            <div class="math-block">
+                \[
+                C_i = E_K(P_i \oplus C_{i-1})
+                \]
+            </div>
+
+            <p>比 ECB 更安全，但加密时不可并行。</p>
+
+            <h3>CTR（计数器模式）——推荐</h3>
+
+            <p>通过加密递增计数器生成密钥流。明文与密钥流进行 XOR。</p>
+
+            <div class="math-block">
+                \[
+                C_i = P_i \oplus E_K(\text{nonce} \| i)
+                \]
+            </div>
+
+            <p>加密和解密均可并行。将 AES 转换为流密码。</p>
+
+            <h3>GCM（伽罗瓦/计数器模式）——在 TLS 1.3 中使用</h3>
+
+            <p>将 CTR 与基于伽罗瓦域的 MAC 结合。提供机密性 <strong>和</strong> 真实性。</p>
+        </section>
+
+        <!-- Section 1.4 -->
+        <section id="id-14">
+            <h2>1.4 认证与 AEAD</h2>
+
+            <p>仅有机密性是不够的：攻击者可能修改密文而接收者无法察觉。需要 <strong>真实性</strong>。</p>
+
+            <h3>MAC（消息认证码）</h3>
+
+            <p>MAC 是一个函数 <span class="math">\(\text{MAC}(K, M) \to \tau\)</span>，其中 <span class="math">\(\tau\)</span> 是 <em>认证标签</em>。只有知道 <span class="math">\(K\)</span> 的人才能生成和验证 <span class="math">\(\tau\)</span>。</p>
+
+            <h3>AEAD（带关联数据的认证加密）</h3>
+
+            <p>将加密和认证结合在一个基元中：</p>
+
+            <div class="example">
+                <p><span class="math">\(\text{Enc: } (K, \text{nonce}, \text{AAD}, \text{plaintext}) \to (\text{ciphertext}, \text{tag})\)</span></p>
+                <p><span class="math">\(\text{Dec: } (K, \text{nonce}, \text{AAD}, \text{ciphertext}, \text{tag}) \to \text{plaintext}\)</span> 或 <span class="math">\(\perp\)</span>（如果标签无效）</p>
+            </div>
+
+            <p><code>AAD</code>（附加认证数据）是被认证但未加密的数据（例如，数据包头部）。</p>
+
+            <p><strong>AES-256-GCM</strong> 是 TLS 1.3 中使用的标准 AEAD 方案，也是 KEM 后的对称密码。</p>
+        </section>
+
+        <!-- Section 1.5 -->
+        <section id="id-15">
+            <h2>1.5 在 PQC 上下文中的角色</h2>
+
+            <p>一个完整的 ML-KEM 在实际使用中如下工作：</p>
+
+            <div class="sequence-diagram">
+Alice                                Bob
+  |                                   |
+  |  KeyGen() → (pk, sk)              |
+  |                                   |
+  |  ------------ pk ----------------->|
+  |                                   |
+  |            Encaps(pk) → (K, C)    |
+  |                                   |
+  |        K_enc = HKDF(K, "enc")     |
+  |        K_mac = HKDF(K, "mac")     |
+  |        C_data = AES-256-GCM(K_enc, 消息) |
+  |                                   |
+  |  <----- (C, C_data, nonce, tag) --|
+  |                                   |
+  |  Decaps(sk, C) → K                |
+  |  K_enc = HKDF(K, "enc")           |
+  |  消息 = AES-256-GCM-Dec(K_enc, C_data) |
+  |                                   |
+  |  ✓ 安全通信                      |
+            </div>
+
+            <p>ML-KEM 生成的密钥 <span class="math">\(K\)</span>（32 字节）不直接用作 AES 密钥，而是通过 <strong>KDF（密钥派生函数）</strong>（如 HKDF）派生，以分离不同的上下文。</p>
+
+            <h3>实际大小（ML-KEM-768 + AES-256-GCM）</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>组件</th>
+                        <th>大小</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ML-KEM 公钥</td>
+                        <td>1184 字节</td>
+                    </tr>
+                    <tr>
+                        <td>ML-KEM 密文</td>
+                        <td>1088 字节</td>
+                    </tr>
+                    <tr>
+                        <td>共享密钥 → AES 密钥</td>
+                        <td>32 字节</td>
+                    </tr>
+                    <tr>
+                        <td>AEAD 开销（GCM 标签）</td>
+                        <td>16 字节</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>资料来源</h2>
+            <ul>
+                <li>NIST FIPS 197 – <em>Advanced Encryption Standard (AES)</em><br />
+                    <a href="https://csrc.nist.gov/publications/detail/fips/197/final" target="_blank">https://csrc.nist.gov/publications/detail/fips/197/final</a></li>
+                <li>NIST SP 800-38D – <em>Recommendation for GCM</em></li>
+                <li>Boneh, D., Shoup, V. – <em>A Graduate Course in Applied Cryptography</em>（第 4–5 章）<br />
+                    <a href="https://toc.cryptobook.us/" target="_blank">https://toc.cryptobook.us/</a></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="0.html" class="nav-btn">← 上一章</a>
+            <span class="nav-label">01 / 10</span>
+            <a href="2.html" class="nav-btn">下一章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'zh';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/1.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

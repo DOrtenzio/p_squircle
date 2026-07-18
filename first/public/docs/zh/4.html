@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第4章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="快速导航">
+            <a href="index.html#featureSection">为什么</a>
+            <a href="index.html#learningPath">学习路径</a>
+            <a href="index.html#searchSection">指南</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="选择语言">
+                    <span class="lang-current" id="langCurrent">🇨🇳 中文</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章节</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 预备知识</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 对称加密</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 非对称加密</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Shor算法</a></li>
+                <li class="active"><a href="4.html"><span class="chapter-number">04</span> 格</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 安全性</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 实现</a></li>
+            </ul>
+        </aside>
+
+        <!-- Chapter content -->
+        <main class="chapter-content">
+    <article>
+        <h1>04 – 格（Lattices）</h1>
+        <p class="subtitle">后量子密码学背后的数学结构</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#id-41">4.1 格的定义</a></li>
+                <li><a href="#id-42">4.2 格上的困难问题</a></li>
+                <li><a href="#id-43">4.3 从 SVP 到 LWE</a></li>
+                <li><a href="#id-44">4.4 LWE：带错误的学习</a></li>
+                <li><a href="#id-45">4.5 RLWE：环上的变体</a></li>
+                <li><a href="#id-46">4.6 MLWE：ML-KEM 的基础</a></li>
+                <li><a href="#id-47">4.7 格的后量子安全性</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 4.1 -->
+        <section id="id-41">
+            <h2>4.1 格的定义</h2>
+
+            <h3>形式化定义</h3>
+
+            <p><span class="math">\(\mathbb{R}^m\)</span> 中的 <strong>格</strong> <span class="math">\(\mathcal{L}\)</span> 是 <span class="math">\(n\)</span> 个线性无关向量 <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n \in \mathbb{R}^m\)</span> 的所有整数线性组合的集合：</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L}(\mathbf{b}_1, \ldots, \mathbf{b}_n) = \left\{ \sum_{i=1}^{n} z_i \mathbf{b}_i \;\middle|\; z_i \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>向量 <span class="math">\(\mathbf{b}_1, \ldots, \mathbf{b}_n\)</span> 构成格的 <strong>基</strong>。</p>
+
+            <h3>几何直觉</h3>
+
+            <p>在二维空间中，想象一个无限的点阵。每个点都可以通过两个基向量的整数（非实数）组合到达：</p>
+
+            <div class="math-block">
+                \[
+                \mathcal{L} = \left\{ a \begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\middle|\; a, b \in \mathbb{Z} \right\}
+                \]
+            </div>
+
+            <p>这是标准的整数格 <span class="math">\(\mathbb{Z}^2\)</span>。</p>
+
+            <p>但同一个格有无限多个不同的基：</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{b}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad \mathbf{b}_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+                \]
+            </div>
+
+            <p>生成同一个格。有些基是"好"的（短且几乎正交的向量），有些是"坏"的（长且几乎平行的向量）。</p>
+
+            <h3>维数与秩</h3>
+
+            <ul>
+                <li><strong>环境维数</strong> <span class="math">\(m\)</span>：每个向量的坐标数</li>
+                <li><strong>秩</strong> <span class="math">\(n\)</span>：基中向量的个数</li>
+            </ul>
+
+            <p>如果 <span class="math">\(n = m\)</span>：满秩格（<em>full-rank lattice</em>）</p>
+
+            <p>在密码学中，我们通常使用 <span class="math">\(n = m\)</span> 非常大的格（256–4096）。</p>
+        </section>
+
+        <!-- Section 4.2 -->
+        <section id="id-42">
+            <h2>4.2 格上的困难问题</h2>
+
+            <h3>SVP – 最短向量问题</h3>
+
+            <p><strong>给定：</strong>格 <span class="math">\(\mathcal{L}\)</span> 的基 <span class="math">\(B\)</span><br />
+            <strong>求：</strong><span class="math">\(\mathcal{L}\)</span> 中最短的非零向量</p>
+
+            <div class="math-block">
+                \[
+                \text{SVP}: \quad \text{求 } \mathbf{v} \in \mathcal{L} \setminus \{0\} \text{ 使得 } \|\mathbf{v}\| \leq \|\mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L} \setminus \{0\}
+                \]
+            </div>
+
+            <p>在二维中很容易（高斯算法）。在高维（数百维）中，在某些假设下是 <strong>NP-难的</strong>，已知的最佳算法需要指数时间。</p>
+
+            <h3>CVP – 最近向量问题</h3>
+
+            <p><strong>给定：</strong>格 <span class="math">\(\mathcal{L}\)</span> 的基 <span class="math">\(B\)</span> 和目标点 <span class="math">\(\mathbf{t} \in \mathbb{R}^m\)</span>（不在格中）<br />
+            <strong>求：</strong>格中离 <span class="math">\(\mathbf{t}\)</span> 最近的点</p>
+
+            <div class="math-block">
+                \[
+                \text{CVP}: \quad \text{求 } \mathbf{v} \in \mathcal{L} \text{ 使得 } \|\mathbf{t} - \mathbf{v}\| \leq \|\mathbf{t} - \mathbf{u}\| \; \forall \mathbf{u} \in \mathcal{L}
+                \]
+            </div>
+
+            <p>CVP 至少和 SVP 一样难。它是 ML-KEM 中解封装的核心：知道秘密 <span class="math">\(\mathbf{s}\)</span> 的人可以解对应的"容易"CVP，不知道的人则不能。</p>
+
+            <h3>GapSVP 和 SIS</h3>
+
+            <p>存在近似变体（GapSVP）和相关问题（SIS – 短整数解），它们构成了格密码学安全证明的基础。在此我们只需知道它们相互归约，形成一个困难问题家族。</p>
+        </section>
+
+        <!-- Section 4.3 -->
+        <section id="id-43">
+            <h2>4.3 从 SVP 到 LWE</h2>
+
+            <p>如何从 SVP 构建密码系统？</p>
+
+            <p>Regev（2005）的想法：不直接使用 SVP（几何上直观但使用不便），而是定义一个等价的统计问题：<strong>带错误的学习（LWE）</strong>。</p>
+
+            <p>安全性归约表明：</p>
+
+            <blockquote>
+                <p>如果破解 LWE ⇒ 解决 GapSVP</p>
+            </blockquote>
+
+            <p>因此，LWE 在高维中 <strong>至少和 GapSVP 一样难</strong>。</p>
+        </section>
+
+        <!-- Section 4.4 -->
+        <section id="id-44">
+            <h2>4.4 LWE：带错误的学习</h2>
+
+            <h3>定义</h3>
+
+            <p>固定参数 <span class="math">\(n\)</span>（维数）、<span class="math">\(q\)</span>（模数）、<span class="math">\(\chi\)</span>（噪声分布）：</p>
+
+            <p><strong>LWE 分布：</strong>选择秘密 <span class="math">\(\mathbf{s} \leftarrow \mathbb{Z}_q^n\)</span>。生成样本：</p>
+
+            <div class="math-block">
+                \[
+                (\mathbf{a},\; b = \langle \mathbf{a}, \mathbf{s} \rangle + e \bmod q)
+                \]
+            </div>
+
+            <p>其中 <span class="math">\(\mathbf{a} \leftarrow \mathbb{Z}_q^n\)</span> 均匀，<span class="math">\(e \leftarrow \chi\)</span> 很小。</p>
+
+            <p><strong>判定性 LWE 问题：</strong>区分样本 <span class="math">\((\mathbf{a}, b)\)</span> 和均匀随机对 <span class="math">\((\mathbf{a}, u)\)</span>，其中 <span class="math">\(u \leftarrow \mathbb{Z}_q\)</span>。</p>
+
+            <p><strong>搜索性 LWE 问题：</strong>给定样本集 <span class="math">\((\mathbf{a}_i, b_i)\)</span>，求 <span class="math">\(\mathbf{s}\)</span>。</p>
+
+            <h3>LWE 参数</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>参数</th>
+                        <th>符号</th>
+                        <th>作用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>维数</td>
+                        <td><span class="math">\(n\)</span></td>
+                        <td>安全性随 <span class="math">\(n\)</span> 指数增长</td>
+                    </tr>
+                    <tr>
+                        <td>模数</td>
+                        <td><span class="math">\(q\)</span></td>
+                        <td>必须足够大以容纳噪声</td>
+                    </tr>
+                    <tr>
+                        <td>误差分布</td>
+                        <td><span class="math">\(\chi\)</span></td>
+                        <td>离散高斯或中心二项分布</td>
+                    </tr>
+                    <tr>
+                        <td>噪声/信号比</td>
+                        <td><span class="math">\(\alpha = \sigma/q\)</span></td>
+                        <td>必须小但不能太小</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>n=2, q=7 的示例</h3>
+
+            <p>秘密：<span class="math">\(\mathbf{s} = (3, 1)^T\)</span></p>
+
+            <p>带有小误差 <span class="math">\(\{-1, 0, 1\}\)</span> 的 LWE 样本：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>向量 a</th>
+                        <th>b = ⟨a, s⟩ + e mod 7</th>
+                        <th>e</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\((1, 2)\)</span></td>
+                        <td><span class="math">\(1 \cdot 3 + 2 \cdot 1 + 0 = 5\)</span></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((4, 3)\)</span></td>
+                        <td><span class="math">\(4 \cdot 3 + 3 \cdot 1 + 1 = 16 \equiv 2\)</span></td>
+                        <td>+1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\((2, 6)\)</span></td>
+                        <td><span class="math">\(2 \cdot 3 + 6 \cdot 1 + (-1) = 17 \equiv 3\)</span></td>
+                        <td>-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>给定带误差的系统，求 <span class="math">\(\mathbf{s}\)</span> 是困难的：不能使用高斯消元法，因为 <span class="math">\(b_i\)</span> 值不精确。</p>
+        </section>
+
+        <!-- Section 4.5 -->
+        <section id="id-45">
+            <h2>4.5 RLWE：环上的变体</h2>
+
+            <p>标准 LWE 使用向量。<strong>Ring-LWE（RLWE）</strong> 将运算转移到多项式环中：</p>
+
+            <div class="math-block">
+                \[
+                R_q = \mathbb{Z}_q[X]/(X^n + 1)
+                \]
+            </div>
+
+            <p>在 RLWE 中：</p>
+            <ul>
+                <li><span class="math">\(\mathbf{s} \in R_q\)</span>（一个多项式，而不是整数向量）</li>
+                <li><span class="math">\(a \in R_q\)</span>（均匀采样）</li>
+                <li><span class="math">\(b = a \cdot s + e \in R_q\)</span></li>
+            </ul>
+
+            <p><strong>RLWE 相对于 LWE 的优势：</strong></p>
+            <ul>
+                <li>密钥大小：<span class="math">\(O(n)\)</span> 而不是 <span class="math">\(O(n^2)\)</span></li>
+                <li>速度：NTT 使多项式乘法为 <span class="math">\(O(n \log n)\)</span> 而不是 <span class="math">\(O(n^2)\)</span></li>
+            </ul>
+
+            <p><strong>缺点：</strong>额外的代数结构 → 可能更容易受到攻击；安全性证明略弱。</p>
+        </section>
+
+        <!-- Section 4.6 -->
+        <section id="id-46">
+            <h2>4.6 MLWE：ML-KEM 的基础</h2>
+
+            <p><strong>Module-LWE（MLWE）</strong> 是 LWE 和 RLWE 之间的折衷：它使用 <span class="math">\(R_q\)</span> 中的多项式模（多项式矩阵）。</p>
+
+            <div class="math-block">
+                \[
+                \mathbf{A} \in R_q^{k \times k}, \quad \mathbf{s}, \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <div class="math-block">
+                \[
+                \mathbf{t} = \mathbf{A} \cdot \mathbf{s} + \mathbf{e} \in R_q^k
+                \]
+            </div>
+
+            <p>参数 <span class="math">\(k\)</span> 是 <strong>模的维数</strong>：</p>
+            <ul>
+                <li><span class="math">\(k = 2\)</span> 对应 ML-KEM-512</li>
+                <li><span class="math">\(k = 3\)</span> 对应 ML-KEM-768</li>
+                <li><span class="math">\(k = 4\)</span> 对应 ML-KEM-1024</li>
+            </ul>
+
+            <p><strong>为什么是 MLWE？</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>方案</th>
+                        <th>密钥大小</th>
+                        <th>速度</th>
+                        <th>安全性</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LWE</td>
+                        <td><span class="math">\(O(n^2)\)</span> → 大</td>
+                        <td>慢</td>
+                        <td>更保守</td>
+                    </tr>
+                    <tr>
+                        <td>RLWE</td>
+                        <td><span class="math">\(O(n)\)</span> → 小</td>
+                        <td>快</td>
+                        <td>额外结构</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLWE</strong></td>
+                        <td><span class="math">\(O(k \cdot n)\)</span> → 中等</td>
+                        <td>快</td>
+                        <td>均衡</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>MLWE 允许通过改变 <span class="math">\(k\)</span> 而不改变 <span class="math">\(n\)</span> 来扩展安全性，同时保留环结构的优化。</p>
+        </section>
+
+        <!-- Section 4.7 -->
+        <section id="id-47">
+            <h2>4.7 格的后量子安全性</h2>
+
+            <h3>最佳经典算法：BKZ（Block Korkine-Zolotarev）</h3>
+
+            <p>BKZ 算法及其变体（BKZ 2.0、G6K）是攻击格的最佳经典算法。它们对 ML-KEM-768 的复杂度估计为 <span class="math">\(> 2^{178}\)</span> 次操作。</p>
+
+            <h3>量子计算机的影响</h3>
+
+            <p>已知的最佳量子攻击 MLWE 的算法（包括使用 QRAM 的方法）提供有限的加速——最多是二次的，保持了问题的指数级难度。</p>
+
+            <p>这与 Shor 算法形成鲜明对比，后者对因数分解和 DLP 提供指数级加速。</p>
+
+            <h3>为什么 MLWE 没有"Shor 算法"</h3>
+
+            <p>MLWE 不具备 Shor 所利用的阿贝尔群结构。问题本质不同：不是寻找函数的周期性，而是寻找高维格中的短向量——一个几何问题，目前尚无已知的指数级加速量子技术。</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>资料来源</h2>
+            <ul>
+                <li>Regev, O. (2005) – <em>On lattices, learning with errors, random linear codes, and cryptography</em> – STOC 2005</li>
+                <li>Lyubashevsky, V., Peikert, C., Regev, O. (2010) – <em>On Ideal Lattices and Learning With Errors Over Rings</em></li>
+                <li>Peikert, C. (2009) – <em>Public-key cryptosystems from the worst-case shortest vector problem</em></li>
+                <li>Telsy (2023) – <em>La matematica dietro la PQC: i reticoli</em><br />
+                    <a href="https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/" target="_blank">https://www.telsy.com/la-matematica-dietro-la-pqc-i-reticoli/</a></li>
+                <li>Galbraith, S. (2012) – <em>Mathematics of Public Key Cryptography</em>，第 17 章</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="3.html" class="nav-btn">← 上一章</a>
+            <span class="nav-label">04 / 10</span>
+            <a href="5.html" class="nav-btn">下一章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'zh';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/4.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

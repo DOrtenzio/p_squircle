@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Розділ 8 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="Швидка навігація">
+            <a href="index.html#featureSection">Чому</a>
+            <a href="index.html#learningPath">Маршрут</a>
+            <a href="index.html#searchSection">Путівник</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="Виберіть мову">
+                    <span class="lang-current" id="langCurrent">🇺🇦 Українська</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>Розділи</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> Попередні вимоги</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> Симетрична</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> Асиметрична</a></li>
+                <li><a href="3.html"><span class="chapter-number">03</span> Шор</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> Ґратки</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li class="active"><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> Безпека</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> Реалізації</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>08 – FIPS 203 / ML-KEM</h1>
+        <p class="subtitle">Серце стандарту: KeyGen, Encaps і Decaps</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>Зміст</h2>
+            <ul>
+                <li><a href="#id-81">8.1 Огляд стандарту</a></li>
+                <li><a href="#id-82">8.2 Примітиви K‑PKE</a></li>
+                <li><a href="#id-83">8.3 ML‑KEM (повна схема)</a></li>
+                <li><a href="#id-84">8.4 Допоміжні примітивні функції</a></li>
+                <li><a href="#id-85">8.5 Стиснення та розтискання</a></li>
+                <li><a href="#id-86">8.6 Коректність і безпека</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 8.1 -->
+        <section id="id-81">
+            <h2>8.1 Огляд стандарту</h2>
+
+            <p>FIPS 203 був опублікований NIST у серпні 2024 року як перший постквантовий стандарт захисту комунікацій. Він заснований на поданні CRYSTALS-Kyber конкурсу NIST PQC.</p>
+
+            <p><strong>Що стандартизує FIPS 203:</strong></p>
+            <ul>
+                <li>KEM (механізм інкапсуляції ключа), безпечний у сенсі IND-CCA2</li>
+                <li>Три рівні безпеки: ML-KEM-512, ML-KEM-768, ML-KEM-1024</li>
+                <li>Всі допоміжні функції: хешування, семплювання, кодування, стиснення</li>
+            </ul>
+
+            <p><strong>Що НЕ стандартизує FIPS 203:</strong></p>
+            <ul>
+                <li>Як керувати ключами</li>
+                <li>Який симетричний шифр використовувати з похідним ключем</li>
+                <li>Протоколи рукостискання (див. TLS 1.3, SSH)</li>
+            </ul>
+        </section>
+
+        <!-- Section 8.2 – K‑PKE -->
+        <section id="id-82">
+            <h2>8.2 Примітиви K‑PKE</h2>
+            <p>ML-KEM побудовано на двох рівнях. Внутрішній рівень — <strong>K‑PKE</strong>, PKE (шифрування з відкритим ключем), безпечний у сенсі CPA (але не CCA). ML-KEM додає перетворення FO для отримання CCA2.</p>
+
+            <h3>K‑PKE.KeyGen</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>Вхід: 32-байтове зерно <span class="math">\(d\)</span></li>
+                    <li><span class="math">\(\rho, \sigma = G(d)\)</span> де <span class="math">\(G = \text{SHA3-512}\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span> (публічна матриця, вже в домені NTT)</li>
+                    <li>Для <span class="math">\(i = 0 \dots k-1\)</span>:
+                        <ul>
+                            <li><span class="math">\(\mathbf{s}[i], \mathbf{e}[i] = \text{SamplePolyCBD}(\sigma, i)\)</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{NTT}(\mathbf{s})\)</span>, <span class="math">\(\hat{\mathbf{e}} = \text{NTT}(\mathbf{e})\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{t}} = \mathbf{A} \circ \hat{\mathbf{s}} + \hat{\mathbf{e}}\)</span></li>
+                    <li>Вихід:
+                        <ul>
+                            <li><span class="math">\(ek_{\text{PKE}} = \text{Encode}(\hat{\mathbf{t}}) \| \rho\)</span></li>
+                            <li><span class="math">\(dk_{\text{PKE}} = \text{Encode}(\hat{\mathbf{s}})\)</span></li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>K‑PKE.Encrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>Вхід: <span class="math">\(ek_{\text{PKE}}\)</span>, повідомлення <span class="math">\(m\)</span>, випадковість <span class="math">\(r\)</span></li>
+                    <li>Розпарсити <span class="math">\(\hat{\mathbf{t}}\)</span> і <span class="math">\(\rho\)</span> з <span class="math">\(ek\)</span></li>
+                    <li><span class="math">\(\mathbf{A} = \text{SampleNTT}(\rho)\)</span></li>
+                    <li>Семплювати малі вектори <span class="math">\(\mathbf{r}, \mathbf{e}_1, e_2\)</span> з використанням <span class="math">\(r\)</span> як зерна (CBD)</li>
+                    <li><span class="math">\(\hat{\mathbf{u}} = \text{NTT}^{-1}(\mathbf{A}^T \circ \text{NTT}(\mathbf{r})) + \mathbf{e}_1\)</span></li>
+                    <li><span class="math">\(v = \text{NTT}^{-1}(\hat{\mathbf{t}}^T \circ \text{NTT}(\mathbf{r})) + e_2 + \text{Decode}(m)\)</span></li>
+                    <li>Стиснути <span class="math">\(\mathbf{u}\)</span> і <span class="math">\(v\)</span></li>
+                    <li>Вихід: шифртекст <span class="math">\(c\)</span></li>
+                </ol>
+            </div>
+
+            <h3>K‑PKE.Decrypt</h3>
+            <div class="algorithm-steps">
+                <ol>
+                    <li>Вхід: <span class="math">\(dk_{\text{PKE}}\)</span>, шифртекст <span class="math">\(c\)</span></li>
+                    <li>Розтиснути <span class="math">\(\mathbf{u}\)</span> і <span class="math">\(v\)</span> з <span class="math">\(c\)</span></li>
+                    <li><span class="math">\(\hat{\mathbf{s}} = \text{Decode}(dk_{\text{PKE}})\)</span></li>
+                    <li><span class="math">\(w = v - \text{NTT}^{-1}(\hat{\mathbf{s}}^T \circ \text{NTT}(\mathbf{u}))\)</span></li>
+                    <li><span class="math">\(m = \text{Encode}(\text{Compress}(w))\)</span> (декодувати повідомлення з залишкового шуму)</li>
+                    <li>Вихід: <span class="math">\(m\)</span></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 8.3 – ML‑KEM completo -->
+        <section id="id-83">
+            <h2>8.3 ML‑KEM (повна схема)</h2>
+            <p>K‑PKE є лише CPA‑безпечним. ML‑KEM використовує <strong>перетворення Фуджісакі‑Окамото (FO)</strong> для підвищення K‑PKE до <strong>IND‑CCA2</strong>. Розшифровка перевіряє, чи відповідає отриманий шифртекст тому, який був би отриманий при повторному шифруванні розшифрованого повідомлення; у протилежному випадку повертається псевдовипадковий ключ (неявне відхилення).</p>
+
+            <h3 id="id-831">8.3.1 ML‑KEM.KeyGen</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & z \leftarrow \{0,1\}^{256}, \quad d \leftarrow \{0,1\}^{256} \\
+                & (ek_{\text{PKE}}, dk_{\text{PKE}}) = \text{K-PKE.KeyGen}(d) \\
+                & ek = ek_{\text{PKE}} \\
+                & dk = dk_{\text{PKE}} \| ek \| H(ek) \| z \\
+                & \text{return } (ek, dk)
+                \end{aligned}
+                \]
+            </div>
+            <p>Приватний ключ включає <span class="math">\(ek\)</span> і попередньо обчислені хеші для оптимізації Decaps.</p>
+
+            <h3 id="id-832">8.3.2 ML‑KEM.Encaps</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & m \leftarrow \{0,1\}^{256} \\
+                & (\bar{K}, r) = G(m \| H(ek)) \\
+                & c = \text{K-PKE.Encrypt}(ek, m, r) \\
+                & K = \text{KDF}(\bar{K} \| H(c)) \\
+                & \text{return } (K, c)
+                \end{aligned}
+                \]
+            </div>
+
+            <h3 id="id-833">8.3.3 ML‑KEM.Decaps</h3>
+            <div class="math-block">
+                \[
+                \begin{aligned}
+                & (dk_{\text{PKE}}, ek, h, z) = \text{ParseDK}(dk) \\
+                & m' = \text{K-PKE.Decrypt}(dk_{\text{PKE}}, c) \\
+                & (\bar{K}', r') = G(m' \| h) \\
+                & c' = \text{K-PKE.Encrypt}(ek, m', r') \\
+                & \text{if } c' == c: \\
+                & \quad K = \text{KDF}(\bar{K}' \| H(c)) \\
+                & \text{else:} \\
+                & \quad K = \text{KDF}(z \| H(c)) \\
+                & \text{return } K
+                \end{aligned}
+                \]
+            </div>
+            <p><strong>Примітка:</strong> порівняння <span class="math">\(c' == c\)</span> має виконуватися за постійний час для запобігання атакам по побічних каналах.</p>
+        </section>
+
+        <!-- Section 8.4 – Funzioni ausiliarie -->
+        <section id="id-84">
+            <h2>8.4 Допоміжні примітивні функції</h2>
+
+            <h3>Використовувані хеші</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Функція</th>
+                        <th>Вхід</th>
+                        <th>Вихід</th>
+                        <th>Використання</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="math">\(H = \text{SHA3-256}\)</span></td>
+                        <td>будь-який</td>
+                        <td>32 байти</td>
+                        <td>загальне хешування</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(G = \text{SHA3-512}\)</span></td>
+                        <td>будь-який</td>
+                        <td>64 байти</td>
+                        <td>похідні ключів</td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(\text{XOF} = \text{SHAKE128}\)</span></td>
+                        <td>будь-який</td>
+                        <td>змінна довжина</td>
+                        <td>генерація <span class="math">\(A\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(\text{PRF}_\eta = \text{SHAKE256}\)</span></td>
+                        <td>зерно+nonce</td>
+                        <td>змінна довжина</td>
+                        <td>семплювання <span class="math">\(s\)</span>, <span class="math">\(e\)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="math">\(\text{KDF} = \text{SHAKE256}\)</span></td>
+                        <td>будь-який</td>
+                        <td>змінна довжина</td>
+                        <td>похідні фінального <span class="math">\(K\)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Семплювання <span class="math">\(A\)</span> (алгоритм <code>SampleNTT</code>)</h3>
+            <p>Матриця <span class="math">\(A \in R_q^{k \times k}\)</span> генерується детерміновано з публічного зерна <span class="math">\(\rho \in \{0,1\}^{256}\)</span>:</p>
+            <div class="sequence-diagram">
+                для i = 0..k-1, j = 0..k-1:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;A[i][j] = SampleNTT(XOF(ρ || j || i))
+            </div>
+            <p><code>SampleNTT</code> читає байти з XOF і будує рівномірні коефіцієнти в <span class="math">\(\{0, \ldots, q-1\}\)</span> (відкидаючи значення <span class="math">\(\geq q\)</span>).</p>
+
+            <h3>Семплювання шуму (алгоритм <code>SamplePolyCBD</code>)</h3>
+            <p>Шум семплюється з центрованим біноміальним розподілом <span class="math">\(B_\eta\)</span>:</p>
+            <div class="sequence-diagram">
+                за зерном σ довжиною 32 байти та nonce b:<br />
+                байти = PRF<sub>η</sub>(σ, b) &nbsp; // 64η байт<br />
+                для кожної пари бітів (a_i, b_i):<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;коефіцієнт = Σa_i - Σb_i
+            </div>
+            <p>Результат — поліном з коефіцієнтами в <span class="math">\([-\eta, \eta]\)</span>.</p>
+        </section>
+
+        <!-- Section 8.5 – Compressione -->
+        <section id="id-85">
+            <h2>8.5 Стиснення та розтискання</h2>
+            <p>ML-KEM використовує стиснення для зменшення розміру шифртексту. Коефіцієнти поліномів знаходяться в <span class="math">\(\{0, \ldots, q-1\}\)</span> (12 біт), але стискаються до <span class="math">\(d_u\)</span> або <span class="math">\(d_v\)</span> біт.</p>
+            <div class="math-block">
+                \[
+                \text{Compress}_d(x) = \left\lfloor \frac{2^d}{q} \cdot x \right\rceil \bmod 2^d
+                \]
+            </div>
+            <div class="math-block">
+                \[
+                \text{Decompress}_d(y) = \left\lfloor \frac{q}{2^d} \cdot y \right\rceil
+                \]
+            </div>
+            <p><strong>Помилка, внесена стисненням:</strong> стиснення вносить помилку <span class="math">\(\epsilon = \text{Decompress}_d(\text{Compress}_d(x)) - x\)</span>. Для <span class="math">\(d_v = 4\)</span>: <span class="math">\(|\epsilon| \leq q/2^5 \approx 104\)</span>. Ця помилка має бути достатньо малою, щоб не викликати збою розшифровки, що накладає обмеження на параметри <span class="math">\(\eta_1\)</span>, <span class="math">\(\eta_2\)</span>, <span class="math">\(d_u\)</span>, <span class="math">\(d_v\)</span>.</p>
+
+            <h3>Бюджет шуму</h3>
+            <p>Загальний шум, що досягає розшифровки, дорівнює:</p>
+            <div class="math-block">
+                \[
+                \epsilon_{\text{totale}} = \hat{\mathbf{e}}^T\hat{\mathbf{r}} + e_2 - \hat{\mathbf{s}}^T e_1 + \epsilon_u + \epsilon_v
+                \]
+            </div>
+            <p>Для коректної розшифровки необхідно <span class="math">\(|\epsilon_{\text{totale}}| < \lfloor q/4 \rfloor = 832\)</span>. Параметри обрані так, щоб гарантувати виконання цієї умови з ймовірністю <span class="math">\(1 - 2^{-139}\)</span> для ML-KEM-768.</p>
+        </section>
+
+        <!-- Section 8.6 – Correttezza e sicurezza -->
+        <section id="id-86">
+            <h2>8.6 Коректність і безпека</h2>
+
+            <h3>Коректність K‑PKE</h3>
+            <p>Ймовірність помилки K‑PKE аналізується шляхом семплювання <span class="math">\(s\)</span>, <span class="math">\(e\)</span>, <span class="math">\(r\)</span>, <span class="math">\(e_1\)</span>, <span class="math">\(e_2\)</span> з розподілу <span class="math">\(B_\eta\)</span>. Для ML-KEM-768 (<span class="math">\(k=3\)</span>, <span class="math">\(\eta_1=\eta_2=2\)</span>) ймовірність помилки одного коефіцієнта становить <span class="math">\(< 2^{-150}\)</span>, і з 256 коефіцієнтами та границею об'єднання повна ймовірність становить <span class="math">\(< 2^{-139}\)</span>.</p>
+
+            <h3>Безпека IND‑CCA2 ML‑KEM</h3>
+            <details>
+                <summary><strong>Крок 1: Від MLWE до K‑PKE IND‑CPA</strong></summary>
+                <p>Якщо противник розрізняє шифртексти K‑PKE, він може бути використаний для розв'язання MLWE (поліноміальна редукція).</p>
+            </details>
+            <details>
+                <summary><strong>Крок 2: Від K‑PKE IND‑CPA до ML‑KEM IND‑CCA2</strong></summary>
+                <p>Через перетворення FO в моделі випадкового оракула. Повторне шифрування при розшифровці є ключовим: воно не дозволяє противнику використовувати розшифровку як оракул.</p>
+            </details>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>Джерела</h2>
+            <ul>
+                <li>NIST FIPS 203 (2024) – <em>Module-Lattice-Based Key-Encapsulation Mechanism Standard</em><br />
+                    <a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank">https://csrc.nist.gov/pubs/fips/203/final</a></li>
+                <li>Bos, J. et al. (2018) – <em>CRYSTALS-Kyber: A CCA-Secure Module-Lattice-Based KEM</em></li>
+                <li>Fujisaki, E., Okamoto, T. (1999) – <em>Secure Integration of Asymmetric and Symmetric Encryption Schemes</em></li>
+                <li>Hofheinz, D., Hövelmanns, K., Kiltz, E. (2017) – <em>A Modular Analysis of the Fujisaki-Okamoto Transformation</em></li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="7.html" class="nav-btn">← Попередній розділ</a>
+            <span class="nav-label">08 / 10</span>
+            <a href="9.html" class="nav-btn">Наступний розділ →</a>
+        </div>
+    </article>
+</main>
+
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Безкоштовна бібліотека для всіх. Усі права захищено.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'uk';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/8.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

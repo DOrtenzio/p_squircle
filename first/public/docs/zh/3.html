@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第3章 – MONEOO.</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../chapterapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/cookie-guard.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MathJax for formulas -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+    <!-- Toolbar (identical to index) -->
+    <div id="chapterToolbar" class="page-toolbar visible">
+        <div class="toolbar-brand">MONEOO.</div>
+        <nav class="toolbar-nav" aria-label="快速导航">
+            <a href="index.html#featureSection">为什么</a>
+            <a href="index.html#learningPath">学习路径</a>
+            <a href="index.html#searchSection">指南</a>
+        </nav>
+        <div class="toolbar-lang">
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-toggle" id="langToggle" aria-label="选择语言">
+                    <span class="lang-current" id="langCurrent">🇨🇳 中文</span>
+                    <svg class="lang-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <!-- 16 languages -->
+                    <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+                    <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+                    <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+                    <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-option" data-lang="pt">🇵🇹 Português</button>
+                    <button class="lang-option" data-lang="nl">🇳🇱 Nederlands</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="lang-option" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                    <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                    <button class="lang-option" data-lang="pl">🇵🇱 Polski</button>
+                    <button class="lang-option" data-lang="uk">🇺🇦 Українська</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main container with sidebar -->
+    <div class="container chapter-wrapper">
+        <!-- Sidebar -->
+        <aside class="chapter-sidebar">
+            <h3>章节</h3>
+            <ul>
+                <li><a href="0.html"><span class="chapter-number">00</span> 预备知识</a></li>
+                <li><a href="1.html"><span class="chapter-number">01</span> 对称加密</a></li>
+                <li><a href="2.html"><span class="chapter-number">02</span> 非对称加密</a></li>
+                <li class="active"><a href="3.html"><span class="chapter-number">03</span> Shor算法</a></li>
+                <li><a href="4.html"><span class="chapter-number">04</span> 格</a></li>
+                <li><a href="5.html"><span class="chapter-number">05</span> MLWE</a></li>
+                <li><a href="6.html"><span class="chapter-number">06</span> KEM</a></li>
+                <li><a href="7.html"><span class="chapter-number">07</span> NTT</a></li>
+                <li><a href="8.html"><span class="chapter-number">08</span> FIPS 203</a></li>
+                <li><a href="9.html"><span class="chapter-number">09</span> 安全性</a></li>
+                <li><a href="10.html"><span class="chapter-number">10</span> 实现</a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+    <article>
+        <h1>03 – Shor 算法</h1>
+        <p class="subtitle">为什么 RSA 和 ECC 容易受到量子计算机的攻击</p>
+
+        <!-- Index -->
+        <div class="toc">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#id-31">3.1 量子计算机：基础知识</a></li>
+                <li><a href="#id-32">3.2 Shor 算法</a></li>
+                <li><a href="#id-33">3.3 对 RSA、DH、ECC 的影响</a></li>
+                <li><a href="#id-34">3.4 Grover：对对称加密的威胁</a></li>
+                <li><a href="#id-35">3.5 量子计算机的现状（2024–2025）</a></li>
+                <li><a href="#id-36">3.6 现在收集，以后解密</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 3.1 -->
+        <section id="id-31">
+            <h2>3.1 量子计算机：基础知识</h2>
+
+            <h3>量子比特 vs. 经典比特</h3>
+
+            <p>经典比特是 0 或 1。<strong>量子比特</strong> 可以处于 <strong>叠加态</strong>：<span class="math">\(|0\rangle\)</span> 和 <span class="math">\(|1\rangle\)</span> 的线性组合。</p>
+
+            <div class="math-block">
+                \[
+                |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \qquad |\alpha|^2 + |\beta|^2 = 1
+                \]
+            </div>
+
+            <p>在测量之前，量子比特"既是 0 又是 1"。测量后，它坍缩为 0（概率 <span class="math">\(|\alpha|^2\)</span>）或 1（概率 <span class="math">\(|\beta|^2\)</span>）。</p>
+
+            <blockquote>
+                <p><strong>类比：</strong>想象一枚在空中旋转的硬币，同时代表正面和反面。只有当你观察它时，它才变成其中之一。</p>
+            </blockquote>
+
+            <h3>纠缠与干涉</h3>
+
+            <ul>
+                <li><strong>纠缠：</strong>两个量子比特可以相互关联，使得测量一个立即确定另一个。</li>
+                <li><strong>量子干涉：</strong>"错误"的计算路径相消干涉（如波相互抵消），而"正确"的路径被放大。</li>
+            </ul>
+
+            <p>量子算法利用干涉来放大正确答案并抑制错误答案。</p>
+
+            <h3>量子并行性</h3>
+
+            <p>使用 <span class="math">\(n\)</span> 个量子比特，可以同时表示 <span class="math">\(2^n\)</span> 个状态的叠加。但测量只返回一个状态 → 关键在于构建算法，使干涉只让正确答案存活。</p>
+        </section>
+
+        <!-- Section Schema Algoritmo -->
+        <section id="id-32">
+            <h2>3.2 Shor 算法</h2>
+            
+            <h3>分解 \(n\) 的算法框架</h3>
+            
+            <div class="algorithm-steps">
+                <ol>
+                    <li><strong>输入：</strong>合数 <span class="math">\(n\)</span></li>
+                    <li><strong>初始化：</strong>选择随机 <span class="math">\(a\)</span>，使得 <span class="math">\(1 < a < n\)</span> 且 <span class="math">\(\gcd(a,n)=1\)</span></li>
+                    <li><strong>量子准备：</strong>准备从 <span class="math">\(0\)</span> 到 <span class="math">\(2^k-1\)</span> 的均匀叠加态寄存器</li>
+                    <li><strong>Oracle：</strong>并行计算 <span class="math">\(f(x) = a^x \bmod n\)</span>（在叠加态中）</li>
+                    <li><strong>QFT：</strong>对第一个寄存器应用量子傅里叶变换</li>
+                    <li><strong>测量：</strong>测量寄存器以获得与周期 <span class="math">\(r\)</span> 相关的值</li>
+                    <li><strong>经典：</strong>使用连分数算法估计 <span class="math">\(r\)</span></li>
+                    <li><strong>验证：</strong>如果 <span class="math">\(r\)</span> 是偶数且 <span class="math">\(a^{r/2} \not\equiv -1 \pmod n\)</span>：
+                        <ul>
+                            <li>计算 <span class="math">\(\gcd(a^{r/2} - 1, n)\)</span> 和 <span class="math">\(\gcd(a^{r/2} + 1, n)\)</span></li>
+                            <li>这些是 <span class="math">\(n\)</span> 的非平凡因子</li>
+                        </ul>
+                    </li>
+                    <li><strong>循环：</strong>如果失败，返回步骤 2 并选择新的 <span class="math">\(a\)</span></li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <p><strong>注意：</strong>量子核心（步骤 3-5）利用 QFT 的相长/相消干涉，在多项式时间内找到函数 <span class="math">\(f(x)\)</span> 的周期 <span class="math">\(r\)</span>。</p>
+            </div>
+        </section>
+
+        <!-- Section 3.3 -->
+        <section id="id-33">
+            <h2>3.3 对 RSA、DH、ECC 的影响</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>方案</th>
+                        <th>安全性基于</th>
+                        <th>易受 Shor 攻击？</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RSA</td>
+                        <td>因数分解</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">是</span></td>
+                    </tr>
+                    <tr>
+                        <td>DH（模 <span class="math">\(p\)</span>）</td>
+                        <td><span class="math">\(\mathbb{Z}_p^*\)</span> 中的离散对数</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">是</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECDH / ECDSA</td>
+                        <td>ECDLP（椭圆曲线离散对数）</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">是</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ML-KEM（MLWE）</strong></td>
+                        <td>格问题</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">无已知高效算法</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AES-256</strong></td>
+                        <td>伪随机置换</td>
+                        <td>仅有 Grover（见下文）</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Shor 解决了任何具有阿贝尔群周期性结构的结构化问题。因数分解和离散对数（包括 EC 上的）恰好具有这种结构。格问题则没有。</p>
+        </section>
+
+        <!-- Section 3.4 -->
+        <section id="id-34">
+            <h2>3.4 Grover：对对称加密的威胁</h2>
+
+            <p>Grover 算法（1996）在非结构化搜索中提供 <strong>二次</strong> 加速：</p>
+            <ul>
+                <li>在 <span class="math">\(2^k\)</span> 种可能性中经典搜索密钥：<span class="math">\(O(2^k)\)</span> 次尝试</li>
+                <li>使用 Grover：<span class="math">\(O(2^{k/2})\)</span> 次尝试</li>
+            </ul>
+
+            <p><strong>实际影响：</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>密钥</th>
+                        <th>经典安全性</th>
+                        <th>后量子安全性（Grover）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AES-128</td>
+                        <td>128 位</td>
+                        <td><span style="color: #dc2626; font-weight: 700;">64 位 → 不足</span></td>
+                    </tr>
+                    <tr>
+                        <td>AES-256</td>
+                        <td>256 位</td>
+                        <td><span style="color: #16a34a; font-weight: 700;">128 位 → 仍然安全</span></td>
+                    </tr>
+                    <tr>
+                        <td>SHA-256</td>
+                        <td>256 位</td>
+                        <td>128 位 → 安全</td>
+                    </tr>
+                    <tr>
+                        <td>SHA3-256</td>
+                        <td>256 位</td>
+                        <td>128 位 → 安全</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>因此，NIST 在后量子背景下推荐 AES-256（而非 AES-128）。</p>
+        </section>
+
+        <!-- Section 3.5 -->
+        <section id="id-35">
+            <h2>3.5 量子计算机的现状（2024–2025）</h2>
+
+            <p>当前的量子计算机属于 <strong>NISQ（嘈杂中等规模量子）</strong> 时代：它们有数十到数百个物理量子比特，但错误率较高。</p>
+
+            <p>使用 Shor 算法破解 RSA-2048 需要：</p>
+            <ul>
+                <li>~4000 个完美的逻辑量子比特</li>
+                <li>或 ~400 万个带量子纠错的物理量子比特</li>
+            </ul>
+
+            <p>目前最好的系统（Google Willow、IBM Heron 等）拥有约 100-1000 个高保真物理量子比特，但我们离所需规模还很远。</p>
+
+            <blockquote>
+                <p><strong>NIST 估计：</strong>具有密码学意义的量子计算机可能在 10–15 年内出现，但存在很大的不确定性。</p>
+            </blockquote>
+        </section>
+
+        <!-- Section 3.6 -->
+        <section id="id-36">
+            <h2>3.6 现在收集，以后解密</h2>
+
+            <p>即使量子计算机尚 <em>未</em> 以密码学相关形式存在，<strong>今天</strong> 也存在具体的威胁：</p>
+
+            <blockquote>
+                <p>攻击者可以 <strong>现在收集</strong> 加密通信（即使无法解密），并在 <strong>未来</strong> 拥有足够强大的量子计算机时 <strong>解密</strong> 它们。</p>
+            </blockquote>
+
+            <p>这种攻击被称为 <strong>"现在收集，以后解密"（Harvest Now, Decrypt Later - HNDL）</strong> 或 <em>store-now-decrypt-later</em>。</p>
+
+            <h4>谁面临风险：</h4>
+            <ul>
+                <li>具有长期保密要求的外交和军事通信</li>
+                <li>需要数十年保密性的医疗、金融、法律数据</li>
+                <li>工业机密和知识产权</li>
+            </ul>
+
+            <h4>何时迁移？</h4>
+
+            <p>如果您的数据需要保密的时间超过了足够强大的量子计算机出现所需的时间，您必须 <em>现在</em> 迁移。</p>
+
+            <p>这是 NIST 在 2024 年标准化 ML-KEM（FIPS 203）的主要原因，也是 NSA、ENISA 和 ANSSI 等组织建议高关键性系统立即迁移的原因。</p>
+        </section>
+
+        <!-- Sources -->
+        <div class="sources">
+            <h2>资料来源</h2>
+            <ul>
+                <li>Shor, P.W. (1994) – <em>Algorithms for Quantum Computation: Discrete Logarithms and Factoring</em></li>
+                <li>Grover, L.K. (1996) – <em>A Fast Quantum Mechanical Algorithm for Database Search</em></li>
+                <li>NIST IR 8547 (2024) – <em>Transition to Post-Quantum Cryptography Standards</em></li>
+                <li>NSA CNSA 2.0 (2022) – <em>Commercial National Security Algorithm Suite</em></li>
+                <li>Bernstein, D.J., Lange, T. (2017) – <em>Post-quantum cryptography</em>, Nature 549</li>
+            </ul>
+        </div>
+
+        <!-- Chapter navigation -->
+        <div class="chapter-nav">
+            <a href="2.html" class="nav-btn">← 上一章</a>
+            <span class="nav-label">03 / 10</span>
+            <a href="4.html" class="nav-btn">下一章 →</a>
+        </div>
+    </article>
+</main>
+    </div>
+
+    <!-- Site footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="brand-footer">MONEOO.</div>
+            <p class="copyright">© <span id="current-year"></span> Free Library for all. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    (function() {
+        const toggle = document.getElementById('langToggle');
+        const dropdown = document.getElementById('langDropdown');
+        const selector = document.getElementById('langSelector');
+        const currentDisplay = document.getElementById('langCurrent');
+
+        if (!toggle || !dropdown || !selector || !currentDisplay) return;
+
+        const langMap = {
+            'it': '🇮🇹 Italiano',
+            'en': '🇬🇧 English',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'es': '🇪🇸 Español',
+            'pt': '🇵🇹 Português',
+            'nl': '🇳🇱 Nederlands',
+            'ru': '🇷🇺 Русский',
+            'zh': '🇨🇳 中文',
+            'ja': '🇯🇵 日本語',
+            'ko': '🇰🇷 한국어',
+            'ar': '🇸🇦 العربية',
+            'hi': '🇮🇳 हिन्दी',
+            'tr': '🇹🇷 Türkçe',
+            'pl': '🇵🇱 Polski',
+            'uk': '🇺🇦 Українська'
+        };
+
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const docsIndex = pathSegments.indexOf('docs');
+        const pathLang = (docsIndex !== -1 && pathSegments[docsIndex + 1]) || 'zh';
+
+        if (langMap[pathLang]) {
+            currentDisplay.textContent = langMap[pathLang];
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selector.classList.toggle('open');
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (lang && langMap[lang]) {
+                    window.location.href = `${window.location.origin}/public/docs/${lang}/3.html`;
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selector.contains(e.target)) {
+                selector.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && selector.classList.contains('open')) {
+                selector.classList.remove('open');
+            }
+        });
+
+        dropdown.querySelectorAll('.lang-option').forEach(option => {
+            if (option.dataset.lang === pathLang) {
+                option.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
