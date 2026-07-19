@@ -227,6 +227,156 @@
                 <button id="nextBtn" class="btn btn-nav" onclick="nextChapters()">Наступний →</button>
             </div>
         </section>
+
+        <section id="promo-banner">
+            <div class="promo-banner">
+                <div class="promo-banner-inner">
+                    <div class="promo-icon">
+                        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <style>
+                                @keyframes ladybugFly {
+                                    0% {
+                                        transform: translate(0, 0) rotate(0deg);
+                                    }
+                                    25% {
+                                        transform: translate(2px, -6px) rotate(-3deg);
+                                    }
+                                    50% {
+                                        transform: translate(-1px, -10px) rotate(2deg);
+                                    }
+                                    75% {
+                                        transform: translate(1px, -4px) rotate(-1deg);
+                                    }
+                                    100% {
+                                        transform: translate(0, 0) rotate(0deg);
+                                    }
+                                }
+                                @keyframes wingFlap {
+                                    0%, 100% {
+                                        transform: scaleY(1);
+                                    }
+                                    50% {
+                                        transform: scaleY(0.3);
+                                    }
+                                }
+                                @keyframes wingFlap2 {
+                                    0%, 100% {
+                                        transform: scaleY(1);
+                                    }
+                                    50% {
+                                        transform: scaleY(0.2);
+                                    }
+                                }
+                                @keyframes floatGlow {
+                                    0%, 100% {
+                                        opacity: 0.3;
+                                        transform: scale(1);
+                                    }
+                                    50% {
+                                        opacity: 0.6;
+                                        transform: scale(1.1);
+                                    }
+                                }
+                                .ladybug-group {
+                                    animation: ladybugFly 2s ease-in-out infinite;
+                                    transform-origin: 50px 50px;
+                                }
+                                .wing-left {
+                                    animation: wingFlap 0.15s ease-in-out infinite;
+                                    transform-origin: 40px 50px;
+                                }
+                                .wing-right {
+                                    animation: wingFlap2 0.15s ease-in-out infinite;
+                                    transform-origin: 60px 50px;
+                                }
+                                .glow-ring {
+                                    animation: floatGlow 2.5s ease-in-out infinite;
+                                }
+                            </style>
+
+                            <!-- Bagliore di sfondo -->
+                            <circle cx="50" cy="50" r="45" fill="url(#glowGrad)" opacity="0.12" class="glow-ring"/>
+
+                            <!-- Corpo della coccinella -->
+                            <g class="ladybug-group">
+                                <!-- Ali trasparenti (dietro) -->
+                                <ellipse cx="38" cy="50" rx="22" ry="10" fill="rgba(200,220,255,0.3)" stroke="rgba(200,220,255,0.5)" stroke-width="1" class="wing-left" transform="rotate(-20 38 50)"/>
+                                <ellipse cx="62" cy="50" rx="22" ry="10" fill="rgba(200,220,255,0.3)" stroke="rgba(200,220,255,0.5)" stroke-width="1" class="wing-right" transform="rotate(20 62 50)"/>
+
+                                <!-- Corpo principale -->
+                                <ellipse cx="50" cy="55" rx="26" ry="20" fill="url(#ladybugGrad)"/>
+                                <path d="M50 35 A26 20 0 0 1 50 75" fill="none" stroke="#1a1a22" stroke-width="2"/>
+
+                                <!-- Linea dorsale -->
+                                <line x1="50" y1="35" x2="50" y2="75" stroke="#1a1a22" stroke-width="1.5"/>
+
+                                <!-- Macchie -->
+                                <circle cx="38" cy="48" r="4.5" fill="#1a1a22"/>
+                                <circle cx="62" cy="48" r="4.5" fill="#1a1a22"/>
+                                <circle cx="34" cy="64" r="4" fill="#1a1a22"/>
+                                <circle cx="66" cy="64" r="4" fill="#1a1a22"/>
+                                <circle cx="50" cy="56" r="3" fill="#1a1a22" opacity="0.25"/>
+
+                                <!-- Occhi -->
+                                <circle cx="43" cy="40" r="2.5" fill="#1a1a22"/>
+                                <circle cx="57" cy="40" r="2.5" fill="#1a1a22"/>
+                                <circle cx="44" cy="39" r="1" fill="white"/>
+                                <circle cx="58" cy="39" r="1" fill="white"/>
+
+                                <!-- Antenne -->
+                                <path d="M44 37 L38 28" stroke="#1a1a22" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M56 37 L62 28" stroke="#1a1a22" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="38" cy="28" r="2.5" fill="#1a1a22"/>
+                                <circle cx="62" cy="28" r="2.5" fill="#1a1a22"/>
+
+                                <!-- Zampe -->
+                                <path d="M30 52 L20 48" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M28 60 L18 58" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M32 68 L22 70" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M70 52 L80 48" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M72 60 L82 58" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M68 68 L78 70" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round"/>
+
+                                <!-- Lucentezza -->
+                                <ellipse cx="46" cy="46" rx="8" ry="4" fill="white" opacity="0.15" transform="rotate(-25 46 46)"/>
+                            </g>
+
+                            <!-- Scia di volo (trattini animati) -->
+                            <circle cx="18" cy="50" r="1.5" fill="#6bcb6b" opacity="0.5">
+                                <animate attributeName="opacity" values="0.5;0;0" dur="1s" repeatCount="indefinite"/>
+                                <animate attributeName="cx" values="18;8;8" dur="1s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="22" cy="44" r="1" fill="#6bcb6b" opacity="0.4">
+                                <animate attributeName="opacity" values="0.4;0;0" dur="1.2s" repeatCount="indefinite" begin="0.3s"/>
+                                <animate attributeName="cx" values="22;10;10" dur="1.2s" repeatCount="indefinite" begin="0.3s"/>
+                            </circle>
+                            <circle cx="20" cy="58" r="1.2" fill="#6bcb6b" opacity="0.45">
+                                <animate attributeName="opacity" values="0.45;0;0" dur="0.9s" repeatCount="indefinite" begin="0.6s"/>
+                                <animate attributeName="cx" values="20;9;9" dur="0.9s" repeatCount="indefinite" begin="0.6s"/>
+                            </circle>
+
+                            <defs>
+                                <linearGradient id="glowGrad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#ff6b6b"/>
+                                    <stop offset="100%" stop-color="#6bcb6b"/>
+                                </linearGradient>
+                                <linearGradient id="ladybugGrad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#ff4757"/>
+                                    <stop offset="60%" stop-color="#e0333a"/>
+                                    <stop offset="100%" stop-color="#cc2222"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="promo-copy">
+                        <p class="promo-eyebrow">Випробуй себе</p>
+                        <h3>Зрозумів ML-KEM? <span>Врятуй Latticetown.</span></h3>
+                        <p>Антонелло Вендетта розмістив шість балончиків з ДДТ по всьому місту. Керуй сонечком у 3D-грі та знешкодь їх, розв'язуючи головоломки постквантової криптографії.</p>
+                    </div>
+                    <a class="promo-cta" href="../../game/index.html">Грати зараз →</a>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">

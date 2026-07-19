@@ -1,344 +1,1235 @@
 <!DOCTYPE html>
-<html lang="en" id="htmlRoot">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MONEOO.</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* Fallback tokens in case css/style.css fails to load */
-    :root{
-      --bg-color:#f5f5f5; --text-main:#111111; --text-muted:#666666;
-      --accent:#111111; --radius:32px; --shadow:0 34px 80px rgba(0,0,0,0.08);
-    }
-    html,body{height:100%;}
-    body{
-      margin:0; display:grid; place-items:center;
-      background:var(--bg-color); color:var(--text-main);
-      font-family:'Inter', system-ui, sans-serif;
-    }
-    .redirect-note{
-      position:fixed; bottom:1.5rem; left:0; right:0;
-      text-align:center; color:var(--text-muted); font-size:0.85rem;
-    }
-    .consent-card{
-      max-width:520px; width:100%; text-align:left;
-    }
-    .consent-card h1{ text-align:center; }
-    .consent-card > p#consentDesc{ text-align:center; }
-    .consent-actions{
-      display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.75rem; justify-content:center;
-    }
-    .consent-actions .btn{ flex:1 1 140px; cursor:pointer; border:none; font-weight:600; font-size:0.92rem; padding:14px 16px; }
-    .consent-actions .btn-text{ flex:1 1 140px; text-decoration:none; border-radius:999px; border:1px solid rgba(0,0,0,0.12); }
-    .consent-note{ margin-top:1.25rem; font-size:0.8rem; color:var(--text-muted); line-height:1.6; text-align:center; }
-    .squircle-icon{ width:60px; height:60px; background:#111; border-radius:20px; margin:0 auto 1.5rem; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operation Debug — MONEOO.</title>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/cookie-guard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#050308;
+    --panel:#0d0a14;
+    --panel-edge:rgba(255,255,255,0.08);
+    --danger:#ff3b46;
+    --danger-glow:#ff3b4680;
+    --safe:#31ffb0;
+    --amber:#ffb020;
+    --violet:#8a5bff;
+    --text:#eef0f6;
+    --text-dim:#9a97ad;
+    --font-display:'Orbitron', system-ui, sans-serif;
+    --font-mono:'Share Tech Mono', monospace;
+    --font-body:'Inter', system-ui, sans-serif;
+  }
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:var(--bg-void); font-family:var(--font-body); }
+  #gameCanvas { position:fixed; inset:0; display:block; }
 
-    /* Customize panel */
-    .consent-categories{
-      margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid rgba(0,0,0,0.08);
-    }
-    .consent-category{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;
-      padding:0.85rem 0;
-    }
-    .consent-category + .consent-category{ border-top:1px solid rgba(0,0,0,0.06); }
-    .consent-category-copy strong{ display:block; font-size:0.95rem; margin-bottom:0.2rem; }
-    .consent-category-copy span{ display:block; font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
+  .scanlines{
+    position:fixed; inset:0; z-index:5; pointer-events:none; mix-blend-mode:overlay; opacity:0.35;
+    background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px);
+  }
+  .vignette{
+    position:fixed; inset:0; z-index:6; pointer-events:none;
+    box-shadow: inset 0 0 220px rgba(0,0,0,0.85);
+    transition: box-shadow 0.4s ease;
+  }
+  .vignette.alert{ box-shadow: inset 0 0 260px rgba(255,20,20,0.55); }
 
-    .toggle-switch{
-      position:relative; flex-shrink:0; width:44px; height:26px; margin-top:0.15rem;
-    }
-    .toggle-switch input{ opacity:0; width:0; height:0; }
-    .toggle-slider{
-      position:absolute; inset:0; background:rgba(0,0,0,0.15); border-radius:999px;
-      transition:background 0.2s ease; cursor:pointer;
-    }
-    .toggle-slider::before{
-      content:""; position:absolute; height:20px; width:20px; left:3px; top:3px;
-      background:#fff; border-radius:50%; transition:transform 0.2s ease;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-    }
-    .toggle-switch input:checked + .toggle-slider{ background:var(--accent); }
-    .toggle-switch input:checked + .toggle-slider::before{ transform:translateX(18px); }
-    .toggle-switch input:disabled + .toggle-slider{ opacity:0.5; cursor:not-allowed; }
+  .hud { position:fixed; inset:0; pointer-events:none; z-index:10; color:var(--text); }
+  .hud * { pointer-events:auto; }
 
-    #saveCustomBtn{ width:100%; margin-top:1.25rem; border:none; cursor:pointer; font-weight:600; }
-  </style>
+  .hud-top {
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:1rem 1.25rem; pointer-events:none; gap:0.8rem;
+  }
+  .glass{
+    background:linear-gradient(180deg, rgba(16,13,26,0.75), rgba(10,8,17,0.75));
+    backdrop-filter:blur(8px); border:1px solid var(--panel-edge);
+    box-shadow:0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .hud-title {
+    font-family:var(--font-display); font-weight:800; letter-spacing:0.06em; font-size:0.95rem;
+    padding:0.6rem 1rem; border-radius:12px; text-transform:uppercase;
+    border-left:3px solid var(--danger);
+  }
+  .hud-title small { display:block; font-family:var(--font-body); font-weight:600; opacity:0.55; font-size:0.65rem; margin-top:3px; letter-spacing:0.04em; text-transform:none; }
+  .hud-counter {
+    padding:0.6rem 1rem; border-radius:12px;
+    font-family:var(--font-mono); font-weight:700; font-size:0.85rem; display:flex; align-items:center; gap:0.6rem;
+    letter-spacing:0.02em;
+  }
+  .hud-counter .dot { width:9px; height:9px; border-radius:50%; background:var(--danger); box-shadow:0 0 10px var(--danger); animation:pulseDot 1.6s ease-in-out infinite; }
+  @keyframes pulseDot{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(0.75);} }
+
+  .minimap-wrap{ position:absolute; top:5.4rem; right:1.25rem; padding:0.5rem; border-radius:14px; }
+  .minimap-wrap .cap{ font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.12em; color:var(--text-dim); text-align:center; margin-bottom:0.3rem; text-transform:uppercase;}
+  #minimapCanvas{ display:block; border-radius:50%; }
+
+  .hud-prompt {
+    position:absolute; bottom:10%; left:50%; transform:translateX(-50%) translateY(10px);
+    padding:0.65rem 1.2rem; border-radius:999px;
+    font-size:0.85rem; font-weight:700; opacity:0; transition:opacity 0.25s ease, transform 0.25s ease;
+    white-space:nowrap; font-family:var(--font-body);
+  }
+  .hud-prompt.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .hud-prompt kbd {
+    background:linear-gradient(180deg,#fff,#c9c9d4); color:#111; border-radius:6px; padding:2px 8px; font-weight:800; margin-right:0.5rem;
+    box-shadow:0 2px 0 rgba(0,0,0,0.3);
+  }
+
+  .hud-nearby {
+    position:absolute; bottom:2.2%; left:50%; transform:translateX(-50%);
+    font-family:var(--font-mono); font-size:0.7rem; opacity:0.6; letter-spacing:0.06em; text-transform:uppercase;
+  }
+
+  .hud-controls {
+    position:absolute; bottom:1.5rem; right:1.25rem;
+    padding:0.75rem 1rem; border-radius:14px;
+    font-size:0.7rem; line-height:1.8; opacity:0.85; font-family:var(--font-mono);
+  }
+  .hud-controls b { display:inline-block; min-width:80px; color:var(--amber); font-weight:700; }
+
+  .overlay {
+    position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at center, rgba(30,10,20,0.6), rgba(2,1,5,0.95));
+    backdrop-filter:blur(5px);
+  }
+  .overlay.hidden { display:none; }
+  .panel {
+    width:min(560px, 92vw); max-height:88vh; overflow-y:auto;
+    background:linear-gradient(180deg,#131019,#0b0910);
+    border:1px solid var(--panel-edge);
+    border-radius:22px; padding:2rem 2.1rem; color:var(--text);
+    box-shadow:0 40px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .panel .eyebrow {
+    font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.14em; font-weight:700;
+    color:var(--danger); margin:0 0 0.5rem;
+  }
+  .panel h1, .panel h2 { margin:0 0 0.8rem; line-height:1.25; font-family:var(--font-display); }
+  .panel h1 { font-size:1.4rem; letter-spacing:0.01em; }
+  .panel h2 { font-size:1.1rem; }
+  .panel p { line-height:1.7; color:#c7c7d1; margin:0 0 1rem; }
+  .panel .story { font-size:0.92rem; }
+
+  .btn-row { display:flex; gap:0.65rem; flex-wrap:wrap; margin-top:1.4rem; }
+  .g-btn {
+    flex:1 1 140px; border:none; cursor:pointer; border-radius:12px;
+    padding:0.85rem 1rem; font-weight:700; font-size:0.9rem; font-family:var(--font-body);
+    transition:transform 0.15s ease, filter 0.15s ease; text-align:left;
+  }
+  .g-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+  .g-btn:active { transform:translateY(0px) scale(0.98); }
+  .g-btn.primary { background:linear-gradient(180deg,#ff4d4d,#e2242f); color:#fff; text-align:center; box-shadow:0 8px 22px var(--danger-glow); }
+  .g-btn.ghost { background:rgba(255,255,255,0.06); color:var(--text); border:1px solid rgba(255,255,255,0.1); text-align:center; }
+
+  .progress-track { height:6px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; margin-top:0.4rem; }
+  .progress-fill { height:100%; background:var(--danger); width:0%; transition:width 0.4s ease; }
+
+  .audio-block { margin-top:1.2rem; background:rgba(255,255,255,0.04); border-radius:16px; padding:1rem; }
+  .audio-block p { margin:0 0 0.5rem; font-size:0.8rem; color:#9a9aa5; }
+  .audio-block audio { width:100%; }
+
+  .fade-black {
+    position:fixed; inset:0; background:#000; opacity:0; pointer-events:none; z-index:60; transition:opacity 0.6s ease;
+  }
+  .fade-black.show { opacity:1; }
+
+  .bomb-overlay .panel{ width:min(640px, 94vw); padding:0; overflow:visible; background:transparent; box-shadow:none; border:none; }
+  .bomb-case{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.03), transparent 40%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 6px),
+      linear-gradient(160deg,#1a1620,#0c0a12 60%);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:20px;
+    padding:1.4rem 1.5rem 1.7rem;
+    box-shadow:0 30px 90px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+    position:relative;
+  }
+  .bomb-case.shake{ animation:bombShake 0.4s ease; }
+  @keyframes bombShake{
+    0%,100%{ transform:translate(0,0) rotate(0); }
+    20%{ transform:translate(-6px,2px) rotate(-0.6deg); }
+    40%{ transform:translate(5px,-2px) rotate(0.5deg); }
+    60%{ transform:translate(-4px,1px) rotate(-0.4deg); }
+    80%{ transform:translate(3px,-1px) rotate(0.3deg); }
+  }
+  .bomb-topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:0.9rem; }
+  .bomb-topbar .zone-tag{ font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.14em; color:var(--danger); text-transform:uppercase; }
+  .bomb-lights{ display:flex; gap:6px; }
+  .bomb-lights i{ width:8px; height:8px; border-radius:50%; background:#331014; display:block; }
+  .bomb-lights i.on{ background:var(--danger); box-shadow:0 0 8px var(--danger); }
+
+  .lcd{
+    background:#04140e; border:1px solid #0d3a29; border-radius:10px; padding:0.9rem 1.05rem;
+    box-shadow: inset 0 0 24px rgba(49,255,176,0.12);
+    margin-bottom:1.1rem;
+  }
+  .lcd .lcd-row{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem; }
+  .lcd .lcd-clock{ font-family:var(--font-mono); color:var(--safe); font-size:1.1rem; letter-spacing:0.08em; text-shadow:0 0 8px rgba(49,255,176,0.6); }
+  .lcd .lcd-status{ font-family:var(--font-mono); font-size:0.65rem; color:var(--safe); opacity:0.8; letter-spacing:0.12em; }
+  .lcd .lcd-question{ font-family:var(--font-mono); color:#c9ffe9; font-size:0.92rem; line-height:1.55; text-shadow:0 0 6px rgba(49,255,176,0.35); }
+
+  .wire-panel{ display:flex; flex-direction:column; gap:0.65rem; }
+  .wire-row{
+    display:flex; align-items:center; gap:0.8rem; cursor:pointer;
+    background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:12px;
+    padding:0.5rem 0.7rem 0.5rem 0.4rem; transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .wire-row:hover{ background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14); }
+  .wire-row.disabled{ pointer-events:none; opacity:0.55; }
+  .wire-plug{ width:12px; height:12px; border-radius:50%; flex:0 0 auto; background:#222; border:2px solid #444; }
+  .wire-cable-wrap{ position:relative; flex:1 1 auto; height:16px; display:flex; align-items:center; }
+  .wire-cable{
+    position:relative; height:9px; width:100%; border-radius:999px;
+    background: linear-gradient(90deg, var(--wc,#ff3b46), var(--wc,#ff3b46));
+    box-shadow:0 0 10px var(--wc,#ff3b46), inset 0 2px 2px rgba(255,255,255,0.25), inset 0 -2px 3px rgba(0,0,0,0.35);
+    overflow:hidden;
+  }
+  .wire-cable::after{
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(100deg, rgba(255,255,255,0.22) 0 3px, transparent 3px 10px);
+    animation:wireGlint 3.4s linear infinite;
+  }
+  @keyframes wireGlint{ from{ background-position-x:0; } to{ background-position-x:120px; } }
+  .wire-cable.cut{
+    background: linear-gradient(90deg, var(--wc,#ff3b46) 44%, transparent 44%, transparent 56%, var(--wc,#ff3b46) 56%);
+    box-shadow:none; filter:grayscale(0.5) brightness(0.7);
+  }
+  .wire-cable.cut::after{ display:none; }
+  .spark{
+    position:absolute; left:50%; top:50%; width:26px; height:26px; margin:-13px 0 0 -13px;
+    border-radius:50%; pointer-events:none; opacity:0;
+  }
+  .spark.go{ animation:sparkPop 0.5s ease-out forwards; }
+  @keyframes sparkPop{
+    0%{ opacity:1; box-shadow:0 0 0 0 var(--sc,#fff); transform:scale(0.3); }
+    100%{ opacity:0; box-shadow:0 0 24px 10px var(--sc,#fff); transform:scale(1.6); }
+  }
+  .wire-label{ font-size:0.86rem; font-weight:600; color:var(--text); }
+  .wire-scissor{ margin-left:auto; font-size:0.85rem; opacity:0.35; flex:0 0 auto; }
+  .wire-row:hover .wire-scissor{ opacity:0.9; }
+  .wire-row.correct-cut .wire-plug{ background:var(--safe); border-color:var(--safe); box-shadow:0 0 8px var(--safe); }
+  .wire-row.correct-cut .wire-label{ color:var(--safe); }
+
+  .bomb-feedback{ margin-top:0.9rem; font-size:0.85rem; font-weight:700; min-height:1.4em; font-family:var(--font-mono); text-align:center; letter-spacing:0.02em; }
+  .bomb-feedback.ok { color:var(--safe); text-shadow:0 0 8px rgba(49,255,176,0.5); }
+  .bomb-feedback.bad { color:var(--danger); text-shadow:0 0 8px rgba(255,59,70,0.5); }
+
+  @media (max-width: 640px) {
+    .hud-controls, .minimap-wrap { display:none; }
+    .panel { padding:1.5rem 1.4rem; }
+    .bomb-case{ padding:1.1rem 1rem 1.4rem; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="gatekeeper-overlay" id="consentOverlay">
-    <div class="gatekeeper-card consent-card" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
-      <div class="squircle-icon"></div>
-      <h1 id="consentTitle" style="margin:0 0 0.75rem; font-size:1.6rem;"></h1>
-      <p id="consentDesc" style="color:var(--text-muted); line-height:1.8; margin:0;"></p>
+<canvas id="gameCanvas"></canvas>
+<div class="scanlines"></div>
+<div class="vignette" id="vignette"></div>
 
-      <div class="consent-actions" id="mainActions">
-        <button id="acceptAllBtn" class="btn btn-primary"></button>
-        <button id="rejectBtn" class="btn btn-outline"></button>
-        <button id="customizeBtn" class="btn btn-text"></button>
-      </div>
-
-      <div class="consent-categories hidden" id="categoriesPanel">
-        <div class="consent-category">
-          <div class="consent-category-copy">
-            <strong id="catNecessaryTitle"></strong>
-            <span id="catNecessaryDesc"></span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" checked disabled>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="consent-category">
-          <div class="consent-category-copy">
-            <strong id="catPreferencesTitle"></strong>
-            <span id="catPreferencesDesc"></span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="prefToggle" checked>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="consent-category">
-          <div class="consent-category-copy">
-            <strong id="catAnalyticsTitle"></strong>
-            <span id="catAnalyticsDesc"></span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="analyticsToggle" checked>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="consent-category">
-          <div class="consent-category-copy">
-            <strong id="catMarketingTitle"></strong>
-            <span id="catMarketingDesc"></span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="marketingToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <button id="saveCustomBtn" class="btn btn-primary"></button>
-      </div>
-
-      <p id="consentNote" class="consent-note"></p>
+<div class="hud">
+  <div class="hud-top">
+    <div class="hud-title glass" id="hudTitle"></div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.6rem;">
+      <div class="hud-counter glass"><span class="dot"></span><span id="hudCounter"></span></div>
     </div>
   </div>
+  <div class="minimap-wrap glass">
+    <div class="cap">Radar</div>
+    <canvas id="minimapCanvas" width="120" height="120"></canvas>
+  </div>
+  <div class="hud-nearby" id="hudNearby"></div>
+  <div class="hud-prompt glass" id="hudPrompt"><kbd>E</kbd><span id="hudPromptText"></span></div>
+  <div class="hud-controls glass" id="hudControls"></div>
+</div>
 
-  <p class="redirect-note" id="redirectNote"></p>
+<div class="overlay" id="introOverlay">
+  <div class="panel">
+    <p class="eyebrow" id="introEyebrow"></p>
+    <h1 id="introTitle"></h1>
+    <p class="story" id="introStory1"></p>
+    <p class="story" id="introStory2"></p>
+    <div class="btn-row">
+      <button class="g-btn primary" id="introStartBtn"></button>
+    </div>
+  </div>
+</div>
 
-  <noscript>
-    <meta http-equiv="refresh" content="0; url=docs/en/index.html" />
-    <p style="text-align:center; margin-top:2rem;">
-      JavaScript is disabled. <a href="docs/en/index.html">Continue to the English guide</a>.
-    </p>
-  </noscript>
+<div class="overlay hidden bomb-overlay" id="puzzleOverlay">
+  <div class="panel">
+    <div class="bomb-case" id="bombCase">
+      <div class="bomb-topbar">
+        <span class="zone-tag" id="puzzleZoneName"></span>
+        <div class="bomb-lights" id="bombLights"></div>
+      </div>
+      <div class="lcd">
+        <div class="lcd-row">
+          <span class="lcd-clock" id="lcdClock">00:00</span>
+          <span class="lcd-status" id="lcdStatus">ARMED</span>
+        </div>
+        <div class="lcd-question" id="puzzleQuestion"></div>
+      </div>
+      <div class="wire-panel" id="puzzleOptions"></div>
+      <p class="bomb-feedback" id="puzzleFeedback"></p>
+    </div>
+  </div>
+</div>
 
-  <script>
-  (function () {
-    "use strict";
+<div class="overlay hidden" id="victoryOverlay">
+  <div class="panel">
+    <p class="eyebrow" id="victoryEyebrow"></p>
+    <h1 id="victoryTitle"></h1>
+    <p id="victoryText"></p>
 
-    // ---------------------------------------------------------------
-    // 1) Supported languages (must match the 16 options in the guide)
-    // ---------------------------------------------------------------
-    var SUPPORTED_LANGS = ["it", "en", "fr", "de", "es", "pt", "nl", "ru", "zh", "ja", "ko", "ar", "hi", "tr", "pl", "uk"];
-    var DEFAULT_LANG = "en";
-    var RTL_LANGS = ["ar"];
+    <div class="audio-block">
+      <p id="audioLabel1"></p>
+      <audio controls preload="none">
+        <source src="audio/antonello-anthem.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+    <div class="audio-block">
+      <p id="audioLabel2"></p>
+      <audio controls preload="none">
+        <source src="audio/bug-victory.mp3" type="audio/mpeg">
+      </audio>
+    </div>
 
-    // ---------------------------------------------------------------
-    // 2) UI strings for the cookie banner, one entry per supported lang
-    // ---------------------------------------------------------------
-    var STRINGS = {
-      it: { title: "Prima di continuare", desc: "Usiamo cookie tecnici necessari al funzionamento del sito e, se lo accetti, cookie di preferenza/analitici/marketing per ricordare la lingua scelta e migliorare la guida. Scegli come procedere.", acceptAll: "Accetta tutti", reject: "Rifiuta", customize: "Personalizza", save: "Salva preferenze", note: "Puoi cambiare idea in qualsiasi momento cancellando i cookie del browser.", redirecting: "Reindirizzamento in corso…", catNecessary: "Necessari", catNecessaryDesc: "Indispensabili al funzionamento del sito. Sempre attivi.", catPreferences: "Preferenze", catPreferencesDesc: "Ricordano la lingua e le impostazioni scelte.", catAnalytics: "Analitici", catAnalyticsDesc: "Ci aiutano a capire come viene usata la guida.", catMarketing: "Marketing", catMarketingDesc: "Usati per contenuti e annunci personalizzati." },
-      en: { title: "Before you continue", desc: "We use essential cookies for the site to work and, if you accept, preference/analytics/marketing cookies to remember your language and improve the guide. Choose how to proceed.", acceptAll: "Accept all", reject: "Reject", customize: "Customize", save: "Save preferences", note: "You can change your mind at any time by clearing your browser cookies.", redirecting: "Redirecting…", catNecessary: "Necessary", catNecessaryDesc: "Required for the site to work. Always active.", catPreferences: "Preferences", catPreferencesDesc: "Remember your language and chosen settings.", catAnalytics: "Analytics", catAnalyticsDesc: "Help us understand how the guide is used.", catMarketing: "Marketing", catMarketingDesc: "Used for personalized content and ads." },
-      fr: { title: "Avant de continuer", desc: "Nous utilisons des cookies essentiels au fonctionnement du site et, si vous acceptez, des cookies de préférence/analytiques/marketing pour mémoriser votre langue et améliorer le guide. Choisissez comment continuer.", acceptAll: "Tout accepter", reject: "Refuser", customize: "Personnaliser", save: "Enregistrer les préférences", note: "Vous pouvez changer d'avis à tout moment en supprimant les cookies de votre navigateur.", redirecting: "Redirection en cours…", catNecessary: "Nécessaires", catNecessaryDesc: "Indispensables au fonctionnement du site. Toujours actifs.", catPreferences: "Préférences", catPreferencesDesc: "Mémorisent la langue et les réglages choisis.", catAnalytics: "Analytiques", catAnalyticsDesc: "Nous aident à comprendre l'utilisation du guide.", catMarketing: "Marketing", catMarketingDesc: "Utilisés pour du contenu et des publicités personnalisés." },
-      de: { title: "Bevor Sie fortfahren", desc: "Wir verwenden technisch notwendige Cookies für den Betrieb der Seite und, sofern Sie zustimmen, Präferenz-/Analyse-/Marketing-Cookies, um Ihre Sprache zu merken und den Guide zu verbessern. Wählen Sie, wie Sie fortfahren möchten.", acceptAll: "Alle akzeptieren", reject: "Ablehnen", customize: "Anpassen", save: "Einstellungen speichern", note: "Sie können Ihre Meinung jederzeit ändern, indem Sie die Browser-Cookies löschen.", redirecting: "Weiterleitung läuft…", catNecessary: "Notwendig", catNecessaryDesc: "Für den Betrieb der Seite erforderlich. Immer aktiv.", catPreferences: "Präferenzen", catPreferencesDesc: "Merken sich Sprache und gewählte Einstellungen.", catAnalytics: "Analyse", catAnalyticsDesc: "Helfen uns zu verstehen, wie der Guide genutzt wird.", catMarketing: "Marketing", catMarketingDesc: "Für personalisierte Inhalte und Anzeigen." },
-      es: { title: "Antes de continuar", desc: "Usamos cookies esenciales para el funcionamiento del sitio y, si aceptas, cookies de preferencia/analíticas/marketing para recordar tu idioma y mejorar la guía. Elige cómo continuar.", acceptAll: "Aceptar todo", reject: "Rechazar", customize: "Personalizar", save: "Guardar preferencias", note: "Puedes cambiar de opinión en cualquier momento borrando las cookies del navegador.", redirecting: "Redirigiendo…", catNecessary: "Necesarias", catNecessaryDesc: "Imprescindibles para el funcionamiento del sitio. Siempre activas.", catPreferences: "Preferencias", catPreferencesDesc: "Recuerdan el idioma y los ajustes elegidos.", catAnalytics: "Analíticas", catAnalyticsDesc: "Nos ayudan a entender cómo se usa la guía.", catMarketing: "Marketing", catMarketingDesc: "Usadas para contenido y anuncios personalizados." },
-      pt: { title: "Antes de continuar", desc: "Usamos cookies essenciais para o funcionamento do site e, se aceitar, cookies de preferência/análise/marketing para lembrar o seu idioma e melhorar o guia. Escolha como continuar.", acceptAll: "Aceitar tudo", reject: "Recusar", customize: "Personalizar", save: "Guardar preferências", note: "Pode mudar de ideias a qualquer momento apagando os cookies do navegador.", redirecting: "A redirecionar…", catNecessary: "Necessários", catNecessaryDesc: "Indispensáveis para o funcionamento do site. Sempre ativos.", catPreferences: "Preferências", catPreferencesDesc: "Lembram o idioma e as definições escolhidas.", catAnalytics: "Análise", catAnalyticsDesc: "Ajudam-nos a perceber como o guia é utilizado.", catMarketing: "Marketing", catMarketingDesc: "Usados para conteúdo e anúncios personalizados." },
-      nl: { title: "Voordat u verdergaat", desc: "We gebruiken essentiële cookies om de site te laten werken en, indien u akkoord gaat, voorkeurs-/analyse-/marketingcookies om uw taal te onthouden en de gids te verbeteren. Kies hoe u wilt doorgaan.", acceptAll: "Alles accepteren", reject: "Weigeren", customize: "Aanpassen", save: "Voorkeuren opslaan", note: "U kunt op elk moment van gedachten veranderen door de cookies van uw browser te wissen.", redirecting: "Bezig met doorverwijzen…", catNecessary: "Noodzakelijk", catNecessaryDesc: "Vereist voor het functioneren van de site. Altijd actief.", catPreferences: "Voorkeuren", catPreferencesDesc: "Onthouden taal en gekozen instellingen.", catAnalytics: "Analyse", catAnalyticsDesc: "Helpen ons te begrijpen hoe de gids wordt gebruikt.", catMarketing: "Marketing", catMarketingDesc: "Gebruikt voor gepersonaliseerde inhoud en advertenties." },
-      ru: { title: "Прежде чем продолжить", desc: "Мы используем необходимые для работы сайта cookie и, при вашем согласии, cookie предпочтений/аналитики/маркетинга, чтобы запомнить язык и улучшить гайд. Выберите, как продолжить.", acceptAll: "Принять все", reject: "Отклонить", customize: "Настроить", save: "Сохранить настройки", note: "Вы можете изменить решение в любой момент, удалив cookie браузера.", redirecting: "Идёт перенаправление…", catNecessary: "Необходимые", catNecessaryDesc: "Нужны для работы сайта. Всегда активны.", catPreferences: "Предпочтения", catPreferencesDesc: "Запоминают язык и выбранные настройки.", catAnalytics: "Аналитика", catAnalyticsDesc: "Помогают понять, как используется гайд.", catMarketing: "Маркетинг", catMarketingDesc: "Используются для персонализированного контента и рекламы." },
-      zh: { title: "继续之前", desc: "我们使用网站运行所必需的 Cookie；如果您同意，还会使用偏好/分析/营销类 Cookie 以记住您的语言并改进指南。请选择如何继续。", acceptAll: "接受全部", reject: "拒绝", customize: "自定义", save: "保存偏好设置", note: "您可以随时清除浏览器 Cookie 来更改此选择。", redirecting: "正在跳转…", catNecessary: "必要", catNecessaryDesc: "网站运行所必需，始终启用。", catPreferences: "偏好", catPreferencesDesc: "记住语言和您选择的设置。", catAnalytics: "分析", catAnalyticsDesc: "帮助我们了解指南的使用情况。", catMarketing: "营销", catMarketingDesc: "用于个性化内容和广告。" },
-      ja: { title: "続行する前に", desc: "サイトの動作に必要なクッキーを使用しています。同意いただければ、言語の記憶やガイド改善のための設定・解析・マーケティング用クッキーも使用します。続行方法を選択してください。", acceptAll: "すべて同意する", reject: "拒否する", customize: "カスタマイズ", save: "設定を保存", note: "ブラウザのクッキーを削除すれば、いつでも選択を変更できます。", redirecting: "リダイレクトしています…", catNecessary: "必須", catNecessaryDesc: "サイトの動作に必要です。常に有効です。", catPreferences: "設定", catPreferencesDesc: "言語や選択した設定を記憶します。", catAnalytics: "解析", catAnalyticsDesc: "ガイドの利用状況の把握に役立てます。", catMarketing: "マーケティング", catMarketingDesc: "パーソナライズされたコンテンツや広告に使用します。" },
-      ko: { title: "계속하기 전에", desc: "사이트 운영에 필요한 필수 쿠키를 사용합니다. 동의하시면 언어 기억 및 가이드 개선을 위한 환경설정/분석/마케팅 쿠키도 사용합니다. 진행 방법을 선택하세요.", acceptAll: "모두 동의", reject: "거부", customize: "사용자 지정", save: "설정 저장", note: "브라우저 쿠키를 삭제하면 언제든지 선택을 변경할 수 있습니다.", redirecting: "리디렉션 중…", catNecessary: "필수", catNecessaryDesc: "사이트 운영에 필요하며 항상 활성화됩니다.", catPreferences: "환경설정", catPreferencesDesc: "언어 및 선택한 설정을 기억합니다.", catAnalytics: "분석", catAnalyticsDesc: "가이드 사용 방식을 이해하는 데 도움이 됩니다.", catMarketing: "마케팅", catMarketingDesc: "맞춤형 콘텐츠 및 광고에 사용됩니다." },
-      ar: { title: "قبل المتابعة", desc: "نستخدم ملفات تعريف الارتباط الضرورية لتشغيل الموقع، وإذا وافقت، ملفات تفضيلات/تحليلات/تسويق لتذكر لغتك وتحسين الدليل. اختر كيفية المتابعة.", acceptAll: "قبول الكل", reject: "رفض", customize: "تخصيص", save: "حفظ التفضيلات", note: "يمكنك تغيير رأيك في أي وقت بمسح ملفات تعريف الارتباط من المتصفح.", redirecting: "جارٍ إعادة التوجيه…", catNecessary: "ضرورية", catNecessaryDesc: "لازمة لتشغيل الموقع. مفعّلة دائمًا.", catPreferences: "تفضيلات", catPreferencesDesc: "تتذكر اللغة والإعدادات المختارة.", catAnalytics: "تحليلات", catAnalyticsDesc: "تساعدنا على فهم كيفية استخدام الدليل.", catMarketing: "تسويق", catMarketingDesc: "تُستخدم لمحتوى وإعلانات مخصصة." },
-      hi: { title: "जारी रखने से पहले", desc: "हम साइट के संचालन के लिए ज़रूरी कुकीज़ का उपयोग करते हैं और, आपकी सहमति से, भाषा याद रखने व गाइड बेहतर बनाने के लिए प्राथमिकता/विश्लेषण/मार्केटिंग कुकीज़ का भी उपयोग करते हैं। आगे बढ़ने का तरीका चुनें।", acceptAll: "सभी स्वीकार करें", reject: "अस्वीकार करें", customize: "अनुकूलित करें", save: "प्राथमिकताएँ सहेजें", note: "आप ब्राउज़र कुकीज़ साफ़ करके किसी भी समय अपना निर्णय बदल सकते हैं।", redirecting: "रीडायरेक्ट हो रहा है…", catNecessary: "आवश्यक", catNecessaryDesc: "साइट के संचालन के लिए आवश्यक। हमेशा सक्रिय।", catPreferences: "प्राथमिकताएँ", catPreferencesDesc: "भाषा और चुनी गई सेटिंग्स याद रखती हैं।", catAnalytics: "विश्लेषण", catAnalyticsDesc: "गाइड के उपयोग को समझने में मदद करते हैं।", catMarketing: "मार्केटिंग", catMarketingDesc: "व्यक्तिगत सामग्री और विज्ञापनों के लिए उपयोग होते हैं।" },
-      tr: { title: "Devam etmeden önce", desc: "Sitenin çalışması için gerekli çerezleri kullanıyoruz; kabul ederseniz dilinizi hatırlamak ve rehberi geliştirmek için tercih/analiz/pazarlama çerezleri de kullanırız. Nasıl devam edeceğinizi seçin.", acceptAll: "Tümünü kabul et", reject: "Reddet", customize: "Özelleştir", save: "Tercihleri kaydet", note: "Tarayıcı çerezlerinizi temizleyerek istediğiniz zaman fikrinizi değiştirebilirsiniz.", redirecting: "Yönlendiriliyor…", catNecessary: "Gerekli", catNecessaryDesc: "Sitenin çalışması için gereklidir. Her zaman aktiftir.", catPreferences: "Tercihler", catPreferencesDesc: "Dilinizi ve seçtiğiniz ayarları hatırlar.", catAnalytics: "Analiz", catAnalyticsDesc: "Rehberin nasıl kullanıldığını anlamamıza yardımcı olur.", catMarketing: "Pazarlama", catMarketingDesc: "Kişiselleştirilmiş içerik ve reklamlar için kullanılır." },
-      pl: { title: "Zanim przejdziesz dalej", desc: "Używamy plików cookie niezbędnych do działania strony oraz, po Twojej zgodzie, plików preferencji/analitycznych/marketingowych, aby zapamiętać Twój język i ulepszać przewodnik. Wybierz, jak kontynuować.", acceptAll: "Akceptuj wszystkie", reject: "Odrzuć", customize: "Dostosuj", save: "Zapisz preferencje", note: "Możesz zmienić decyzję w dowolnym momencie, czyszcząc pliki cookie przeglądarki.", redirecting: "Trwa przekierowanie…", catNecessary: "Niezbędne", catNecessaryDesc: "Wymagane do działania strony. Zawsze aktywne.", catPreferences: "Preferencje", catPreferencesDesc: "Zapamiętują język i wybrane ustawienia.", catAnalytics: "Analityczne", catAnalyticsDesc: "Pomagają nam zrozumieć, jak używany jest przewodnik.", catMarketing: "Marketingowe", catMarketingDesc: "Używane do spersonalizowanych treści i reklam." },
-      uk: { title: "Перш ніж продовжити", desc: "Ми використовуємо необхідні для роботи сайту файли cookie та, за вашою згодою, файли налаштувань/аналітики/маркетингу, щоб запам'ятати вашу мову та покращити гайд. Оберіть, як продовжити.", acceptAll: "Прийняти всі", reject: "Відхилити", customize: "Налаштувати", save: "Зберегти налаштування", note: "Ви можете змінити рішення в будь-який момент, очистивши cookie браузера.", redirecting: "Перенаправлення…", catNecessary: "Необхідні", catNecessaryDesc: "Потрібні для роботи сайту. Завжди активні.", catPreferences: "Налаштування", catPreferencesDesc: "Запам'ятовують мову та обрані параметри.", catAnalytics: "Аналітика", catAnalyticsDesc: "Допомагають зрозуміти, як використовується гайд.", catMarketing: "Маркетинг", catMarketingDesc: "Використовуються для персоналізованого контенту та реклами." }
-    };
+    <div class="btn-row">
+      <a class="g-btn primary" id="victoryBackBtn" href="../index.html" style="text-decoration:none; display:flex; align-items:center; justify-content:center;"></a>
+      <button class="g-btn ghost" id="victoryReplayBtn"></button>
+    </div>
+  </div>
+</div>
 
-    // ---------------------------------------------------------------
-    // 3) Storage helpers — resilient to disabled localStorage/cookies
-    //    (private browsing, embedded iframes, strict privacy settings…)
-    // ---------------------------------------------------------------
-    var STORAGE_KEY = "moneoo_cookie_consent";
-    var LANG_KEY = "moneoo_lang";
+<div class="fade-black" id="fadeBlack"></div>
 
-    function safeLocalStorageGet(key) {
-      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+<script>
+const TEXT = {
+  hud: {
+    title: "OPERATION DEBUG",
+    subtitle: "a MONEOO. side story",
+    counter: (n, total) => `Bombs defused: ${n} / ${total}`,
+    interact: "Inspect device",
+    nearby: (name) => `📍 Approaching: ${name}`,
+    controls: "<b>Move</b> W / S<br><b>Turn</b> A / D<br><b>Jump</b> Space<br><b>Interact</b> E"
+  },
+  intro: {
+    eyebrow: "MONEOO. presents",
+    title: "Operation Debug",
+    p1: "The city of Latticetown used to hum with quiet, well-ordered noise — every wall a grid, every street a clean modular line. Then <b>Antonello Vendetta</b>, a disgraced exterminator with a grudge against every insect alive, hid six DDT devices across the city, each rigged with live wires that only the right answer can safely cut.",
+    p2: "You are a small ladybug with an unusually good grasp of post-quantum cryptography. To defuse each device you'll have to prove you understood how ML-KEM actually works — cut the right wire, and the bomb powers down. Cut the wrong one, and it just sparks angrily at you (no real harm, try again). Clear all six, and the way to Antonello's lair will open.",
+    start: "Start exploring →"
+  },
+  zones: [
+    {
+      name: "The Modular Vault",
+      question: "ML-KEM works modulo q = 3329. What is 3330 mod 3329?",
+      options: ["0", "1", "3329", "-1"],
+      correct: 0,
+      ok: "WIRE CUT — 3330 wraps straight back to 0. Timer zeroes out and dies.",
+      bad: "WRONG WIRE — sparks fly, nothing detonates. Mod wraps the number back inside [0, q-1]. Try another wire."
+    },
+    {
+      name: "The Lattice Garden",
+      question: "Three vectors sit in this reduced lattice basis: A = (2, 1), B = (15, 22), C = (-1, 3). Finding the SHORTEST vector is the hard lattice problem attackers can't solve efficiently. Which one is shortest?",
+      options: ["Vector A (2, 1)", "Vector B (15, 22)", "Vector C (-1, 3)", "They're all equal"],
+      correct: 0,
+      ok: "WIRE CUT — A has length √5 ≈ 2.24, by far the shortest. The device goes limp.",
+      bad: "WRONG WIRE — compare the lengths (√(x²+y²)) again, one is clearly the smallest."
+    },
+    {
+      name: "The NTT Forge",
+      question: "The Number Theoretic Transform (NTT) is used in ML-KEM to speed up which operation?",
+      options: ["Polynomial multiplication", "Password hashing", "Random number generation", "Digital signatures"],
+      correct: 0,
+      ok: "WIRE CUT — NTT turns slow polynomial multiplication into fast pointwise multiplication. Circuit dead.",
+      bad: "WRONG WIRE — think about what NTT is the crypto equivalent of, a much faster transform for multiplying big polynomials."
+    },
+    {
+      name: "The KEM Sequencer",
+      question: "In a Key Encapsulation Mechanism, which of these three steps happens FIRST?",
+      options: ["KeyGen (create the keypair)", "Encaps (create the ciphertext)", "Decaps (recover the secret)", "They all happen at the same time"],
+      correct: 0,
+      ok: "WIRE CUT — no keypair, no party. KeyGen always comes first. Wires go dark.",
+      bad: "WRONG WIRE — think about the order: you need something before you can lock or unlock anything with it."
+    },
+    {
+      name: "The Security Wing",
+      question: "ML-KEM-768 is designed to match the classical security level of which symmetric cipher?",
+      options: ["AES-192", "AES-64", "DES", "AES-1024"],
+      correct: 0,
+      ok: "WIRE CUT — ML-KEM-768 ≈ AES-192-level security (NIST Category 3). Sealed for good.",
+      bad: "WRONG WIRE — NIST maps ML-KEM-512 / 768 / 1024 to three AES security categories, one of these doesn't even exist."
+    },
+    {
+      name: "The Fujisaki-Okamoto Chamber",
+      question: "The Fujisaki-Okamoto (FO) transform upgrades a weaker encryption scheme into an ML-KEM-grade KEM. Which security notion does it add?",
+      options: ["IND-CCA2 (chosen-ciphertext security)", "One-time-pad secrecy", "Perfect forward secrecy only", "Nothing measurable"],
+      correct: 0,
+      ok: "WIRE CUT — FO hardens the scheme against chosen-ciphertext attacks. Nozzle rusts shut.",
+      bad: "WRONG WIRE — FO is famous for turning a merely CPA-secure scheme into something resistant to a much nastier class of attacks."
     }
-    function safeLocalStorageSet(key, value) {
-      try { window.localStorage.setItem(key, value); return true; } catch (e) { return false; }
-    }
+  ],
+  boss: {
+    name: "Antonello's Lair",
+    lineIntro: "So it's YOU. The bug who keeps reading standards documents. Fine — answer this, if you're so clever:",
+    question: "If Bob's decapsulated shared secret does NOT match what Alice originally encapsulated, what does a correctly implemented ML-KEM do?",
+    options: [
+      "It still outputs a pseudorandom value — implicit rejection, no error is ever revealed",
+      "It throws a visible 'decryption failed' error",
+      "It leaks the private key so you can debug it",
+      "It crashes the whole connection immediately"
+    ],
+    correct: 0,
+    ok: "FINAL WIRE CUT — implicit rejection means nothing observable ever betrays a mismatch. Antonello's last device sputters, hisses, and dies.",
+    bad: "WRONG WIRE — a visible error here would be a side-channel goldmine for an attacker. That's exactly what ML-KEM avoids."
+  },
+  gateOpenTitle: "The path to Antonello's lair has opened.",
+  victory: {
+    eyebrow: "Mission complete",
+    title: "Latticetown is safe again",
+    text: "All six devices are down and Antonello Vendetta has been talked into a permanent early retirement. Not bad for a bug who just wanted to understand a NIST standard.",
+    audio1: "🎵 Antonello's Anthem (villain theme) — add your generated track to game/audio/antonello-anthem.mp3",
+    audio2: "🎵 Bug's Victory Song — add your generated track to game/audio/bug-victory.mp3",
+    back: "← Back to the guide",
+    replay: "Play again"
+  }
+};
+</script>
+<script>
+(function () {
+  "use strict";
 
-    function setCookie(name, value, days) {
-      try {
-        var expires = "";
-        if (days) {
-          var d = new Date();
-          d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-          expires = "; expires=" + d.toUTCString();
-        }
-        document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/; SameSite=Lax";
-      } catch (e) { /* cookies disabled — localStorage already covers this */ }
-    }
-    function getCookie(name) {
-      try {
-        var match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
-        return match ? decodeURIComponent(match[1]) : null;
-      } catch (e) { return null; }
-    }
+  const el = (id) => document.getElementById(id);
+  el("hudTitle").innerHTML = `${TEXT.hud.title}<small>${TEXT.hud.subtitle}</small>`;
+  el("hudControls").innerHTML = TEXT.hud.controls;
+  el("introEyebrow").textContent = TEXT.intro.eyebrow;
+  el("introTitle").textContent = TEXT.intro.title;
+  el("introStory1").innerHTML = TEXT.intro.p1;
+  el("introStory2").innerHTML = TEXT.intro.p2;
+  el("introStartBtn").textContent = TEXT.intro.start;
+  el("victoryEyebrow").textContent = TEXT.victory.eyebrow;
+  el("victoryTitle").textContent = TEXT.victory.title;
+  el("victoryText").textContent = TEXT.victory.text;
+  el("audioLabel1").textContent = TEXT.victory.audio1;
+  el("audioLabel2").textContent = TEXT.victory.audio2;
+  el("victoryBackBtn").textContent = TEXT.victory.back;
+  el("victoryReplayBtn").textContent = TEXT.victory.replay;
 
-    function getStoredConsent() {
-      var raw = safeLocalStorageGet(STORAGE_KEY) || getCookie(STORAGE_KEY);
-      if (!raw) return null;
-      try { return JSON.parse(raw); } catch (e) { return null; }
-    }
-    function storeConsent(level, categories) {
-      var flags = categories || {
-        preferences: level === "all",
-        analytics: level === "all",
-        marketing: level === "all"
-      };
-      var payload = JSON.stringify({
-        level: level, // "all" | "necessary" | "custom"
-        necessary: true,
-        preferences: !!flags.preferences,
-        analytics: !!flags.analytics,
-        marketing: !!flags.marketing,
-        timestamp: new Date().toISOString()
-      });
-      safeLocalStorageSet(STORAGE_KEY, payload);
-      setCookie(STORAGE_KEY, payload, 180);
-    }
-    function storeLang(lang) {
-      safeLocalStorageSet(LANG_KEY, lang);
-      setCookie(LANG_KEY, lang, 365);
-    }
-    function getStoredLang() {
-      return safeLocalStorageGet(LANG_KEY) || getCookie(LANG_KEY);
-    }
+  const TOTAL_ZONES = TEXT.zones.length;
+  const state = {
+    solved: new Array(TOTAL_ZONES).fill(false),
+    bossUnlocked: false,
+    bossSolved: false,
+    puzzleOpen: false,
+    started: false
+  };
 
-    // ---------------------------------------------------------------
-    // 4) Language detection
-    // ---------------------------------------------------------------
-    function detectLang() {
-      var stored = getStoredLang();
-      if (stored && SUPPORTED_LANGS.indexOf(stored) !== -1) return stored;
+  function updateCounter() {
+    const n = state.solved.filter(Boolean).length;
+    el("hudCounter").textContent = TEXT.hud.counter(n, TOTAL_ZONES);
+  }
+  updateCounter();
 
-      var candidates = [];
-      if (Array.isArray(navigator.languages)) candidates = candidates.concat(navigator.languages);
-      if (navigator.language) candidates.push(navigator.language);
-      if (navigator.userLanguage) candidates.push(navigator.userLanguage); // old IE, just in case
+  let actx = null;
+  function ensureAudio() {
+    if (!actx) {
+      try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; }
+    }
+  }
+  function beep(freq, duration, type, gainPeak) {
+    if (!actx) return;
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = type || "square";
+    osc.frequency.value = freq;
+    gain.gain.value = 0;
+    osc.connect(gain).connect(actx.destination);
+    const t0 = actx.currentTime;
+    gain.gain.linearRampToValueAtTime(gainPeak || 0.06, t0 + 0.01);
+    gain.gain.linearRampToValueAtTime(0, t0 + duration);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.02);
+  }
+  const sfx = {
+    tick: () => beep(1200, 0.05, "square", 0.035),
+    wrong: () => { beep(140, 0.28, "sawtooth", 0.08); beep(90, 0.32, "sawtooth", 0.06); },
+    correct: () => { beep(660, 0.09, "sine", 0.06); setTimeout(() => beep(990, 0.12, "sine", 0.06), 90); setTimeout(() => beep(1320, 0.16, "sine", 0.07), 190); }
+  };
 
-      for (var i = 0; i < candidates.length; i++) {
-        var code = String(candidates[i] || "").toLowerCase().split("-")[0];
-        if (SUPPORTED_LANGS.indexOf(code) !== -1) return code;
+  el("introStartBtn").addEventListener("click", () => {
+    ensureAudio();
+    el("introOverlay").classList.add("hidden");
+    state.started = true;
+  });
+  el("victoryReplayBtn").addEventListener("click", () => location.reload());
+
+  const canvas = el("gameCanvas");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0a0812, 0.0105);
+
+  const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 500);
+
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function buildSkyTexture() {
+    const c = document.createElement("canvas");
+    c.width = 1024; c.height = 512;
+    const ctx = c.getContext("2d");
+    const grad = ctx.createLinearGradient(0, 0, 0, c.height);
+    grad.addColorStop(0, "#0b0620");
+    grad.addColorStop(0.45, "#150a24");
+    grad.addColorStop(1, "#050308");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, c.width, c.height);
+
+    function blob(x, y, r, color, alpha) {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, color.replace("ALPHA", alpha));
+      g.addColorStop(1, color.replace("ALPHA", "0"));
+      ctx.fillStyle = g;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    blob(260, 160, 260, "rgba(138,91,255,ALPHA)", "0.35");
+    blob(760, 220, 300, "rgba(255,59,70,ALPHA)", "0.18");
+    blob(520, 90, 220, "rgba(49,255,176,ALPHA)", "0.10");
+
+    for (let i = 0; i < 400; i++) {
+      const x = Math.random() * c.width;
+      const y = Math.random() * c.height * 0.75;
+      const r = Math.random() * 1.3 + 0.2;
+      ctx.globalAlpha = Math.random() * 0.8 + 0.2;
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    return new THREE.CanvasTexture(c);
+  }
+  const skyTex = buildSkyTexture();
+  const skyGeo = new THREE.SphereGeometry(300, 32, 20);
+  const skyMat = new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false });
+  scene.add(new THREE.Mesh(skyGeo, skyMat));
+  scene.background = new THREE.Color(0x0a0812);
+
+  scene.add(new THREE.AmbientLight(0x3a3355, 1.05));
+  const moon = new THREE.DirectionalLight(0x8fa6ff, 0.9);
+  moon.position.set(30, 60, -20);
+  moon.castShadow = true;
+  moon.shadow.mapSize.set(1024, 1024);
+  moon.shadow.camera.left = -80; moon.shadow.camera.right = 80;
+  moon.shadow.camera.top = 80; moon.shadow.camera.bottom = -80;
+  scene.add(moon);
+  const rim = new THREE.PointLight(0xff3b46, 0.6, 60);
+  rim.position.set(0, 6, 0);
+  scene.add(rim);
+
+  function buildCircuitTexture() {
+    const c = document.createElement("canvas");
+    c.width = 1024; c.height = 1024;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#0c0a15";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.strokeStyle = "rgba(122,59,255,0.14)";
+    ctx.lineWidth = 1;
+    const step = 32;
+    for (let x = 0; x <= c.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, c.height); ctx.stroke(); }
+    for (let y = 0; y <= c.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke(); }
+
+    const colors = ["rgba(255,59,70,0.65)", "rgba(49,255,176,0.55)", "rgba(122,59,255,0.6)", "rgba(255,176,32,0.5)"];
+    for (let i = 0; i < 46; i++) {
+      const color = colors[i % colors.length];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.random() < 0.2 ? 3 : 1.5;
+      let x = Math.floor(Math.random() * (c.width / step)) * step;
+      let y = Math.floor(Math.random() * (c.height / step)) * step;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      const segs = 3 + Math.floor(Math.random() * 5);
+      for (let s = 0; s < segs; s++) {
+        if (Math.random() < 0.5) x += (Math.random() < 0.5 ? 1 : -1) * step * (1 + Math.floor(Math.random() * 3));
+        else y += (Math.random() < 0.5 ? 1 : -1) * step * (1 + Math.floor(Math.random() * 3));
+        x = Math.max(0, Math.min(c.width, x));
+        y = Math.max(0, Math.min(c.height, y));
+        ctx.lineTo(x, y);
       }
-      return DEFAULT_LANG;
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+    }
+    return c;
+  }
+  const circuitCanvas = buildCircuitTexture();
+  const groundTex = new THREE.CanvasTexture(circuitCanvas);
+  groundTex.wrapS = groundTex.wrapT = THREE.RepeatWrapping;
+  groundTex.repeat.set(4, 4);
+
+  const groundGeo = new THREE.CircleGeometry(70, 64);
+  const groundMat = new THREE.MeshStandardMaterial({
+    color: 0x18141f, roughness: 0.85, metalness: 0.25,
+    emissiveMap: groundTex, emissive: 0xffffff, emissiveIntensity: 0.55
+  });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  function buildGlowTexture() {
+    const c = document.createElement("canvas");
+    c.width = 64; c.height = 64;
+    const ctx = c.getContext("2d");
+    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.4, "rgba(255,255,255,0.5)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  }
+  const glowTex = buildGlowTexture();
+
+  const particleCount = 220;
+  const particleGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 130;
+    positions[i * 3 + 1] = Math.random() * 30 + 1;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 130;
+  }
+  particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const particleMat = new THREE.PointsMaterial({
+    map: glowTex, color: 0x9a86ff, size: 0.5, transparent: true, opacity: 0.7,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  const particles = new THREE.Points(particleGeo, particleMat);
+  scene.add(particles);
+
+  const ZONE_RADIUS = 34;
+  const zoneAngleStep = (Math.PI * 2) / TOTAL_ZONES;
+  const zoneMeshes = [];
+
+  function buildCanister(color) {
+    const g = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.45, roughness: 0.35, metalness: 0.6 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.7, 20), bodyMat);
+    body.position.y = 1.0;
+    body.castShadow = true;
+    g.add(body);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.35, 20), new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.7, roughness: 0.4 }));
+    cap.position.y = 1.95;
+    g.add(cap);
+    const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+    nozzle.rotation.z = Math.PI / 2.4;
+    nozzle.position.set(0.35, 2.15, 0);
+    g.add(nozzle);
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), new THREE.MeshBasicMaterial({ color: 0xff3b46 }));
+    led.position.y = 2.2;
+    g.add(led);
+    g.userData.led = led;
+    return g;
+  }
+
+  function buildZoneMarker(name, index, solvedInit) {
+    const angle = index * zoneAngleStep;
+    const x = Math.cos(angle) * ZONE_RADIUS;
+    const z = Math.sin(angle) * ZONE_RADIUS;
+
+    const group = new THREE.Group();
+    group.position.set(x, 0, z);
+
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff3b46, transparent: true, opacity: 0.65, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(2.6, 3.1, 40), ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.03;
+    group.add(ring);
+    const ring2Mat = new THREE.MeshBasicMaterial({ color: 0xff3b46, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+    const ring2 = new THREE.Mesh(new THREE.RingGeometry(3.6, 3.8, 40), ring2Mat);
+    ring2.rotation.x = -Math.PI / 2;
+    ring2.position.y = 0.03;
+    group.add(ring2);
+
+    const canister = buildCanister(0xff3b46);
+    group.add(canister);
+
+    const stationLight = new THREE.PointLight(0xff3b46, 0.9, 12);
+    stationLight.position.set(0, 2, 0);
+    group.add(stationLight);
+
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      const h = 2.4 + Math.random() * 1.5;
+      const pylon = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, h, 0.4),
+        new THREE.MeshStandardMaterial({ color: 0x18142a, roughness: 0.7, metalness: 0.4, emissive: 0x3a1030, emissiveIntensity: 0.4 })
+      );
+      pylon.position.set(Math.cos(a) * 4.2, h / 2, Math.sin(a) * 4.2);
+      pylon.castShadow = true;
+      group.add(pylon);
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 0.5), new THREE.MeshBasicMaterial({ color: 0xff3b46 }));
+      cap.position.set(Math.cos(a) * 4.2, h + 0.06, Math.sin(a) * 4.2);
+      group.add(cap);
     }
 
-    // ---------------------------------------------------------------
-    // 5) Redirect target
-    //    If we were sent here by cookie-guard.js from another page
-    //    (?returnTo=...), go back there instead of the language home.
-    //    Only same-origin, non protocol-relative targets are honored.
-    // ---------------------------------------------------------------
-    function targetUrl(lang) {
-      return "docs/" + lang + "/index.html";
+    scene.add(group);
+    zoneMeshes.push({ group, canister, ring, ring2, ringMat, ring2Mat, stationLight, x, z, name, index, solved: solvedInit });
+  }
+
+  TEXT.zones.forEach((z, i) => buildZoneMarker(z.name, i, false));
+
+  const bossGroup = new THREE.Group();
+  bossGroup.position.set(0, 0, 0);
+  scene.add(bossGroup);
+
+  const bossFloor = new THREE.Mesh(
+    new THREE.CircleGeometry(6, 40),
+    new THREE.MeshStandardMaterial({ color: 0x1a0f22, emissive: 0x4a1030, emissiveIntensity: 0.5 })
+  );
+  bossFloor.rotation.x = -Math.PI / 2;
+  bossFloor.position.y = 0.02;
+  bossGroup.add(bossFloor);
+  const bossFloorRing = new THREE.Mesh(new THREE.RingGeometry(5.6, 6, 48), new THREE.MeshBasicMaterial({ color: 0xff3b46, transparent: true, opacity: 0.5, side: THREE.DoubleSide }));
+  bossFloorRing.rotation.x = -Math.PI / 2;
+  bossFloorRing.position.y = 0.03;
+  bossGroup.add(bossFloorRing);
+
+  const bossSpot = new THREE.PointLight(0xff3b46, 1.4, 24);
+  bossSpot.position.set(0, 5, -1);
+  bossGroup.add(bossSpot);
+
+  const antonello = new THREE.Group();
+  const torsoMat = new THREE.MeshStandardMaterial({ color: 0x2c2c33, roughness: 0.6, metalness: 0.3, emissive: 0x220008, emissiveIntensity: 0.3 });
+  const torso = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.8, 0.9), torsoMat);
+  torso.position.y = 1.6;
+  torso.castShadow = true;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 16), new THREE.MeshStandardMaterial({ color: 0xd8b48f, roughness: 0.7 }));
+  head.position.y = 2.9;
+  const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff3b46 });
+  [[-0.18, 2.95, 0.45], [0.18, 2.95, 0.45]].forEach((p) => {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), eyeMat);
+    eye.position.set(p[0], p[1], p[2]);
+    antonello.add(eye);
+  });
+  const bigCanister = buildCanister(0xffaa00);
+  bigCanister.scale.set(1.9, 1.9, 1.9);
+  bigCanister.position.set(1.5, 0, 0.2);
+  antonello.add(torso, head, bigCanister);
+  antonello.position.set(0, 0, -3.2);
+  bossGroup.add(antonello);
+
+  const barrierMat = new THREE.MeshBasicMaterial({ color: 0x7a3bff, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+  const barrier = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 4, 40, 1, true), barrierMat);
+  barrier.position.y = 2;
+  bossGroup.add(barrier);
+  const barrierMat2 = new THREE.MeshBasicMaterial({ color: 0xff3b46, transparent: true, opacity: 0.18, side: THREE.DoubleSide });
+  const barrier2 = new THREE.Mesh(new THREE.CylinderGeometry(7.4, 7.4, 4, 40, 1, true), barrierMat2);
+  barrier2.position.y = 2;
+  bossGroup.add(barrier2);
+
+  const player = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xd6272c, roughness: 0.4, metalness: 0.2, emissive: 0x3a0000, emissiveIntensity: 0.15 });
+  const shellBody = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), bodyMat);
+  shellBody.scale.set(1, 0.72, 1.25);
+  shellBody.position.y = 0.42;
+  shellBody.castShadow = true;
+  player.add(shellBody);
+
+  const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), new THREE.MeshStandardMaterial({ color: 0x151515 }));
+  headMesh.position.set(0, 0.42, 0.62);
+  player.add(headMesh);
+
+  const spotMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+  const spotPositions = [
+    [0.22, 0.62, 0.15], [-0.22, 0.62, 0.15],
+    [0.28, 0.55, -0.25], [-0.28, 0.55, -0.25],
+    [0, 0.68, -0.05]
+  ];
+  spotPositions.forEach((p) => {
+    const spot = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), spotMat);
+    spot.position.set(p[0], p[1], p[2]);
+    player.add(spot);
+  });
+
+  [[-0.12, 1], [0.12, 1]].forEach((side) => {
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.4, 6), spotMat);
+    antenna.position.set(side[0] * side[1], 0.72, 0.7);
+    antenna.rotation.x = -0.6;
+    player.add(antenna);
+  });
+
+  const playerGlow = new THREE.PointLight(0xff6a6a, 0.6, 4);
+  playerGlow.position.set(0, 0.6, 0);
+  player.add(playerGlow);
+
+  player.position.set(0, 0, ZONE_RADIUS + 14);
+  scene.add(player);
+
+  const keys = {};
+  window.addEventListener("keydown", (e) => {
+    keys[e.code] = true;
+    if (e.code === "KeyE") tryInteract();
+  });
+  window.addEventListener("keyup", (e) => { keys[e.code] = false; });
+
+  const MOVE_SPEED = 9.5;
+  const TURN_SPEED = 2.6;
+  let velocityY = 0;
+  let onGround = true;
+  const GRAVITY = -18;
+  const JUMP_FORCE = 6.2;
+
+  let bobTime = 0;
+
+  function updatePlayer(dt) {
+    if (!state.started || state.puzzleOpen) return;
+
+    let turn = 0;
+    if (keys["KeyA"] || keys["ArrowLeft"]) turn += 1;
+    if (keys["KeyD"] || keys["ArrowRight"]) turn -= 1;
+    player.rotation.y += turn * TURN_SPEED * dt;
+
+    let move = 0;
+    if (keys["KeyW"] || keys["ArrowUp"]) move += 1;
+    if (keys["KeyS"] || keys["ArrowDown"]) move -= 0.6;
+
+    const forward = new THREE.Vector3(Math.sin(player.rotation.y), 0, Math.cos(player.rotation.y));
+    player.position.addScaledVector(forward, move * MOVE_SPEED * dt);
+
+    const dist = Math.sqrt(player.position.x ** 2 + player.position.z ** 2);
+    if (dist > 66) {
+      player.position.x *= 66 / dist;
+      player.position.z *= 66 / dist;
     }
-    function getReturnTarget() {
-      try {
-        var params = new URLSearchParams(window.location.search);
-        var rt = params.get("returnTo");
-        if (!rt) return null;
-        if (/^https?:\/\//i.test(rt)) {
-          return rt.indexOf(window.location.origin) === 0 ? rt : null;
+
+    if ((keys["Space"]) && onGround) {
+      velocityY = JUMP_FORCE;
+      onGround = false;
+    }
+    velocityY += GRAVITY * dt;
+    player.position.y += velocityY * dt;
+    if (player.position.y <= 0) {
+      player.position.y = 0;
+      velocityY = 0;
+      onGround = true;
+    }
+
+    if (move !== 0) {
+      bobTime += dt * 10;
+      shellBody.position.y = 0.42 + Math.sin(bobTime) * 0.04;
+    }
+  }
+
+  const camOffset = new THREE.Vector3(0, 4.2, -8);
+  const camTarget = new THREE.Vector3();
+  let shakeTime = 0;
+  let shakeMag = 0;
+  function triggerShake(mag, dur) { shakeTime = dur; shakeMag = mag; }
+  function updateCamera(dt) {
+    const rotatedOffset = camOffset.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotation.y);
+    const desired = player.position.clone().add(rotatedOffset);
+    camera.position.lerp(desired, 1 - Math.pow(0.001, dt));
+    if (shakeTime > 0) {
+      shakeTime -= dt;
+      const s = shakeMag * (shakeTime > 0 ? 1 : 0);
+      camera.position.x += (Math.random() - 0.5) * s;
+      camera.position.y += (Math.random() - 0.5) * s;
+    }
+    camTarget.lerp(player.position.clone().add(new THREE.Vector3(0, 1.1, 0)), 1 - Math.pow(0.0005, dt));
+    camera.lookAt(camTarget);
+  }
+
+  const INTERACT_RANGE = 3.4;
+  const NEARBY_RANGE = 16;
+  let activeZoneIndex = -1;
+  let nearBoss = false;
+
+  function updateProximity() {
+    if (!state.started) return;
+
+    let closest = null;
+    let closestDist = Infinity;
+    zoneMeshes.forEach((z) => {
+      if (z.solved) return;
+      const dx = player.position.x - z.x;
+      const dz = player.position.z - z.z;
+      const d = Math.sqrt(dx * dx + dz * dz);
+      if (d < closestDist) { closestDist = d; closest = z; }
+    });
+
+    const bossDist = Math.sqrt(player.position.x ** 2 + (player.position.z + 3.2) ** 2);
+    nearBoss = state.bossUnlocked && !state.bossSolved && bossDist < INTERACT_RANGE + 1;
+
+    if (nearBoss) {
+      activeZoneIndex = -2;
+      el("hudPromptText").textContent = TEXT.hud.interact;
+      el("hudPrompt").classList.add("show");
+      el("hudNearby").textContent = TEXT.boss.name;
+    } else if (closest && closestDist < INTERACT_RANGE) {
+      activeZoneIndex = closest.index;
+      el("hudPromptText").textContent = TEXT.hud.interact;
+      el("hudPrompt").classList.add("show");
+      el("hudNearby").textContent = TEXT.hud.nearby(closest.name);
+    } else {
+      activeZoneIndex = -1;
+      el("hudPrompt").classList.remove("show");
+      el("hudNearby").textContent = closest && closestDist < NEARBY_RANGE ? TEXT.hud.nearby(closest.name) : "";
+    }
+  }
+
+  function tryInteract() {
+    if (state.puzzleOpen || !state.started) return;
+    ensureAudio();
+    if (activeZoneIndex === -2 && nearBoss) {
+      openBossPuzzle();
+    } else if (activeZoneIndex >= 0) {
+      openZonePuzzle(activeZoneIndex);
+    }
+  }
+
+  const minimapCanvas = el("minimapCanvas");
+  const mctx = minimapCanvas.getContext("2d");
+  const MM_SIZE = 120, MM_R = MM_SIZE / 2, MM_SCALE = 0.62;
+  function drawMinimap() {
+    mctx.clearRect(0, 0, MM_SIZE, MM_SIZE);
+    mctx.save();
+    mctx.beginPath(); mctx.arc(MM_R, MM_R, MM_R - 2, 0, Math.PI * 2); mctx.clip();
+    mctx.fillStyle = "rgba(10,8,17,0.85)";
+    mctx.fillRect(0, 0, MM_SIZE, MM_SIZE);
+    mctx.strokeStyle = "rgba(122,59,255,0.25)";
+    for (let r = 1; r <= 3; r++) { mctx.beginPath(); mctx.arc(MM_R, MM_R, (MM_R - 4) * (r / 3), 0, Math.PI * 2); mctx.stroke(); }
+    const sweepAngle = (performance.now() * 0.0012) % (Math.PI * 2);
+    const grad = mctx.createConicGradient ? mctx.createConicGradient(sweepAngle, MM_R, MM_R) : null;
+    if (grad) {
+      grad.addColorStop(0, "rgba(49,255,176,0.35)");
+      grad.addColorStop(0.06, "rgba(49,255,176,0)");
+      grad.addColorStop(1, "rgba(49,255,176,0)");
+      mctx.fillStyle = grad;
+      mctx.beginPath(); mctx.arc(MM_R, MM_R, MM_R - 2, 0, Math.PI * 2); mctx.fill();
+    }
+
+    function toMap(x, z) {
+      return [MM_R + (x - player.position.x) * MM_SCALE, MM_R + (z - player.position.z) * MM_SCALE];
+    }
+    const bp = toMap(0, -3.2);
+    mctx.fillStyle = state.bossUnlocked ? "#ff3b46" : "#5a4a66";
+    mctx.beginPath(); mctx.arc(bp[0], bp[1], 4, 0, Math.PI * 2); mctx.fill();
+
+    zoneMeshes.forEach((z) => {
+      const p = toMap(z.x, z.z);
+      if (p[0] < -4 || p[0] > MM_SIZE + 4 || p[1] < -4 || p[1] > MM_SIZE + 4) return;
+      mctx.fillStyle = z.solved ? "#31ffb0" : "#ff3b46";
+      mctx.beginPath(); mctx.arc(p[0], p[1], 3.4, 0, Math.PI * 2); mctx.fill();
+    });
+
+    mctx.save();
+    mctx.translate(MM_R, MM_R);
+    mctx.rotate(player.rotation.y);
+    mctx.fillStyle = "#eef0f6";
+    mctx.beginPath();
+    mctx.moveTo(0, -6); mctx.lineTo(4, 5); mctx.lineTo(-4, 5); mctx.closePath();
+    mctx.fill();
+    mctx.restore();
+
+    mctx.restore();
+    mctx.strokeStyle = "rgba(255,255,255,0.15)";
+    mctx.beginPath(); mctx.arc(MM_R, MM_R, MM_R - 2, 0, Math.PI * 2); mctx.stroke();
+  }
+
+  const WIRE_COLORS = ["#ff3b46", "#3ba0ff", "#ffd23b", "#31ffb0", "#c93bff"];
+  let tickInterval = null;
+  let lcdSeconds = 0;
+
+  function shuffleColors(n) {
+    const pool = WIRE_COLORS.slice();
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    return pool.slice(0, n);
+  }
+
+  function startLcdClock() {
+    lcdSeconds = 0;
+    el("lcdClock").textContent = "00:00";
+    el("lcdStatus").textContent = "ARMED";
+    el("lcdStatus").style.color = "var(--safe)";
+    clearInterval(tickInterval);
+    tickInterval = setInterval(() => {
+      lcdSeconds++;
+      const m = String(Math.floor(lcdSeconds / 60)).padStart(2, "0");
+      const s = String(lcdSeconds % 60).padStart(2, "0");
+      el("lcdClock").textContent = `${m}:${s}`;
+      sfx.tick();
+    }, 1000);
+  }
+  function stopLcdClock(success) {
+    clearInterval(tickInterval);
+    el("lcdStatus").textContent = success ? "DISARMED" : "STOPPED";
+    el("lcdStatus").style.color = success ? "var(--safe)" : "var(--danger)";
+  }
+
+  function renderBombLights(n) {
+    const wrap = el("bombLights");
+    wrap.innerHTML = "";
+    for (let i = 0; i < n; i++) {
+      const lamp = document.createElement("i");
+      wrap.appendChild(lamp);
+    }
+    let li = 0;
+    clearInterval(renderBombLights._t);
+    renderBombLights._t = setInterval(() => {
+      Array.from(wrap.children).forEach((c, i) => c.classList.toggle("on", i === li));
+      li = (li + 1) % n;
+    }, 260);
+  }
+
+  function renderPuzzle(zoneName, questionText, options, correctIndex, okMsg, badMsg, onSolved) {
+    state.puzzleOpen = true;
+    el("hudPrompt").classList.remove("show");
+    const overlay = el("puzzleOverlay");
+    overlay.classList.remove("hidden");
+    el("puzzleZoneName").textContent = zoneName;
+    el("puzzleQuestion").textContent = questionText;
+    renderBombLights(Math.min(6, options.length + 2));
+    startLcdClock();
+
+    const optWrap = el("puzzleOptions");
+    optWrap.innerHTML = "";
+    const feedback = el("puzzleFeedback");
+    feedback.textContent = "";
+    feedback.className = "bomb-feedback";
+    const bombCase = el("bombCase");
+    const colors = shuffleColors(options.length);
+
+    let solvedAlready = false;
+
+    options.forEach((opt, i) => {
+      const row = document.createElement("div");
+      row.className = "wire-row";
+      row.style.setProperty("--wc", colors[i]);
+
+      const plug = document.createElement("div");
+      plug.className = "wire-plug";
+
+      const cableWrap = document.createElement("div");
+      cableWrap.className = "wire-cable-wrap";
+      const cable = document.createElement("div");
+      cable.className = "wire-cable";
+      const spark = document.createElement("div");
+      spark.className = "spark";
+      spark.style.setProperty("--sc", colors[i]);
+      cableWrap.appendChild(cable);
+      cableWrap.appendChild(spark);
+
+      const label = document.createElement("span");
+      label.className = "wire-label";
+      label.textContent = opt;
+
+      const scissor = document.createElement("span");
+      scissor.className = "wire-scissor";
+      scissor.textContent = "✂ cut";
+
+      row.appendChild(plug);
+      row.appendChild(cableWrap);
+      row.appendChild(label);
+      row.appendChild(scissor);
+
+      row.addEventListener("click", () => {
+        if (solvedAlready) return;
+        if (i === correctIndex) {
+          solvedAlready = true;
+          cable.classList.add("cut");
+          spark.classList.add("go");
+          row.classList.add("correct-cut");
+          Array.from(optWrap.children).forEach((r) => r.classList.add("disabled"));
+          feedback.textContent = okMsg;
+          feedback.className = "bomb-feedback ok";
+          stopLcdClock(true);
+          sfx.correct();
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            state.puzzleOpen = false;
+            clearInterval(renderBombLights._t);
+            onSolved();
+          }, 1300);
+        } else {
+          spark.classList.remove("go"); void spark.offsetWidth; spark.classList.add("go");
+          bombCase.classList.remove("shake"); void bombCase.offsetWidth; bombCase.classList.add("shake");
+          feedback.textContent = badMsg;
+          feedback.className = "bomb-feedback bad";
+          sfx.wrong();
+          el("vignette").classList.add("alert");
+          setTimeout(() => el("vignette").classList.remove("alert"), 350);
+          triggerShake(0.06, 0.35);
         }
-        if (rt.indexOf("//") === 0) return null; // protocol-relative, unsafe
-        return rt;
-      } catch (e) { return null; }
-    }
-    function goToGuide(lang) {
-      var note = document.getElementById("redirectNote");
-      var t = STRINGS[lang] || STRINGS[DEFAULT_LANG];
-      if (note) note.textContent = t.redirecting;
-      window.location.replace(getReturnTarget() || targetUrl(lang));
-    }
-
-    // ---------------------------------------------------------------
-    // 6) Main flow
-    // ---------------------------------------------------------------
-    var lang = detectLang();
-    document.getElementById("htmlRoot").setAttribute("lang", lang);
-    if (RTL_LANGS.indexOf(lang) !== -1) {
-      document.getElementById("htmlRoot").setAttribute("dir", "rtl");
-    }
-
-    var existingConsent = getStoredConsent();
-    if (existingConsent && existingConsent.necessary) {
-      // Consent already given previously: skip the banner entirely.
-      storeLang(lang);
-      goToGuide(lang);
-      return;
-    }
-
-    // No consent on record yet — show the banner in the detected language.
-    var t = STRINGS[lang] || STRINGS[DEFAULT_LANG];
-    document.getElementById("consentTitle").textContent = t.title;
-    document.getElementById("consentDesc").textContent = t.desc;
-    document.getElementById("acceptAllBtn").textContent = t.acceptAll;
-    document.getElementById("rejectBtn").textContent = t.reject;
-    document.getElementById("customizeBtn").textContent = t.customize;
-    document.getElementById("saveCustomBtn").textContent = t.save;
-    document.getElementById("consentNote").textContent = t.note;
-
-    document.getElementById("catNecessaryTitle").textContent = t.catNecessary;
-    document.getElementById("catNecessaryDesc").textContent = t.catNecessaryDesc;
-    document.getElementById("catPreferencesTitle").textContent = t.catPreferences;
-    document.getElementById("catPreferencesDesc").textContent = t.catPreferencesDesc;
-    document.getElementById("catAnalyticsTitle").textContent = t.catAnalytics;
-    document.getElementById("catAnalyticsDesc").textContent = t.catAnalyticsDesc;
-    document.getElementById("catMarketingTitle").textContent = t.catMarketing;
-    document.getElementById("catMarketingDesc").textContent = t.catMarketingDesc;
-
-    document.getElementById("acceptAllBtn").addEventListener("click", function () {
-      storeConsent("all");
-      storeLang(lang);
-      goToGuide(lang);
-    });
-    document.getElementById("rejectBtn").addEventListener("click", function () {
-      storeConsent("necessary");
-      storeLang(lang);
-      goToGuide(lang);
-    });
-    document.getElementById("customizeBtn").addEventListener("click", function () {
-      document.getElementById("categoriesPanel").classList.toggle("hidden");
-    });
-    document.getElementById("saveCustomBtn").addEventListener("click", function () {
-      storeConsent("custom", {
-        preferences: document.getElementById("prefToggle").checked,
-        analytics: document.getElementById("analyticsToggle").checked,
-        marketing: document.getElementById("marketingToggle").checked
       });
-      storeLang(lang);
-      goToGuide(lang);
+
+      optWrap.appendChild(row);
     });
-  })();
-  </script>
+  }
+
+  function openZonePuzzle(index) {
+    const z = TEXT.zones[index];
+    renderPuzzle(z.name, z.question, z.options, z.correct, z.ok, z.bad, () => solveZone(index));
+  }
+
+  function solveZone(index) {
+    state.solved[index] = true;
+    const mesh = zoneMeshes[index];
+    mesh.solved = true;
+    updateCounter();
+
+    mesh.ringMat.color.set(0x31ffb0);
+    mesh.ring2Mat.color.set(0x31ffb0);
+    mesh.stationLight.color.set(0x31ffb0);
+    mesh.stationLight.intensity = 0.4;
+    const startScale = mesh.canister.scale.clone();
+    const duration = 700;
+    const t0 = performance.now();
+    function animateDefuse(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      mesh.canister.scale.set(startScale.x * (1 - t), startScale.y * (1 - t), startScale.z * (1 - t));
+      if (t < 1) requestAnimationFrame(animateDefuse);
+      else mesh.canister.visible = false;
+    }
+    requestAnimationFrame(animateDefuse);
+
+    if (state.solved.every(Boolean) && !state.bossUnlocked) {
+      unlockBoss();
+    }
+  }
+
+  function unlockBoss() {
+    state.bossUnlocked = true;
+    const t0 = performance.now();
+    const duration = 900;
+    function animateBarrier(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      barrierMat.opacity = 0.35 * (1 - t);
+      barrierMat2.opacity = 0.18 * (1 - t);
+      if (t < 1) requestAnimationFrame(animateBarrier);
+      else { barrier.visible = false; barrier2.visible = false; }
+    }
+    requestAnimationFrame(animateBarrier);
+
+    flashPrompt(TEXT.gateOpenTitle);
+  }
+
+  function flashPrompt(msg) {
+    const p = el("hudPrompt");
+    const original = p.innerHTML;
+    el("hudPromptText").textContent = "";
+    p.innerHTML = `<span>${msg}</span>`;
+    p.classList.add("show");
+    setTimeout(() => {
+      p.classList.remove("show");
+      setTimeout(() => (p.innerHTML = original), 300);
+    }, 2600);
+  }
+
+  function openBossPuzzle() {
+    renderPuzzle(
+      TEXT.boss.name,
+      `${TEXT.boss.lineIntro} ${TEXT.boss.question}`,
+      TEXT.boss.options,
+      TEXT.boss.correct,
+      TEXT.boss.ok,
+      TEXT.boss.bad,
+      () => {
+        state.bossSolved = true;
+        defeatAntonello();
+      }
+    );
+  }
+
+  function defeatAntonello() {
+    triggerShake(0.12, 0.8);
+    const t0 = performance.now();
+    const duration = 1000;
+    const startRotZ = antonello.rotation.z;
+    function animateFall(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      antonello.rotation.z = startRotZ + t * (Math.PI / 2.1);
+      antonello.position.y = -t * 0.3;
+      if (t < 1) requestAnimationFrame(animateFall);
+      else showVictory();
+    }
+    requestAnimationFrame(animateFall);
+  }
+
+  function showVictory() {
+    el("fadeBlack").classList.add("show");
+    setTimeout(() => {
+      el("victoryOverlay").classList.remove("hidden");
+      el("fadeBlack").classList.remove("show");
+    }, 650);
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "Escape" && state.puzzleOpen && !nearBoss) {
+      el("puzzleOverlay").classList.add("hidden");
+      state.puzzleOpen = false;
+      clearInterval(tickInterval);
+      clearInterval(renderBombLights._t);
+    }
+  });
+
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const dt = Math.min(clock.getDelta(), 0.05);
+
+    updatePlayer(dt);
+    updateCamera(dt);
+    updateProximity();
+    drawMinimap();
+
+    const t = performance.now();
+    zoneMeshes.forEach((z) => {
+      if (!z.solved) {
+        z.canister.rotation.y += dt * 0.6;
+        if (z.canister.userData.led) {
+          z.canister.userData.led.visible = Math.sin(t * 0.006 + z.index) > -0.3;
+        }
+        z.ring.rotation.z += dt * 0.15;
+        z.ring2.rotation.z -= dt * 0.1;
+      }
+    });
+    barrierMat.opacity = state.bossUnlocked ? barrierMat.opacity : 0.3 + Math.sin(t * 0.002) * 0.08;
+    barrierMat2.opacity = state.bossUnlocked ? barrierMat2.opacity : 0.14 + Math.sin(t * 0.0024 + 1) * 0.06;
+    if (!state.bossSolved) {
+      antonello.position.y = Math.sin(t * 0.0018) * 0.05;
+    }
+
+    const posAttr = particleGeo.attributes.position;
+    for (let i = 0; i < particleCount; i++) {
+      posAttr.array[i * 3 + 1] -= dt * 0.6;
+      if (posAttr.array[i * 3 + 1] < 0) posAttr.array[i * 3 + 1] = 30;
+    }
+    posAttr.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
 </body>
 </html>

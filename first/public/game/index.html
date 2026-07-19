@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operation Debug — MONEOO.</title>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/cookie-guard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#05050a; font-family:'Inter', system-ui, sans-serif; }
+  #gameCanvas { position:fixed; inset:0; display:block; }
+
+  .hud { position:fixed; inset:0; pointer-events:none; z-index:10; color:#f2f2f5; }
+  .hud * { pointer-events:auto; }
+
+  .hud-top {
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:1rem 1.25rem; pointer-events:none;
+  }
+  .hud-title {
+    font-weight:800; letter-spacing:0.02em; font-size:1rem;
+    background:rgba(10,10,16,0.55); backdrop-filter:blur(6px);
+    padding:0.55rem 0.9rem; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
+  }
+  .hud-title small { display:block; font-weight:500; opacity:0.65; font-size:0.7rem; margin-top:2px; letter-spacing:0.03em; }
+  .hud-counter {
+    background:rgba(10,10,16,0.55); backdrop-filter:blur(6px);
+    padding:0.55rem 0.9rem; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
+    font-weight:700; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem;
+  }
+  .hud-counter .dot { width:8px; height:8px; border-radius:50%; background:#ff3b3b; box-shadow:0 0 8px #ff3b3b; }
+
+  .hud-prompt {
+    position:absolute; bottom:9%; left:50%; transform:translateX(-50%) translateY(10px);
+    background:rgba(10,10,16,0.7); backdrop-filter:blur(6px);
+    padding:0.6rem 1.1rem; border-radius:999px; border:1px solid rgba(255,255,255,0.1);
+    font-size:0.85rem; font-weight:600; opacity:0; transition:opacity 0.25s ease, transform 0.25s ease;
+    white-space:nowrap;
+  }
+  .hud-prompt.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .hud-prompt kbd {
+    background:#fff; color:#111; border-radius:6px; padding:1px 7px; font-weight:800; margin-right:0.4rem;
+  }
+
+  .hud-nearby {
+    position:absolute; bottom:2%; left:50%; transform:translateX(-50%);
+    font-size:0.72rem; opacity:0.55; letter-spacing:0.04em; text-transform:uppercase;
+  }
+
+  .hud-controls {
+    position:absolute; bottom:1.5rem; right:1.25rem;
+    background:rgba(10,10,16,0.55); backdrop-filter:blur(6px);
+    padding:0.7rem 0.9rem; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
+    font-size:0.72rem; line-height:1.7; opacity:0.85;
+  }
+  .hud-controls b { display:inline-block; min-width:74px; }
+
+  /* ===== Modals (instructions / puzzle / victory) share this base ===== */
+  .overlay {
+    position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at center, rgba(20,10,30,0.55), rgba(2,2,6,0.92));
+    backdrop-filter:blur(4px);
+  }
+  .overlay.hidden { display:none; }
+  .panel {
+    width:min(560px, 92vw); max-height:86vh; overflow-y:auto;
+    background:#111017; border:1px solid rgba(255,255,255,0.08);
+    border-radius:28px; padding:2rem 2.1rem; color:#f2f2f5;
+    box-shadow:0 40px 100px rgba(0,0,0,0.6);
+  }
+  .panel .eyebrow {
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.12em; font-weight:700;
+    color:#ff6a6a; margin:0 0 0.5rem;
+  }
+  .panel h1, .panel h2 { margin:0 0 0.8rem; line-height:1.25; }
+  .panel h1 { font-size:1.5rem; }
+  .panel h2 { font-size:1.25rem; }
+  .panel p { line-height:1.7; color:#c7c7d1; margin:0 0 1rem; }
+  .panel .story { font-size:0.92rem; }
+
+  .btn-row { display:flex; gap:0.65rem; flex-wrap:wrap; margin-top:1.4rem; }
+  .g-btn {
+    flex:1 1 140px; border:none; cursor:pointer; border-radius:14px;
+    padding:0.85rem 1rem; font-weight:700; font-size:0.9rem; font-family:inherit;
+    transition:transform 0.15s ease, filter 0.15s ease; text-align:left;
+  }
+  .g-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
+  .g-btn:active { transform:translateY(0px) scale(0.98); }
+  .g-btn.primary { background:#ff3b3b; color:#fff; text-align:center; }
+  .g-btn.ghost { background:rgba(255,255,255,0.06); color:#f2f2f5; border:1px solid rgba(255,255,255,0.1); }
+  .g-btn.option { background:rgba(255,255,255,0.05); color:#f2f2f5; border:1px solid rgba(255,255,255,0.08); }
+  .g-btn.option.correct { background:#1f8a4c; }
+  .g-btn.option.wrong { background:#8a1f1f; }
+
+  .feedback { margin-top:1rem; font-size:0.88rem; font-weight:600; min-height:1.4em; }
+  .feedback.ok { color:#5ee39a; }
+  .feedback.bad { color:#ff8a8a; }
+
+  .audio-block { margin-top:1.2rem; background:rgba(255,255,255,0.04); border-radius:16px; padding:1rem; }
+  .audio-block p { margin:0 0 0.5rem; font-size:0.8rem; color:#9a9aa5; }
+  .audio-block audio { width:100%; }
+
+  .progress-track { height:6px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; margin-top:0.4rem; }
+  .progress-fill { height:100%; background:#ff3b3b; width:0%; transition:width 0.4s ease; }
+
+  .fade-black {
+    position:fixed; inset:0; background:#000; opacity:0; pointer-events:none; z-index:60; transition:opacity 0.6s ease;
+  }
+  .fade-black.show { opacity:1; }
+
+  @media (max-width: 640px) {
+    .hud-controls { display:none; }
+    .panel { padding:1.5rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<div class="hud">
+  <div class="hud-top">
+    <div class="hud-title" id="hudTitle"></div>
+    <div class="hud-counter"><span class="dot"></span><span id="hudCounter"></span></div>
+  </div>
+  <div class="hud-nearby" id="hudNearby"></div>
+  <div class="hud-prompt" id="hudPrompt"><kbd>E</kbd><span id="hudPromptText"></span></div>
+  <div class="hud-controls" id="hudControls"></div>
+</div>
+
+<div class="overlay" id="introOverlay">
+  <div class="panel">
+    <p class="eyebrow" id="introEyebrow"></p>
+    <h1 id="introTitle"></h1>
+    <p class="story" id="introStory1"></p>
+    <p class="story" id="introStory2"></p>
+    <div class="btn-row">
+      <button class="g-btn primary" id="introStartBtn"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="puzzleOverlay">
+  <div class="panel">
+    <p class="eyebrow" id="puzzleZoneName"></p>
+    <h2 id="puzzleQuestion"></h2>
+    <div id="puzzleOptions"></div>
+    <p class="feedback" id="puzzleFeedback"></p>
+  </div>
+</div>
+
+<div class="overlay hidden" id="victoryOverlay">
+  <div class="panel">
+    <p class="eyebrow" id="victoryEyebrow"></p>
+    <h1 id="victoryTitle"></h1>
+    <p id="victoryText"></p>
+
+    <div class="audio-block">
+      <p id="audioLabel1"></p>
+      <audio controls preload="none">
+        <source src="audio/antonello-anthem.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+    <div class="audio-block">
+      <p id="audioLabel2"></p>
+      <audio controls preload="none">
+        <source src="audio/bug-victory.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="btn-row">
+      <a class="g-btn primary" id="victoryBackBtn" href="../index.html" style="text-decoration:none; display:flex; align-items:center; justify-content:center;"></a>
+      <button class="g-btn ghost" id="victoryReplayBtn"></button>
+    </div>
+  </div>
+</div>
+
+<div class="fade-black" id="fadeBlack"></div>
+
+<script>
+/* =========================================================================
+   TEXT — every player-facing string lives here. Translate this object to
+   localize the whole game; nothing else below needs to change.
+   ========================================================================= */
+const TEXT = {
+  hud: {
+    title: "OPERATION DEBUG",
+    subtitle: "a MONEOO. side story",
+    counter: (n, total) => `Spray bombs defused: ${n} / ${total}`,
+    interact: "Defuse",
+    nearby: (name) => `📍 Approaching: ${name}`,
+    controls: "<b>Move</b> W / S<br><b>Turn</b> A / D<br><b>Jump</b> Space<br><b>Interact</b> E"
+  },
+  intro: {
+    eyebrow: "MONEOO. presents",
+    title: "Operation Debug",
+    p1: "The city of Latticetown used to hum with quiet, well-ordered noise — every wall a grid, every street a clean modular line. Then <b>Antonello Vendetta</b>, a disgraced exterminator with a grudge against every insect alive, hid six canisters of DDT spray across the city, rigged to go off the moment anyone stops paying attention.",
+    p2: "You are a small ladybug with an unusually good grasp of post-quantum cryptography. To disarm each canister you'll have to prove you understood how ML-KEM actually works — get it right, and the bomb powers down. Get all six, and the way to Antonello's lair will open.",
+    start: "Start exploring →"
+  },
+  zones: [
+    {
+      name: "The Modular Vault",
+      question: "ML-KEM works modulo q = 3329. What is 3330 mod 3329?",
+      options: ["0", "1", "3329", "-1"],
+      correct: 0,
+      ok: "Correct — 3330 wraps straight back to 0. The canister's timer resets to zero and dies.",
+      bad: "Not quite. Remember: mod wraps the number back inside [0, q-1]. Try again."
+    },
+    {
+      name: "The Lattice Garden",
+      question: "Three vectors sit in this reduced lattice basis: A = (2, 1), B = (15, 22), C = (-1, 3). Finding the SHORTEST vector is the hard lattice problem attackers can't solve efficiently. Which one is shortest?",
+      options: ["Vector A (2, 1)", "Vector B (15, 22)", "Vector C (-1, 3)", "They're all equal"],
+      correct: 0,
+      ok: "Correct — A has length √5 ≈ 2.24, by far the shortest. The overgrown vines holding the canister wilt away.",
+      bad: "Compare the lengths (√(x²+y²)) again — one of them is clearly the smallest."
+    },
+    {
+      name: "The NTT Forge",
+      question: "The Number Theoretic Transform (NTT) is used in ML-KEM to speed up which operation?",
+      options: ["Polynomial multiplication", "Password hashing", "Random number generation", "Digital signatures"],
+      correct: 0,
+      ok: "Correct — NTT turns slow polynomial multiplication into fast pointwise multiplication. The forge's gears grind to a halt.",
+      bad: "Think about what NTT is the crypto equivalent of — a very famous, much faster transform for multiplying big polynomials."
+    },
+    {
+      name: "The KEM Sequencer",
+      question: "In a Key Encapsulation Mechanism, which of these three steps happens FIRST?",
+      options: ["KeyGen (create the keypair)", "Encaps (create the ciphertext)", "Decaps (recover the secret)", "They all happen at the same time"],
+      correct: 0,
+      ok: "Correct — no keypair, no party. KeyGen always comes first. The sequencer's wires go dark.",
+      bad: "Think about the order: you need something before you can lock or unlock anything with it."
+    },
+    {
+      name: "The Security Wing",
+      question: "ML-KEM-768 is designed to match the classical security level of which symmetric cipher?",
+      options: ["AES-192", "AES-64", "DES", "AES-1024"],
+      correct: 0,
+      ok: "Correct — ML-KEM-768 ≈ AES-192-level security (NIST Category 3). The vault seals the canister inside forever.",
+      bad: "NIST maps ML-KEM-512 / 768 / 1024 to three AES security categories — one of those doesn't even exist."
+    },
+    {
+      name: "The Fujisaki-Okamoto Chamber",
+      question: "The Fujisaki-Okamoto (FO) transform upgrades a weaker encryption scheme into an ML-KEM-grade KEM. Which security notion does it add?",
+      options: ["IND-CCA2 (chosen-ciphertext security)", "One-time-pad secrecy", "Perfect forward secrecy only", "Nothing measurable"],
+      correct: 0,
+      ok: "Correct — FO hardens the scheme against chosen-ciphertext attacks. The chamber's spray nozzle rusts shut.",
+      bad: "FO is famous for turning a merely CPA-secure scheme into something resistant to a much nastier class of attacks."
+    }
+  ],
+  boss: {
+    name: "Antonello's Lair",
+    lineIntro: "So it's YOU. The bug who keeps reading standards documents. Fine — answer this, if you're so clever:",
+    question: "If Bob's decapsulated shared secret does NOT match what Alice originally encapsulated, what does a correctly implemented ML-KEM do?",
+    options: [
+      "It still outputs a pseudorandom value — implicit rejection, no error is ever revealed",
+      "It throws a visible 'decryption failed' error",
+      "It leaks the private key so you can debug it",
+      "It crashes the whole connection immediately"
+    ],
+    correct: 0,
+    ok: "Exactly right. Implicit rejection means nothing observable ever betrays a mismatch — Antonello's last canister sputters, hisses, and dies.",
+    bad: "Careful — a visible error here would be a side-channel goldmine for an attacker. That's exactly what ML-KEM avoids."
+  },
+  gateOpenTitle: "The path to Antonello's lair has opened.",
+  victory: {
+    eyebrow: "Mission complete",
+    title: "Latticetown is safe again",
+    text: "All six canisters are down and Antonello Vendetta has been talked into a permanent early retirement. Not bad for a bug who just wanted to understand a NIST standard.",
+    audio1: "🎵 Antonello's Anthem (villain theme) — add your generated track to game/audio/antonello-anthem.mp3",
+    audio2: "🎵 Bug's Victory Song — add your generated track to game/audio/bug-victory.mp3",
+    back: "← Back to the guide",
+    replay: "Play again"
+  }
+};
+</script>
+<script>
+(function () {
+  "use strict";
+
+  /* ================= BASIC DOM / STATE WIRING ================= */
+  const el = (id) => document.getElementById(id);
+  el("hudTitle").innerHTML = `${TEXT.hud.title}<small>${TEXT.hud.subtitle}</small>`;
+  el("hudControls").innerHTML = TEXT.hud.controls;
+  el("introEyebrow").textContent = TEXT.intro.eyebrow;
+  el("introTitle").textContent = TEXT.intro.title;
+  el("introStory1").innerHTML = TEXT.intro.p1;
+  el("introStory2").innerHTML = TEXT.intro.p2;
+  el("introStartBtn").textContent = TEXT.intro.start;
+  el("victoryEyebrow").textContent = TEXT.victory.eyebrow;
+  el("victoryTitle").textContent = TEXT.victory.title;
+  el("victoryText").textContent = TEXT.victory.text;
+  el("audioLabel1").textContent = TEXT.victory.audio1;
+  el("audioLabel2").textContent = TEXT.victory.audio2;
+  el("victoryBackBtn").textContent = TEXT.victory.back;
+  el("victoryReplayBtn").textContent = TEXT.victory.replay;
+
+  const TOTAL_ZONES = TEXT.zones.length;
+  const state = {
+    solved: new Array(TOTAL_ZONES).fill(false),
+    bossUnlocked: false,
+    bossSolved: false,
+    puzzleOpen: false,
+    started: false
+  };
+
+  function updateCounter() {
+    const n = state.solved.filter(Boolean).length;
+    el("hudCounter").textContent = TEXT.hud.counter(n, TOTAL_ZONES);
+  }
+  updateCounter();
+
+  el("introStartBtn").addEventListener("click", () => {
+    el("introOverlay").classList.add("hidden");
+    state.started = true;
+  });
+  el("victoryReplayBtn").addEventListener("click", () => location.reload());
+
+  /* ================= THREE.JS SCENE SETUP ================= */
+  const canvas = el("gameCanvas");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x07060d);
+  scene.fog = new THREE.FogExp2(0x0a0812, 0.012);
+
+  const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 500);
+
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x33344a, 1.1));
+  const moon = new THREE.DirectionalLight(0x8fa6ff, 0.9);
+  moon.position.set(30, 60, -20);
+  moon.castShadow = true;
+  moon.shadow.mapSize.set(1024, 1024);
+  moon.shadow.camera.left = -80; moon.shadow.camera.right = 80;
+  moon.shadow.camera.top = 80; moon.shadow.camera.bottom = -80;
+  scene.add(moon);
+
+  // Ground
+  const groundGeo = new THREE.CircleGeometry(70, 64);
+  const groundMat = new THREE.MeshStandardMaterial({ color: 0x0e0d18, roughness: 0.95, metalness: 0.1 });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  const grid = new THREE.GridHelper(140, 56, 0x442255, 0x1c1830);
+  grid.position.y = 0.01;
+  scene.add(grid);
+
+  // Ambient floating ash particles
+  const particleCount = 260;
+  const particleGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 130;
+    positions[i * 3 + 1] = Math.random() * 30 + 1;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 130;
+  }
+  particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const particleMat = new THREE.PointsMaterial({ color: 0x9a86ff, size: 0.18, transparent: true, opacity: 0.55 });
+  const particles = new THREE.Points(particleGeo, particleMat);
+  scene.add(particles);
+
+  /* ================= WORLD LAYOUT ================= */
+  const ZONE_RADIUS = 34;
+  const zoneAngleStep = (Math.PI * 2) / TOTAL_ZONES;
+  const zoneMeshes = []; // { group, canister, ring, position, name, solved }
+
+  function buildCanister(color) {
+    const g = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.35, roughness: 0.4, metalness: 0.5 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.7, 20), bodyMat);
+    body.position.y = 1.0;
+    body.castShadow = true;
+    g.add(body);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.35, 20), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
+    cap.position.y = 1.95;
+    g.add(cap);
+    const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+    nozzle.rotation.z = Math.PI / 2.4;
+    nozzle.position.set(0.35, 2.15, 0);
+    g.add(nozzle);
+    return g;
+  }
+
+  function buildZoneMarker(name, index, solvedInit) {
+    const angle = index * zoneAngleStep;
+    const x = Math.cos(angle) * ZONE_RADIUS;
+    const z = Math.sin(angle) * ZONE_RADIUS;
+
+    const group = new THREE.Group();
+    group.position.set(x, 0, z);
+
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff3b3b, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(2.6, 3.1, 40), ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.03;
+    group.add(ring);
+
+    const canister = buildCanister(0xff3b3b);
+    group.add(canister);
+
+    // Simple decorative pillars around the station for atmosphere
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      const pillar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 2.4 + Math.random() * 1.5, 0.4),
+        new THREE.MeshStandardMaterial({ color: 0x1a1830, roughness: 0.9 })
+      );
+      pillar.position.set(Math.cos(a) * 4.2, pillar.geometry.parameters.height / 2, Math.sin(a) * 4.2);
+      pillar.castShadow = true;
+      group.add(pillar);
+    }
+
+    scene.add(group);
+    zoneMeshes.push({ group, canister, ring, ringMat, x, z, name, index, solved: solvedInit });
+  }
+
+  TEXT.zones.forEach((z, i) => buildZoneMarker(z.name, i, false));
+
+  // Boss arena at the center, behind a barrier that opens once all zones solved
+  const bossGroup = new THREE.Group();
+  bossGroup.position.set(0, 0, 0);
+  scene.add(bossGroup);
+
+  const bossFloor = new THREE.Mesh(
+    new THREE.CircleGeometry(6, 40),
+    new THREE.MeshStandardMaterial({ color: 0x1a0f22, emissive: 0x4a1030, emissiveIntensity: 0.4 })
+  );
+  bossFloor.rotation.x = -Math.PI / 2;
+  bossFloor.position.y = 0.02;
+  bossGroup.add(bossFloor);
+
+  // Antonello Vendetta — simple blocky caricature holding a huge canister
+  const antonello = new THREE.Group();
+  const torso = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.8, 0.9), new THREE.MeshStandardMaterial({ color: 0x3a3a3a }));
+  torso.position.y = 1.6;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 16), new THREE.MeshStandardMaterial({ color: 0xd8b48f }));
+  head.position.y = 2.9;
+  const bigCanister = buildCanister(0xffaa00);
+  bigCanister.scale.set(1.8, 1.8, 1.8);
+  bigCanister.position.set(1.4, 0, 0.2);
+  antonello.add(torso, head, bigCanister);
+  antonello.position.set(0, 0, -3.2);
+  bossGroup.add(antonello);
+
+  // Energy barrier ring blocking the boss arena until unlocked
+  const barrierMat = new THREE.MeshBasicMaterial({ color: 0x7a3bff, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+  const barrier = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 4, 40, 1, true), barrierMat);
+  barrier.position.y = 2;
+  bossGroup.add(barrier);
+
+  /* ================= PLAYER (LADYBUG) ================= */
+  const player = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xd6272c, roughness: 0.45, metalness: 0.15 });
+  const shellBody = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), bodyMat);
+  shellBody.scale.set(1, 0.72, 1.25);
+  shellBody.position.y = 0.42;
+  shellBody.castShadow = true;
+  player.add(shellBody);
+
+  const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), new THREE.MeshStandardMaterial({ color: 0x151515 }));
+  headMesh.position.set(0, 0.42, 0.62);
+  player.add(headMesh);
+
+  const spotMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+  const spotPositions = [
+    [0.22, 0.62, 0.15], [-0.22, 0.62, 0.15],
+    [0.28, 0.55, -0.25], [-0.28, 0.55, -0.25],
+    [0, 0.68, -0.05]
+  ];
+  spotPositions.forEach((p) => {
+    const spot = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), spotMat);
+    spot.position.set(p[0], p[1], p[2]);
+    player.add(spot);
+  });
+
+  [[-0.12, 1], [0.12, 1]].forEach((side) => {
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.4, 6), spotMat);
+    antenna.position.set(side[0] * side[1], 0.72, 0.7);
+    antenna.rotation.x = -0.6;
+    player.add(antenna);
+  });
+
+  player.position.set(0, 0, ZONE_RADIUS + 14);
+  scene.add(player);
+
+  /* ================= INPUT ================= */
+  const keys = {};
+  window.addEventListener("keydown", (e) => {
+    keys[e.code] = true;
+    if (e.code === "KeyE") tryInteract();
+  });
+  window.addEventListener("keyup", (e) => { keys[e.code] = false; });
+
+  const MOVE_SPEED = 9.5;
+  const TURN_SPEED = 2.6;
+  let velocityY = 0;
+  let onGround = true;
+  const GRAVITY = -18;
+  const JUMP_FORCE = 6.2;
+
+  let bobTime = 0;
+
+  function updatePlayer(dt) {
+    if (!state.started || state.puzzleOpen) return;
+
+    let turn = 0;
+    if (keys["KeyA"] || keys["ArrowLeft"]) turn += 1;
+    if (keys["KeyD"] || keys["ArrowRight"]) turn -= 1;
+    player.rotation.y += turn * TURN_SPEED * dt;
+
+    let move = 0;
+    if (keys["KeyW"] || keys["ArrowUp"]) move += 1;
+    if (keys["KeyS"] || keys["ArrowDown"]) move -= 0.6;
+
+    const forward = new THREE.Vector3(Math.sin(player.rotation.y), 0, Math.cos(player.rotation.y));
+    player.position.addScaledVector(forward, move * MOVE_SPEED * dt);
+
+    // Keep player within the world bounds
+    const dist = Math.sqrt(player.position.x ** 2 + player.position.z ** 2);
+    if (dist > 66) {
+      player.position.x *= 66 / dist;
+      player.position.z *= 66 / dist;
+    }
+
+    // Jump
+    if ((keys["Space"]) && onGround) {
+      velocityY = JUMP_FORCE;
+      onGround = false;
+    }
+    velocityY += GRAVITY * dt;
+    player.position.y += velocityY * dt;
+    if (player.position.y <= 0) {
+      player.position.y = 0;
+      velocityY = 0;
+      onGround = true;
+    }
+
+    // Idle walking bob for the shell
+    if (move !== 0) {
+      bobTime += dt * 10;
+      shellBody.position.y = 0.42 + Math.sin(bobTime) * 0.04;
+    }
+  }
+
+  /* ================= CAMERA (chase cam) ================= */
+  const camOffset = new THREE.Vector3(0, 4.2, -8);
+  const camTarget = new THREE.Vector3();
+  function updateCamera(dt) {
+    const rotatedOffset = camOffset.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotation.y);
+    const desired = player.position.clone().add(rotatedOffset);
+    camera.position.lerp(desired, 1 - Math.pow(0.001, dt));
+    camTarget.lerp(player.position.clone().add(new THREE.Vector3(0, 1.1, 0)), 1 - Math.pow(0.0005, dt));
+    camera.lookAt(camTarget);
+  }
+
+  /* ================= INTERACTION / PROXIMITY ================= */
+  const INTERACT_RANGE = 3.4;
+  const NEARBY_RANGE = 16;
+  let activeZoneIndex = -1;
+  let nearBoss = false;
+
+  function updateProximity() {
+    if (!state.started) return;
+
+    let closest = null;
+    let closestDist = Infinity;
+    zoneMeshes.forEach((z) => {
+      if (z.solved) return;
+      const dx = player.position.x - z.x;
+      const dz = player.position.z - z.z;
+      const d = Math.sqrt(dx * dx + dz * dz);
+      if (d < closestDist) { closestDist = d; closest = z; }
+    });
+
+    // Boss proximity
+    const bossDist = Math.sqrt(player.position.x ** 2 + (player.position.z + 3.2) ** 2);
+    nearBoss = state.bossUnlocked && !state.bossSolved && bossDist < INTERACT_RANGE + 1;
+
+    if (nearBoss) {
+      activeZoneIndex = -2; // sentinel for boss
+      el("hudPromptText").textContent = TEXT.hud.interact;
+      el("hudPrompt").classList.add("show");
+      el("hudNearby").textContent = TEXT.boss.name;
+    } else if (closest && closestDist < INTERACT_RANGE) {
+      activeZoneIndex = closest.index;
+      el("hudPromptText").textContent = TEXT.hud.interact;
+      el("hudPrompt").classList.add("show");
+      el("hudNearby").textContent = TEXT.hud.nearby(closest.name);
+    } else {
+      activeZoneIndex = -1;
+      el("hudPrompt").classList.remove("show");
+      el("hudNearby").textContent = closest && closestDist < NEARBY_RANGE ? TEXT.hud.nearby(closest.name) : "";
+    }
+  }
+
+  function tryInteract() {
+    if (state.puzzleOpen || !state.started) return;
+    if (activeZoneIndex === -2 && nearBoss) {
+      openBossPuzzle();
+    } else if (activeZoneIndex >= 0) {
+      openZonePuzzle(activeZoneIndex);
+    }
+  }
+
+  /* ================= PUZZLE UI ================= */
+  function renderPuzzle(zoneName, questionText, options, correctIndex, okMsg, badMsg, onSolved) {
+    state.puzzleOpen = true;
+    el("hudPrompt").classList.remove("show");
+    const overlay = el("puzzleOverlay");
+    overlay.classList.remove("hidden");
+    el("puzzleZoneName").textContent = zoneName;
+    el("puzzleQuestion").textContent = questionText;
+    const optWrap = el("puzzleOptions");
+    optWrap.innerHTML = "";
+    const feedback = el("puzzleFeedback");
+    feedback.textContent = "";
+    feedback.className = "feedback";
+
+    options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.className = "g-btn option";
+      btn.style.display = "block";
+      btn.style.width = "100%";
+      btn.style.marginTop = "0.5rem";
+      btn.textContent = opt;
+      btn.addEventListener("click", () => {
+        if (i === correctIndex) {
+          btn.classList.add("correct");
+          feedback.textContent = okMsg;
+          feedback.className = "feedback ok";
+          Array.from(optWrap.children).forEach((b) => (b.disabled = true));
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            state.puzzleOpen = false;
+            onSolved();
+          }, 1200);
+        } else {
+          btn.classList.add("wrong");
+          feedback.textContent = badMsg;
+          feedback.className = "feedback bad";
+          setTimeout(() => btn.classList.remove("wrong"), 500);
+        }
+      });
+      optWrap.appendChild(btn);
+    });
+  }
+
+  function openZonePuzzle(index) {
+    const z = TEXT.zones[index];
+    renderPuzzle(z.name, z.question, z.options, z.correct, z.ok, z.bad, () => solveZone(index));
+  }
+
+  function solveZone(index) {
+    state.solved[index] = true;
+    const mesh = zoneMeshes[index];
+    mesh.solved = true;
+    updateCounter();
+
+    // Defuse animation: shrink + fade the canister, ring turns green
+    mesh.ringMat.color.set(0x2ecc71);
+    const startScale = mesh.canister.scale.clone();
+    const duration = 700;
+    const t0 = performance.now();
+    function animateDefuse(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      mesh.canister.scale.set(startScale.x * (1 - t), startScale.y * (1 - t), startScale.z * (1 - t));
+      if (t < 1) requestAnimationFrame(animateDefuse);
+      else mesh.canister.visible = false;
+    }
+    requestAnimationFrame(animateDefuse);
+
+    if (state.solved.every(Boolean) && !state.bossUnlocked) {
+      unlockBoss();
+    }
+  }
+
+  function unlockBoss() {
+    state.bossUnlocked = true;
+    const t0 = performance.now();
+    const duration = 900;
+    function animateBarrier(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      barrierMat.opacity = 0.35 * (1 - t);
+      if (t < 1) requestAnimationFrame(animateBarrier);
+      else barrier.visible = false;
+    }
+    requestAnimationFrame(animateBarrier);
+
+    flashPrompt(TEXT.gateOpenTitle);
+  }
+
+  function flashPrompt(msg) {
+    const p = el("hudPrompt");
+    const original = p.innerHTML;
+    el("hudPromptText").textContent = "";
+    p.innerHTML = `<span>${msg}</span>`;
+    p.classList.add("show");
+    setTimeout(() => {
+      p.classList.remove("show");
+      setTimeout(() => (p.innerHTML = original), 300);
+    }, 2600);
+  }
+
+  function openBossPuzzle() {
+    renderPuzzle(
+      TEXT.boss.name,
+      `${TEXT.boss.lineIntro} ${TEXT.boss.question}`,
+      TEXT.boss.options,
+      TEXT.boss.correct,
+      TEXT.boss.ok,
+      TEXT.boss.bad,
+      () => {
+        state.bossSolved = true;
+        defeatAntonello();
+      }
+    );
+  }
+
+  function defeatAntonello() {
+    const t0 = performance.now();
+    const duration = 1000;
+    const startRotZ = antonello.rotation.z;
+    function animateFall(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      antonello.rotation.z = startRotZ + t * (Math.PI / 2.1);
+      antonello.position.y = -t * 0.3;
+      if (t < 1) requestAnimationFrame(animateFall);
+      else showVictory();
+    }
+    requestAnimationFrame(animateFall);
+  }
+
+  function showVictory() {
+    el("fadeBlack").classList.add("show");
+    setTimeout(() => {
+      el("victoryOverlay").classList.remove("hidden");
+      el("fadeBlack").classList.remove("show");
+    }, 650);
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "Escape" && state.puzzleOpen && !nearBoss) {
+      // allow canceling a non-boss puzzle without penalty
+      el("puzzleOverlay").classList.add("hidden");
+      state.puzzleOpen = false;
+    }
+  });
+
+  /* ================= MAIN LOOP ================= */
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const dt = Math.min(clock.getDelta(), 0.05);
+
+    updatePlayer(dt);
+    updateCamera(dt);
+    updateProximity();
+
+    // Gentle rotation on canisters + boss barrier shimmer
+    zoneMeshes.forEach((z) => {
+      if (!z.solved) z.canister.rotation.y += dt * 0.6;
+    });
+    barrierMat.opacity = state.bossUnlocked ? barrierMat.opacity : 0.3 + Math.sin(performance.now() * 0.002) * 0.08;
+
+    // Drift particles
+    const posAttr = particleGeo.attributes.position;
+    for (let i = 0; i < particleCount; i++) {
+      posAttr.array[i * 3 + 1] -= dt * 0.6;
+      if (posAttr.array[i * 3 + 1] < 0) posAttr.array[i * 3 + 1] = 30;
+    }
+    posAttr.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
